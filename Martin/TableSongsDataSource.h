@@ -12,8 +12,11 @@
 
 @interface TableSongsDataSource : NSObject <NSTableViewDataSource, NSTableViewDelegate>
 
-@property (nonatomic, retain) NSArray *dragRows;
 @property (assign) Playlist *playlist;
+@property (nonatomic, retain) NSTableColumn *sortedColumn; // stupac koji je sortiran
+@property (nonatomic, assign) BOOL sortAscending;
+
+@property (nonatomic, retain) NSArray *dragRows;
 
 @property (assign) IBOutlet MartinAppDelegate *appDelegate;
 @property (nonatomic, retain) IBOutlet NSTableView *table;

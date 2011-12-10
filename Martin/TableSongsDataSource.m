@@ -15,10 +15,10 @@
 #import "Song.h"
 
 @implementation TableSongsDataSource
-@synthesize appDelegate;
 
 @synthesize table, deleteButton;
-@synthesize playlist, dragRows;
+@synthesize dragRows, appDelegate;
+@synthesize playlist, sortedColumn, sortAscending;
 
 #pragma mark - init
 
@@ -64,6 +64,26 @@
     return YES;
 }
 
+#pragma mark - delegate
+
+- (void)tableView:(NSTableView *)tableView didClickTableColumn:(NSTableColumn *)tableColumn {
+    if( sortedColumn == tableColumn ) {
+        sortAscending = !sortAscending;
+        [playlist reverse];
+    } else {
+        sortAscending = YES;
+        
+        if( sortedColumn ) [tableView setIndicatorImage:nil inTableColumn: sortedColumn];
+        self.sortedColumn = tableColumn;
+        
+        [tableView setHighlightedTableColumn: tableColumn];
+        [playlist sortBy:tableColumn.identifier];
+    }
+    
+    [tableView setIndicatorImage: [NSImage imageNamed: sortAscending? @"NSAscendingSortIndicator": @"NSDescendingSortIndicator"] inTableColumn:tableColumn];
+    [tableView reloadData];
+}
+
 #pragma mark - data source
 
 - (NSInteger) numberOfRowsInTableView:(NSTableView *)tableView {
@@ -76,10 +96,7 @@
     int songID = [[playlist.songs objectAtIndex:row] intValue];
     Song *song = [LibManager songByID:songID];
     
-    if( [tag isEqualToString:@"track"] ) return song.trackNumber;
-    if( [tag isEqualToString:@"artist"] ) return song.artist;
-    if( [tag isEqualToString:@"title"] ) return song.title;
-    if( [tag isEqualToString:@"album"] ) return song.album;
+    return [song valueForKey:tag];
     
     return @"unknown";
 }

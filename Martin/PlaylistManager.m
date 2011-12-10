@@ -59,6 +59,7 @@
     TableSongsDataSource *tableSongsDataSource = (TableSongsDataSource*) appDelegate.songsTableView.dataSource;
     
     tableSongsDataSource.playlist = currentPlaylist;
+    tableSongsDataSource.sortedColumn = nil;
     [appDelegate.songsTableView reloadData];
 }
 

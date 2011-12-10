@@ -11,6 +11,7 @@
 #import "TreeLeaf.h"
 #import "TreeNode.h"
 #import "Song.h"
+#import "LibManager.h"
 
 @implementation Playlist
 
@@ -118,32 +119,54 @@ void find_songs( TreeNode *node, Playlist *p ) {
     }
 }
 
+- (void)sortBy:(NSString *)str {
+    [songs sortUsingComparator:^NSComparisonResult(id id1, id id2) {
+        Song *s1 = [LibManager songByID:[id1 intValue]];
+        Song *s2 = [LibManager songByID:[id2 intValue]];
+        NSString *val1 = [s1 valueForKey:str];
+        NSString *val2 = [s2 valueForKey:str];
+        
+        if( [str isEqualToString:@"trackNumber"] ) return [val1 intValue] > [val2 intValue];
+        return [val1 caseInsensitiveCompare:val2];
+    }];
+}
+
+- (void)reverse {
+    int n = (int) [songs count];
+    for( int i = 0; i+i < n; ++i )
+        [songs exchangeObjectAtIndex:i withObjectAtIndex:n-i-1];
+}
+
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes {
     currentIDRemoved = NO;
     
     NSUInteger curr = [indexes firstIndex];
+    int pos;
     while( curr != NSNotFound ) {
         NSNumber *song = [songs objectAtIndex:curr];
-        if( song.intValue == currentID || (currentIDRemoved == YES && curr == suggestedIndex) ) {
+        if( song.intValue == currentID || (currentIDRemoved == YES && song.intValue == suggestedID) ) {
             currentIDRemoved = YES;
-            suggestedIndex = (int) curr;
-            suggestedIndexShuffled = (int) [shuffledSongs indexOfObject:song];
+            suggestedID = song.intValue;
+            pos = (int) curr;
         }
         [songsSet removeObject:song];
         curr = [indexes indexGreaterThanIndex:curr];
     }
 
-    for(;;) {
-        int next = (int) [indexes indexGreaterThanIndex:suggestedIndex];
-        if( next == NSNotFound ) {
-            if( suggestedIndex == [songs count]-1 ) suggestedIndex = -1;
-        } else {
-            if( next == suggestedIndex+1 ) { ++suggestedIndex; continue; }
+    if( currentIDRemoved ) {
+        for(;;) {
+            int next = (int) [indexes indexGreaterThanIndex:pos];
+            if( next == NSNotFound ) {
+                if( pos == [songs count]-1 ) pos = -1;
+            } else {
+                if( next == pos+1 ) { ++pos; continue; }
+            }
+            ++pos;
+            break;
         }
-        ++suggestedIndex;
-        break;
+        suggestedID = [[songs objectAtIndex:pos] intValue];
     }
-
+    
     [songs removeObjectsAtIndexes:indexes];
     
     NSMutableIndexSet *shuffledIndexes = [NSMutableIndexSet indexSet];
@@ -163,7 +186,7 @@ void find_songs( TreeNode *node, Playlist *p ) {
     
     if( currentIDRemoved == YES ) {
         currentIDRemoved = NO;
-        pos = (shuffled? suggestedIndexShuffled: suggestedIndex)-1;
+        pos = (int) [arr indexOfObject:[NSNumber numberWithInt:suggestedID]]-1;
     } else {
         pos = (int) [arr indexOfObject:[NSNumber numberWithInt:currentID]];
     }
@@ -179,7 +202,7 @@ void find_songs( TreeNode *node, Playlist *p ) {
     
     if( currentIDRemoved == YES ) {
         currentIDRemoved = NO;
-        pos = shuffled? suggestedIndexShuffled: suggestedIndex;
+        pos = (int) [arr indexOfObject:[NSNumber numberWithInt:suggestedID]];
     } else {
         pos = (int) [arr indexOfObject:[NSNumber numberWithInt:currentID]];
     }

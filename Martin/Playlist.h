@@ -10,8 +10,7 @@
 
 @interface Playlist : NSObject {
     BOOL currentIDRemoved;
-    int suggestedIndex; // ove dvije varijable kazu koja je sljedeca pjesma ako se izbrisa ona koja trenutno svira
-    int suggestedIndexShuffled;
+    int suggestedID; // ako se izbrise pjesma koja trenutno svira, koji ID da svira sljedeci
 }
 
 @property (nonatomic, retain) NSString *name;
@@ -26,6 +25,9 @@
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes;
 - (int)reorderSongs:(NSArray*) rows atPos:(NSInteger)pos;
 - (void)insertArray:(NSArray*) arr atPos:(NSInteger)pos;
+
+- (void)sortBy:(NSString*)str;
+- (void)reverse;
 
 - (int)nextSongIDShuffled:(BOOL)shuffled;
 - (int)prevSongIDShuffled:(BOOL)shuffled;
