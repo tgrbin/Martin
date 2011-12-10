@@ -21,7 +21,6 @@
 		79FF140B142F18A500E27235 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 79FF1409142F18A500E27235 /* Credits.rtf */; };
 		79FF140E142F18A500E27235 /* MartinAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF140D142F18A500E27235 /* MartinAppDelegate.m */; };
 		79FF1411142F18A500E27235 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79FF140F142F18A500E27235 /* MainMenu.xib */; };
-		79FF1419142F1A8900E27235 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 79FF1418142F1A8900E27235 /* icon.png */; };
 		79FF141C142F1ABB00E27235 /* TreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF141B142F1ABB00E27235 /* TreeNode.m */; };
 		79FF141F142F1CF700E27235 /* TreeLeaf.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF141E142F1CF700E27235 /* TreeLeaf.m */; };
 		79FF1422142F1DB100E27235 /* LibManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF1421142F1DB100E27235 /* LibManager.m */; };
@@ -56,7 +55,6 @@
 		79FF140C142F18A500E27235 /* MartinAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MartinAppDelegate.h; sourceTree = "<group>"; };
 		79FF140D142F18A500E27235 /* MartinAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MartinAppDelegate.m; sourceTree = "<group>"; };
 		79FF1410142F18A500E27235 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		79FF1418142F1A8900E27235 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		79FF141A142F1ABB00E27235 /* TreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreeNode.h; sourceTree = "<group>"; };
 		79FF141B142F1ABB00E27235 /* TreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TreeNode.m; sourceTree = "<group>"; };
 		79FF141D142F1CF700E27235 /* TreeLeaf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreeLeaf.h; sourceTree = "<group>"; };
@@ -111,7 +109,6 @@
 			children = (
 				79D5760E1431074D00A2DA67 /* icon.icns */,
 				79FF142D142F217000E27235 /* martin.lib */,
-				79FF1418142F1A8900E27235 /* icon.png */,
 				79FF1400142F18A500E27235 /* Martin */,
 				79FF13F9142F18A500E27235 /* Frameworks */,
 				79FF13F7142F18A500E27235 /* Products */,
@@ -236,7 +233,6 @@
 				79FF1405142F18A500E27235 /* InfoPlist.strings in Resources */,
 				79FF140B142F18A500E27235 /* Credits.rtf in Resources */,
 				79FF1411142F18A500E27235 /* MainMenu.xib in Resources */,
-				79FF1419142F1A8900E27235 /* icon.png in Resources */,
 				79FF142E142F217000E27235 /* martin.lib in Resources */,
 				79D5760F1431074D00A2DA67 /* icon.icns in Resources */,
 				79C2ACB8144AB46A00C2699B /* Playlists.plist in Resources */,
