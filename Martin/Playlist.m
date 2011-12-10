@@ -119,16 +119,31 @@ void find_songs( TreeNode *node, Playlist *p ) {
 }
 
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes {
-    BOOL removedPlaying = NO;
+    currentIDRemoved = NO;
     
     NSUInteger curr = [indexes firstIndex];
     while( curr != NSNotFound ) {
         NSNumber *song = [songs objectAtIndex:curr];
-        if( song.intValue == currentID ) removedPlaying = YES;
+        if( song.intValue == currentID || (currentIDRemoved == YES && curr == suggestedIndex) ) {
+            currentIDRemoved = YES;
+            suggestedIndex = (int) curr;
+            suggestedIndexShuffled = (int) [shuffledSongs indexOfObject:song];
+        }
         [songsSet removeObject:song];
         curr = [indexes indexGreaterThanIndex:curr];
     }
-    
+
+    for(;;) {
+        int next = (int) [indexes indexGreaterThanIndex:suggestedIndex];
+        if( next == NSNotFound ) {
+            if( suggestedIndex == [songs count]-1 ) suggestedIndex = -1;
+        } else {
+            if( next == suggestedIndex+1 ) { ++suggestedIndex; continue; }
+        }
+        ++suggestedIndex;
+        break;
+    }
+
     [songs removeObjectsAtIndexes:indexes];
     
     NSMutableIndexSet *shuffledIndexes = [NSMutableIndexSet indexSet];
@@ -144,18 +159,32 @@ void find_songs( TreeNode *node, Playlist *p ) {
     if( currentID == -1 ) return -1;
     
     NSArray *arr = shuffled? shuffledSongs: songs;
-    int pos = (int) [arr indexOfObject:[NSNumber numberWithInt:currentID]];
-    currentID = [(NSNumber*)[arr objectAtIndex:(pos+1)%[arr count]] intValue];
-    return currentID;
+    int pos;
+    
+    if( currentIDRemoved == YES ) {
+        currentIDRemoved = NO;
+        pos = (shuffled? suggestedIndexShuffled: suggestedIndex)-1;
+    } else {
+        pos = (int) [arr indexOfObject:[NSNumber numberWithInt:currentID]];
+    }
+    
+    return currentID = [(NSNumber*)[arr objectAtIndex:(pos+1)%[arr count]] intValue];
 }
 
 - (int)prevSongIDShuffled:(BOOL)shuffled {
     if( currentID == -1 ) return -1;
     
     NSArray *arr = shuffled? shuffledSongs: songs;
-    int pos = (int)[arr indexOfObject:[NSNumber numberWithInt:currentID]];
-    currentID = [(NSNumber*)[arr objectAtIndex:(pos+[arr count]-1)%[arr count]] intValue];
-    return currentID;
+    int pos;
+    
+    if( currentIDRemoved == YES ) {
+        currentIDRemoved = NO;
+        pos = shuffled? suggestedIndexShuffled: suggestedIndex;
+    } else {
+        pos = (int) [arr indexOfObject:[NSNumber numberWithInt:currentID]];
+    }
+    
+    return currentID = [(NSNumber*)[arr objectAtIndex:(pos-1)%[arr count]] intValue];
 }
 
 - (void)setCurrentSong:(int)index {

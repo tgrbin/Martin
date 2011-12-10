@@ -8,7 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Playlist : NSObject
+@interface Playlist : NSObject {
+    BOOL currentIDRemoved;
+    int suggestedIndex; // ove dvije varijable kazu koja je sljedeca pjesma ako se izbrisa ona koja trenutno svira
+    int suggestedIndexShuffled;
+}
 
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic, retain) NSMutableArray *shuffledSongs;
