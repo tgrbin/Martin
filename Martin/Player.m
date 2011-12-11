@@ -6,6 +6,7 @@
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
+#import "TableSongsDataSource.h"
 #import "PlaylistManager.h"
 #import "LibManager.h"
 #import "Player.h"
@@ -16,23 +17,27 @@
 @synthesize nowPlayingSound, appDelegate;
 @synthesize nextButton, playButton, prevButton;
 
-- (void)playFile:(NSString*)fileName {
+- (void)playSong:(Song*)song {
     [nowPlayingSound stop];
-    self.nowPlayingSound = [[NSSound alloc] initWithContentsOfFile:fileName byReference:YES];
+    self.nowPlayingSound = [[NSSound alloc] initWithContentsOfFile:song.fullPath byReference:YES];
+    nowPlayingSound.delegate = self;
     [nowPlayingSound play];
     isPlaying = YES;
+
+    TableSongsDataSource *tableSongsDataSource = (TableSongsDataSource*) appDelegate.songsTableView.dataSource;
+    [tableSongsDataSource highlightSong:song.ID];
 }
 
 - (void) play {
     Song *song = [LibManager songByID:[appDelegate.playlistManager currentSongID]];
-    [self playFile:song.fullPath];
+    [self playSong:song];
 }
 
 - (void) playOrPause {
     Song *song = [LibManager songByID:[appDelegate.playlistManager currentSongID]];
     
     if( nowPlayingSound == nil ) {
-        [self playFile:song.fullPath];
+        [self playSong:song];
     } else {
         if( isPlaying ) [nowPlayingSound pause];
         else [nowPlayingSound resume];
@@ -42,18 +47,25 @@
 
 - (void) next {
     Song *song = [LibManager songByID:[appDelegate.playlistManager nextSongID]];
-    [self playFile:song.fullPath];
+    [self playSong:song];
 }
 
 - (void) prev {
     Song *song = [LibManager songByID:[appDelegate.playlistManager prevSongID]];
-    [self playFile:song.fullPath];
+    [self playSong:song];
 }
 
 - (IBAction)buttonPressed:(id)sender {
     if( sender == nextButton ) [self next];
     else if (sender == prevButton ) [self prev];
     else [self playOrPause];
+}
+
+#pragma mark - nssound delegate
+
+- (void)sound:(NSSound *)sound didFinishPlaying:(BOOL)aBool {
+    if( aBool ) [self next];
+    else self.nowPlayingSound = nil;
 }
 
 @end

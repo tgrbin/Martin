@@ -10,7 +10,10 @@
 
 @class Playlist, MartinAppDelegate;
 
-@interface TableSongsDataSource : NSObject <NSTableViewDataSource, NSTableViewDelegate>
+@interface TableSongsDataSource : NSObject <NSTableViewDataSource, NSTableViewDelegate> {
+    int highlighted;
+    int prevHighlighted;
+}
 
 @property (assign) Playlist *playlist;
 @property (nonatomic, retain) NSTableColumn *sortedColumn; // stupac koji je sortiran
@@ -22,6 +25,7 @@
 @property (nonatomic, retain) IBOutlet NSTableView *table;
 @property (nonatomic, retain) IBOutlet NSButton *deleteButton;
 
-- (IBAction)buttonPressed:(id)sender;
+- (IBAction) buttonPressed:(id)sender;
+- (void) highlightSong:(int)_id;
 
 @end

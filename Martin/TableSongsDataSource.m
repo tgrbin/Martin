@@ -23,6 +23,8 @@
 #pragma mark - init
 
 - (void)awakeFromNib {
+    highlighted = -1;
+    prevHighlighted = -1;
     [table registerForDraggedTypes:[NSArray arrayWithObject:@"MyDragType"]];
 }
 
@@ -84,6 +86,17 @@
     [tableView reloadData];
 }
 
+- (void)tableView:(NSTableView *)tableView willDisplayCell:(id)c forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    NSTextFieldCell *cell = (NSTextFieldCell*)c;
+    
+    if( [[playlist.songs objectAtIndex:row] intValue] == highlighted ) {
+        cell.drawsBackground = YES;
+        cell.backgroundColor = [NSColor colorWithCalibratedRed:0.6 green:0.7 blue:0.8 alpha:1.0];
+    } else {
+        cell.drawsBackground = NO;
+    }
+}
+
 #pragma mark - data source
 
 - (NSInteger) numberOfRowsInTableView:(NSTableView *)tableView {
@@ -117,6 +130,22 @@
         [table selectRowIndexes:[NSIndexSet indexSetWithIndex:selectRow] byExtendingSelection:NO];
         [table scrollRowToVisible:selectRow];
     }
+}
+
+#pragma mark - highlight now playing
+
+- (void) highlightSong:(int)_id {
+    NSIndexSet *columns = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 4)];
+        
+    prevHighlighted = highlighted;
+    highlighted = _id;
+    
+    NSMutableIndexSet *rows = [NSMutableIndexSet indexSet];
+    
+    if( prevHighlighted >= 0 ) [rows addIndex:[playlist.songs indexOfObject:[NSNumber numberWithInt:prevHighlighted]]];
+    if( highlighted >= 0 ) [rows addIndex:[playlist.songs indexOfObject:[NSNumber numberWithInt:highlighted]]];
+
+    [table reloadDataForRowIndexes:rows columnIndexes:columns];
 }
 
 @end
