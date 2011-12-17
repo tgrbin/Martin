@@ -26,7 +26,7 @@
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    
+  
 }
 
 - (NSApplicationTerminateReply) applicationShouldTerminate:(NSApplication *)sender {
