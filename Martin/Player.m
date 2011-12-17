@@ -9,6 +9,7 @@
 #import "TableSongsDataSource.h"
 #import "PlaylistManager.h"
 #import "LibManager.h"
+#import "LastFM.h"
 #import "Player.h"
 #import "Song.h"
 
@@ -24,6 +25,8 @@
     [nowPlayingSound play];
     isPlaying = YES;
 
+    [LastFM updateNowPlaying:song delegate:nil];
+    
     TableSongsDataSource *tableSongsDataSource = (TableSongsDataSource*) appDelegate.songsTableView.dataSource;
     [tableSongsDataSource highlightSong:song.ID];
 }

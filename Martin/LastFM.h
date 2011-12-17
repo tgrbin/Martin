@@ -8,8 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+@class Song;
+
 @interface LastFM : NSObject
 
-+ (NSString*) apiSignatureForParams:(NSDictionary*)params;
++ (void) updateNowPlaying:(Song*)song delegate:(id)delegate;
 
 @end

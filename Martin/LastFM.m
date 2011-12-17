@@ -8,9 +8,11 @@
 
 #import <CommonCrypto/CommonDigest.h>
 #import "LastFM.h"
+#import "Song.h"
 
 @implementation LastFM
 
+static NSString *url = @"http://ws.audioscrobbler.com/2.0/";
 static NSString *sessionKey = @"0d50de13141911e11d521136bbe175f9";
 static NSString *apiKey = @"3a570389ed801f07f07a7ea3d29d6673";
 static NSString *apiSecret = @"6a6d7126bbaedb1413768474fb1c80bd";
@@ -38,6 +40,27 @@ static NSString *apiSecret = @"6a6d7126bbaedb1413768474fb1c80bd";
     str = [str stringByAppendingString:apiSecret];
 
     return [self md5HexDigest:str];
+}
+
++ (void) updateNowPlaying:(Song *)song delegate:(id)delegate {
+    NSURL *u = [NSURL URLWithString:url];
+    NSString *name = @"track.updateNowPlaying";
+    WSMethodInvocationRef myRef = WSMethodInvocationCreate((CFURLRef)u, (CFStringRef)name, kWSXMLRPCProtocol);
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setValue:@"track.updateNowPlaying" forKey:@"method"];
+    [params setValue:apiKey forKey:@"api_key"];
+    [params setValue:sessionKey forKey:@"sk"];
+    [params setValue:song.title forKey:@"track"];
+    [params setValue:song.artist forKey:@"artist"];
+    [params setValue:song.album forKey:@"album"];
+    [params setValue:song.trackNumber forKey:@"trackNumber"];
+    [params setValue:[self apiSignatureForParams:params] forKey:@"api_sig"];
+    
+    WSMethodInvocationSetParameters( myRef, (CFDictionaryRef)params, (CFArrayRef)[params allKeys] );
+    
+    NSDictionary *result = (NSDictionary*) WSMethodInvocationInvoke( myRef );
+    NSLog( @"%@", result );
 }
 
 @end

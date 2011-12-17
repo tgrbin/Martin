@@ -12,6 +12,7 @@
 #import "LibManager.h"
 #import "TreeNode.h"
 #import "Playlist.h"
+#import "LastFM.h"
 
 @implementation MartinAppDelegate
 
@@ -26,7 +27,8 @@
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-  
+    [LastFM updateNowPlaying:[LibManager songByID:1] delegate:nil];
+    exit(1);
 }
 
 - (NSApplicationTerminateReply) applicationShouldTerminate:(NSApplication *)sender {
