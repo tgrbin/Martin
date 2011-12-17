@@ -556,7 +556,7 @@
 															<string key="NSFrameSize">{103, 391}</string>
 															<reference key="NSSuperview" ref="1000720331"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="809537169"/>
+															<reference key="NSNextKeyView" ref="566755316"/>
 															<string key="NSReuseIdentifierKey">_NS:1197</string>
 															<bool key="NSEnabled">YES</bool>
 															<object class="_NSCornerView" key="NSCornerView">
@@ -651,7 +651,7 @@
 											<string key="NSFrame">{{176, 0}, {105, 393}}</string>
 											<reference key="NSSuperview" ref="773061786"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="566755316"/>
+											<reference key="NSNextKeyView" ref="1000720331"/>
 											<string key="NSReuseIdentifierKey">_NS:1193</string>
 											<int key="NSsFlags">154130</int>
 											<reference key="NSVScroller" ref="809537169"/>
@@ -675,7 +675,7 @@
 															<string key="NSFrameSize">{436, 375}</string>
 															<reference key="NSSuperview" ref="235089209"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="93719460"/>
+															<reference key="NSNextKeyView" ref="135648766"/>
 															<string key="NSReuseIdentifierKey">_NS:1197</string>
 															<bool key="NSEnabled">YES</bool>
 															<object class="NSTableHeaderView" key="NSHeaderView" id="911911819">
@@ -714,11 +714,12 @@
 																		<reference key="NSTextColor" ref="1036782890"/>
 																	</object>
 																	<object class="NSTextFieldCell" key="NSDataCell" id="36207442">
-																		<int key="NSCellFlags">337772096</int>
+																		<int key="NSCellFlags">337772097</int>
 																		<int key="NSCellFlags2">2048</int>
 																		<string key="NSContents">Text Cell</string>
 																		<reference key="NSSupport" ref="938621211"/>
 																		<reference key="NSControlView" ref="774204854"/>
+																		<bool key="NSDrawsBackground">YES</bool>
 																		<reference key="NSBackgroundColor" ref="313025005"/>
 																		<reference key="NSTextColor" ref="543766842"/>
 																	</object>
@@ -853,7 +854,6 @@
 													<string key="NSFrame">{{1, 377}, {436, 15}}</string>
 													<reference key="NSSuperview" ref="388018340"/>
 													<reference key="NSWindow"/>
-													<reference key="NSNextKeyView"/>
 													<string key="NSReuseIdentifierKey">_NS:1216</string>
 													<int key="NSsFlags">1</int>
 													<reference key="NSTarget" ref="388018340"/>
@@ -880,7 +880,7 @@
 											<string key="NSFrame">{{282, 0}, {438, 393}}</string>
 											<reference key="NSSuperview" ref="773061786"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="135648766"/>
+											<reference key="NSNextKeyView" ref="235089209"/>
 											<string key="NSReuseIdentifierKey">_NS:1193</string>
 											<int key="NSsFlags">154162</int>
 											<reference key="NSVScroller" ref="93719460"/>

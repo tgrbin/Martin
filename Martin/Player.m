@@ -28,6 +28,13 @@
     [tableSongsDataSource highlightSong:song.ID];
 }
 
+- (void) stop {
+    if( nowPlayingSound ) {
+        [nowPlayingSound stop];
+        self.nowPlayingSound = nil;
+    }
+}
+
 - (void) play {
     Song *song = [LibManager songByID:[appDelegate.playlistManager currentSongID]];
     [self playSong:song];

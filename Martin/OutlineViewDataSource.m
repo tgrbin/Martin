@@ -56,12 +56,13 @@
 #pragma mark - search
 
 - (IBAction)search:(id)sender {
-    NSDate *start = [NSDate date];
+//    NSDate *start = [NSDate date];
+
     [LibManager search:[sender stringValue]];
     [outline reloadData];
-    NSDate *stop = [NSDate date];
-    
-    NSLog( @"search time: %.3lfms", [stop timeIntervalSinceDate:start]*1000.0 );
+
+//    NSDate *stop = [NSDate date];
+//    NSLog( @"search time: %.3lfms", [stop timeIntervalSinceDate:start]*1000.0 );
 }
 
 @end

@@ -7,9 +7,8 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "PlaylistManager.h"
 
-@class Player;
+@class Player, PlaylistManager;
 
 @interface MartinAppDelegate : NSObject <NSApplicationDelegate> {
     NSArray *dragFromLibrary;

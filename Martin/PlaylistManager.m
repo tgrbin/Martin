@@ -54,11 +54,11 @@
 }
 
 - (void)choosePlaylist:(NSInteger)index {
-    currentPlaylist = [playlists objectAtIndex:index];
+    selectedPlaylist = [playlists objectAtIndex:index];
     
     TableSongsDataSource *tableSongsDataSource = (TableSongsDataSource*) appDelegate.songsTableView.dataSource;
     
-    tableSongsDataSource.playlist = currentPlaylist;
+    tableSongsDataSource.playlist = selectedPlaylist;
     tableSongsDataSource.sortedColumn = nil;
     [appDelegate.songsTableView reloadData];
 }
@@ -71,7 +71,8 @@
         [table reloadData];
         [table selectRowIndexes:[NSIndexSet indexSetWithIndex:[playlists count]-1]byExtendingSelection:NO];
     } else if( sender == deleteButton ) {
-        if( [playlists count] > 1 ) {
+        if( [playlists count] > 1 ) { // nemozes izbrisat sve playliste
+            if( [playlists objectAtIndex:[table selectedRow]] == nowPlayingPlaylist ) nowPlayingPlaylist = nil;	
             [playlists removeObjectAtIndex:[table selectedRow]];
             [table reloadData];
             [self choosePlaylist:[table selectedRow]];
@@ -105,21 +106,24 @@
 #pragma mark - playing songs
 
 - (int) currentSongID {
-    return [currentPlaylist currentID];
+    if( nowPlayingPlaylist == nil ) nowPlayingPlaylist = selectedPlaylist;
+    return [nowPlayingPlaylist currentID];
 }
 
 - (int) nextSongID {
-    return [currentPlaylist nextSongIDShuffled:shuffleOn];
+    if( nowPlayingPlaylist == nil ) nowPlayingPlaylist = selectedPlaylist;
+    return [nowPlayingPlaylist nextSongIDShuffled:shuffleOn];
 }
 
 - (int) prevSongID {
-    return [currentPlaylist prevSongIDShuffled:shuffleOn];
+    if( nowPlayingPlaylist == nil ) nowPlayingPlaylist = selectedPlaylist;
+    return [nowPlayingPlaylist prevSongIDShuffled:shuffleOn];
 }
 
 - (void) songDoubleClicked {
-    [currentPlaylist setCurrentSong:(int)appDelegate.songsTableView.clickedRow];
+    nowPlayingPlaylist = selectedPlaylist;
+    [nowPlayingPlaylist setCurrentSong:(int)appDelegate.songsTableView.clickedRow];
     [appDelegate.player play];
 }
 
 @end
-

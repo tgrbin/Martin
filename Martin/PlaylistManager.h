@@ -11,7 +11,8 @@
 @class MartinAppDelegate, Playlist;
 
 @interface PlaylistManager : NSObject <NSTableViewDataSource,NSTableViewDelegate> {
-    Playlist *currentPlaylist;
+    Playlist *nowPlayingPlaylist;
+    Playlist *selectedPlaylist;
 }
 
 @property (nonatomic, retain) NSMutableArray *playlists;

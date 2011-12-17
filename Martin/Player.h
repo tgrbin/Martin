@@ -23,6 +23,7 @@
 - (IBAction)buttonPressed:(id)sender;
 
 - (void)play;
+- (void)stop;
 - (void)playOrPause;
 - (void)next;
 - (void)prev;
