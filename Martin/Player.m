@@ -76,8 +76,8 @@
 
 - (void)sound:(NSSound *)sound didFinishPlaying:(BOOL)aBool {
     if( aBool ) {
-        [self next];
         [LastFM scrobble:nowPlayingSong];
+        [self next];
     }
     else self.nowPlayingSound = nil;
 }

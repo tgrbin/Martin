@@ -42,16 +42,18 @@ static NSString *apiSecret = @"6a6d7126bbaedb1413768474fb1c80bd";
     return [self md5HexDigest:str];
 }
 
+#pragma mark - update now playing
+
 void updateNowPlayingCallback( WSMethodInvocationRef ref, void *info, CFDictionaryRef dict );
 void updateNowPlayingCallback( WSMethodInvocationRef ref, void *info, CFDictionaryRef dict ) {    
-    if( WSMethodResultIsFault(dict) ) {
-        NSLog( @"updateNowPlaying failed" );
+//    if( WSMethodResultIsFault(dict) ) {
+        NSLog( @"updateNowPlaying callback" );
         NSLog( @"%@", dict );
-    }
+//    }
     [((NSDictionary*)dict) release];
 }
 
-+ (void) updateNowPlaying:(Song *)song delegate:(id)delegate {
++ (void) updateNowPlaying:(Song *)song {
     NSURL *u = [NSURL URLWithString:url];
     NSString *name = @"track.updateNowPlaying";
     WSMethodInvocationRef myRef = WSMethodInvocationCreate((CFURLRef)u, (CFStringRef)name, kWSXMLRPCProtocol);
@@ -73,12 +75,14 @@ void updateNowPlayingCallback( WSMethodInvocationRef ref, void *info, CFDictiona
     WSMethodInvocationScheduleWithRunLoop( myRef, [[NSRunLoop currentRunLoop] getCFRunLoop], (CFStringRef)NSDefaultRunLoopMode );    
 }
 
+#pragma mark - scrobble
+
 void scrobbleCallback( WSMethodInvocationRef ref, void *info, CFDictionaryRef dict );
 void scrobbleCallback( WSMethodInvocationRef ref, void *info, CFDictionaryRef dict ) {    
-    if( WSMethodResultIsFault(dict) ) {
-        NSLog( @"updateNowPlaying failed" );
+//    if( WSMethodResultIsFault(dict) ) {
+        NSLog( @"scrobble callback" );
         NSLog( @"%@", dict );
-    }
+//    }
     [((NSDictionary*)dict) release];
 }
 
