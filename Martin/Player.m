@@ -6,6 +6,8 @@
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
+#import <Carbon/Carbon.h>
+
 #import "TableSongsDataSource.h"
 #import "PlaylistManager.h"
 #import "LibManager.h"
@@ -80,6 +82,46 @@
         [self next];
     }
     else self.nowPlayingSound = nil;
+}
+
+#pragma mark - hot keys
+
+OSStatus hotkeyHandler( EventHandlerCallRef nextHandler, EventRef theEvent, void *userData );
+
+OSStatus hotkeyHandler( EventHandlerCallRef nextHandler, EventRef theEvent, void *userData ) {
+    EventHotKeyID hkCom;
+    GetEventParameter( theEvent, kEventParamDirectObject, typeEventHotKeyID, NULL, sizeof(hkCom), NULL, &hkCom );
+
+    Player *player = (Player*)userData;
+    int _id = hkCom.id;
+    
+    if( _id == 1 ) [player playOrPause];
+    else if( _id == 2 ) [player prev];
+    else if( _id == 3 ) [player next];
+
+    return noErr;
+}
+
+- (void) awakeFromNib {
+    EventHotKeyRef hkRef;
+    EventHotKeyID hkID;
+    EventTypeSpec eventType;
+    eventType.eventClass=kEventClassKeyboard;
+    eventType.eventKind=kEventHotKeyPressed;
+
+    InstallApplicationEventHandler( &hotkeyHandler, 1, &eventType, self, NULL );
+    
+    hkID.signature = 'play';
+    hkID.id = 1;
+    RegisterEventHotKey( 7, shiftKey+cmdKey, hkID, GetApplicationEventTarget(), 0, &hkRef );
+    
+    hkID.signature = 'prev';
+    hkID.id = 2;
+    RegisterEventHotKey( 13, shiftKey+cmdKey, hkID, GetApplicationEventTarget(), 0, &hkRef );
+    
+    hkID.signature = 'next';
+    hkID.id = 3;
+    RegisterEventHotKey( 14, shiftKey+cmdKey, hkID, GetApplicationEventTarget(), 0, &hkRef );
 }
 
 @end

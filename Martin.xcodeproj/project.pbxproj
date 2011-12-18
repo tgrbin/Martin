@@ -15,6 +15,7 @@
 		79C2ACB5144AB39200C2699B /* PlaylistManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C2ACB4144AB39200C2699B /* PlaylistManager.m */; };
 		79C2ACB8144AB46A00C2699B /* Playlists.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79C2ACB7144AB46A00C2699B /* Playlists.plist */; };
 		79D5760F1431074D00A2DA67 /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 79D5760E1431074D00A2DA67 /* icon.icns */; };
+		79D8FFED149DE5A3009B8955 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79D8FFEC149DE5A3009B8955 /* Carbon.framework */; };
 		79F5BC1014363BE10040DF35 /* OutlineViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F5BC0F14363BE10040DF35 /* OutlineViewDataSource.m */; };
 		79FF13FB142F18A500E27235 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79FF13FA142F18A500E27235 /* Cocoa.framework */; };
 		79FF1405142F18A500E27235 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 79FF1403142F18A500E27235 /* InfoPlist.strings */; };
@@ -43,6 +44,7 @@
 		79C2ACB4144AB39200C2699B /* PlaylistManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistManager.m; sourceTree = "<group>"; };
 		79C2ACB7144AB46A00C2699B /* Playlists.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Playlists.plist; sourceTree = "<group>"; };
 		79D5760E1431074D00A2DA67 /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
+		79D8FFEC149DE5A3009B8955 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		79F5BC0E14363BE10040DF35 /* OutlineViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutlineViewDataSource.h; sourceTree = "<group>"; };
 		79F5BC0F14363BE10040DF35 /* OutlineViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutlineViewDataSource.m; sourceTree = "<group>"; };
 		79FF13F6142F18A500E27235 /* Martin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Martin.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,6 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79D8FFED149DE5A3009B8955 /* Carbon.framework in Frameworks */,
 				79FF13FB142F18A500E27235 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -119,6 +122,7 @@
 		79FF13EB142F18A400E27235 = {
 			isa = PBXGroup;
 			children = (
+				79D8FFEC149DE5A3009B8955 /* Carbon.framework */,
 				79D5760E1431074D00A2DA67 /* icon.icns */,
 				79FF142D142F217000E27235 /* martin.lib */,
 				79FF1400142F18A500E27235 /* Martin */,
