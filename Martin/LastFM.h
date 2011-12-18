@@ -12,6 +12,7 @@
 
 @interface LastFM : NSObject
 
-+ (void) updateNowPlaying:(Song*)song delegate:(id)delegate;
++ (void) updateNowPlaying:(Song*) song;
++ (void) scrobble:(Song*) song;
 
 @end

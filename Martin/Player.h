@@ -14,6 +14,7 @@
 }
 
 @property (nonatomic, retain) NSSound *nowPlayingSound;
+@property (nonatomic, retain) Song *nowPlayingSong;
 
 @property (assign) IBOutlet MartinAppDelegate *appDelegate;
 @property (nonatomic, retain) IBOutlet NSButton *nextButton;

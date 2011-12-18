@@ -15,7 +15,7 @@
 
 @implementation Player
 
-@synthesize nowPlayingSound, appDelegate;
+@synthesize nowPlayingSound, appDelegate, nowPlayingSong;
 @synthesize nextButton, playButton, prevButton;
 
 - (void)playSong:(Song*)song {
@@ -24,8 +24,9 @@
     nowPlayingSound.delegate = self;
     [nowPlayingSound play];
     isPlaying = YES;
-
-    [LastFM updateNowPlaying:song delegate:nil];
+    self.nowPlayingSong = song;
+    
+    [LastFM updateNowPlaying:song];
     
     TableSongsDataSource *tableSongsDataSource = (TableSongsDataSource*) appDelegate.songsTableView.dataSource;
     [tableSongsDataSource highlightSong:song.ID];
@@ -74,7 +75,10 @@
 #pragma mark - nssound delegate
 
 - (void)sound:(NSSound *)sound didFinishPlaying:(BOOL)aBool {
-    if( aBool ) [self next];
+    if( aBool ) {
+        [self next];
+        [LastFM scrobble:nowPlayingSong];
+    }
     else self.nowPlayingSound = nil;
 }
 

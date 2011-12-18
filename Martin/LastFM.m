@@ -43,7 +43,6 @@ static NSString *apiSecret = @"6a6d7126bbaedb1413768474fb1c80bd";
 }
 
 void updateNowPlayingCallback( WSMethodInvocationRef ref, void *info, CFDictionaryRef dict );
-
 void updateNowPlayingCallback( WSMethodInvocationRef ref, void *info, CFDictionaryRef dict ) {    
     if( WSMethodResultIsFault(dict) ) {
         NSLog( @"updateNowPlaying failed" );
@@ -58,7 +57,7 @@ void updateNowPlayingCallback( WSMethodInvocationRef ref, void *info, CFDictiona
     WSMethodInvocationRef myRef = WSMethodInvocationCreate((CFURLRef)u, (CFStringRef)name, kWSXMLRPCProtocol);
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setValue:@"track.updateNowPlaying" forKey:@"method"];
+    [params setValue:name forKey:@"method"];
     [params setValue:apiKey forKey:@"api_key"];
     [params setValue:sessionKey forKey:@"sk"];
     [params setValue:song.title forKey:@"track"];
@@ -67,14 +66,43 @@ void updateNowPlayingCallback( WSMethodInvocationRef ref, void *info, CFDictiona
     [params setValue:song.trackNumber forKey:@"trackNumber"];
     [params setValue:[self apiSignatureForParams:params] forKey:@"api_sig"];
     
-    NSDictionary *tomislav = [NSDictionary dictionaryWithObject:params forKey:@"params"];
-    
-    WSMethodInvocationSetParameters( myRef, (CFDictionaryRef)tomislav, (CFArrayRef)[tomislav allKeys] );
-    
-//    WSMethodInvocationSetProperty( myRef, kWSDebugOutgoingBody, kCFBooleanTrue );
-//    WSMethodInvocationSetProperty( myRef, kWSDebugIncomingBody, kCFBooleanTrue );
+    NSDictionary *dict = [NSDictionary dictionaryWithObject:params forKey:@"params"];
+    WSMethodInvocationSetParameters( myRef, (CFDictionaryRef)dict, (CFArrayRef)[dict allKeys] );
     
     WSMethodInvocationSetCallBack( myRef, &updateNowPlayingCallback, NULL );
+    WSMethodInvocationScheduleWithRunLoop( myRef, [[NSRunLoop currentRunLoop] getCFRunLoop], (CFStringRef)NSDefaultRunLoopMode );    
+}
+
+void scrobbleCallback( WSMethodInvocationRef ref, void *info, CFDictionaryRef dict );
+void scrobbleCallback( WSMethodInvocationRef ref, void *info, CFDictionaryRef dict ) {    
+    if( WSMethodResultIsFault(dict) ) {
+        NSLog( @"updateNowPlaying failed" );
+        NSLog( @"%@", dict );
+    }
+    [((NSDictionary*)dict) release];
+}
+
++ (void) scrobble:(Song *)song {
+    NSURL *u = [NSURL URLWithString:url];
+    NSString *name = @"track.scrobble";
+    WSMethodInvocationRef myRef = WSMethodInvocationCreate((CFURLRef)u, (CFStringRef)name, kWSXMLRPCProtocol);
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setValue:name forKey:@"method"];
+    int timestamp = (int) [[NSDate date] timeIntervalSince1970];
+    [params setValue:[NSString stringWithFormat:@"%d",timestamp] forKey:@"timestamp"];
+    [params setValue:song.title forKey:@"track"];
+    [params setValue:song.artist forKey:@"artist"];
+    [params setValue:song.album forKey:@"album"];
+    [params setValue:song.trackNumber forKey:@"trackNumber"];
+    [params setValue:apiKey forKey:@"api_key"];
+    [params setValue:sessionKey forKey:@"sk"];
+    [params setValue:[self apiSignatureForParams:params] forKey:@"api_sig"];
+    
+    NSDictionary *dict = [NSDictionary dictionaryWithObject:params forKey:@"params"];
+    WSMethodInvocationSetParameters( myRef, (CFDictionaryRef)dict, (CFArrayRef)[dict allKeys] );
+    
+    WSMethodInvocationSetCallBack( myRef, &scrobbleCallback, NULL );
     WSMethodInvocationScheduleWithRunLoop( myRef, [[NSRunLoop currentRunLoop] getCFRunLoop], (CFStringRef)NSDefaultRunLoopMode );    
 }
 
