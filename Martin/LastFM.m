@@ -28,10 +28,10 @@ static NSString *apiSecret = @"6a6d7126bbaedb1413768474fb1c80bd";
 }
 
 + (NSString*) apiSignatureForParams:(NSDictionary *)params {
-    NSArray *keys = [params keysSortedByValueUsingComparator:^NSComparisonResult( NSString *a, NSString *b ) {
+    NSArray *keys = [[params allKeys] sortedArrayUsingComparator:^NSComparisonResult( NSString *a, NSString *b ) {
             return [a compare:b];
         }];
-    
+        
     NSString *str = @"";
     for( NSString *key in keys ) {
         str = [str stringByAppendingString:key];
@@ -57,7 +57,12 @@ static NSString *apiSecret = @"6a6d7126bbaedb1413768474fb1c80bd";
     [params setValue:song.trackNumber forKey:@"trackNumber"];
     [params setValue:[self apiSignatureForParams:params] forKey:@"api_sig"];
     
-    WSMethodInvocationSetParameters( myRef, (CFDictionaryRef)params, (CFArrayRef)[params allKeys] );
+    NSDictionary *tomislav = [NSDictionary dictionaryWithObject:params forKey:@"params"];
+    
+    WSMethodInvocationSetParameters( myRef, (CFDictionaryRef)tomislav, (CFArrayRef)[tomislav allKeys] );
+    
+//    WSMethodInvocationSetProperty( myRef, kWSDebugOutgoingBody, kCFBooleanTrue );
+//    WSMethodInvocationSetProperty( myRef, kWSDebugIncomingBody, kCFBooleanTrue );
     
     NSDictionary *result = (NSDictionary*) WSMethodInvocationInvoke( myRef );
     NSLog( @"%@", result );
