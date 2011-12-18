@@ -28,7 +28,6 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     [LastFM updateNowPlaying:[LibManager songByID:1] delegate:nil];
-    exit(1);
 }
 
 - (NSApplicationTerminateReply) applicationShouldTerminate:(NSApplication *)sender {

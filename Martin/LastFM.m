@@ -42,6 +42,16 @@ static NSString *apiSecret = @"6a6d7126bbaedb1413768474fb1c80bd";
     return [self md5HexDigest:str];
 }
 
+void updateNowPlayingCallback( WSMethodInvocationRef ref, void *info, CFDictionaryRef dict );
+
+void updateNowPlayingCallback( WSMethodInvocationRef ref, void *info, CFDictionaryRef dict ) {    
+    if( WSMethodResultIsFault(dict) ) {
+        NSLog( @"updateNowPlaying failed" );
+        NSLog( @"%@", dict );
+    }
+    [((NSDictionary*)dict) release];
+}
+
 + (void) updateNowPlaying:(Song *)song delegate:(id)delegate {
     NSURL *u = [NSURL URLWithString:url];
     NSString *name = @"track.updateNowPlaying";
@@ -64,8 +74,8 @@ static NSString *apiSecret = @"6a6d7126bbaedb1413768474fb1c80bd";
 //    WSMethodInvocationSetProperty( myRef, kWSDebugOutgoingBody, kCFBooleanTrue );
 //    WSMethodInvocationSetProperty( myRef, kWSDebugIncomingBody, kCFBooleanTrue );
     
-    NSDictionary *result = (NSDictionary*) WSMethodInvocationInvoke( myRef );
-    NSLog( @"%@", result );
+    WSMethodInvocationSetCallBack( myRef, &updateNowPlayingCallback, NULL );
+    WSMethodInvocationScheduleWithRunLoop( myRef, [[NSRunLoop currentRunLoop] getCFRunLoop], (CFStringRef)NSDefaultRunLoopMode );    
 }
 
 @end
