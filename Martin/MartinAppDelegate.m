@@ -26,8 +26,9 @@
     [playlistManager choosePlaylist:[playlistsTableView selectedRow]];
 }
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-
+- (BOOL) applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
+    if( flag == NO ) [window makeKeyAndOrderFront:nil];
+    return YES;
 }
 
 - (NSApplicationTerminateReply) applicationShouldTerminate:(NSApplication *)sender {
