@@ -10,62 +10,55 @@
 
 @implementation TreeNode
 
-@synthesize name, children, searchState;
-
 - (id)initWithName:(NSString *)s {
-    if( self = [super init] ) {
-        children = [[NSMutableArray alloc] init];
-        results = [[NSMutableArray alloc] init];
-        name = [s retain];
-        searchState = 0;
-    }
-    return self;
+  if( self = [super init] ) {
+    _children = [NSMutableArray new];
+    results = [NSMutableArray new];
+    _name = s;
+    _searchState = 0;
+  }
+  return self;
 }
 
 - (id)init {
-    return [self initWithName:@"unknown"];
+  return [self initWithName:@"unknown"];
 }
 
 - (int)nChildren {    
-    if( searchState == 0 ) return 0;
-    
-    if( searchState == 1 ) {
-        [self clearResults];
-        for( TreeNode *c in children )
-            if( c.searchState > 0 ) [self addResult:c];
-        searchState = 4;
+  if (_searchState == 0) return 0;
+  
+  if (_searchState == 1) {
+    [self clearResults];
+    for (TreeNode *c in _children) {
+      if (c.searchState > 0) [self addResult:c];
     }
-    
-    if( searchState == 2 ) {
-        for( TreeNode *c in children )
-            c.searchState = 2;
-        searchState = 3;
+    _searchState = 4;
+  }
+  
+  if (_searchState == 2) {
+    for (TreeNode *c in _children) {
+      c.searchState = 2;
     }
+    _searchState = 3;
+  }
 
-    return searchState == 3? (int)[children count]: (int)[results count];
+  return (int) (_searchState == 3? _children.count: results.count);
 }
 
-- (TreeNode*)getChild:(NSInteger) index {    
-    return searchState == 3? [children objectAtIndex:index]: [results objectAtIndex:index];
+- (TreeNode *)getChild:(NSInteger) index {
+  return _searchState == 3? [_children objectAtIndex:index]: [results objectAtIndex:index];
 }
 
-- (void)addChild:(TreeNode*) child {
-    [children addObject:child];
+- (void)addChild:(TreeNode *) child {
+  [_children addObject:child];
 }
 
 - (void)clearResults {
-    [results removeAllObjects];
+  [results removeAllObjects];
 }
 
-- (void)addResult:(TreeNode*) res {
-    [results addObject:res];
-}
-
-- (void)dealloc {
-    [children release];
-    [results release];
-    [name release];
-    [super dealloc];
+- (void)addResult:(TreeNode *) res {
+  [results addObject:res];
 }
 
 @end

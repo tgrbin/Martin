@@ -9,31 +9,24 @@
 #import "TableSongsDataSource.h"
 #import "MartinAppDelegate.h"
 #import "PlaylistManager.h"
-#import "LibManager.h"
-#import "TreeNode.h"
-#import "Playlist.h"
-#import "LastFM.h"
+#import "ID3Reader.h"
 
 @implementation MartinAppDelegate
 
-@synthesize playlistManager, player;
-@synthesize songsTableView, outlineView, playlistsTableView;
-@synthesize window, dragFromLibrary;
-
 - (void)awakeFromNib {
-    songsTableView.target = playlistManager;
-    songsTableView.doubleAction = @selector(songDoubleClicked);
-    [playlistManager choosePlaylist:[playlistsTableView selectedRow]];
+  _songsTableView.target = _playlistManager;
+  _songsTableView.doubleAction = @selector(songDoubleClicked);
+  [_playlistManager choosePlaylist:[_playlistsTableView selectedRow]];
 }
 
-- (BOOL) applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
-    if( flag == NO ) [window makeKeyAndOrderFront:nil];
-    return YES;
+- (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
+  if (flag == NO) [_window makeKeyAndOrderFront:nil];
+  return YES;
 }
 
 - (NSApplicationTerminateReply) applicationShouldTerminate:(NSApplication *)sender {
-    [playlistManager savePlaylists];
-    return YES;
+  [_playlistManager savePlaylists];
+  return YES;
 }
 
 @end

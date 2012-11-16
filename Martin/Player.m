@@ -86,20 +86,20 @@
 
 #pragma mark - hot keys
 
-OSStatus hotkeyHandler( EventHandlerCallRef nextHandler, EventRef theEvent, void *userData );
+OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void *userData);
 
-OSStatus hotkeyHandler( EventHandlerCallRef nextHandler, EventRef theEvent, void *userData ) {
-    EventHotKeyID hkCom;
-    GetEventParameter( theEvent, kEventParamDirectObject, typeEventHotKeyID, NULL, sizeof(hkCom), NULL, &hkCom );
+OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void *userData) {
+  EventHotKeyID hkCom;
+  GetEventParameter(theEvent, kEventParamDirectObject, typeEventHotKeyID, NULL, sizeof(hkCom), NULL, &hkCom);
 
-    Player *player = (Player*)userData;
-    int _id = hkCom.id;
-    
-    if( _id == 1 ) [player playOrPause];
-    else if( _id == 2 ) [player prev];
-    else if( _id == 3 ) [player next];
+  Player *player = (__bridge Player *)userData;
+  int _id = hkCom.id;
+  
+  if (_id == 1 ) [player playOrPause];
+  else if (_id == 2) [player prev];
+  else if (_id == 3) [player next];
 
-    return noErr;
+  return noErr;
 }
 
 - (void) awakeFromNib {
@@ -109,7 +109,7 @@ OSStatus hotkeyHandler( EventHandlerCallRef nextHandler, EventRef theEvent, void
     eventType.eventClass=kEventClassKeyboard;
     eventType.eventKind=kEventHotKeyPressed;
 
-    InstallApplicationEventHandler( &hotkeyHandler, 1, &eventType, self, NULL );
+    InstallApplicationEventHandler(&hotkeyHandler, 1, &eventType, (__bridge void *)self, NULL);
     
     hkID.signature = 'play';
     hkID.id = 1;

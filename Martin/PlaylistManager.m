@@ -10,6 +10,7 @@
 #import "MartinAppDelegate.h"
 #import "PlaylistManager.h"
 #import "Playlist.h"
+#import "Player.h"
 
 @implementation PlaylistManager
 
@@ -29,7 +30,6 @@
             NSArray *songs = (NSArray*) [data objectForKey:key];
             Playlist *playlist = [[Playlist alloc] initWithName:key array:songs];
             [playlists addObject:playlist];
-            [playlist release];
         }
     }
     

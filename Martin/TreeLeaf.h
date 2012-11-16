@@ -12,6 +12,6 @@
 
 @interface TreeLeaf : TreeNode
 
-@property (nonatomic, retain) Song* song;
+@property (nonatomic, strong) Song *song;
 
 @end

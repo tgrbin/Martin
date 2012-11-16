@@ -10,11 +10,4 @@
 
 @implementation TreeLeaf
 
-@synthesize song;
-
--(void) dealloc {
-    [song release];
-    [super dealloc];
-}
-
 @end

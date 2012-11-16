@@ -10,22 +10,9 @@
 
 @implementation Song
 
-@synthesize fullPath, artist, album, title, trackNumber, ID;
-
-- (void) setTrackNumber:(NSString *)tn { // osigurava da se unutra namjesti broj
-    [trackNumber release];
-    
-    if( [tn intValue] == 0 ) tn = @"";
-    else trackNumber = [tn retain];
-}
-
-- (void)dealloc {
-    [fullPath release];
-    [artist release];
-    [album release];
-    [title release];
-    [trackNumber release];
-    [super dealloc];
+- (void)setTrackNumber:(NSString *)tn {
+  if (tn.intValue == 0) tn = @"";
+  _trackNumber = tn;
 }
 
 @end

@@ -9,22 +9,19 @@
 #import <Foundation/Foundation.h>
 
 @interface TreeNode : NSObject {
-    NSMutableArray *children;
-    NSMutableArray *results;
-    int searchState;
-    NSString *name;
+  NSMutableArray *results;
 }
 
-@property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) NSMutableArray *children;
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSMutableArray *children;
 @property (assign) int searchState;
 
-- (id)initWithName:(NSString*) name;
+- (id)initWithName:(NSString *) name;
 - (int)nChildren;
-- (TreeNode*)getChild:(NSInteger) index;
+- (TreeNode *)getChild:(NSInteger) index;
 
-- (void)addChild:(TreeNode*) child;
-- (void)addResult:(TreeNode*) res;
+- (void)addChild:(TreeNode *) child;
+- (void)addResult:(TreeNode *) res;
 - (void)clearResults;
 
 @end

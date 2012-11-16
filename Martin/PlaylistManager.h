@@ -11,18 +11,18 @@
 @class MartinAppDelegate, Playlist;
 
 @interface PlaylistManager : NSObject <NSTableViewDataSource,NSTableViewDelegate> {
-    Playlist *nowPlayingPlaylist;
-    Playlist *selectedPlaylist;
+  Playlist *nowPlayingPlaylist;
+  Playlist *selectedPlaylist;
 }
 
-@property (nonatomic, retain) NSMutableArray *playlists;
+@property (nonatomic, strong) NSMutableArray *playlists;
 @property (assign) BOOL shuffleOn;
 
-@property (assign) IBOutlet MartinAppDelegate *appDelegate;
-@property (nonatomic, retain) IBOutlet NSTableView *table;
-@property (nonatomic, retain) IBOutlet NSButton *addPlaylistButton;
-@property (nonatomic, retain) IBOutlet NSButton *deleteButton;
-@property (nonatomic, retain) IBOutlet NSButton *shuffleButton;
+@property (weak) IBOutlet MartinAppDelegate *appDelegate;
+@property (nonatomic, strong) IBOutlet NSTableView *table;
+@property (nonatomic, strong) IBOutlet NSButton *addPlaylistButton;
+@property (nonatomic, strong) IBOutlet NSButton *deleteButton;
+@property (nonatomic, strong) IBOutlet NSButton *shuffleButton;
 
 - (IBAction)buttonPressed:(id)sender;
 - (void)savePlaylists;

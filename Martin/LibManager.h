@@ -12,9 +12,9 @@
 
 @interface LibManager : NSObject
 
-+ (Song*)songByID:(int)ID;
-+ (TreeNode*)getRoot;
++ (Song *)songByID:(int)ID;
++ (TreeNode *)getRoot;
 + (void)loadLibrary;
-+ (void)search:(NSString*)query;
++ (void)search:(NSString *)query;
 
 @end

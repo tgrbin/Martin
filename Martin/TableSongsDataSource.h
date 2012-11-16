@@ -11,19 +11,19 @@
 @class Playlist, MartinAppDelegate;
 
 @interface TableSongsDataSource : NSObject <NSTableViewDataSource, NSTableViewDelegate> {
-    int highlighted;
-    int prevHighlighted;
+  int highlighted;
+  int prevHighlighted;
 }
 
-@property (assign) Playlist *playlist;
-@property (nonatomic, retain) NSTableColumn *sortedColumn; // stupac koji je sortiran
+@property (weak) Playlist *playlist;
+@property (nonatomic, strong) NSTableColumn *sortedColumn; // stupac koji je sortiran
 @property (nonatomic, assign) BOOL sortAscending;
 
-@property (nonatomic, retain) NSArray *dragRows;
+@property (nonatomic, strong) NSArray *dragRows;
 
-@property (assign) IBOutlet MartinAppDelegate *appDelegate;
-@property (nonatomic, retain) IBOutlet NSTableView *table;
-@property (nonatomic, retain) IBOutlet NSButton *deleteButton;
+@property (weak) IBOutlet MartinAppDelegate *appDelegate;
+@property (nonatomic, strong) IBOutlet NSTableView *table;
+@property (nonatomic, strong) IBOutlet NSButton *deleteButton;
 
 - (IBAction) buttonPressed:(id)sender;
 - (void) highlightSong:(int)_id;

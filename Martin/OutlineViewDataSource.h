@@ -8,11 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface OutlineViewDataSource : NSObject <NSOutlineViewDataSource>
-
-@property (nonatomic, retain) IBOutlet NSOutlineView *outline;
-@property (nonatomic, retain) IBOutlet NSTextField *textField;
-
-- (IBAction)search:(id)sender;
+@interface OutlineViewDataSource : NSObject <NSOutlineViewDataSource> {
+  IBOutlet NSOutlineView *outline;
+  IBOutlet NSTextField *textField;
+}
 
 @end

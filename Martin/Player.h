@@ -9,17 +9,19 @@
 #import <Foundation/Foundation.h>
 #import "MartinAppDelegate.h"
 
+@class Song;
+
 @interface Player : NSObject <NSSoundDelegate> {
-    BOOL isPlaying;
+  BOOL isPlaying;
 }
 
-@property (nonatomic, retain) NSSound *nowPlayingSound;
-@property (nonatomic, retain) Song *nowPlayingSong;
+@property (nonatomic, strong) NSSound *nowPlayingSound;
+@property (nonatomic, strong) Song *nowPlayingSong;
 
-@property (assign) IBOutlet MartinAppDelegate *appDelegate;
-@property (nonatomic, retain) IBOutlet NSButton *nextButton;
-@property (nonatomic, retain) IBOutlet NSButton *playButton;
-@property (nonatomic, retain) IBOutlet NSButton *prevButton;
+@property (weak) IBOutlet MartinAppDelegate *appDelegate;
+@property (nonatomic, strong) IBOutlet NSButton *nextButton;
+@property (nonatomic, strong) IBOutlet NSButton *playButton;
+@property (nonatomic, strong) IBOutlet NSButton *prevButton;
 
 - (IBAction)buttonPressed:(id)sender;
 

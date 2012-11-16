@@ -10,17 +10,15 @@
 
 @class Player, PlaylistManager;
 
-@interface MartinAppDelegate : NSObject <NSApplicationDelegate> {
-    NSArray *dragFromLibrary;
-}
+@interface MartinAppDelegate : NSObject <NSApplicationDelegate>
 
-@property (nonatomic, retain) NSArray *dragFromLibrary;
+@property (nonatomic, strong) NSArray *dragFromLibrary;
 
-@property (assign) IBOutlet Player *player;
-@property (assign) IBOutlet PlaylistManager *playlistManager;
-@property (nonatomic, retain) IBOutlet NSTableView *playlistsTableView;
-@property (nonatomic, retain) IBOutlet NSTableView *songsTableView;
-@property (nonatomic, retain) IBOutlet NSOutlineView *outlineView;
-@property (nonatomic, retain) IBOutlet NSWindow *window;
+@property (unsafe_unretained) IBOutlet Player *player;
+@property (weak) IBOutlet PlaylistManager *playlistManager;
+@property (nonatomic, strong) IBOutlet NSTableView *playlistsTableView;
+@property (nonatomic, strong) IBOutlet NSTableView *songsTableView;
+@property (nonatomic, strong) IBOutlet NSOutlineView *outlineView;
+@property (nonatomic, strong) IBOutlet NSWindow *window;
 
 @end
