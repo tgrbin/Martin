@@ -10,11 +10,10 @@
 
 @interface Song : NSObject
 
-@property (assign) int ID;
-@property (nonatomic, strong) NSString *fullPath;
-@property (nonatomic, strong) NSString *trackNumber;
-@property (nonatomic, strong) NSString *artist;
-@property (nonatomic, strong) NSString *album;
-@property (nonatomic, strong) NSString *title;
+@property (nonatomic, assign) int inode;
+@property (nonatomic, assign) int lengthInSeconds;
+@property (nonatomic, strong) NSString *filename;
+
+@property (nonatomic, strong) NSDictionary *tagsDictionary;
 
 @end

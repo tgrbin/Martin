@@ -13,11 +13,13 @@
 		79242E301656B0CF006379D6 /* PreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E2E1656B0CF006379D6 /* PreferencesWindowController.m */; };
 		79242E311656B0CF006379D6 /* PreferencesWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79242E2F1656B0CF006379D6 /* PreferencesWindowController.xib */; };
 		79242E3B1656B45D006379D6 /* Preferences.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79242E3A1656B45D006379D6 /* Preferences.plist */; };
+		793F4044165796B60063140B /* LibraryTags.plist in Resources */ = {isa = PBXBuildFile; fileRef = 793F4043165796B60063140B /* LibraryTags.plist */; };
 		795C20AE14377A3E00A61B21 /* Playlist.m in Sources */ = {isa = PBXBuildFile; fileRef = 795C20AD14377A3D00A61B21 /* Playlist.m */; };
 		795C20CE14378D9600A61B21 /* TableSongsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 795C20CD14378D9600A61B21 /* TableSongsDataSource.m */; };
 		798643A61437123500F07CDF /* Song.m in Sources */ = {isa = PBXBuildFile; fileRef = 798643A51437123500F07CDF /* Song.m */; };
 		79AF97EB145305C200BE8391 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 79AF97EA145305C200BE8391 /* Player.m */; };
 		79B3706D149D21EA003372CB /* LastFM.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B3706C149D21EA003372CB /* LastFM.m */; };
+		79BF24A216579EA800F6A070 /* LibraryTags.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BF24A116579EA800F6A070 /* LibraryTags.m */; };
 		79C2ACB5144AB39200C2699B /* PlaylistManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C2ACB4144AB39200C2699B /* PlaylistManager.m */; };
 		79C2ACB8144AB46A00C2699B /* Playlists.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79C2ACB7144AB46A00C2699B /* Playlists.plist */; };
 		79D5760F1431074D00A2DA67 /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 79D5760E1431074D00A2DA67 /* icon.icns */; };
@@ -31,7 +33,7 @@
 		79FF1411142F18A500E27235 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79FF140F142F18A500E27235 /* MainMenu.xib */; };
 		79FF141C142F1ABB00E27235 /* TreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF141B142F1ABB00E27235 /* TreeNode.m */; };
 		79FF141F142F1CF700E27235 /* TreeLeaf.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF141E142F1CF700E27235 /* TreeLeaf.m */; };
-		79FF1422142F1DB100E27235 /* LibManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF1421142F1DB100E27235 /* LibManager.m */; };
+		79FF1422142F1DB100E27235 /* LibManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79FF1421142F1DB100E27235 /* LibManager.mm */; };
 		79FF142E142F217000E27235 /* martin.lib in Resources */ = {isa = PBXBuildFile; fileRef = 79FF142D142F217000E27235 /* martin.lib */; };
 /* End PBXBuildFile section */
 
@@ -45,6 +47,7 @@
 		79242E2E1656B0CF006379D6 /* PreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesWindowController.m; sourceTree = "<group>"; };
 		79242E2F1656B0CF006379D6 /* PreferencesWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PreferencesWindowController.xib; sourceTree = "<group>"; };
 		79242E3A1656B45D006379D6 /* Preferences.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Preferences.plist; sourceTree = "<group>"; };
+		793F4043165796B60063140B /* LibraryTags.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = LibraryTags.plist; sourceTree = "<group>"; };
 		795C20AC14377A3D00A61B21 /* Playlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Playlist.h; sourceTree = "<group>"; };
 		795C20AD14377A3D00A61B21 /* Playlist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Playlist.m; sourceTree = "<group>"; };
 		795C20CC14378D9600A61B21 /* TableSongsDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableSongsDataSource.h; sourceTree = "<group>"; };
@@ -55,6 +58,8 @@
 		79AF97EA145305C200BE8391 /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Player.m; sourceTree = "<group>"; };
 		79B3706B149D21EA003372CB /* LastFM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFM.h; sourceTree = "<group>"; };
 		79B3706C149D21EA003372CB /* LastFM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LastFM.m; sourceTree = "<group>"; };
+		79BF24A016579EA800F6A070 /* LibraryTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryTags.h; sourceTree = "<group>"; };
+		79BF24A116579EA800F6A070 /* LibraryTags.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryTags.m; sourceTree = "<group>"; };
 		79C2ACB3144AB39200C2699B /* PlaylistManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistManager.h; sourceTree = "<group>"; };
 		79C2ACB4144AB39200C2699B /* PlaylistManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistManager.m; sourceTree = "<group>"; };
 		79C2ACB7144AB46A00C2699B /* Playlists.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Playlists.plist; sourceTree = "<group>"; };
@@ -80,7 +85,7 @@
 		79FF141D142F1CF700E27235 /* TreeLeaf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreeLeaf.h; sourceTree = "<group>"; };
 		79FF141E142F1CF700E27235 /* TreeLeaf.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TreeLeaf.m; sourceTree = "<group>"; };
 		79FF1420142F1DB100E27235 /* LibManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibManager.h; sourceTree = "<group>"; };
-		79FF1421142F1DB100E27235 /* LibManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibManager.m; sourceTree = "<group>"; };
+		79FF1421142F1DB100E27235 /* LibManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LibManager.mm; sourceTree = "<group>"; };
 		79FF142D142F217000E27235 /* martin.lib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = martin.lib; path = ../library/martin.lib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -104,7 +109,9 @@
 				79242E211656AB1B006379D6 /* LibraryFolder.h */,
 				79242E221656AB1C006379D6 /* LibraryFolder.m */,
 				79FF1420142F1DB100E27235 /* LibManager.h */,
-				79FF1421142F1DB100E27235 /* LibManager.m */,
+				79FF1421142F1DB100E27235 /* LibManager.mm */,
+				79BF24A016579EA800F6A070 /* LibraryTags.h */,
+				79BF24A116579EA800F6A070 /* LibraryTags.m */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -155,6 +162,7 @@
 				79C2ACB7144AB46A00C2699B /* Playlists.plist */,
 				79FF140F142F18A500E27235 /* MainMenu.xib */,
 				79242E3A1656B45D006379D6 /* Preferences.plist */,
+				793F4043165796B60063140B /* LibraryTags.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -256,7 +264,7 @@
 		79FF13ED142F18A400E27235 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = 79FF13F0142F18A400E27235 /* Build configuration list for PBXProject "Martin" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -288,6 +296,7 @@
 				79C2ACB8144AB46A00C2699B /* Playlists.plist in Resources */,
 				79242E311656B0CF006379D6 /* PreferencesWindowController.xib in Resources */,
 				79242E3B1656B45D006379D6 /* Preferences.plist in Resources */,
+				793F4044165796B60063140B /* LibraryTags.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -302,7 +311,7 @@
 				79FF140E142F18A500E27235 /* MartinAppDelegate.m in Sources */,
 				79FF141C142F1ABB00E27235 /* TreeNode.m in Sources */,
 				79FF141F142F1CF700E27235 /* TreeLeaf.m in Sources */,
-				79FF1422142F1DB100E27235 /* LibManager.m in Sources */,
+				79FF1422142F1DB100E27235 /* LibManager.mm in Sources */,
 				79F5BC1014363BE10040DF35 /* OutlineViewDataSource.m in Sources */,
 				798643A61437123500F07CDF /* Song.m in Sources */,
 				795C20AE14377A3E00A61B21 /* Playlist.m in Sources */,
@@ -313,6 +322,7 @@
 				79242E1E16569A47006379D6 /* ID3Reader.m in Sources */,
 				79242E231656AB1C006379D6 /* LibraryFolder.m in Sources */,
 				79242E301656B0CF006379D6 /* PreferencesWindowController.m in Sources */,
+				79BF24A216579EA800F6A070 /* LibraryTags.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,6 +405,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Martin/Martin-Prefix.pch";
@@ -408,6 +419,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Martin/Martin-Prefix.pch";

@@ -28,13 +28,13 @@
 #pragma mark - data source
 
 - (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item {
-  if (item == nil) return [[LibManager getRoot] nChildren];
+  if (item == nil) return [[LibManager sharedManager].treeRoot nChildren];
   
   return [item nChildren];
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item {
-  if (item == nil) return [[LibManager getRoot] getChild:index];
+  if (item == nil) return [[LibManager sharedManager].treeRoot getChild:index];
   
   return [item getChild:index];
 }
@@ -54,8 +54,8 @@
 
 #pragma mark - search
 
-- (IBAction)search:(id)sender {
-  [LibManager search:[sender stringValue]];
+- (IBAction)search:(NSTextField *)sender {
+  [[LibManager sharedManager] performSearch:sender.stringValue];
   [outline reloadData];
 }
 

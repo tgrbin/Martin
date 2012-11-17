@@ -10,11 +10,22 @@
 
 @class TreeNode, Song;
 
-@interface LibManager : NSObject
+struct LibManagerImpl;
 
-+ (Song *)songByID:(int)ID;
-+ (TreeNode *)getRoot;
-+ (void)loadLibrary;
-+ (void)search:(NSString *)query;
+@interface LibManager : NSObject {
+  TreeNode *root;
+
+  struct LibManagerImpl *impl;
+}
+
++ (LibManager *)sharedManager;
+
+- (void)loadLibrary;
+- (void)rescanLibrary;
+
+- (TreeNode *)treeRoot;
+- (Song *)songByID:(int)ID;
+
+- (void)performSearch:(NSString *)query;
 
 @end

@@ -10,9 +10,4 @@
 
 @implementation Song
 
-- (void)setTrackNumber:(NSString *)tn {
-  if (tn.intValue == 0) tn = @"";
-  _trackNumber = tn;
-}
-
 @end

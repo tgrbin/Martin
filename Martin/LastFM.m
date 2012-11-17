@@ -57,10 +57,12 @@ static void updateNowPlayingCallback(WSMethodInvocationRef ref, void *info, CFDi
   [params setValue:name forKey:@"method"];
   [params setValue:apiKey forKey:@"api_key"];
   [params setValue:sessionKey forKey:@"sk"];
-  [params setValue:song.title forKey:@"track"];
-  [params setValue:song.artist forKey:@"artist"];
-  [params setValue:song.album forKey:@"album"];
-  [params setValue:song.trackNumber forKey:@"trackNumber"];
+  
+  for (id tag in song.tagsDictionary) {
+    [params setValue:[song.tagsDictionary objectForKey:tag]
+              forKey:tag];
+  }
+  
   [params setValue:[self apiSignatureForParams:params] forKey:@"api_sig"];
   
   NSDictionary *dict = [NSDictionary dictionaryWithObject:params forKey:@"params"];
@@ -85,10 +87,12 @@ static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionary
   [params setValue:name forKey:@"method"];
   int timestamp = (int) [[NSDate date] timeIntervalSince1970];
   [params setValue:[NSString stringWithFormat:@"%d",timestamp] forKey:@"timestamp"];
-  [params setValue:song.title forKey:@"track"];
-  [params setValue:song.artist forKey:@"artist"];
-  [params setValue:song.album forKey:@"album"];
-  [params setValue:song.trackNumber forKey:@"trackNumber"];
+
+  for (id tag in song.tagsDictionary) {
+    [params setValue:[song.tagsDictionary objectForKey:tag]
+              forKey:tag];
+  }
+
   [params setValue:apiKey forKey:@"api_key"];
   [params setValue:sessionKey forKey:@"sk"];
   [params setValue:[self apiSignatureForParams:params] forKey:@"api_sig"];

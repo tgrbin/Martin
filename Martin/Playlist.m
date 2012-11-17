@@ -101,7 +101,7 @@
 
 static void find_songs( TreeNode *node, Playlist *p ) {
   if ([node isKindOfClass:[TreeLeaf class]]) {
-    NSNumber *songID = @(((TreeLeaf*)node).song.ID);
+    NSNumber *songID = @(((TreeLeaf*)node).song.inode);
     
     if (![p.songsSet containsObject:songID]) {
       [p.songsSet addObject:songID];
@@ -117,8 +117,8 @@ static void find_songs( TreeNode *node, Playlist *p ) {
 
 - (void)sortBy:(NSString *)str {
   [_songs sortUsingComparator:^NSComparisonResult(id id1, id id2) {
-    Song *s1 = [LibManager songByID:[id1 intValue]];
-    Song *s2 = [LibManager songByID:[id2 intValue]];
+    Song *s1 = [[LibManager sharedManager] songByID:[id1 intValue]];
+    Song *s2 = [[LibManager sharedManager] songByID:[id2 intValue]];
     NSString *val1 = [s1 valueForKey:str];
     NSString *val2 = [s2 valueForKey:str];
     
