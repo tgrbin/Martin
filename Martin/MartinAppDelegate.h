@@ -20,5 +20,6 @@
 @property (nonatomic, strong) IBOutlet NSTableView *songsTableView;
 @property (nonatomic, strong) IBOutlet NSOutlineView *outlineView;
 @property (nonatomic, strong) IBOutlet NSWindow *window;
+@property (nonatomic, strong) IBOutlet NSWindowController *preferencesWindowController;
 
 @end

@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		79242E1E16569A47006379D6 /* ID3Reader.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E1D16569A47006379D6 /* ID3Reader.m */; };
 		79242E2016569BA3006379D6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79242E1F16569BA3006379D6 /* AudioToolbox.framework */; };
+		79242E231656AB1C006379D6 /* LibraryFolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E221656AB1C006379D6 /* LibraryFolder.m */; };
+		79242E301656B0CF006379D6 /* PreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E2E1656B0CF006379D6 /* PreferencesWindowController.m */; };
+		79242E311656B0CF006379D6 /* PreferencesWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79242E2F1656B0CF006379D6 /* PreferencesWindowController.xib */; };
+		79242E3B1656B45D006379D6 /* Preferences.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79242E3A1656B45D006379D6 /* Preferences.plist */; };
 		795C20AE14377A3E00A61B21 /* Playlist.m in Sources */ = {isa = PBXBuildFile; fileRef = 795C20AD14377A3D00A61B21 /* Playlist.m */; };
 		795C20CE14378D9600A61B21 /* TableSongsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 795C20CD14378D9600A61B21 /* TableSongsDataSource.m */; };
 		798643A61437123500F07CDF /* Song.m in Sources */ = {isa = PBXBuildFile; fileRef = 798643A51437123500F07CDF /* Song.m */; };
@@ -35,6 +39,12 @@
 		79242E1C16569A47006379D6 /* ID3Reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ID3Reader.h; sourceTree = "<group>"; };
 		79242E1D16569A47006379D6 /* ID3Reader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ID3Reader.m; sourceTree = "<group>"; };
 		79242E1F16569BA3006379D6 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		79242E211656AB1B006379D6 /* LibraryFolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryFolder.h; sourceTree = "<group>"; };
+		79242E221656AB1C006379D6 /* LibraryFolder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryFolder.m; sourceTree = "<group>"; };
+		79242E2D1656B0CF006379D6 /* PreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesWindowController.h; sourceTree = "<group>"; };
+		79242E2E1656B0CF006379D6 /* PreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesWindowController.m; sourceTree = "<group>"; };
+		79242E2F1656B0CF006379D6 /* PreferencesWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PreferencesWindowController.xib; sourceTree = "<group>"; };
+		79242E3A1656B45D006379D6 /* Preferences.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Preferences.plist; sourceTree = "<group>"; };
 		795C20AC14377A3D00A61B21 /* Playlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Playlist.h; sourceTree = "<group>"; };
 		795C20AD14377A3D00A61B21 /* Playlist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Playlist.m; sourceTree = "<group>"; };
 		795C20CC14378D9600A61B21 /* TableSongsDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableSongsDataSource.h; sourceTree = "<group>"; };
@@ -88,6 +98,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		79242E241656AB21006379D6 /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				79242E211656AB1B006379D6 /* LibraryFolder.h */,
+				79242E221656AB1C006379D6 /* LibraryFolder.m */,
+				79FF1420142F1DB100E27235 /* LibManager.h */,
+				79FF1421142F1DB100E27235 /* LibManager.m */,
+			);
+			name = Library;
+			sourceTree = "<group>";
+		};
+		79242E2C1656B03D006379D6 /* Preferences */ = {
+			isa = PBXGroup;
+			children = (
+				79242E2D1656B0CF006379D6 /* PreferencesWindowController.h */,
+				79242E2E1656B0CF006379D6 /* PreferencesWindowController.m */,
+				79242E2F1656B0CF006379D6 /* PreferencesWindowController.xib */,
+			);
+			name = Preferences;
+			sourceTree = "<group>";
+		};
 		79B37069149D21C9003372CB /* LastFm */ = {
 			isa = PBXGroup;
 			children = (
@@ -100,8 +131,6 @@
 		79C2ACB9144AB47D00C2699B /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				79FF1420142F1DB100E27235 /* LibManager.h */,
-				79FF1421142F1DB100E27235 /* LibManager.m */,
 				79F5BC0E14363BE10040DF35 /* OutlineViewDataSource.h */,
 				79F5BC0F14363BE10040DF35 /* OutlineViewDataSource.m */,
 				795C20CC14378D9600A61B21 /* TableSongsDataSource.h */,
@@ -125,6 +154,7 @@
 				79FF142D142F217000E27235 /* martin.lib */,
 				79C2ACB7144AB46A00C2699B /* Playlists.plist */,
 				79FF140F142F18A500E27235 /* MainMenu.xib */,
+				79242E3A1656B45D006379D6 /* Preferences.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -162,6 +192,8 @@
 		79FF1400142F18A500E27235 /* Martin */ = {
 			isa = PBXGroup;
 			children = (
+				79242E2C1656B03D006379D6 /* Preferences */,
+				79242E241656AB21006379D6 /* Library */,
 				79B37069149D21C9003372CB /* LastFm */,
 				79C2ACB9144AB47D00C2699B /* Controller */,
 				79FF1417142F18BA00E27235 /* Model */,
@@ -254,6 +286,8 @@
 				79FF142E142F217000E27235 /* martin.lib in Resources */,
 				79D5760F1431074D00A2DA67 /* icon.icns in Resources */,
 				79C2ACB8144AB46A00C2699B /* Playlists.plist in Resources */,
+				79242E311656B0CF006379D6 /* PreferencesWindowController.xib in Resources */,
+				79242E3B1656B45D006379D6 /* Preferences.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,6 +311,8 @@
 				79AF97EB145305C200BE8391 /* Player.m in Sources */,
 				79B3706D149D21EA003372CB /* LastFM.m in Sources */,
 				79242E1E16569A47006379D6 /* ID3Reader.m in Sources */,
+				79242E231656AB1C006379D6 /* LibraryFolder.m in Sources */,
+				79242E301656B0CF006379D6 /* PreferencesWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

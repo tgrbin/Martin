@@ -69,7 +69,7 @@
     if( sender == addPlaylistButton ) {
         [playlists addObject:[[Playlist alloc] init]];
         [table reloadData];
-        [table selectRowIndexes:[NSIndexSet indexSetWithIndex:[playlists count]-1]byExtendingSelection:NO];
+        [table selectRowIndexes:[NSIndexSet indexSetWithIndex:[playlists count]-1] byExtendingSelection:NO];
     } else if( sender == deleteButton ) {
         if( [playlists count] > 1 ) { // nemozes izbrisat sve playliste
             if( [playlists objectAtIndex:[table selectedRow]] == nowPlayingPlaylist ) nowPlayingPlaylist = nil;	
