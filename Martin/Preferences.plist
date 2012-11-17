@@ -9,16 +9,12 @@
 			<string>/Users/tomislav/Music</string>
 			<key>treeDisplayName</key>
 			<string>Music</string>
-			<key>includeInRescan</key>
-			<true/>
 		</dict>
 		<dict>
 			<key>path</key>
 			<string>/Users/tomislav/Download</string>
 			<key>treeDisplayName</key>
 			<string>Download</string>
-			<key>includeInRescan</key>
-			<true/>
 		</dict>
 	</array>
 </dict>

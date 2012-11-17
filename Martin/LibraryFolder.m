@@ -31,8 +31,7 @@
   for (LibraryFolder *lf in [self libraryFolders]) {
     NSDictionary *dict = @{
       @"path": lf.folderPath,
-      @"treeDisplayName": lf.treeDisplayName,
-      @"includeInRescan": lf.includeInRescan
+      @"treeDisplayName": lf.treeDisplayName
     };
     [arr addObject:dict];
   }
@@ -46,7 +45,6 @@
   if (self = [super init]) {
     _folderPath = [dictionary objectForKey:@"path"];
     _treeDisplayName = [dictionary objectForKey:@"treeDisplayName"];
-    _includeInRescan = [dictionary objectForKey:@"includeInRescan"];
   }
   return self;
 }

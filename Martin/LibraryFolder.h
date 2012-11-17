@@ -12,7 +12,6 @@
 
 @property (nonatomic, strong) NSString *folderPath;
 @property (nonatomic, strong) NSString *treeDisplayName;
-@property (nonatomic, strong) NSNumber *includeInRescan;
 
 + (NSMutableArray *)libraryFolders;
 + (void)save;

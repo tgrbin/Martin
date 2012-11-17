@@ -33,7 +33,7 @@
 
 - (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   NSString *colId = tableColumn.identifier;
-  if ([colId isEqualToString:@"includeInRescan"] || [colId isEqualToString:@"treeDisplayName"]) {
+  if ([colId isEqualToString:@"treeDisplayName"]) {
     LibraryFolder *lf = [[LibraryFolder libraryFolders] objectAtIndex:row];
     [lf setValue:object forKey:colId];
   }
@@ -80,7 +80,6 @@
     LibraryFolder *lf = [[LibraryFolder alloc] init];
     lf.folderPath = [panel.directoryURL path];
     lf.treeDisplayName = [lf.folderPath lastPathComponent];
-    lf.includeInRescan = @YES;
     [[LibraryFolder libraryFolders] addObject:lf];
     [foldersTableView reloadData];
   }
