@@ -8,13 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
-@class TreeNode, Song;
+#define kLibManagerRescanedLibraryNotification @"LibManagerRescanedLibraryNotification"
 
+@class TreeNode, Song;
 struct LibManagerImpl;
 
 @interface LibManager : NSObject {
   TreeNode *root;
-
   struct LibManagerImpl *impl;
 }
 

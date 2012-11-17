@@ -81,10 +81,11 @@ struct compareSongs {
     } else if (first == '{') {
       Song *song = [Song new];
       song.inode = [[enumerator nextObject] intValue];
-      song.lengthInSeconds = [[enumerator nextObject] intValue];
-      
+      song.lastModified = [[enumerator nextObject] intValue];
       NSString *fileName = [enumerator nextObject];
       song.filename = [[path componentsJoinedByString:@"/"] stringByAppendingPathComponent:fileName];
+
+      song.lengthInSeconds = [[enumerator nextObject] intValue];
       
       NSMutableDictionary *tags = [NSMutableDictionary new];
       for (NSString *tag in [LibraryTags tags]) {
@@ -149,17 +150,32 @@ struct compareSongs {
       if ([stat objectForKey:NSFileType] == NSFileTypeDirectory) { // entering directory
         [lines addObject:[NSString stringWithFormat:@"+ %@", [file lastPathComponent]]];
       } else if ([[[file pathExtension] lowercaseString] isEqualToString:@"mp3"]) {
-        ID3Reader *id3 = [[ID3Reader alloc] initWithFile:[lf.folderPath stringByAppendingPathComponent:file]];
-        
+        int inode = [[stat objectForKey:NSFileSystemFileNumber] intValue];
+        int lastModified = (int) [((NSDate *)[stat objectForKey:NSFileModificationDate]) timeIntervalSince1970];
+        Song *song = [self songByID:inode];
+
         [lines addObject:@"{"];
-        [lines addObject:[stat objectForKey:NSFileSystemFileNumber]]; // inode
-        [lines addObject:[NSString stringWithFormat:@"%d", [id3 lengthInSeconds]]];
+        [lines addObject:@(inode)];
+        [lines addObject:@(lastModified)];
         [lines addObject:file];
-        for (NSString *tag in [LibraryTags tags]) {
-          NSString *val = [id3 tag:tag];
-          if (val == nil || val.length == 0) val = @"/";
-          [lines addObject:val];
+        
+        if (song == nil || song.lastModified != lastModified) {
+          ID3Reader *id3 = [[ID3Reader alloc] initWithFile:[lf.folderPath stringByAppendingPathComponent:file]];
+          [lines addObject:@([id3 lengthInSeconds])];
+          for (NSString *tag in [LibraryTags tags]) {
+            NSString *val = [id3 tag:tag];
+            if (val == nil || val.length == 0) val = @"/";
+            [lines addObject:val];
+          }
+        } else {
+          [lines addObject:@(song.lengthInSeconds)];
+          for (NSString *tag in [LibraryTags tags]) {
+            NSString *val = [song.tagsDictionary objectForKey:tag];
+            if (val == nil || val.length == 0) val = @"/";
+            [lines addObject:val];
+          }
         }
+        
         [lines addObject:@"}"];
       }
       
@@ -170,6 +186,8 @@ struct compareSongs {
   NSString *libContent = [lines componentsJoinedByString:@"\n"];
   [libContent writeToFile:[self libPath] atomically:YES encoding:NSUTF8StringEncoding error:nil];
   [self loadLibrary];
+  
+  [[NSNotificationCenter defaultCenter] postNotificationName:kLibManagerRescanedLibraryNotification object:nil];
 }
 
 #pragma mark - search

@@ -29,25 +29,21 @@
 
 - (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item {
   if (item == nil) return [[LibManager sharedManager].treeRoot nChildren];
-  
   return [item nChildren];
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item {
   if (item == nil) return [[LibManager sharedManager].treeRoot getChild:index];
-  
   return [item getChild:index];
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item {
-  if (item == nil) return YES;
   
   return [item nChildren] > 0;
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *) tableColumn byItem:(id)item {
   if (item == nil) return @"root";
-  
   if ([item nChildren] == 0) return [item name];
   return [NSString stringWithFormat:@"%@ (%d)", [item name], [item nChildren]];
 }

@@ -9,6 +9,7 @@
 #import "TableSongsDataSource.h"
 #import "MartinAppDelegate.h"
 #import "PlaylistManager.h"
+#import "LibManager.h"
 #import "ID3Reader.h"
 
 @implementation MartinAppDelegate
@@ -17,6 +18,16 @@
   _songsTableView.target = _playlistManager;
   _songsTableView.doubleAction = @selector(songDoubleClicked);
   [_playlistManager choosePlaylist:[_playlistsTableView selectedRow]];
+  
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(libraryRescanFinished)
+                                               name:kLibManagerRescanedLibraryNotification
+                                             object:nil];
+}
+
+- (void)dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
@@ -27,6 +38,10 @@
 - (NSApplicationTerminateReply) applicationShouldTerminate:(NSApplication *)sender {
   [_playlistManager savePlaylists];
   return YES;
+}
+
+- (void)libraryRescanFinished {
+  [self.outlineView reloadData];
 }
 
 @end
