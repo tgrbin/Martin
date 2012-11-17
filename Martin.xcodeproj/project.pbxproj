@@ -34,7 +34,6 @@
 		79FF141C142F1ABB00E27235 /* TreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF141B142F1ABB00E27235 /* TreeNode.m */; };
 		79FF141F142F1CF700E27235 /* TreeLeaf.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF141E142F1CF700E27235 /* TreeLeaf.m */; };
 		79FF1422142F1DB100E27235 /* LibManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79FF1421142F1DB100E27235 /* LibManager.mm */; };
-		79FF142E142F217000E27235 /* martin.lib in Resources */ = {isa = PBXBuildFile; fileRef = 79FF142D142F217000E27235 /* martin.lib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -86,7 +85,6 @@
 		79FF141E142F1CF700E27235 /* TreeLeaf.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TreeLeaf.m; sourceTree = "<group>"; };
 		79FF1420142F1DB100E27235 /* LibManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibManager.h; sourceTree = "<group>"; };
 		79FF1421142F1DB100E27235 /* LibManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LibManager.mm; sourceTree = "<group>"; };
-		79FF142D142F217000E27235 /* martin.lib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = martin.lib; path = ../library/martin.lib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +110,8 @@
 				79FF1421142F1DB100E27235 /* LibManager.mm */,
 				79BF24A016579EA800F6A070 /* LibraryTags.h */,
 				79BF24A116579EA800F6A070 /* LibraryTags.m */,
+				79242E1C16569A47006379D6 /* ID3Reader.h */,
+				79242E1D16569A47006379D6 /* ID3Reader.m */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -148,8 +148,6 @@
 				79AF97EA145305C200BE8391 /* Player.m */,
 				79C2ACB3144AB39200C2699B /* PlaylistManager.h */,
 				79C2ACB4144AB39200C2699B /* PlaylistManager.m */,
-				79242E1C16569A47006379D6 /* ID3Reader.h */,
-				79242E1D16569A47006379D6 /* ID3Reader.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -158,7 +156,6 @@
 			isa = PBXGroup;
 			children = (
 				79D5760E1431074D00A2DA67 /* icon.icns */,
-				79FF142D142F217000E27235 /* martin.lib */,
 				79C2ACB7144AB46A00C2699B /* Playlists.plist */,
 				79FF140F142F18A500E27235 /* MainMenu.xib */,
 				79242E3A1656B45D006379D6 /* Preferences.plist */,
@@ -291,7 +288,6 @@
 				79FF1405142F18A500E27235 /* InfoPlist.strings in Resources */,
 				79FF140B142F18A500E27235 /* Credits.rtf in Resources */,
 				79FF1411142F18A500E27235 /* MainMenu.xib in Resources */,
-				79FF142E142F217000E27235 /* martin.lib in Resources */,
 				79D5760F1431074D00A2DA67 /* icon.icns in Resources */,
 				79C2ACB8144AB46A00C2699B /* Playlists.plist in Resources */,
 				79242E311656B0CF006379D6 /* PreferencesWindowController.xib in Resources */,

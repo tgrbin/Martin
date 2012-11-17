@@ -11,9 +11,12 @@
 
 @interface ID3Reader : NSObject {
   NSDictionary *id3;
+  int lengthInSeconds;
 }
 
 - (id)initWithFile:(NSString *)_file;
-- (NSString *)getTag:(NSString *)tag;
+
+- (NSString *)tag:(NSString *)tag;
+- (int)lengthInSeconds;
 
 @end

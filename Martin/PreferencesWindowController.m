@@ -8,6 +8,7 @@
 
 #import "PreferencesWindowController.h"
 #import "LibraryFolder.h"
+#import "LibManager.h"
 
 @implementation PreferencesWindowController
 
@@ -49,10 +50,10 @@
   LibraryFolder *lf = [[LibraryFolder libraryFolders] objectAtIndex:sender.clickedRow];
   
   NSOpenPanel *panel = [self configurePanel];
-  panel.directoryURL = [NSURL URLWithString:lf.folderPath];
+  panel.directoryURL = [NSURL fileURLWithPath:lf.folderPath isDirectory:YES];
   
   if ([panel runModal] == NSFileHandlingPanelOKButton) {
-    lf.folderPath = [panel.directoryURL absoluteString];
+    lf.folderPath = [panel.directoryURL path];
     [sender reloadData];
   }
 }
@@ -70,19 +71,24 @@
   [foldersTableView reloadData];
 }
 
-#pragma mark - add new
+#pragma mark - buttons
 
 - (IBAction)addNewPressed:(id)sender {
   NSOpenPanel *panel = [self configurePanel];
   
   if ([panel runModal] == NSFileHandlingPanelOKButton) {
     LibraryFolder *lf = [[LibraryFolder alloc] init];
-    lf.folderPath = [panel.directoryURL absoluteString];
+    lf.folderPath = [panel.directoryURL path];
     lf.treeDisplayName = [lf.folderPath lastPathComponent];
     lf.includeInRescan = @YES;
     [[LibraryFolder libraryFolders] addObject:lf];
     [foldersTableView reloadData];
   }
+}
+
+- (IBAction)rescanPressed:(id)sender {
+  [LibraryFolder save];
+  [[LibManager sharedManager] rescanLibrary];
 }
 
 #pragma mark - window delegate

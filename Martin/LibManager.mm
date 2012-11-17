@@ -11,6 +11,8 @@
 #import "TreeLeaf.h"
 #import "Song.h"
 #import "LibraryTags.h"
+#import "LibraryFolder.h"
+#import "ID3Reader.h"
 
 #import <algorithm>
 #import <vector>
@@ -50,8 +52,7 @@ struct compareSongs {
 - (void)loadLibrary {
   impl->songs.clear();
   
-  NSString *libPath = [[NSBundle mainBundle] pathForResource:@"martin" ofType:@"lib"];
-  NSString *file = [[NSString alloc] initWithContentsOfFile:libPath encoding:NSUTF8StringEncoding error:nil];
+  NSString *file = [[NSString alloc] initWithContentsOfFile:[self libPath] encoding:NSUTF8StringEncoding error:nil];
   NSArray *lines = [file componentsSeparatedByString:@"\n"];
   NSEnumerator *enumerator = [lines objectEnumerator];
   
@@ -86,7 +87,11 @@ struct compareSongs {
       song.filename = [[path componentsJoinedByString:@"/"] stringByAppendingPathComponent:fileName];
       
       NSMutableDictionary *tags = [NSMutableDictionary new];
-      for (NSString *tag in [LibraryTags tags]) [tags setObject:[enumerator nextObject] forKey:tag];
+      for (NSString *tag in [LibraryTags tags]) {
+        NSString *val = [enumerator nextObject];
+        if ([val isEqualToString:@"/"]) val = @"";
+        [tags setObject:val forKey:tag];
+      }
       song.tagsDictionary = tags;
       
       TreeLeaf *leaf = [[TreeLeaf alloc] initWithName:[fileName stringByDeletingPathExtension]];
@@ -97,7 +102,7 @@ struct compareSongs {
       
       [enumerator nextObject]; // preskoci }
     } else {
-      if (treePath.count > 0) {
+      if (path.count > 0) {
         [treePath removeLastObject];
         [path removeLastObject];
       }
@@ -125,7 +130,46 @@ struct compareSongs {
 }
 
 - (void)rescanLibrary {
+  NSMutableArray *lines = [NSMutableArray new];
+  for (LibraryFolder *lf in [LibraryFolder libraryFolders]) {
+    NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtPath:lf.folderPath];
+
+    [lines addObject:lf.folderPath];
+    [lines addObject:lf.treeDisplayName];
+    
+    int lastLevel = 1;
+    for (NSString *file; file = [enumerator nextObject];) {
+      int currentLevel = (int)enumerator.level;
+      NSDictionary *stat = [enumerator fileAttributes];
+      
+      if (currentLevel < lastLevel) { // leaving folder
+        for (int i = 0; i < lastLevel-currentLevel; ++i) [lines addObject:@"-"];
+      }
+      
+      if ([stat objectForKey:NSFileType] == NSFileTypeDirectory) { // entering directory
+        [lines addObject:[NSString stringWithFormat:@"+ %@", [file lastPathComponent]]];
+      } else if ([[[file pathExtension] lowercaseString] isEqualToString:@"mp3"]) {
+        ID3Reader *id3 = [[ID3Reader alloc] initWithFile:[lf.folderPath stringByAppendingPathComponent:file]];
+        
+        [lines addObject:@"{"];
+        [lines addObject:[stat objectForKey:NSFileSystemFileNumber]]; // inode
+        [lines addObject:[NSString stringWithFormat:@"%d", [id3 lengthInSeconds]]];
+        [lines addObject:file];
+        for (NSString *tag in [LibraryTags tags]) {
+          NSString *val = [id3 tag:tag];
+          if (val == nil || val.length == 0) val = @"/";
+          [lines addObject:val];
+        }
+        [lines addObject:@"}"];
+      }
+      
+      lastLevel = currentLevel;
+    }
+  }
   
+  NSString *libContent = [lines componentsJoinedByString:@"\n"];
+  [libContent writeToFile:[self libPath] atomically:YES encoding:NSUTF8StringEncoding error:nil];
+  [self loadLibrary];
 }
 
 #pragma mark - search
@@ -173,6 +217,12 @@ struct compareSongs {
   }
   
   return node.searchState;
+}
+
+#pragma mark - util
+
+- (NSString *)libPath {
+  return [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"martin.lib"];
 }
 
 @end

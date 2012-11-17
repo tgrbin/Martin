@@ -25,12 +25,18 @@
     
     id3 = (NSDictionary *)CFBridgingRelease(dict);
     if (id3 == nil) return nil;
+
+    lengthInSeconds = (int) [[id3 objectForKey:@"approximate duration in seconds"] doubleValue];
   }
   return self;
 }
 
-- (NSString *)getTag:(NSString *)tag {
+- (NSString *)tag:(NSString *)tag {
   return [id3 objectForKey:tag];
+}
+
+- (int)lengthInSeconds {
+  return lengthInSeconds;
 }
 
 @end
