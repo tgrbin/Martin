@@ -119,10 +119,13 @@ static void find_songs( TreeNode *node, Playlist *p ) {
   [_songs sortUsingComparator:^NSComparisonResult(id id1, id id2) {
     Song *s1 = [[LibManager sharedManager] songByID:[id1 intValue]];
     Song *s2 = [[LibManager sharedManager] songByID:[id2 intValue]];
-    NSString *val1 = [s1 valueForKey:str];
-    NSString *val2 = [s2 valueForKey:str];
     
-    if ([str isEqualToString:@"trackNumber"]) return [val1 intValue] > [val2 intValue];
+    if ([str isEqualToString:@"length"]) return s1.lengthInSeconds > s2.lengthInSeconds;
+
+    NSString *val1 = [s1.tagsDictionary objectForKey:str];
+    NSString *val2 = [s2.tagsDictionary objectForKey:str];
+    
+    if ([str isEqualToString:@"track number"]) return [val1 intValue] > [val2 intValue];
     
     return [val1 caseInsensitiveCompare:val2];
   }];

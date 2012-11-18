@@ -17,6 +17,7 @@
 
 @property (nonatomic, strong) NSSound *nowPlayingSound;
 @property (nonatomic, strong) Song *nowPlayingSong;
+@property (nonatomic, assign) double volume;
 
 @property (weak) IBOutlet MartinAppDelegate *appDelegate;
 @property (nonatomic, strong) IBOutlet NSButton *nextButton;

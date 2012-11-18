@@ -24,6 +24,7 @@
   [nowPlayingSound stop];
   self.nowPlayingSound = [[NSSound alloc] initWithContentsOfFile:song.filename byReference:YES];
   nowPlayingSound.delegate = self;
+  nowPlayingSound.volume = _volume;
   [nowPlayingSound play];
   isPlaying = YES;
   self.nowPlayingSong = song;
@@ -74,6 +75,11 @@
   else [self playOrPause];
 }
 
+- (void)setVolume:(double)volume {
+  _volume = volume;
+  if (nowPlayingSound) nowPlayingSound.volume = _volume;
+}
+
 #pragma mark - nssound delegate
 
 - (void)sound:(NSSound *)sound didFinishPlaying:(BOOL)aBool {
@@ -103,6 +109,8 @@ OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void 
 }
 
 - (void) awakeFromNib {
+  self.volume = 0.5;
+  
   EventHotKeyRef hkRef;
   EventHotKeyID hkID;
   EventTypeSpec eventType;

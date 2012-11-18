@@ -3,19 +3,6 @@
 <plist version="1.0">
 <dict>
 	<key>LibraryFolders</key>
-	<array>
-		<dict>
-			<key>path</key>
-			<string>/Users/tomislav/Music</string>
-			<key>treeDisplayName</key>
-			<string>Music</string>
-		</dict>
-		<dict>
-			<key>path</key>
-			<string>/Users/tomislav/Download</string>
-			<key>treeDisplayName</key>
-			<string>Download</string>
-		</dict>
-	</array>
+	<array/>
 </dict>
 </plist>

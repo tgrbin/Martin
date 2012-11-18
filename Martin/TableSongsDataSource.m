@@ -131,7 +131,7 @@
 #pragma mark - highlight now playing
 
 - (void)highlightSong:(int)_id {
-  NSIndexSet *columns = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 4)];
+  NSIndexSet *columns = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 6)];
       
   prevHighlighted = highlighted;
   highlighted = _id;
