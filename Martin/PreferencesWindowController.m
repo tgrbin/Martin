@@ -110,7 +110,7 @@
     if (state == -1) state = p;
     else if (state != -2) {
       totalSongs = state;
-      rescanStatusTextField.stringValue = [NSString stringWithFormat:@"Found %d soungs, rescaning %d of them..", totalSongs, p];
+      rescanStatusTextField.stringValue = [NSString stringWithFormat:@"Found %d soungs, rescanning %d of them..", totalSongs, p];
       rescanProgressIndicator.indeterminate = NO;
       rescanProgressIndicator.doubleValue = 0;
       state = -2;

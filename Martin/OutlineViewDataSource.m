@@ -38,7 +38,7 @@
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item {
-  
+  if (item == nil) return YES;
   return [item nChildren] > 0;
 }
 

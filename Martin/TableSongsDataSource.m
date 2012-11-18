@@ -104,13 +104,17 @@
 }
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    NSString *tag = [tableColumn identifier];
-    int songID = [[playlist.songs objectAtIndex:row] intValue];
-    Song *song = [[LibManager sharedManager] songByID:songID];
-    
-    return [song valueForKey:tag];
-    
-    return @"unknown";
+  NSString *tag = tableColumn.identifier;
+  int songID = [[playlist.songs objectAtIndex:row] intValue];
+  Song *song = [[LibManager sharedManager] songByID:songID];
+  NSString *value = [song.tagsDictionary objectForKey:tag];
+  
+  if ([tag isEqualToString:@"length"]) {
+    int sec = song.lengthInSeconds;
+    value = [NSString stringWithFormat:@"%d:%02d", sec/60, sec%60];
+  }
+  
+  return value;
 }
 
 - (IBAction)buttonPressed:(id)sender { // delete je jedini button
