@@ -12,7 +12,11 @@
 
 @interface LastFM : NSObject
 
-+ (void)updateNowPlaying:(Song *) song;
-+ (void)scrobble:(Song *) song;
++ (void)getAuthURLWithBlock:(void (^)(NSString *))callbackBlock;
++ (void)getSessionKey:(void (^)(BOOL))callbackBlock;
++ (void)resetSessionKey;
+
++ (void)updateNowPlaying:(Song *)song;
++ (void)scrobble:(Song *)song;
 
 @end

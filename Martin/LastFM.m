@@ -12,10 +12,75 @@
 
 @implementation LastFM
 
-static NSString *url = @"http://ws.audioscrobbler.com/2.0/";
-static NSString *sessionKey = @"0d50de13141911e11d521136bbe175f9";
-static NSString *apiKey = @"3a570389ed801f07f07a7ea3d29d6673";
-static NSString *apiSecret = @"6a6d7126bbaedb1413768474fb1c80bd";
+static NSString * const apiURL = @"http://ws.audioscrobbler.com/2.0/";
+static NSString * const apiKey = @"3a570389ed801f07f07a7ea3d29d6673";
+static NSString * const apiSecret = @"6a6d7126bbaedb1413768474fb1c80bd";
+static NSString * const sessionKeyKey = @"lastfmSessionKey";
+
+static NSString *currentToken = nil;
+
++ (void)getAuthURLWithBlock:(void (^)(NSString *))callbackBlock {
+  currentToken = nil;
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    NSString *url = [apiURL stringByAppendingFormat:@"?method=auth.getToken&api_key=%@", apiKey];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
+    NSError *err;
+    NSData *data = [NSURLConnection sendSynchronousRequest:request
+                                         returningResponse:nil
+                                                     error:&err];
+    
+    NSString *result = nil;
+    if (data != nil) {
+      NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+      int l = (int)[str rangeOfString:@"<token>"].location;
+      int r = (int)[str rangeOfString:@"</token>"].location;
+      
+      if (l != NSNotFound && r != NSNotFound) {
+        currentToken = [str substringWithRange:NSMakeRange(l+7, r-l-7)];
+        result = [NSString stringWithFormat:@"http://www.last.fm/api/auth/?api_key=%@&token=%@", apiKey, currentToken];
+      }
+    }
+    
+    dispatch_sync(dispatch_get_main_queue(), ^{ callbackBlock(result); });
+  });
+}
+
++ (void)getSessionKey:(void (^)(BOOL))callbackBlock {
+  if (currentToken == nil) {
+    callbackBlock(NO);
+    return;
+  }
+  
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    NSString *sig = [self md5HexDigest:[NSString stringWithFormat:@"api_key%@methodauth.getSessiontoken%@%@", apiKey, currentToken, apiSecret]];
+    NSString *url = [apiURL stringByAppendingFormat:@"?api_key=%@&method=auth.getSession&token=%@&api_sig=%@", apiKey, currentToken, sig];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
+    NSError *err;
+    NSData *data = [NSURLConnection sendSynchronousRequest:request
+                                         returningResponse:nil
+                                                     error:&err];
+    BOOL success = NO;
+    if (data != nil) {
+      NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+      int l = (int)[str rangeOfString:@"<key>"].location;
+      int r = (int)[str rangeOfString:@"</key>"].location;
+      
+      if (l != NSNotFound && r != NSNotFound) {
+        NSString *sessionKey = [str substringWithRange:NSMakeRange(l+5, r-l-5)];
+        [[NSUserDefaults standardUserDefaults] setObject:sessionKey forKey:sessionKeyKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        success = YES;
+      }
+    }
+    
+    dispatch_sync(dispatch_get_main_queue(), ^{ callbackBlock(success); });
+  });
+}
+
++ (void)resetSessionKey {
+  [[NSUserDefaults standardUserDefaults] removeObjectForKey:sessionKeyKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
 
 + (NSString *)md5HexDigest:(NSString *)input {
   const char *str = [input UTF8String];
@@ -49,7 +114,10 @@ static void updateNowPlayingCallback(WSMethodInvocationRef ref, void *info, CFDi
 }
 
 + (void)updateNowPlaying:(Song *)song {
-  NSURL *u = [NSURL URLWithString:url];
+  NSString *sessionKey = [self sessionKey];
+  if (sessionKey == nil) return;
+
+  NSURL *u = [NSURL URLWithString:apiURL];
   NSString *name = @"track.updateNowPlaying";
   WSMethodInvocationRef myRef = WSMethodInvocationCreate((__bridge CFURLRef)u, (__bridge CFStringRef)name, kWSXMLRPCProtocol);
   
@@ -65,7 +133,7 @@ static void updateNowPlayingCallback(WSMethodInvocationRef ref, void *info, CFDi
   WSMethodInvocationSetParameters(myRef, (__bridge CFDictionaryRef)dict, (__bridge CFArrayRef)[dict allKeys]);
   
   WSMethodInvocationSetCallBack(myRef, &updateNowPlayingCallback, NULL);
-  WSMethodInvocationScheduleWithRunLoop(myRef, [[NSRunLoop currentRunLoop] getCFRunLoop], (CFStringRef)NSDefaultRunLoopMode );
+  WSMethodInvocationScheduleWithRunLoop(myRef, [[NSRunLoop currentRunLoop] getCFRunLoop], (CFStringRef)NSDefaultRunLoopMode);
 }
 
 #pragma mark - scrobble
@@ -75,7 +143,10 @@ static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionary
 }
 
 + (void)scrobble:(Song *)song {
-  NSURL *u = [NSURL URLWithString:url];
+  NSString *sessionKey = [self sessionKey];
+  if (sessionKey == nil) return;
+  
+  NSURL *u = [NSURL URLWithString:apiURL];
   NSString *name = @"track.scrobble";
   WSMethodInvocationRef myRef = WSMethodInvocationCreate((__bridge CFURLRef)u, (__bridge CFStringRef)name, kWSXMLRPCProtocol);
   
@@ -101,6 +172,10 @@ static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionary
     NSString *val = [song.tagsDictionary objectForKey:tag];
     [dict setValue:val forKey:[tag isEqualToString:@"track number"]? @"track": tag];
   }
+}
+
++ (NSString *)sessionKey {
+  return [[NSUserDefaults standardUserDefaults] objectForKey:sessionKeyKey];
 }
 
 @end
