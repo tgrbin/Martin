@@ -13,11 +13,16 @@
 
 @interface Player : NSObject <NSSoundDelegate> {
   BOOL isPlaying;
+  
+  NSTimer *seekTimer;
+  IBOutlet NSSlider *seekSlider;
 }
 
 @property (nonatomic, strong) NSSound *nowPlayingSound;
 @property (nonatomic, strong) Song *nowPlayingSong;
+
 @property (nonatomic, assign) double volume;
+@property (nonatomic, assign) double seek;
 
 @property (weak) IBOutlet MartinAppDelegate *appDelegate;
 @property (nonatomic, strong) IBOutlet NSButton *nextButton;

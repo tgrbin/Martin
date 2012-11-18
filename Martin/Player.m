@@ -20,12 +20,14 @@
 @synthesize nowPlayingSound, appDelegate, nowPlayingSong;
 @synthesize nextButton, playButton, prevButton;
 
-- (void)playSong:(Song*)song {
+- (void)playSong:(Song *)song {
   [nowPlayingSound stop];
   self.nowPlayingSound = [[NSSound alloc] initWithContentsOfFile:song.filename byReference:YES];
   nowPlayingSound.delegate = self;
   nowPlayingSound.volume = _volume;
   [nowPlayingSound play];
+  seekSlider.enabled = YES;
+  [self startSeekTimer];
   isPlaying = YES;
   self.nowPlayingSong = song;
   
@@ -39,6 +41,10 @@
   if (nowPlayingSound) {
     [nowPlayingSound stop];
     self.nowPlayingSound = nil;
+    self.seek = 0;
+    [seekTimer invalidate];
+    seekTimer = nil;
+    seekSlider.enabled = NO;
   }
 }
 
@@ -80,14 +86,43 @@
   if (nowPlayingSound) nowPlayingSound.volume = _volume;
 }
 
+- (void)startSeekTimer {
+  if (seekTimer != nil) {
+    [seekTimer invalidate];
+    seekTimer = nil;
+  }
+  seekTimer = [NSTimer scheduledTimerWithTimeInterval:0.2
+                                               target:self
+                                             selector:@selector(updateSeekTime)
+                                             userInfo:nil
+                                              repeats:YES];
+}
+
+- (void)updateSeekTime {
+  if (nowPlayingSound == nil) {
+    self.seek = 0;
+    [seekTimer invalidate];
+    seekTimer = nil;
+  } else {
+    self.seek = nowPlayingSound.currentTime / nowPlayingSound.duration;
+  }
+}
+
+- (IBAction)seekSliderChanged:(NSSlider *)sender {
+  if (nowPlayingSound) {
+    nowPlayingSound.currentTime = sender.doubleValue * nowPlayingSound.duration;
+  }
+}
+
 #pragma mark - nssound delegate
 
 - (void)sound:(NSSound *)sound didFinishPlaying:(BOOL)aBool {
   if (aBool) {
     [LastFM scrobble:nowPlayingSong];
     [self next];
+  } else {
+    self.nowPlayingSound = nil;
   }
-  else self.nowPlayingSound = nil;
 }
 
 #pragma mark - hot keys
