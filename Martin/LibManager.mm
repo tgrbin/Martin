@@ -173,12 +173,13 @@ struct compareSongs {
           impl->lines.push_back(@"{");
           impl->lines.push_back([NSString stringWithFormat:@"%d", inode]);
           impl->lines.push_back([NSString stringWithFormat:@"%d", lastModified]);
-          impl->lines.push_back(file);
           
           if (song == nil || song.lastModified != lastModified) {
+            impl->lines.push_back(file);
             impl->needsRescan.push_back((int) (impl->lines.size()-1));
             for (int i = 0; i <= numberOfTags; ++i) impl->lines.push_back(@"");
           } else {
+            impl->lines.push_back(file.lastPathComponent);
             impl->lines.push_back([NSString stringWithFormat:@"%d", song.lengthInSeconds]);
             for (NSString *tag in libraryTags) {
               NSString *val = [song.tagsDictionary objectForKey:tag];
@@ -218,7 +219,8 @@ struct compareSongs {
       if (x == -1) {
         baseURL = [[libraryFolders objectAtIndex:++j] folderPath];
       } else {
-        NSString *file = impl->lines[x++];
+        NSString *file = impl->lines[x];
+        impl->lines[x++] = file.lastPathComponent;
         ID3Reader *id3 = [[ID3Reader alloc] initWithFile:[baseURL stringByAppendingPathComponent:file]];
         if (id3 == nil) {
           NSLog(@"id3 read failed for: %@", [baseURL stringByAppendingPathComponent:file]);

@@ -35,7 +35,7 @@
 }
 
 - (void)stop {
-  if( nowPlayingSound ) {
+  if (nowPlayingSound) {
     [nowPlayingSound stop];
     self.nowPlayingSound = nil;
   }

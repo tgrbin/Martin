@@ -57,11 +57,7 @@ static void updateNowPlayingCallback(WSMethodInvocationRef ref, void *info, CFDi
   [params setValue:name forKey:@"method"];
   [params setValue:apiKey forKey:@"api_key"];
   [params setValue:sessionKey forKey:@"sk"];
-  
-  for (id tag in song.tagsDictionary) {
-    [params setValue:[song.tagsDictionary objectForKey:tag]
-              forKey:tag];
-  }
+  [self addSongTags:song toDictionary:params];
   
   [params setValue:[self apiSignatureForParams:params] forKey:@"api_sig"];
   
@@ -87,11 +83,7 @@ static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionary
   [params setValue:name forKey:@"method"];
   int timestamp = (int) [[NSDate date] timeIntervalSince1970];
   [params setValue:[NSString stringWithFormat:@"%d",timestamp] forKey:@"timestamp"];
-
-  for (id tag in song.tagsDictionary) {
-    [params setValue:[song.tagsDictionary objectForKey:tag]
-              forKey:tag];
-  }
+  [self addSongTags:song toDictionary:params];
 
   [params setValue:apiKey forKey:@"api_key"];
   [params setValue:sessionKey forKey:@"sk"];
@@ -102,6 +94,13 @@ static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionary
   
   WSMethodInvocationSetCallBack(myRef, &scrobbleCallback, NULL);
   WSMethodInvocationScheduleWithRunLoop(myRef, [[NSRunLoop currentRunLoop] getCFRunLoop], (CFStringRef)NSDefaultRunLoopMode);
+}
+
++ (void)addSongTags:(Song *)song toDictionary:(NSMutableDictionary *)dict {
+  for (NSString *tag in song.tagsDictionary) {
+    NSString *val = [song.tagsDictionary objectForKey:tag];
+    [dict setValue:val forKey:[tag isEqualToString:@"track number"]? @"track": tag];
+  }
 }
 
 @end

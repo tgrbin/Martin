@@ -25,7 +25,6 @@
 @property (nonatomic, strong) IBOutlet NSTableView *table;
 @property (nonatomic, strong) IBOutlet NSButton *deleteButton;
 
-- (IBAction) buttonPressed:(id)sender;
 - (void) highlightSong:(int)_id;
 
 @end
