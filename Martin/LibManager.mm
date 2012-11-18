@@ -27,6 +27,9 @@ struct LibManagerImpl {
   vector<NSString *> queryWords;
   vector<bool> queryHits;
   int nHit;
+  
+  vector<NSString *> lines;
+  vector<int> needsRescan;
 };
 
 struct compareSongs {
@@ -130,96 +133,124 @@ struct compareSongs {
   return (iterator == impl->songs.end())? nil: *iterator;
 }
 
-- (void)rescanLibrary {
-  vector<NSString *> lines;
-  vector<int> needsRescan;
-  NSArray *libraryFolders = [LibraryFolder libraryFolders];
-  int numberOfTags = (int) [LibraryTags tags].count;
-  int numberOfSongs = 0;
-  
-  NSLog(@"walking directory..");
-  NSDate *timestamp = [NSDate date];
-  for (LibraryFolder *lf in libraryFolders) {
-    NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtPath:lf.folderPath];
-
-    needsRescan.push_back(-1); // marks begining of new baseURL section
-    lines.push_back(lf.folderPath);
-    lines.push_back(lf.treeDisplayName);
+- (void)rescanLibraryWithProgressBlock:(void (^)(int))progressBlock {
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    NSArray *libraryFolders = [LibraryFolder libraryFolders];
+    NSArray *libraryTags = [LibraryTags tags];
+    int numberOfTags = (int) [LibraryTags tags].count;
+    int numberOfSongs = 0;
     
-    int lastLevel = 1;
-    for (NSString *file; file = [enumerator nextObject];) {
-      int currentLevel = (int)enumerator.level;
-      NSDictionary *stat = [enumerator fileAttributes];
+    NSLog(@"walking folders..");
+    NSDate *timestamp = [NSDate date];
+    for (LibraryFolder *lf in libraryFolders) {
+      NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtPath:lf.folderPath];
+
+      impl->needsRescan.push_back(-1); // marks begining of new baseURL section
+      impl->lines.push_back(lf.folderPath);
+      impl->lines.push_back(lf.treeDisplayName);
       
-      if (currentLevel < lastLevel) { // leaving folder
-        for (int i = 0; i < lastLevel-currentLevel; ++i) lines.push_back(@"-");
-      }
-      
-      if ([stat objectForKey:NSFileType] == NSFileTypeDirectory) { // entering directory
-        lines.push_back([NSString stringWithFormat:@"+ %@", [file lastPathComponent]]);
-      } else if ([[[file pathExtension] lowercaseString] isEqualToString:@"mp3"]) {
-        ++numberOfSongs;
-        
-        int inode = [[stat objectForKey:NSFileSystemFileNumber] intValue];
-        int lastModified = (int) [((NSDate *)[stat objectForKey:NSFileModificationDate]) timeIntervalSince1970];
-        Song *song = [self songByID:inode];
-        
-        lines.push_back(@"{");
-        lines.push_back([NSString stringWithFormat:@"%d", inode]);
-        lines.push_back([NSString stringWithFormat:@"%d", lastModified]);
-        lines.push_back(file);
-        
-        if (song == nil || song.lastModified != lastModified) {
-          needsRescan.push_back((int) (lines.size()-1));
-          for (int i = 0; i <= numberOfTags; ++i) lines.push_back(@"");
-        } else {
-          lines.push_back([NSString stringWithFormat:@"%d", song.lengthInSeconds]);
-          for (NSString *tag in [LibraryTags tags]) {
-            NSString *val = [song.tagsDictionary objectForKey:tag];
-            if (val == nil || val.length == 0) val = @"/";
-            lines.push_back(val);
-          }
+      int lastLevel = 0;
+      BOOL wasLastElementFolder = NO;
+      for (NSString *file; file = [enumerator nextObject];) {
+        int currentLevel = (int)enumerator.level;
+        NSDictionary *stat = [enumerator fileAttributes];
+        BOOL isFolder = ([stat objectForKey:NSFileType] == NSFileTypeDirectory);
+
+        if (currentLevel <= lastLevel) { // leaving folder
+          int cnt = (lastLevel-currentLevel) + (wasLastElementFolder == YES);
+          for (int i = 0; i < cnt; ++i) impl->lines.push_back(@"-");
         }
         
-        lines.push_back(@"}");
+        if (isFolder) { // entering directory
+          impl->lines.push_back([NSString stringWithFormat:@"+ %@", [file lastPathComponent]]);
+        } else if ([[[file pathExtension] lowercaseString] isEqualToString:@"mp3"]) {
+          ++numberOfSongs;
+          
+          int inode = [[stat objectForKey:NSFileSystemFileNumber] intValue];
+          int lastModified = (int) [((NSDate *)[stat objectForKey:NSFileModificationDate]) timeIntervalSince1970];
+          Song *song = [self songByID:inode];
+          
+          impl->lines.push_back(@"{");
+          impl->lines.push_back([NSString stringWithFormat:@"%d", inode]);
+          impl->lines.push_back([NSString stringWithFormat:@"%d", lastModified]);
+          impl->lines.push_back(file);
+          
+          if (song == nil || song.lastModified != lastModified) {
+            impl->needsRescan.push_back((int) (impl->lines.size()-1));
+            for (int i = 0; i <= numberOfTags; ++i) impl->lines.push_back(@"");
+          } else {
+            impl->lines.push_back([NSString stringWithFormat:@"%d", song.lengthInSeconds]);
+            for (NSString *tag in libraryTags) {
+              NSString *val = [song.tagsDictionary objectForKey:tag];
+              if (val == nil || val.length == 0) val = @"/";
+              impl->lines.push_back(val);
+            }
+          }
+          
+          impl->lines.push_back(@"}");
+        }
+        
+        lastLevel = currentLevel;
+        wasLastElementFolder = isFolder;
       }
-      
-      lastLevel = currentLevel;
     }
-  }
-  NSLog(@"done walking, time: %lfms, songs found: %d", -[timestamp timeIntervalSinceNow]/1000., numberOfSongs);
-  
-  NSLog(@"rescaning %ld files..", needsRescan.size() - libraryFolders.count);
-  timestamp = [NSDate date];
-  NSString *baseURL;
-  int j = -1;
-  for (auto it = needsRescan.begin(); it != needsRescan.end(); ++it) {
-    if (*it == -1) {
-      baseURL = [[libraryFolders objectAtIndex:++j] folderPath];
-    } else {
-      NSString *file = lines[*it];
-      ID3Reader *id3 = [[ID3Reader alloc] initWithFile:[baseURL stringByAppendingPathComponent:file]];
-      lines[*it + 1] = [NSString stringWithFormat:@"%d", [id3 lengthInSeconds]];
-      for (int i = 0; i < numberOfTags; ++i) {
-        NSString *val = [id3 tag:[[LibraryTags tags] objectAtIndex:i]];
-        if (val == nil || val.length == 0) val = @"/";
-        lines[*it + 2 + i] = val;
+    NSLog(@"done walking, time: %lfs, songs found: %d", -[timestamp timeIntervalSinceNow], numberOfSongs);
+    
+    int filesToRescan = (int) (impl->needsRescan.size() - libraryFolders.count);
+
+    NSLog(@"rescaning %d files..", filesToRescan);
+    
+    progressBlock(numberOfSongs);
+    progressBlock(filesToRescan);
+    
+    timestamp = [NSDate date];
+    NSString *baseURL;
+    int n = (int) impl->needsRescan.size();
+    int j = -1;
+    int lastSentPercentage = -1;
+    for (int i = 0; i < n; ++i) {
+      int percentage = (double)(i+1) / n * 100.;
+      if (percentage != lastSentPercentage) {
+        progressBlock(percentage);
+        lastSentPercentage = percentage;
+      }
+      int x = impl->needsRescan[i];
+      if (x == -1) {
+        baseURL = [[libraryFolders objectAtIndex:++j] folderPath];
+      } else {
+        NSString *file = impl->lines[x++];
+        ID3Reader *id3 = [[ID3Reader alloc] initWithFile:[baseURL stringByAppendingPathComponent:file]];
+        if (id3 == nil) {
+          NSLog(@"id3 read failed for: %@", [baseURL stringByAppendingPathComponent:file]);
+          impl->lines[x++] = @"0"; // length
+          for (int q = 0; q < numberOfTags; ++q) impl->lines[x++] = @"/";
+        } else {
+          impl->lines[x++] = [NSString stringWithFormat:@"%d", [id3 lengthInSeconds]];
+          for (NSString *tag in libraryTags) {
+            NSString *val = [id3 tag:tag];
+            if (val == nil || val.length == 0) val = @"/";
+            impl->lines[x++] = val;
+          }
+        }
       }
     }
-  }
-  NSLog(@"done rescaning, time: %lf", -[timestamp timeIntervalSinceNow]/1000.);
+    NSLog(@"done rescaning, time: %lfs", -[timestamp timeIntervalSinceNow]);
 
-  int length = 0;
-  for (auto it = lines.begin(); it != lines.end(); ++it) length += (*it).length + 1;
-  NSMutableString *libStr = [NSMutableString stringWithCapacity:length];
-  for (auto it = lines.begin(); it != lines.end(); ++it) {
-    [libStr appendString:*it];
-    [libStr appendString:@"\n"];
-  }
-  [libStr writeToFile:[self libPath] atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    int length = 0;
+    for (auto it = impl->lines.begin(); it != impl->lines.end(); ++it) length += (*it).length + 1;
+    NSMutableString *libStr = [NSMutableString stringWithCapacity:length];
+    for (auto it = impl->lines.begin(); it != impl->lines.end(); ++it) {
+      [libStr appendString:*it];
+      [libStr appendString:@"\n"];
+    }
+    [libStr writeToFile:[self libPath] atomically:YES encoding:NSUTF8StringEncoding error:nil];
 
-  [self loadLibrary];
-  [[NSNotificationCenter defaultCenter] postNotificationName:kLibManagerRescanedLibraryNotification object:nil];
+    [self loadLibrary];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLibManagerRescanedLibraryNotification object:nil];
+    
+    impl->needsRescan.clear();
+    impl->lines.clear();
+  });
 }
 
 #pragma mark - search

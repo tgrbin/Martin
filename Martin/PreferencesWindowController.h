@@ -10,6 +10,11 @@
 
 @interface PreferencesWindowController : NSWindowController <NSTableViewDataSource, NSTableViewDelegate, NSWindowDelegate> {
   IBOutlet NSTableView *foldersTableView;
+  IBOutlet NSButton *rescanLibraryButton;
+  IBOutlet NSTextField *rescanStatusTextField;
+  IBOutlet NSProgressIndicator *rescanProgressIndicator;
+  
+  int totalSongs;
 }
 
 @end

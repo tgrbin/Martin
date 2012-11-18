@@ -19,7 +19,6 @@
   _songsTableView.doubleAction = @selector(songDoubleClicked);
   [_playlistManager choosePlaylist:[_playlistsTableView selectedRow]];
   
-  
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(libraryRescanFinished)
                                                name:kLibManagerRescanedLibraryNotification

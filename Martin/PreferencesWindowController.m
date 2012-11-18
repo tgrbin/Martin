@@ -13,7 +13,17 @@
 @implementation PreferencesWindowController
 
 - (id)init {
-  return (self = [super initWithWindowNibName:@"PreferencesWindowController"]);
+  if (self = [super initWithWindowNibName:@"PreferencesWindowController"]) {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(libraryRescanFinished)
+                                                 name:kLibManagerRescanedLibraryNotification
+                                               object:nil];
+  }
+  return self;
+}
+
+- (void)dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - library folders table
@@ -87,7 +97,39 @@
 
 - (IBAction)rescanPressed:(id)sender {
   [LibraryFolder save];
-  [[LibManager sharedManager] rescanLibrary];
+  rescanLibraryButton.hidden = YES;
+  rescanStatusTextField.hidden = NO;
+  rescanProgressIndicator.hidden = NO;
+  rescanStatusTextField.stringValue = @"Traversing library folders...";
+  rescanProgressIndicator.indeterminate = YES;
+  [rescanProgressIndicator startAnimation:nil];
+  
+  __block int state = -1;
+  
+  [[LibManager sharedManager] rescanLibraryWithProgressBlock:^(int p) {
+    if (state == -1) state = p;
+    else if (state != -2) {
+      totalSongs = state;
+      rescanStatusTextField.stringValue = [NSString stringWithFormat:@"Found %d soungs, rescaning %d of them..", totalSongs, p];
+      rescanProgressIndicator.indeterminate = NO;
+      rescanProgressIndicator.doubleValue = 0;
+      state = -2;
+    } else {
+      rescanProgressIndicator.doubleValue = p;
+    }
+  }];
+}
+
+- (void)libraryRescanFinished {
+  rescanStatusTextField.stringValue = [NSString stringWithFormat:@"Done! Total of %d songs in library.", totalSongs];
+
+  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC);
+  dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+    [rescanProgressIndicator stopAnimation:nil];
+    rescanProgressIndicator.hidden = YES;
+    rescanStatusTextField.hidden = YES;
+    rescanLibraryButton.hidden = NO;
+  });
 }
 
 #pragma mark - window delegate

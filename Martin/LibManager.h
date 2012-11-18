@@ -21,7 +21,7 @@ struct LibManagerImpl;
 + (LibManager *)sharedManager;
 
 - (void)loadLibrary;
-- (void)rescanLibrary;
+- (void)rescanLibraryWithProgressBlock:(void (^)(int))progressBlock;
 
 - (TreeNode *)treeRoot;
 - (Song *)songByID:(int)ID;
