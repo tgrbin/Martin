@@ -258,6 +258,8 @@ struct compareSongs {
 #pragma mark - search
 
 - (void)performSearch:(NSString *) query {
+  NSDate *stamp = [NSDate date];
+  
   impl->queryWords.clear();
   
   for (NSString *q in [query componentsSeparatedByString:@" "]) {
@@ -270,6 +272,8 @@ struct compareSongs {
   fill(impl->queryHits.begin(), impl->queryHits.end(), false);
   
   [self traverse:root];
+  
+  NSLog(@"search time: %lfms", -[stamp timeIntervalSinceNow]*1000.0);
 }
 
 - (int)traverse:(TreeNode *)node {
@@ -296,7 +300,7 @@ struct compareSongs {
   
   for (int i = 0; i < modified.size(); ++i) {
     --impl->nHit;
-    impl->queryHits[i] = false;
+    impl->queryHits[modified[i]] = false;
   }
   
   return node.searchState;

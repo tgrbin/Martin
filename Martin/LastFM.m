@@ -111,6 +111,8 @@ static NSString *currentToken = nil;
 
 static void updateNowPlayingCallback(WSMethodInvocationRef ref, void *info, CFDictionaryRef dict) {
   NSLog(@"updateNowPlaying callback: %@", dict);
+  CFRelease(ref);
+  CFRelease(dict);
 }
 
 + (void)updateNowPlaying:(Song *)song {
@@ -140,6 +142,8 @@ static void updateNowPlayingCallback(WSMethodInvocationRef ref, void *info, CFDi
 
 static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionaryRef dict) {
   NSLog(@"scrobble callback :%@", dict);
+  CFRelease(ref);
+  CFRelease(dict);
 }
 
 + (void)scrobble:(Song *)song {
@@ -170,7 +174,10 @@ static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionary
 + (void)addSongTags:(Song *)song toDictionary:(NSMutableDictionary *)dict {
   for (NSString *tag in song.tagsDictionary) {
     NSString *val = [song.tagsDictionary objectForKey:tag];
-    [dict setValue:val forKey:[tag isEqualToString:@"track number"]? @"track": tag];
+    NSString *lastfmTag = tag;
+    if ([tag isEqualToString:@"title"]) lastfmTag = @"track";
+    if ([tag isEqualToString:@"track"]) lastfmTag = @"trackNumber";
+    [dict setValue:val forKey:lastfmTag];
   }
 }
 
