@@ -8,7 +8,7 @@
 
 #import <CommonCrypto/CommonDigest.h>
 #import "LastFM.h"
-#import "Song.h"
+#import "PlaylistItem.h"
 
 @implementation LastFM
 
@@ -115,7 +115,7 @@ static void updateNowPlayingCallback(WSMethodInvocationRef ref, void *info, CFDi
   CFRelease(dict);
 }
 
-+ (void)updateNowPlaying:(Song *)song {
++ (void)updateNowPlaying:(PlaylistItem *)item {
   NSString *sessionKey = [self sessionKey];
   if (sessionKey == nil) return;
 
@@ -127,7 +127,7 @@ static void updateNowPlayingCallback(WSMethodInvocationRef ref, void *info, CFDi
   [params setValue:name forKey:@"method"];
   [params setValue:apiKey forKey:@"api_key"];
   [params setValue:sessionKey forKey:@"sk"];
-  [self addSongTags:song toDictionary:params];
+  [self addItemTags:item toDictionary:params];
   
   [params setValue:[self apiSignatureForParams:params] forKey:@"api_sig"];
   
@@ -146,7 +146,7 @@ static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionary
   CFRelease(dict);
 }
 
-+ (void)scrobble:(Song *)song {
++ (void)scrobble:(PlaylistItem *)item {
   NSString *sessionKey = [self sessionKey];
   if (sessionKey == nil) return;
   
@@ -158,7 +158,7 @@ static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionary
   [params setValue:name forKey:@"method"];
   int timestamp = (int) [[NSDate date] timeIntervalSince1970];
   [params setValue:[NSString stringWithFormat:@"%d",timestamp] forKey:@"timestamp"];
-  [self addSongTags:song toDictionary:params];
+  [self addItemTags:item toDictionary:params];
 
   [params setValue:apiKey forKey:@"api_key"];
   [params setValue:sessionKey forKey:@"sk"];
@@ -171,9 +171,9 @@ static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionary
   WSMethodInvocationScheduleWithRunLoop(myRef, [[NSRunLoop currentRunLoop] getCFRunLoop], (CFStringRef)NSDefaultRunLoopMode);
 }
 
-+ (void)addSongTags:(Song *)song toDictionary:(NSMutableDictionary *)dict {
-  for (NSString *tag in song.tagsDictionary) {
-    NSString *val = [song.tagsDictionary objectForKey:tag];
++ (void)addItemTags:(PlaylistItem *)item toDictionary:(NSMutableDictionary *)dict {
+  for (NSString *tag in item.tags) {
+    NSString *val = [item.tags objectForKey:tag];
     NSString *lastfmTag = tag;
     if ([tag isEqualToString:@"title"]) lastfmTag = @"track";
     if ([tag isEqualToString:@"track"]) lastfmTag = @"trackNumber";

@@ -9,32 +9,22 @@
 #import <Foundation/Foundation.h>
 #import "MartinAppDelegate.h"
 
-@class Song;
+@class PlaylistItem;
 
 @interface Player : NSObject <NSSoundDelegate> {
   BOOL isPlaying;
   
+  NSSound *nowPlayingSound;
+  PlaylistItem *nowPlayingItem;
+  
   NSTimer *seekTimer;
   IBOutlet NSSlider *seekSlider;
+  IBOutlet MartinAppDelegate *appDelegate;
 }
-
-@property (nonatomic, strong) NSSound *nowPlayingSound;
-@property (nonatomic, strong) Song *nowPlayingSong;
 
 @property (nonatomic, assign) double volume;
 @property (nonatomic, assign) double seek;
 
-@property (weak) IBOutlet MartinAppDelegate *appDelegate;
-@property (nonatomic, strong) IBOutlet NSButton *nextButton;
-@property (nonatomic, strong) IBOutlet NSButton *playButton;
-@property (nonatomic, strong) IBOutlet NSButton *prevButton;
-
-- (IBAction)buttonPressed:(id)sender;
-
 - (void)play;
-- (void)stop;
-- (void)playOrPause;
-- (void)next;
-- (void)prev;
 
 @end

@@ -14,8 +14,8 @@
 
 @property (nonatomic, strong) NSArray *dragFromLibrary;
 
-@property (unsafe_unretained) IBOutlet Player *player;
-@property (weak) IBOutlet PlaylistManager *playlistManager;
+@property (nonatomic, strong) IBOutlet Player *player;
+@property (nonatomic, strong) IBOutlet PlaylistManager *playlistManager;
 @property (nonatomic, strong) IBOutlet NSTableView *playlistsTableView;
 @property (nonatomic, strong) IBOutlet NSTableView *songsTableView;
 @property (nonatomic, strong) IBOutlet NSOutlineView *outlineView;

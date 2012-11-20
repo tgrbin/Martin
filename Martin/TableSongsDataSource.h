@@ -8,23 +8,23 @@
 
 #import <Foundation/Foundation.h>
 
-@class Playlist, MartinAppDelegate;
+@class MartinAppDelegate;
+@class Playlist;
+@class PlaylistItem;
 
 @interface TableSongsDataSource : NSObject <NSTableViewDataSource, NSTableViewDelegate> {
-  int highlighted;
-  int prevHighlighted;
+  BOOL sortAscending;
+  
+  NSArray *dragRows;
+  
+  IBOutlet MartinAppDelegate *appDelegate;
+  IBOutlet NSTableView *table;
 }
 
-@property (weak) Playlist *playlist;
-@property (nonatomic, strong) NSTableColumn *sortedColumn; // stupac koji je sortiran
-@property (nonatomic, assign) BOOL sortAscending;
+@property (nonatomic, strong) Playlist *playlist;
+@property (nonatomic, strong) NSTableColumn *sortedColumn;
+@property (nonatomic, assign) BOOL showingNowPlayingPlaylist;
 
-@property (nonatomic, strong) NSArray *dragRows;
-
-@property (weak) IBOutlet MartinAppDelegate *appDelegate;
-@property (nonatomic, strong) IBOutlet NSTableView *table;
-@property (nonatomic, strong) IBOutlet NSButton *deleteButton;
-
-- (void) highlightSong:(int)_id;
+- (void)playingItemChanged;
 
 @end

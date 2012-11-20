@@ -8,29 +8,32 @@
 
 #import <Foundation/Foundation.h>
 
+@class PlaylistItem;
+struct PlaylistImpl;
+
 @interface Playlist : NSObject {
-  BOOL currentIDRemoved;
-  int suggestedID; // ako se izbrise pjesma koja trenutno svira, koji ID da svira sljedeci
+  int suggestedItemIndex; // ako se izbrise pjesma koja trenutno svira, koji item da svira sljedeci
+  BOOL currentItemIndexRemoved;
+  
+  struct PlaylistImpl *impl;
 }
 
 @property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSMutableArray *shuffledSongs;
-@property (nonatomic, strong) NSMutableArray *songs;
-@property (nonatomic, strong) NSMutableArray *tmpAddSongs;
-@property (nonatomic, strong) NSMutableSet *songsSet;
-@property (nonatomic, assign) int currentID;
+@property (nonatomic, assign) int currentItemIndex;
 
 - (id)initWithName:(NSString *)n array:(NSArray *)s;
-- (void)addSongs:(NSArray *)treeNodes atPos:(NSInteger)pos;
-- (void)removeSongsAtIndexes:(NSIndexSet *)indexes;
-- (int)reorderSongs:(NSArray *)rows atPos:(NSInteger)pos;
-- (void)insertArray:(NSArray *)arr atPos:(NSInteger)pos;
+- (void)addTreeNodes:(NSArray *)treeNodes atPos:(int)pos;
 
+- (void)removeSongsAtIndexes:(NSIndexSet *)indexes;
+- (int)reorderSongs:(NSArray *)rows atPos:(int)pos;
 - (void)sortBy:(NSString *)str;
 - (void)reverse;
 
-- (int)nextSongIDShuffled:(BOOL)shuffled;
-- (int)prevSongIDShuffled:(BOOL)shuffled;
-- (void)setCurrentSong:(int)index;
+- (int)numberOfItems;
+- (PlaylistItem *)objectAtIndexedSubscript:(int)index;
+
+- (PlaylistItem *)currentItem;
+- (PlaylistItem *)nextItemShuffled:(BOOL)shuffled;
+- (PlaylistItem *)prevItemShuffled:(BOOL)shuffled;
 
 @end

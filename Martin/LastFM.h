@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class Song;
+@class PlaylistItem;
 
 @interface LastFM : NSObject
 
@@ -16,7 +16,7 @@
 + (void)getSessionKey:(void (^)(BOOL))callbackBlock;
 + (void)resetSessionKey;
 
-+ (void)updateNowPlaying:(Song *)song;
-+ (void)scrobble:(Song *)song;
++ (void)updateNowPlaying:(PlaylistItem *)playlistItem;
++ (void)scrobble:(PlaylistItem *)playlistItem;
 
 @end

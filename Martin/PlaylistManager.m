@@ -11,119 +11,119 @@
 #import "PlaylistManager.h"
 #import "Playlist.h"
 #import "Player.h"
+#import "PlaylistItem.h"
 
 @implementation PlaylistManager
 
-@synthesize playlists, appDelegate;
-@synthesize table, addPlaylistButton, deleteButton, shuffleButton;
-@synthesize shuffleOn;
-
 - (id)init {
-    if( self = [super init] ) {
-        playlists = [[NSMutableArray alloc] init];
+  if (self = [super init]) {
+    playlists = [NSMutableArray new];
 
-        NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"Playlists" ofType:@"plist"];
-        NSData *plistXML = [[NSFileManager defaultManager] contentsAtPath:plistPath];
-        NSDictionary *data = [NSPropertyListSerialization propertyListWithData:plistXML options:NSPropertyListImmutable format:NULL error:nil];
-        
-        for( NSString *key in data ) {
-            NSArray *songs = (NSArray*) [data objectForKey:key];
-            Playlist *playlist = [[Playlist alloc] initWithName:key array:songs];
-            [playlists addObject:playlist];
-        }
-    }
+    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"Playlists" ofType:@"plist"];
+    NSDictionary *data = [NSDictionary dictionaryWithContentsOfFile:plistPath];
     
-    return self;
+    for (NSString *key in data) {
+      NSArray *playlistItems = (NSArray*) [data objectForKey:key];
+      Playlist *playlist = [[Playlist alloc] initWithName:key array:playlistItems];
+      [playlists addObject:playlist];
+    }
+  }
+  
+  return self;
 }
 
 - (void)savePlaylists {
-    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"Playlists" ofType:@"plist"];
-    
-    NSMutableArray *keys = [[NSMutableArray alloc] init];
-    NSMutableArray *values = [[NSMutableArray alloc] init];
-    
-    for( Playlist *item in playlists ) {
-        [keys addObject:item.name];
-        [values addObject:item.songs];
-    }
-    
-    NSDictionary *plistDict = [NSDictionary dictionaryWithObjects:values forKeys:keys];
-    NSData *plistData = [NSPropertyListSerialization dataWithPropertyList:plistDict format:NSPropertyListXMLFormat_v1_0 options:0 error:nil];
-    
-    [plistData writeToFile:plistPath atomically:YES];
+  NSMutableArray *keys = [NSMutableArray new];
+  NSMutableArray *values = [NSMutableArray new];
+  
+  for (Playlist *p in playlists) {
+    [keys addObject:p.name];
+    NSMutableArray *arr = [NSMutableArray new];
+    for (int i = 0; i < p.numberOfItems; ++i) [arr addObject:[p[i] dictionary]];
+    [values addObject:arr];
+  }
+  
+  NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"Playlists" ofType:@"plist"];
+  NSDictionary *plistDict = [NSDictionary dictionaryWithObjects:values forKeys:keys];
+  [plistDict writeToFile:plistPath atomically:YES];
 }
 
 - (void)choosePlaylist:(NSInteger)index {
-    selectedPlaylist = [playlists objectAtIndex:index];
-    
-    TableSongsDataSource *tableSongsDataSource = (TableSongsDataSource*) appDelegate.songsTableView.dataSource;
-    
-    tableSongsDataSource.playlist = selectedPlaylist;
-    tableSongsDataSource.sortedColumn = nil;
-    [appDelegate.songsTableView reloadData];
+  selectedPlaylist = [playlists objectAtIndex:index];
+  
+  TableSongsDataSource *tableSongsDataSource = (TableSongsDataSource *)appDelegate.songsTableView.dataSource;
+  tableSongsDataSource.playlist = selectedPlaylist;
+  tableSongsDataSource.sortedColumn = nil;
+  tableSongsDataSource.showingNowPlayingPlaylist = (selectedPlaylist == nowPlayingPlaylist);
+  [appDelegate.songsTableView reloadData];
 }
 
-#pragma mark - button pressed
+#pragma mark - buttons 
 
-- (IBAction)buttonPressed:(id)sender {
-    if( sender == addPlaylistButton ) {
-        [playlists addObject:[[Playlist alloc] init]];
-        [table reloadData];
-        [table selectRowIndexes:[NSIndexSet indexSetWithIndex:[playlists count]-1] byExtendingSelection:NO];
-    } else if( sender == deleteButton ) {
-        if( [playlists count] > 1 ) { // nemozes izbrisat sve playliste
-            if( [playlists objectAtIndex:[table selectedRow]] == nowPlayingPlaylist ) nowPlayingPlaylist = nil;	
-            [playlists removeObjectAtIndex:[table selectedRow]];
-            [table reloadData];
-            [self choosePlaylist:[table selectedRow]];
-        }
-    } else if( sender == shuffleButton ) {
-        shuffleOn = shuffleButton.intValue > 0;
-    }
+- (IBAction)deletePlaylistPressed:(id)sender {
+  if (playlists.count > 1) { // nemozes izbrisat sve playliste
+    if (playlists[playlistsTable.selectedRow] == nowPlayingPlaylist) nowPlayingPlaylist = nil;
+    [playlists removeObjectAtIndex:playlistsTable.selectedRow];
+    [playlistsTable reloadData];
+    [self choosePlaylist:playlistsTable.selectedRow];
+  }
+}
+
+- (IBAction)addPlaylistPressed:(id)sender {
+  [playlists addObject:[Playlist new]];
+  [playlistsTable reloadData];
+  [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:playlists.count-1] byExtendingSelection:NO];
+}
+
+- (IBAction)toggleShufflePressed:(NSButton *)sender {
+  shuffleOn = sender.intValue > 0;
 }
 
 #pragma mark - table data source
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-    return [playlists count];
+  return playlists.count;
 }
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    return ((Playlist*)[playlists objectAtIndex:row]).name;
+  return ((Playlist*)playlists[row]).name;
 }
 
 - (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    Playlist *playlist = [playlists objectAtIndex:row];
-    playlist.name = (NSString*)object;
+  ((Playlist*)playlists[row]).name = (NSString *)object;
 }
 
 #pragma mark - table delegate
 
 - (void)tableViewSelectionDidChange:(NSNotification *)notification {
-    [self choosePlaylist:[table selectedRow]];
+  [self choosePlaylist:playlistsTable.selectedRow];
 }
 
 #pragma mark - playing songs
 
-- (int) currentSongID {
-    if( nowPlayingPlaylist == nil ) nowPlayingPlaylist = selectedPlaylist;
-    return [nowPlayingPlaylist currentID];
+- (PlaylistItem *)currentItem {
+  [self setNowPlayingPlaylistIfNecessary];
+  return nowPlayingPlaylist.currentItem;
 }
 
-- (int) nextSongID {
-    if( nowPlayingPlaylist == nil ) nowPlayingPlaylist = selectedPlaylist;
-    return [nowPlayingPlaylist nextSongIDShuffled:shuffleOn];
+- (PlaylistItem *)nextItem {
+  [self setNowPlayingPlaylistIfNecessary];
+  return [nowPlayingPlaylist nextItemShuffled:shuffleOn];
 }
 
-- (int) prevSongID {
-    if( nowPlayingPlaylist == nil ) nowPlayingPlaylist = selectedPlaylist;
-    return [nowPlayingPlaylist prevSongIDShuffled:shuffleOn];
+- (PlaylistItem *)prevItem {
+  [self setNowPlayingPlaylistIfNecessary];
+  return [nowPlayingPlaylist prevItemShuffled:shuffleOn];
 }
 
-- (void) songDoubleClicked {
-    nowPlayingPlaylist = selectedPlaylist;
-    [nowPlayingPlaylist setCurrentSong:(int)appDelegate.songsTableView.clickedRow];
-    [appDelegate.player play];
+- (void)setNowPlayingPlaylistIfNecessary {
+  if (nowPlayingPlaylist == nil) nowPlayingPlaylist = selectedPlaylist;
+}
+
+- (void)songDoubleClicked {
+  nowPlayingPlaylist = selectedPlaylist;
+  [nowPlayingPlaylist setCurrentItemIndex:(int)appDelegate.songsTableView.clickedRow];
+  [appDelegate.player play];
 }
 
 @end

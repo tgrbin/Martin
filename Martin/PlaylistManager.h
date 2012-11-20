@@ -8,28 +8,28 @@
 
 #import <Foundation/Foundation.h>
 
-@class MartinAppDelegate, Playlist;
+@class MartinAppDelegate;
+@class Playlist;
+@class PlaylistItem;
 
 @interface PlaylistManager : NSObject <NSTableViewDataSource,NSTableViewDelegate> {
   Playlist *nowPlayingPlaylist;
   Playlist *selectedPlaylist;
+  
+  NSMutableArray *playlists;
+  BOOL shuffleOn;
+  
+  IBOutlet MartinAppDelegate *appDelegate;
+  IBOutlet NSTableView *playlistsTable;
 }
 
-@property (nonatomic, strong) NSMutableArray *playlists;
-@property (assign) BOOL shuffleOn;
-
-@property (weak) IBOutlet MartinAppDelegate *appDelegate;
-@property (nonatomic, strong) IBOutlet NSTableView *table;
-@property (nonatomic, strong) IBOutlet NSButton *addPlaylistButton;
-@property (nonatomic, strong) IBOutlet NSButton *deleteButton;
-@property (nonatomic, strong) IBOutlet NSButton *shuffleButton;
-
-- (IBAction)buttonPressed:(id)sender;
-- (void)savePlaylists;
 - (void)choosePlaylist:(NSInteger)index;
+- (void)savePlaylists;
 
-- (int)currentSongID;
-- (int)nextSongID;
-- (int)prevSongID;
+- (PlaylistItem *)currentItem;
+- (PlaylistItem *)nextItem;
+- (PlaylistItem *)prevItem;
+
+- (void)songDoubleClicked;
 
 @end

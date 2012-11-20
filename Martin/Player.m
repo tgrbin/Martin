@@ -10,37 +10,42 @@
 
 #import "TableSongsDataSource.h"
 #import "PlaylistManager.h"
-#import "LibManager.h"
 #import "LastFM.h"
 #import "Player.h"
-#import "Song.h"
+#import "PlaylistItem.h"
 
 @implementation Player
 
-@synthesize nowPlayingSound, appDelegate, nowPlayingSong;
-@synthesize nextButton, playButton, prevButton;
+- (void)awakeFromNib {
+  self.volume = 0.5;
+  [self setupHotkeyEvents];
+}
 
-- (void)playSong:(Song *)song {
+- (void)playItem:(PlaylistItem *)item {
   [nowPlayingSound stop];
-  self.nowPlayingSound = [[NSSound alloc] initWithContentsOfFile:song.filename byReference:YES];
+  
+  if (item == nil) return;
+  
+  nowPlayingSound = [[NSSound alloc] initWithContentsOfFile:item.filename byReference:YES];
   nowPlayingSound.delegate = self;
   nowPlayingSound.volume = _volume;
   [nowPlayingSound play];
+  
   seekSlider.enabled = YES;
   [self startSeekTimer];
+  
   isPlaying = YES;
-  self.nowPlayingSong = song;
+  nowPlayingItem = item;
   
-  [LastFM updateNowPlaying:song];
+  [LastFM updateNowPlaying:item];
   
-  TableSongsDataSource *tableSongsDataSource = (TableSongsDataSource*) appDelegate.songsTableView.dataSource;
-  [tableSongsDataSource highlightSong:song.inode];
+  [((TableSongsDataSource*) appDelegate.songsTableView.dataSource) playingItemChanged];
 }
 
 - (void)stop {
   if (nowPlayingSound) {
     [nowPlayingSound stop];
-    self.nowPlayingSound = nil;
+    nowPlayingSound = nil;
     self.seek = 0;
     [seekTimer invalidate];
     seekTimer = nil;
@@ -49,15 +54,12 @@
 }
 
 - (void)play {
-  Song *song = [[LibManager sharedManager] songByID:[appDelegate.playlistManager currentSongID]];
-  [self playSong:song];
+  [self playItem:appDelegate.playlistManager.currentItem];
 }
 
 - (void)playOrPause {
-  Song *song = [[LibManager sharedManager] songByID:[appDelegate.playlistManager currentSongID]];
-  
   if (nowPlayingSound == nil) {
-    [self playSong:song];
+    [self playItem:appDelegate.playlistManager.currentItem];
   } else {
     if (isPlaying) [nowPlayingSound pause];
     else [nowPlayingSound resume];
@@ -66,19 +68,11 @@
 }
 
 - (void)next {
-  Song *song = [[LibManager sharedManager] songByID:[appDelegate.playlistManager nextSongID]];
-  [self playSong:song];
+  [self playItem:appDelegate.playlistManager.nextItem];
 }
 
 - (void)prev {
-  Song *song = [[LibManager sharedManager] songByID:[appDelegate.playlistManager prevSongID]];
-  [self playSong:song];
-}
-
-- (IBAction)buttonPressed:(id)sender {
-  if (sender == nextButton) [self next];
-  else if (sender == prevButton) [self prev];
-  else [self playOrPause];
+  [self playItem:appDelegate.playlistManager.prevItem];
 }
 
 - (void)setVolume:(double)volume {
@@ -103,10 +97,13 @@
     self.seek = 0;
     [seekTimer invalidate];
     seekTimer = nil;
+    seekSlider.enabled = NO;
   } else {
     self.seek = nowPlayingSound.currentTime / nowPlayingSound.duration;
   }
 }
+
+#pragma mark - actions
 
 - (IBAction)seekSliderChanged:(NSSlider *)sender {
   if (nowPlayingSound) {
@@ -114,22 +111,32 @@
   }
 }
 
+- (IBAction)prevPressed:(id)sender {
+  [self prev];
+}
+
+- (IBAction)playOrPausePressed:(id)sender {
+  [self playOrPause];
+}
+
+- (IBAction)nextPressed:(id)sender {
+  [self next];
+}
+
 #pragma mark - nssound delegate
 
 - (void)sound:(NSSound *)sound didFinishPlaying:(BOOL)aBool {
   if (aBool) {
-    [LastFM scrobble:nowPlayingSong];
+    [LastFM scrobble:nowPlayingItem];
     [self next];
   } else {
-    self.nowPlayingSound = nil;
+    nowPlayingSound = nil;
   }
 }
 
 #pragma mark - hot keys
 
-OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void *userData);
-
-OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void *userData) {
+static OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void *userData) {
   EventHotKeyID hkCom;
   GetEventParameter(theEvent, kEventParamDirectObject, typeEventHotKeyID, NULL, sizeof(hkCom), NULL, &hkCom);
 
@@ -143,15 +150,13 @@ OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void 
   return noErr;
 }
 
-- (void) awakeFromNib {
-  self.volume = 0.5;
-  
+- (void)setupHotkeyEvents {
   EventHotKeyRef hkRef;
   EventHotKeyID hkID;
   EventTypeSpec eventType;
-  eventType.eventClass=kEventClassKeyboard;
-  eventType.eventKind=kEventHotKeyPressed;
-
+  eventType.eventClass = kEventClassKeyboard;
+  eventType.eventKind = kEventHotKeyPressed;
+  
   InstallApplicationEventHandler(&hotkeyHandler, 1, &eventType, (__bridge void *)self, NULL);
   
   hkID.signature = 'play';

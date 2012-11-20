@@ -8,24 +8,22 @@
 
 #import "TableSongsDataSource.h"
 #import "MartinAppDelegate.h"
-#import "PlaylistManager.h"
 #import "LibManager.h"
 #import "TreeNode.h"
 #import "Playlist.h"
-#import "Song.h"
+#import "PlaylistItem.h"
+
+@interface TableSongsDataSource()
+@property (nonatomic, assign) int highlightedRow;
+@end
 
 @implementation TableSongsDataSource
-
-@synthesize table, deleteButton;
-@synthesize dragRows, appDelegate;
-@synthesize playlist, sortedColumn, sortAscending;
 
 #pragma mark - init
 
 - (void)awakeFromNib {
-  highlighted = -1;
-  prevHighlighted = -1;
-  [table registerForDraggedTypes:[NSArray arrayWithObject:@"MyDragType"]];
+  _highlightedRow = -1;
+  [table registerForDraggedTypes:@[@"MyDragType"]];
 }
 
 #pragma mark - drag and drop
@@ -33,7 +31,7 @@
 - (BOOL)tableView:(NSTableView *)tableView writeRows:(NSArray *)rows toPasteboard:(NSPasteboard *)pboard {
   [pboard declareTypes:@[@"MyDragType"] owner:nil];
   [pboard setData:[NSData data] forType:@"MyDragType"];
-  self.dragRows = rows;
+  dragRows = rows;
   return YES;        
 }
 
@@ -48,10 +46,10 @@
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
   if (info.draggingSource == appDelegate.outlineView) {
-    [playlist addSongs:appDelegate.dragFromLibrary atPos:row];
+    [_playlist addTreeNodes:appDelegate.dragFromLibrary atPos:(int)row];
   } else if (info.draggingSource == tableView) {
-    int newPos = [playlist reorderSongs:self.dragRows atPos: row];
-    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(newPos, [self.dragRows count])] byExtendingSelection:NO];
+    int newPos = [_playlist reorderSongs:dragRows atPos:(int)row];
+    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(newPos, dragRows.count)] byExtendingSelection:NO];
   } else {
     return NO;
   }
@@ -63,17 +61,17 @@
 #pragma mark - delegate
 
 - (void)tableView:(NSTableView *)tableView didClickTableColumn:(NSTableColumn *)tableColumn {
-  if (sortedColumn == tableColumn) {
+  if (_sortedColumn == tableColumn) {
     sortAscending = !sortAscending;
-    [playlist reverse];
+    [_playlist reverse];
   } else {
     sortAscending = YES;
     
-    if (sortedColumn) [tableView setIndicatorImage:nil inTableColumn:sortedColumn];
+    if (_sortedColumn) [tableView setIndicatorImage:nil inTableColumn:_sortedColumn];
     self.sortedColumn = tableColumn;
     
-    [tableView setHighlightedTableColumn: tableColumn];
-    [playlist sortBy:tableColumn.identifier];
+    [tableView setHighlightedTableColumn:tableColumn];
+    [_playlist sortBy:tableColumn.identifier];
   }
   
   [tableView setIndicatorImage:[NSImage imageNamed: sortAscending? @"NSAscendingSortIndicator": @"NSDescendingSortIndicator"] inTableColumn:tableColumn];
@@ -83,7 +81,7 @@
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)c forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   NSTextFieldCell *cell = (NSTextFieldCell*)c;
   
-  if ([[playlist.songs objectAtIndex:row] intValue] == highlighted) {
+  if (_showingNowPlayingPlaylist && row == _highlightedRow) {
     cell.drawsBackground = YES;
     cell.backgroundColor = [NSColor colorWithCalibratedRed:0.6 green:0.7 blue:0.8 alpha:1.0];
   } else {
@@ -94,17 +92,16 @@
 #pragma mark - data source
 
 - (NSInteger) numberOfRowsInTableView:(NSTableView *)tableView {
-  return [playlist.songs count];
+  return _playlist.numberOfItems;
 }
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   NSString *tag = tableColumn.identifier;
-  int songID = [[playlist.songs objectAtIndex:row] intValue];
-  Song *song = [[LibManager sharedManager] songByID:songID];
-  NSString *value = [song.tagsDictionary objectForKey:tag];
+  PlaylistItem *item = _playlist[(int)row];
+  NSString *value = [item.tags objectForKey:tag];
   
   if ([tag isEqualToString:@"length"]) {
-    int sec = song.lengthInSeconds;
+    int sec = item.lengthInSeconds;
     value = [NSString stringWithFormat:@"%d:%02d", sec/60, sec%60];
   }
   
@@ -128,19 +125,21 @@
   }
 }
 
-#pragma mark - highlight now playing
+#pragma mark - update now playing
 
-- (void)highlightSong:(int)_id {
-  NSIndexSet *columns = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 6)];
-      
-  prevHighlighted = highlighted;
-  highlighted = _id;
+- (void)playingItemChanged {
+  self.highlightedRow = _playlist.currentItemIndex;
+}
+
+- (void)setHighlightedRow:(int)highlightedRow {
+  static int previousHighlightedRow;
+  previousHighlightedRow = _highlightedRow;
+  _highlightedRow = highlightedRow;
   
   NSMutableIndexSet *rows = [NSMutableIndexSet indexSet];
-  
-  if (prevHighlighted >= 0) [rows addIndex:[playlist.songs indexOfObject:@(prevHighlighted)]];
-  if (highlighted >= 0) [rows addIndex:[playlist.songs indexOfObject:@(highlighted)]];
-
+  if (previousHighlightedRow >= 0) [rows addIndex:previousHighlightedRow];
+  if (highlightedRow >= 0) [rows addIndex:highlightedRow];
+  NSIndexSet *columns = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, table.numberOfColumns)];
   [table reloadDataForRowIndexes:rows columnIndexes:columns];
 }
 
