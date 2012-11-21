@@ -1,17 +1,16 @@
 //
-//  PlaylistTableView.m
+//  LibraryOutlineView.m
 //  Martin
 //
 //  Created by Tomislav Grbin on 11/21/12.
 //
 //
 
-#import "PlaylistTableView.h"
-#import "TableSongsDataSource.h"
+#import "LibraryOutlineView.h"
 #import "MartinAppDelegate.h"
-#import "PlaylistManager.h"
+#import "TableSongsDataSource.h"
 
-@implementation PlaylistTableView
+@implementation LibraryOutlineView
 
 - (void)keyDown:(NSEvent *)event {
   BOOL eventProcessed = NO;
@@ -23,15 +22,17 @@
       
       eventProcessed = YES;
       switch (pressedUnichar) {
-        case NSDeleteCharacter:
-        case NSDeleteFunctionKey:
-        case NSDeleteCharFunctionKey:
-          [((TableSongsDataSource *)self.dataSource) deleteSelectedItems];
-          break;
         case NSEnterCharacter:
         case NSNewlineCharacter:
         case NSCarriageReturnCharacter:
-          [((MartinAppDelegate *)[[NSApplication sharedApplication] delegate]).playlistManager enterPressed];
+          {
+            NSMutableArray *selectedItems = [NSMutableArray new];
+            for (NSInteger row = self.selectedRowIndexes.firstIndex; row != NSNotFound; row = [self.selectedRowIndexes indexGreaterThanIndex:row]) {
+              [selectedItems addObject:[self itemAtRow:row]];
+            }
+            MartinAppDelegate *appDelegate = (MartinAppDelegate *)[[NSApplication sharedApplication] delegate];
+            [((TableSongsDataSource*) appDelegate.songsTableView.dataSource) addTreeNodesToPlaylist:selectedItems];
+          }
           break;
         default:
           eventProcessed = NO;

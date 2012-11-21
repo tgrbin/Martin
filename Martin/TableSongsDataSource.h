@@ -27,5 +27,6 @@
 
 - (void)playingItemChanged;
 - (void)deleteSelectedItems;
+- (void)addTreeNodesToPlaylist:(NSArray *)treeNodes;
 
 @end

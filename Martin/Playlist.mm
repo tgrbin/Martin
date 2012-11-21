@@ -82,8 +82,7 @@ struct PlaylistImpl {
 
 - (void)traverseNodeAndAddItems:(TreeNode *)node {
   if ([node isKindOfClass:[TreeLeaf class]]) {
-    PlaylistItem *pi = [PlaylistItem new];
-    pi.inode = ((TreeLeaf*)node).song.inode;
+    PlaylistItem *pi = [[PlaylistItem alloc] initWithInode:((TreeLeaf*)node).song.inode];
     impl->playlistItems.push_back(pi);
   } else {
     int n = node.nChildren;

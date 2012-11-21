@@ -12,6 +12,14 @@
 
 @implementation PlaylistItem
 
+- (id)initWithInode:(int)inode {
+  if (self = [super init]) {
+    _inode = inode;
+    _song = [[LibManager sharedManager] songByID:_inode];
+  }
+  return self;
+}
+
 - (id)initWithDictionary:(NSDictionary *)dictionary {
   if (self = [super init]) {
     _inode = [dictionary[@"inode"] intValue];

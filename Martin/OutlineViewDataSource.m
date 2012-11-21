@@ -17,7 +17,7 @@
 #pragma mark - drag and drop
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pboard {
-  [pboard declareTypes:[NSArray arrayWithObject:@"MyDragType"] owner:nil];
+  [pboard declareTypes:@[@"MyDragType"] owner:nil];
   [pboard setData:[NSData data] forType:@"MyDragType"];
   
   ((MartinAppDelegate*) [[NSApplication sharedApplication] delegate]).dragFromLibrary = items;
@@ -42,7 +42,7 @@
   return [item nChildren] > 0;
 }
 
-- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *) tableColumn byItem:(id)item {
+- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
   if (item == nil) return @"root";
   if ([item nChildren] == 0) return [item name];
   return [NSString stringWithFormat:@"%@ (%d)", [item name], [item nChildren]];

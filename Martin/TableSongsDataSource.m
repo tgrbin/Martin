@@ -58,6 +58,11 @@
   return YES;
 }
 
+- (void)addTreeNodesToPlaylist:(NSArray *)treeNodes {
+  [_playlist addTreeNodes:treeNodes atPos:_playlist.numberOfItems];
+  [table reloadData];
+}
+
 #pragma mark - delegate
 
 - (void)tableView:(NSTableView *)tableView didClickTableColumn:(NSTableColumn *)tableColumn {

@@ -12,6 +12,7 @@
 
 @interface PlaylistItem : NSObject
 
+- (id)initWithInode:(int)inode;
 - (id)initWithDictionary:(NSDictionary *)dictionary;
 - (NSDictionary *)dictionary;
 
