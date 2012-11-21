@@ -108,12 +108,18 @@
   return value;
 }
 
-- (IBAction)deleteSongsPressed:(NSButton *)sender {
+#pragma mark - deleting songs
+
+- (IBAction)deleteItemsPressed:(id)sender {
+  [self deleteSelectedItems];
+}
+
+- (void)deleteSelectedItems {
   NSIndexSet *selectedIndexes = table.selectedRowIndexes;
   int n = (int)table.numberOfRows;
   int m = (int)selectedIndexes.count;
   int selectRow = (int)selectedIndexes.lastIndex;
-
+  
   if (m > 0) {
     [self.playlist removeSongsAtIndexes:selectedIndexes];
     [table deselectAll:nil];

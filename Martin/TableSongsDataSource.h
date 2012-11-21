@@ -26,5 +26,6 @@
 @property (nonatomic, assign) BOOL showingNowPlayingPlaylist;
 
 - (void)playingItemChanged;
+- (void)deleteSelectedItems;
 
 @end

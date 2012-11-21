@@ -31,5 +31,6 @@
 - (PlaylistItem *)prevItem;
 
 - (void)songDoubleClicked;
+- (void)enterPressed;
 
 @end

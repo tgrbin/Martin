@@ -22,6 +22,7 @@
 		79BF24A216579EA800F6A070 /* LibraryTags.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BF24A116579EA800F6A070 /* LibraryTags.m */; };
 		79C2ACB5144AB39200C2699B /* PlaylistManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C2ACB4144AB39200C2699B /* PlaylistManager.m */; };
 		79C2ACB8144AB46A00C2699B /* Playlists.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79C2ACB7144AB46A00C2699B /* Playlists.plist */; };
+		79C38221165D5E2D00C4C627 /* PlaylistTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C38220165D5E2D00C4C627 /* PlaylistTableView.m */; };
 		79D5760F1431074D00A2DA67 /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 79D5760E1431074D00A2DA67 /* icon.icns */; };
 		79D8FFED149DE5A3009B8955 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79D8FFEC149DE5A3009B8955 /* Carbon.framework */; };
 		79DEAD62165BD81C0017E4DD /* PlaylistItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DEAD61165BD81C0017E4DD /* PlaylistItem.m */; };
@@ -63,6 +64,8 @@
 		79C2ACB3144AB39200C2699B /* PlaylistManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistManager.h; sourceTree = "<group>"; };
 		79C2ACB4144AB39200C2699B /* PlaylistManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistManager.m; sourceTree = "<group>"; };
 		79C2ACB7144AB46A00C2699B /* Playlists.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Playlists.plist; sourceTree = "<group>"; };
+		79C3821F165D5E2D00C4C627 /* PlaylistTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistTableView.h; sourceTree = "<group>"; };
+		79C38220165D5E2D00C4C627 /* PlaylistTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistTableView.m; sourceTree = "<group>"; };
 		79D5760E1431074D00A2DA67 /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = icon.icns; path = ../icon.icns; sourceTree = "<group>"; };
 		79D8FFEC149DE5A3009B8955 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		79DEAD60165BD81C0017E4DD /* PlaylistItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistItem.h; sourceTree = "<group>"; };
@@ -151,6 +154,8 @@
 				79AF97EA145305C200BE8391 /* Player.m */,
 				79C2ACB3144AB39200C2699B /* PlaylistManager.h */,
 				79C2ACB4144AB39200C2699B /* PlaylistManager.m */,
+				79C3821F165D5E2D00C4C627 /* PlaylistTableView.h */,
+				79C38220165D5E2D00C4C627 /* PlaylistTableView.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -333,6 +338,7 @@
 				79242E301656B0CF006379D6 /* PreferencesWindowController.m in Sources */,
 				79BF24A216579EA800F6A070 /* LibraryTags.m in Sources */,
 				79DEAD62165BD81C0017E4DD /* PlaylistItem.m in Sources */,
+				79C38221165D5E2D00C4C627 /* PlaylistTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

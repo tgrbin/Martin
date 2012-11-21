@@ -126,4 +126,10 @@
   [appDelegate.player play];
 }
 
+- (void)enterPressed {
+  nowPlayingPlaylist = selectedPlaylist;
+  [nowPlayingPlaylist setCurrentItemIndex:(int)appDelegate.songsTableView.selectedRow];
+  [appDelegate.player play];
+}
+
 @end
