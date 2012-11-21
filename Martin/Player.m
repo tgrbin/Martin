@@ -19,6 +19,7 @@
 - (void)awakeFromNib {
   self.volume = 0.5;
   [self setupHotkeyEvents];
+  seekSlider.enabled = NO;
 }
 
 - (void)playItem:(PlaylistItem *)item {

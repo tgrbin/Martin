@@ -129,8 +129,9 @@ struct compareSongs {
 - (Song *)songByID:(int)ID {
   Song *ref = [Song new];
   ref.inode = ID;
-  auto iterator = lower_bound(impl->songs.begin(), impl->songs.end(), ref, compareSongs());
-  return (iterator == impl->songs.end())? nil: *iterator;
+  auto it = lower_bound(impl->songs.begin(), impl->songs.end(), ref, compareSongs());
+  if (it == impl->songs.end() || (*it).inode != ID) return nil;
+  return *it;
 }
 
 - (void)rescanLibraryWithProgressBlock:(void (^)(int))progressBlock {

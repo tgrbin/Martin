@@ -122,16 +122,16 @@ struct PlaylistImpl {
   BOOL isLength = [str isEqualToString:@"length"];
   BOOL isTrackNumber = [str isEqualToString:@"track number"];
   
-  sort(impl->playlist.begin(), impl->playlist.end(), [=](int a, int b) -> bool {
+  sort(impl->playlist.begin(), impl->playlist.end(), [&, isLength, isTrackNumber](int a, int b) -> bool {
     PlaylistItem *p1 = impl->playlistItems[a];
     PlaylistItem *p2 = impl->playlistItems[b];
     
-    if (isLength) return p1.lengthInSeconds > p2.lengthInSeconds;
+    if (isLength) return p1.lengthInSeconds < p2.lengthInSeconds;
     
     NSString *val1 = p1.tags[str];
     NSString *val2 = p2.tags[str];
     
-    if (isTrackNumber) return val1.intValue > val2.intValue;
+    if (isTrackNumber) return val1.intValue < val2.intValue;
     return [val1 caseInsensitiveCompare:val2] == NSOrderedAscending;
   });
 }
@@ -145,51 +145,62 @@ struct PlaylistImpl {
   
   vector<int> indexesToRemove;
   for (NSInteger curr = indexes.firstIndex; curr != NSNotFound; curr = [indexes indexGreaterThanIndex:curr]) indexesToRemove.push_back((int)curr);
-
+  
+  int n = (int)indexesToRemove.size();
+  int m = self.numberOfItems;
   BOOL found = NO;
   int nextAvailable = -1;
-  for (int i = 0; i < indexesToRemove.size(); ++i) {
+  for (int i = 0; i < n; ++i) {
     if (impl->playlist[indexesToRemove[i]] == _currentItemIndex) found = YES;
-    if (found == YES && i < indexesToRemove.size()-1 && indexesToRemove[i+1] != indexesToRemove[i]+1) {
+    if (found == YES && (i == n-1 || indexesToRemove[i+1] != indexesToRemove[i]+1)) {
       nextAvailable = indexesToRemove[i]+1;
       break;
     }
   }
-  if (found == YES && nextAvailable == -1 && indexesToRemove[0] != 0) nextAvailable = indexesToRemove[0];
-  
-  if (found) {
-    currentItemIndexRemoved = YES;
-    if (nextAvailable != -1) suggestedItemIndex = impl->playlist[nextAvailable];
-  }
-  
-  set<int> itemIndexesToRemoveSet;
-  vector<int> itemIndexesToRemoveVector((int)indexesToRemove.size());
-  for (auto it = indexesToRemove.begin(); it != indexesToRemove.end(); ++it) {
-    itemIndexesToRemoveSet.insert(impl->playlist[*it]);
-    itemIndexesToRemoveVector.push_back(impl->playlist[*it]);
-  }
-  
-  vector<int> shuffledIndexesToRemove;
-  for (int i = 0; i < impl->shuffled.size(); ++i)
-    if (itemIndexesToRemoveSet.count(impl->shuffled[i])) shuffledIndexesToRemove.push_back(i);
 
-  removeIndexesFromVector(itemIndexesToRemoveVector, impl->playlistItems);
+  if (found) {
+    if (nextAvailable == m) nextAvailable = (indexesToRemove[0] == 0)? -1: 0;
+    currentItemIndexRemoved = YES;
+    suggestedItemIndex = (nextAvailable != -1)? impl->playlist[nextAvailable]: -1;
+  }
+  
+  vector<int> itemIndexesToRemoveMask(m, 0);
+  for (auto it = indexesToRemove.begin(); it != indexesToRemove.end(); ++it)
+    itemIndexesToRemoveMask[impl->playlist[*it]] = 1;
+  
+  vector<int> itemIndexesToRemove;
+  vector<int> shuffledIndexesToRemove;
+  for (int i = 0; i < m; ++i) {
+    if (itemIndexesToRemoveMask[impl->shuffled[i]]) shuffledIndexesToRemove.push_back(i);
+    if (itemIndexesToRemoveMask[i]) itemIndexesToRemove.push_back(i);
+  }
+  
+  removeIndexesFromVector(itemIndexesToRemove, impl->playlistItems);
   removeIndexesFromVector(indexesToRemove, impl->playlist);
   removeIndexesFromVector(shuffledIndexesToRemove, impl->shuffled);
+  
+  for (int i = 1; i < m; ++i) itemIndexesToRemoveMask[i] += itemIndexesToRemoveMask[i-1];
+  
+  for (int i = 0; i < m-n; ++i) {
+    impl->playlist[i] -= itemIndexesToRemoveMask[impl->playlist[i]];
+    impl->shuffled[i] -= itemIndexesToRemoveMask[impl->shuffled[i]];
+  }
 }
 
 template <typename T>
 static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
   int waitingForIndex = 0;
   int overwritePos = 0;
-  for (int i = 0; i < v.size(); ++i) {
-    if (i == r[waitingForIndex]) {
+  int vs = (int)v.size();
+  int rs = (int)r.size();
+  for (int i = 0; i < vs; ++i) {
+    if (waitingForIndex < rs && i == r[waitingForIndex]) {
       ++waitingForIndex;
     } else {
-      v[i] = v[overwritePos++];
+      v[overwritePos++] = v[i];
     }
   }
-  v.resize(v.size() - r.size());
+  v.resize(vs - rs);
 }
 
 #pragma mark - playing songs

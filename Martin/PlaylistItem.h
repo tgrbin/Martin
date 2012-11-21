@@ -10,9 +10,7 @@
 
 @class Song;
 
-@interface PlaylistItem : NSObject {
-  BOOL triedToGetSong;
-}
+@interface PlaylistItem : NSObject
 
 - (id)initWithDictionary:(NSDictionary *)dictionary;
 - (NSDictionary *)dictionary;

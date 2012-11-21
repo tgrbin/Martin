@@ -109,12 +109,13 @@
 }
 
 - (IBAction)deleteSongsPressed:(NSButton *)sender {
-  NSInteger n = [table numberOfRows];
-  NSInteger m = [[table selectedRowIndexes] count];
-  NSUInteger selectRow = [[table selectedRowIndexes] lastIndex];
+  NSIndexSet *selectedIndexes = table.selectedRowIndexes;
+  int n = (int)table.numberOfRows;
+  int m = (int)selectedIndexes.count;
+  int selectRow = (int)selectedIndexes.lastIndex;
 
   if (m > 0) {
-    [self.playlist removeSongsAtIndexes:[table selectedRowIndexes]];
+    [self.playlist removeSongsAtIndexes:selectedIndexes];
     [table deselectAll:nil];
     [table reloadData];
     

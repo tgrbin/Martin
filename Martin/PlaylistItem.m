@@ -18,25 +18,18 @@
     _filename = dictionary[@"filename"];
     _tags = dictionary[@"tags"];
     _lengthInSeconds = [dictionary[@"length"] intValue];
-    triedToGetSong = NO;
+    if (_inode) _song = [[LibManager sharedManager] songByID:_inode];
   }
   return self;
 }
 
 - (NSDictionary *)dictionary {
-  return @{
-    @"inode": [NSString stringWithFormat:@"%d", _inode],
-    @"filename": _filename,
-    @"tags": _tags,
-    @"length": [NSString stringWithFormat:@"%d", _lengthInSeconds]
-  };
-}
-
-- (Song *)song {
-  if (_inode == 0) return nil;
-  if (triedToGetSong) return _song;
-  triedToGetSong = YES;
-  return _song = [[LibManager sharedManager] songByID:_inode];
+  NSMutableDictionary *dict = [NSMutableDictionary new];
+  dict[@"inode"] = [NSString stringWithFormat:@"%d", _inode];
+  dict[@"length"] = [NSString stringWithFormat:@"%d", self.lengthInSeconds];
+  if (self.filename) dict[@"filename"] = self.filename;
+  if (self.tags) dict[@"tags"] = self.tags;
+  return dict;
 }
 
 - (NSString *)filename {
