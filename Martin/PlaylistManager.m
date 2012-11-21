@@ -6,14 +6,26 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "TableSongsDataSource.h"
-#import "MartinAppDelegate.h"
 #import "PlaylistManager.h"
 #import "Playlist.h"
-#import "Player.h"
+#import "PlaylistTableManager.h"
 #import "PlaylistItem.h"
+#import "Player.h"
 
 @implementation PlaylistManager
+
+static PlaylistManager *sharedManager = nil;
+
++ (PlaylistManager *)sharedManager {
+  return sharedManager;
+}
+
+- (void)awakeFromNib {
+  sharedManager = self;
+  playlistsTable.target = [Player sharedPlayer];
+  playlistsTable.doubleAction = @selector(playlistItemDoubleClicked);
+  [self updateSelectedPlaylist];
+}
 
 - (id)init {
   if (self = [super init]) {
@@ -48,24 +60,18 @@
   [plistDict writeToFile:plistPath atomically:YES];
 }
 
-- (void)choosePlaylist:(NSInteger)index {
-  selectedPlaylist = [playlists objectAtIndex:index];
-  
-  TableSongsDataSource *tableSongsDataSource = (TableSongsDataSource *)appDelegate.songsTableView.dataSource;
-  tableSongsDataSource.playlist = selectedPlaylist;
-  tableSongsDataSource.sortedColumn = nil;
-  tableSongsDataSource.showingNowPlayingPlaylist = (selectedPlaylist == nowPlayingPlaylist);
-  [appDelegate.songsTableView reloadData];
+- (void)updateSelectedPlaylist {
+  _selectedPlaylist = [playlists objectAtIndex:playlistsTable.selectedRow];
+  [PlaylistTableManager sharedManager].playlist = _selectedPlaylist;
 }
 
 #pragma mark - buttons 
 
 - (IBAction)deletePlaylistPressed:(id)sender {
   if (playlists.count > 1) { // nemozes izbrisat sve playliste
-    if (playlists[playlistsTable.selectedRow] == nowPlayingPlaylist) nowPlayingPlaylist = nil;
     [playlists removeObjectAtIndex:playlistsTable.selectedRow];
     [playlistsTable reloadData];
-    [self choosePlaylist:playlistsTable.selectedRow];
+    [self updateSelectedPlaylist];
   }
 }
 
@@ -73,10 +79,6 @@
   [playlists addObject:[Playlist new]];
   [playlistsTable reloadData];
   [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:playlists.count-1] byExtendingSelection:NO];
-}
-
-- (IBAction)toggleShufflePressed:(NSButton *)sender {
-  shuffleOn = sender.intValue > 0;
 }
 
 #pragma mark - table data source
@@ -96,40 +98,7 @@
 #pragma mark - table delegate
 
 - (void)tableViewSelectionDidChange:(NSNotification *)notification {
-  [self choosePlaylist:playlistsTable.selectedRow];
-}
-
-#pragma mark - playing songs
-
-- (PlaylistItem *)currentItem {
-  [self setNowPlayingPlaylistIfNecessary];
-  return nowPlayingPlaylist.currentItem;
-}
-
-- (PlaylistItem *)nextItem {
-  [self setNowPlayingPlaylistIfNecessary];
-  return [nowPlayingPlaylist nextItemShuffled:shuffleOn];
-}
-
-- (PlaylistItem *)prevItem {
-  [self setNowPlayingPlaylistIfNecessary];
-  return [nowPlayingPlaylist prevItemShuffled:shuffleOn];
-}
-
-- (void)setNowPlayingPlaylistIfNecessary {
-  if (nowPlayingPlaylist == nil) nowPlayingPlaylist = selectedPlaylist;
-}
-
-- (void)songDoubleClicked {
-  nowPlayingPlaylist = selectedPlaylist;
-  [nowPlayingPlaylist setCurrentItemIndex:(int)appDelegate.songsTableView.clickedRow];
-  [appDelegate.player play];
-}
-
-- (void)enterPressed {
-  nowPlayingPlaylist = selectedPlaylist;
-  [nowPlayingPlaylist setCurrentItemIndex:(int)appDelegate.songsTableView.selectedRow];
-  [appDelegate.player play];
+  [self updateSelectedPlaylist];
 }
 
 @end

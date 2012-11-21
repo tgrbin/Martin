@@ -12,18 +12,16 @@
 struct PlaylistImpl;
 
 @interface Playlist : NSObject {
-  int suggestedItemIndex; // ako se izbrise pjesma koja trenutno svira, koji item da svira sljedeci
-  BOOL currentItemIndexRemoved;
+  int currentItem; // this is index in playlistItems vector, doesn't correspond with the playlist order
   
   struct PlaylistImpl *impl;
 }
 
 @property (nonatomic, strong) NSString *name;
-@property (nonatomic, assign) int currentItemIndex;
 
 - (id)initWithName:(NSString *)n array:(NSArray *)s;
-- (void)addTreeNodes:(NSArray *)treeNodes atPos:(int)pos;
 
+- (void)addTreeNodes:(NSArray *)treeNodes atPos:(int)pos;
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes;
 - (int)reorderSongs:(NSArray *)rows atPos:(int)pos;
 - (void)sortBy:(NSString *)str;
@@ -33,7 +31,10 @@ struct PlaylistImpl;
 - (PlaylistItem *)objectAtIndexedSubscript:(int)index;
 
 - (PlaylistItem *)currentItem;
-- (PlaylistItem *)nextItemShuffled:(BOOL)shuffled;
-- (PlaylistItem *)prevItemShuffled:(BOOL)shuffled;
+- (PlaylistItem *)moveToNextItem;
+- (PlaylistItem *)moveToPrevItem;
+- (PlaylistItem *)moveToFirstItem;
+- (PlaylistItem *)moveToItemWithIndex:(int)index;
+- (void)forgetCurrentItem;
 
 @end

@@ -7,9 +7,8 @@
 //
 
 #import "PlaylistTableView.h"
-#import "TableSongsDataSource.h"
-#import "MartinAppDelegate.h"
-#import "PlaylistManager.h"
+#import "PlaylistTableManager.h"
+#import "Player.h"
 
 @implementation PlaylistTableView
 
@@ -26,12 +25,12 @@
         case NSDeleteCharacter:
         case NSDeleteFunctionKey:
         case NSDeleteCharFunctionKey:
-          [((TableSongsDataSource *)self.dataSource) deleteSelectedItems];
+          [[PlaylistTableManager sharedManager] deleteSelectedItems];
           break;
         case NSEnterCharacter:
         case NSNewlineCharacter:
         case NSCarriageReturnCharacter:
-          [((MartinAppDelegate *)[[NSApplication sharedApplication] delegate]).playlistManager enterPressed];
+          [[Player sharedPlayer] playItemWithIndex:(int)self.selectedRow];
           break;
         default:
           eventProcessed = NO;

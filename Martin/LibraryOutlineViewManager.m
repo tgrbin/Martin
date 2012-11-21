@@ -6,23 +6,42 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "OutlineViewDataSource.h"
-#import "MartinAppDelegate.h"
+#import "LibraryOutlineViewManager.h"
 #import "LibManager.h"
 #import "TreeNode.h"
 #import "TreeLeaf.h"
 
-@implementation OutlineViewDataSource
+@implementation LibraryOutlineViewManager
+
+static LibraryOutlineViewManager *sharedManager;
+
++ (LibraryOutlineViewManager *)sharedManager {
+  return sharedManager;
+}
+
+- (void)awakeFromNib {
+  sharedManager = self;
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(libraryRescanFinished)
+                                               name:kLibManagerRescanedLibraryNotification
+                                             object:nil];
+}
+
+- (void)dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 #pragma mark - drag and drop
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pboard {
   [pboard declareTypes:@[@"MyDragType"] owner:nil];
   [pboard setData:[NSData data] forType:@"MyDragType"];
-  
-  ((MartinAppDelegate*) [[NSApplication sharedApplication] delegate]).dragFromLibrary = items;
-
+  _draggingItems = items;
   return YES;
+}
+
+- (void)libraryRescanFinished {
+  [_outlineView reloadData];
 }
 
 #pragma mark - data source
@@ -52,7 +71,7 @@
 
 - (IBAction)search:(NSTextField *)sender {
   [[LibManager sharedManager] performSearch:sender.stringValue];
-  [outline reloadData];
+  [_outlineView reloadData];
 }
 
 @end

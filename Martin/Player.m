@@ -7,85 +7,88 @@
 //
 
 #import <Carbon/Carbon.h>
-
-#import "TableSongsDataSource.h"
+#import "Player.h"
+#import "PlaylistTableManager.h"
 #import "PlaylistManager.h"
 #import "LastFM.h"
-#import "Player.h"
 #import "PlaylistItem.h"
+#import "FilePlayer.h"
+#import "Playlist.h"
 
 @implementation Player
 
-- (void)awakeFromNib {
-  self.volume = 0.5;
-  [self setupHotkeyEvents];
-  seekSlider.enabled = NO;
+static Player *sharedPlayer = nil;
+
++ (Player *)sharedPlayer {
+  return sharedPlayer;
 }
 
-- (void)playItem:(PlaylistItem *)item {
-  [nowPlayingSound stop];
+- (void)awakeFromNib {
+  sharedPlayer = self;
+  [self setupHotkeyEvents];
+  seekSlider.enabled = NO;
   
-  if (item == nil) return;
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(trackFinished)
+                                               name:kFilePlayerPlayedItemNotification
+                                             object:nil];
+}
+
+- (void)dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)startPlayingCurrentItem {
+  if (_nowPlayingPlaylist.numberOfItems == 0) return;
+  if (_nowPlayingPlaylist.currentItem == nil) [_nowPlayingPlaylist moveToFirstItem];
   
-  nowPlayingSound = [[NSSound alloc] initWithContentsOfFile:item.filename byReference:YES];
-  nowPlayingSound.delegate = self;
-  nowPlayingSound.volume = _volume;
-  [nowPlayingSound play];
-  
-  seekSlider.enabled = YES;
+  [[FilePlayer sharedPlayer] startPlayingItem:_nowPlayingPlaylist.currentItem];
   [self startSeekTimer];
-  
-  isPlaying = YES;
-  nowPlayingItem = item;
-  
-  [LastFM updateNowPlaying:item];
-  
-  [((TableSongsDataSource*) appDelegate.songsTableView.dataSource) playingItemChanged];
+  [self setPlayOrPause:YES];
+  [LastFM updateNowPlaying:_nowPlayingPlaylist.currentItem];
+}
+
+- (void)trackFinished {
+  [LastFM scrobble:_nowPlayingPlaylist.currentItem];
+  [self next];
 }
 
 - (void)stop {
-  if (nowPlayingSound) {
-    [nowPlayingSound stop];
-    nowPlayingSound = nil;
-    self.seek = 0;
-    [seekTimer invalidate];
-    seekTimer = nil;
-    seekSlider.enabled = NO;
-  }
-}
-
-- (void)play {
-  [self playItem:appDelegate.playlistManager.currentItem];
+  [self setPlayOrPause:YES];
+  [self disableTimer];
+  [[FilePlayer sharedPlayer] stop];
 }
 
 - (void)playOrPause {
-  if (nowPlayingSound == nil) {
-    [self playItem:appDelegate.playlistManager.currentItem];
+  if ([[FilePlayer sharedPlayer] stopped]) {
+    [self startPlayingCurrentItem];
   } else {
-    if (isPlaying) [nowPlayingSound pause];
-    else [nowPlayingSound resume];
-    isPlaying = !isPlaying;
+    [[FilePlayer sharedPlayer] togglePause];
+    [self setPlayOrPause:[[FilePlayer sharedPlayer] playing]];
   }
 }
 
 - (void)next {
-  [self playItem:appDelegate.playlistManager.nextItem];
+  if ([_nowPlayingPlaylist moveToNextItem] == nil) {
+    [self stop];
+  } else {
+    [self startPlayingCurrentItem];
+  }
 }
 
 - (void)prev {
-  [self playItem:appDelegate.playlistManager.prevItem];
-}
-
-- (void)setVolume:(double)volume {
-  _volume = volume;
-  if (nowPlayingSound) nowPlayingSound.volume = _volume;
+  if ([_nowPlayingPlaylist moveToPrevItem] == nil) {
+    [self stop];
+  } else {
+    [self startPlayingCurrentItem];
+  }
 }
 
 - (void)startSeekTimer {
   if (seekTimer != nil) {
-    [seekTimer invalidate];
-    seekTimer = nil;
+    [self disableTimer];
   }
+  seekSlider.enabled = YES;
   seekTimer = [NSTimer scheduledTimerWithTimeInterval:0.2
                                                target:self
                                              selector:@selector(updateSeekTime)
@@ -94,45 +97,58 @@
 }
 
 - (void)updateSeekTime {
-  if (nowPlayingSound == nil) {
-    self.seek = 0;
-    [seekTimer invalidate];
-    seekTimer = nil;
-    seekSlider.enabled = NO;
+  if ([[FilePlayer sharedPlayer] stopped]) {
+    [self disableTimer];
   } else {
-    self.seek = nowPlayingSound.currentTime / nowPlayingSound.duration;
+    seekSlider.doubleValue = [[FilePlayer sharedPlayer] seek];
   }
+}
+
+- (void)disableTimer {
+  [seekTimer invalidate];
+  seekTimer = nil;
+  seekSlider.enabled = NO;
+  seekSlider.doubleValue = 0;
+}
+
+- (void)setPlayOrPause:(BOOL)play {
+  playOrPauseButton.title = play? @">": @"II";
 }
 
 #pragma mark - actions
 
 - (IBAction)seekSliderChanged:(NSSlider *)sender {
-  if (nowPlayingSound) {
-    nowPlayingSound.currentTime = sender.doubleValue * nowPlayingSound.duration;
-  }
+  [[FilePlayer sharedPlayer] setSeek:sender.doubleValue];
 }
 
 - (IBAction)prevPressed:(id)sender {
+  [self setNowPlayingPlaylistIfNecessary];
   [self prev];
 }
 
 - (IBAction)playOrPausePressed:(id)sender {
+  [self setNowPlayingPlaylistIfNecessary];
   [self playOrPause];
 }
 
 - (IBAction)nextPressed:(id)sender {
+  [self setNowPlayingPlaylistIfNecessary];
   [self next];
 }
 
-#pragma mark - nssound delegate
+- (IBAction)stopPressed:(id)sender {
+  _nowPlayingPlaylist = nil;
+  [self stop];
+}
 
-- (void)sound:(NSSound *)sound didFinishPlaying:(BOOL)aBool {
-  if (aBool) {
-    [LastFM scrobble:nowPlayingItem];
-    [self next];
-  } else {
-    nowPlayingSound = nil;
-  }
+- (void)setNowPlayingPlaylistIfNecessary {
+  if (_nowPlayingPlaylist == nil) _nowPlayingPlaylist = [PlaylistManager sharedManager].selectedPlaylist;
+}
+
+- (void)playItemWithIndex:(int)index {
+  _nowPlayingPlaylist = [[PlaylistManager sharedManager] selectedPlaylist];
+  [_nowPlayingPlaylist moveToItemWithIndex:index];
+  [self startPlayingCurrentItem];
 }
 
 #pragma mark - hot keys

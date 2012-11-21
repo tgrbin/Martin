@@ -8,24 +8,21 @@
 
 #import <Foundation/Foundation.h>
 
-@class MartinAppDelegate;
 @class Playlist;
-@class PlaylistItem;
 
-@interface TableSongsDataSource : NSObject <NSTableViewDataSource, NSTableViewDelegate> {
+@interface PlaylistTableManager : NSObject <NSTableViewDataSource, NSTableViewDelegate> {
   BOOL sortAscending;
+  int highlightedRow;
+  NSTableColumn *sortedColumn;
   
   NSArray *dragRows;
-  
-  IBOutlet MartinAppDelegate *appDelegate;
-  IBOutlet NSTableView *table;
+  IBOutlet NSTableView *playlistTable;
 }
 
-@property (nonatomic, strong) Playlist *playlist;
-@property (nonatomic, strong) NSTableColumn *sortedColumn;
-@property (nonatomic, assign) BOOL showingNowPlayingPlaylist;
++ (PlaylistTableManager *)sharedManager;
 
-- (void)playingItemChanged;
+@property (nonatomic, strong) Playlist *playlist;
+
 - (void)deleteSelectedItems;
 - (void)addTreeNodesToPlaylist:(NSArray *)treeNodes;
 

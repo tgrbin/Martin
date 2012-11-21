@@ -8,17 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class Player, PlaylistManager;
-
 @interface MartinAppDelegate : NSObject <NSApplicationDelegate>
 
-@property (nonatomic, strong) NSArray *dragFromLibrary;
-
-@property (nonatomic, strong) IBOutlet Player *player;
-@property (nonatomic, strong) IBOutlet PlaylistManager *playlistManager;
-@property (nonatomic, strong) IBOutlet NSTableView *playlistsTableView;
-@property (nonatomic, strong) IBOutlet NSTableView *songsTableView;
-@property (nonatomic, strong) IBOutlet NSOutlineView *outlineView;
 @property (nonatomic, strong) IBOutlet NSWindow *window;
 @property (nonatomic, strong) IBOutlet NSWindowController *preferencesWindowController;
 

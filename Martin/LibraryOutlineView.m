@@ -7,8 +7,7 @@
 //
 
 #import "LibraryOutlineView.h"
-#import "MartinAppDelegate.h"
-#import "TableSongsDataSource.h"
+#import "PlaylistTableManager.h"
 
 @implementation LibraryOutlineView
 
@@ -30,8 +29,7 @@
             for (NSInteger row = self.selectedRowIndexes.firstIndex; row != NSNotFound; row = [self.selectedRowIndexes indexGreaterThanIndex:row]) {
               [selectedItems addObject:[self itemAtRow:row]];
             }
-            MartinAppDelegate *appDelegate = (MartinAppDelegate *)[[NSApplication sharedApplication] delegate];
-            [((TableSongsDataSource*) appDelegate.songsTableView.dataSource) addTreeNodesToPlaylist:selectedItems];
+            [[PlaylistTableManager sharedManager] addTreeNodesToPlaylist:selectedItems];
           }
           break;
         default:

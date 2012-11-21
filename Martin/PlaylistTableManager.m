@@ -6,24 +6,58 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "TableSongsDataSource.h"
-#import "MartinAppDelegate.h"
+#import "PlaylistTableManager.h"
 #import "LibManager.h"
 #import "TreeNode.h"
 #import "Playlist.h"
 #import "PlaylistItem.h"
+#import "LibraryOutlineViewManager.h"
+#import "Player.h"
+#import "FilePlayer.h"
+#import "PlaylistManager.h"
 
-@interface TableSongsDataSource()
-@property (nonatomic, assign) int highlightedRow;
-@end
-
-@implementation TableSongsDataSource
+@implementation PlaylistTableManager
 
 #pragma mark - init
 
+static PlaylistTableManager *sharedManager = nil;
+
++ (PlaylistTableManager *)sharedManager {
+  return sharedManager;
+}
+
 - (void)awakeFromNib {
-  _highlightedRow = -1;
-  [table registerForDraggedTypes:@[@"MyDragType"]];
+  sharedManager = self;
+  playlistTable.target = self;
+  playlistTable.doubleAction = @selector(itemDoubleClicked);
+  [playlistTable registerForDraggedTypes:@[@"MyDragType"]];
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(playingItemChanged)
+                                               name:kFilePlayerStartedPlayingNotification
+                                             object:nil];
+
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(playingItemChanged)
+                                               name:kFilePlayerStoppedNotification
+                                             object:nil];
+  
+  _playlist = [PlaylistManager sharedManager].selectedPlaylist;
+}
+
+- (void)dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)itemDoubleClicked {
+  [[Player sharedPlayer] playItemWithIndex:(int) playlistTable.clickedRow];
+}
+
+- (void)setPlaylist:(Playlist *)playlist {
+  _playlist = playlist;
+  sortedColumn = nil;
+  [self reloadTable];
+  [playlistTable deselectAll:nil];
 }
 
 #pragma mark - drag and drop
@@ -36,7 +70,7 @@
 }
 
 - (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
-  if (info.draggingSource != appDelegate.outlineView && info.draggingSource != tableView) {
+  if (info.draggingSource != [LibraryOutlineViewManager sharedManager].outlineView && info.draggingSource != tableView) {
     return NSDragOperationNone;
   } else {
     [tableView setDropRow:row dropOperation:NSTableViewDropAbove];
@@ -45,8 +79,8 @@
 }
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
-  if (info.draggingSource == appDelegate.outlineView) {
-    [_playlist addTreeNodes:appDelegate.dragFromLibrary atPos:(int)row];
+  if (info.draggingSource == [LibraryOutlineViewManager sharedManager].outlineView) {
+    [_playlist addTreeNodes:[LibraryOutlineViewManager sharedManager].draggingItems atPos:(int)row];
   } else if (info.draggingSource == tableView) {
     int newPos = [_playlist reorderSongs:dragRows atPos:(int)row];
     [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(newPos, dragRows.count)] byExtendingSelection:NO];
@@ -54,39 +88,39 @@
     return NO;
   }
   
-  [tableView reloadData];
+  [self reloadTable];
   return YES;
 }
 
 - (void)addTreeNodesToPlaylist:(NSArray *)treeNodes {
   [_playlist addTreeNodes:treeNodes atPos:_playlist.numberOfItems];
-  [table reloadData];
+  [self reloadTable];
 }
 
 #pragma mark - delegate
 
 - (void)tableView:(NSTableView *)tableView didClickTableColumn:(NSTableColumn *)tableColumn {
-  if (_sortedColumn == tableColumn) {
+  if (sortedColumn == tableColumn) {
     sortAscending = !sortAscending;
     [_playlist reverse];
   } else {
     sortAscending = YES;
     
-    if (_sortedColumn) [tableView setIndicatorImage:nil inTableColumn:_sortedColumn];
-    self.sortedColumn = tableColumn;
+    if (sortedColumn) [tableView setIndicatorImage:nil inTableColumn:sortedColumn];
+    sortedColumn = tableColumn;
     
     [tableView setHighlightedTableColumn:tableColumn];
     [_playlist sortBy:tableColumn.identifier];
   }
   
   [tableView setIndicatorImage:[NSImage imageNamed: sortAscending? @"NSAscendingSortIndicator": @"NSDescendingSortIndicator"] inTableColumn:tableColumn];
-  [tableView reloadData];
+  [self reloadTable];
 }
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)c forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   NSTextFieldCell *cell = (NSTextFieldCell*)c;
   
-  if (_showingNowPlayingPlaylist && row == _highlightedRow) {
+  if (self.showingNowPlayingPlaylist && row == highlightedRow) {
     cell.drawsBackground = YES;
     cell.backgroundColor = [NSColor colorWithCalibratedRed:0.6 green:0.7 blue:0.8 alpha:1.0];
   } else {
@@ -105,6 +139,10 @@
   PlaylistItem *item = _playlist[(int)row];
   NSString *value = [item.tags objectForKey:tag];
   
+  if (item == _playlist.currentItem) {
+    highlightedRow = (int)row;
+  }
+  
   if ([tag isEqualToString:@"length"]) {
     int sec = item.lengthInSeconds;
     value = [NSString stringWithFormat:@"%d:%02d", sec/60, sec%60];
@@ -120,39 +158,36 @@
 }
 
 - (void)deleteSelectedItems {
-  NSIndexSet *selectedIndexes = table.selectedRowIndexes;
-  int n = (int)table.numberOfRows;
+  NSIndexSet *selectedIndexes = playlistTable.selectedRowIndexes;
+  int n = (int)playlistTable.numberOfRows;
   int m = (int)selectedIndexes.count;
   int selectRow = (int)selectedIndexes.lastIndex;
   
   if (m > 0) {
     [self.playlist removeSongsAtIndexes:selectedIndexes];
-    [table deselectAll:nil];
-    [table reloadData];
+    [playlistTable deselectAll:nil];
+    [self reloadTable];
     
     selectRow = (selectRow < n-1)? selectRow-m+1: n-m-1;
     
-    [table selectRowIndexes:[NSIndexSet indexSetWithIndex:selectRow] byExtendingSelection:NO];
-    [table scrollRowToVisible:selectRow];
+    [playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:selectRow] byExtendingSelection:NO];
+    [playlistTable scrollRowToVisible:selectRow];
   }
+}
+
+- (void)reloadTable {
+  highlightedRow = -1;
+  [playlistTable reloadData];
 }
 
 #pragma mark - update now playing
 
 - (void)playingItemChanged {
-  self.highlightedRow = _playlist.currentItemIndex;
+  if (self.showingNowPlayingPlaylist) [self reloadTable];
 }
 
-- (void)setHighlightedRow:(int)highlightedRow {
-  static int previousHighlightedRow;
-  previousHighlightedRow = _highlightedRow;
-  _highlightedRow = highlightedRow;
-  
-  NSMutableIndexSet *rows = [NSMutableIndexSet indexSet];
-  if (previousHighlightedRow >= 0) [rows addIndex:previousHighlightedRow];
-  if (highlightedRow >= 0) [rows addIndex:highlightedRow];
-  NSIndexSet *columns = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, table.numberOfColumns)];
-  [table reloadDataForRowIndexes:rows columnIndexes:columns];
+- (BOOL)showingNowPlayingPlaylist {
+  return _playlist == [Player sharedPlayer].nowPlayingPlaylist;
 }
 
 @end

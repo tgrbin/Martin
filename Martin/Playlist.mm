@@ -12,10 +12,11 @@
 #import "Song.h"
 #import "LibManager.h"
 #import "PlaylistItem.h"
+#import "PlaylistManager.h"
 
 #import <algorithm>
-#import <vector>
 #import <numeric>
+#import <vector>
 #import <set>
 
 using namespace std;
@@ -37,7 +38,7 @@ struct PlaylistImpl {
     _name = n;
     impl = new PlaylistImpl();
 
-    _currentItemIndex = s.count > 0? 0: -1;
+    currentItem = -1;
     
     for (id item in s) {
       impl->playlistItems.push_back([[PlaylistItem alloc] initWithDictionary:item]);
@@ -45,7 +46,9 @@ struct PlaylistImpl {
     
     impl->playlist.resize(s.count);
     iota(impl->playlist.begin(), impl->playlist.end(), 0);
+    
     impl->shuffled = impl->playlist;
+    srand((unsigned int) time(0));
     random_shuffle(impl->shuffled.begin(), impl->shuffled.end());
   }
   return self;
@@ -70,11 +73,10 @@ struct PlaylistImpl {
   impl->shuffled.insert(impl->shuffled.end(), newIndexes.begin(), newIndexes.end());
   
   vector<int>::iterator it;
-  if (_currentItemIndex == -1) {
-    _currentItemIndex = 0;
+  if (currentItem == -1) {
     it = impl->shuffled.begin();
   } else {
-    it = find(impl->shuffled.begin(), impl->shuffled.end(), _currentItemIndex);
+    it = find(impl->shuffled.begin(), impl->shuffled.end(), currentItem) + 1;
   }
   
   random_shuffle(it, impl->shuffled.end());
@@ -140,28 +142,14 @@ struct PlaylistImpl {
 }
 
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes {
-  currentItemIndexRemoved = NO;
-  
   vector<int> indexesToRemove;
-  for (NSInteger curr = indexes.firstIndex; curr != NSNotFound; curr = [indexes indexGreaterThanIndex:curr]) indexesToRemove.push_back((int)curr);
+  for (NSInteger curr = indexes.firstIndex; curr != NSNotFound; curr = [indexes indexGreaterThanIndex:curr]) {
+    indexesToRemove.push_back((int)curr);
+    if (impl->playlist[curr] == currentItem) currentItem = -1;
+  }
   
   int n = (int)indexesToRemove.size();
   int m = self.numberOfItems;
-  BOOL found = NO;
-  int nextAvailable = -1;
-  for (int i = 0; i < n; ++i) {
-    if (impl->playlist[indexesToRemove[i]] == _currentItemIndex) found = YES;
-    if (found == YES && (i == n-1 || indexesToRemove[i+1] != indexesToRemove[i]+1)) {
-      nextAvailable = indexesToRemove[i]+1;
-      break;
-    }
-  }
-
-  if (found) {
-    if (nextAvailable == m) nextAvailable = (indexesToRemove[0] == 0)? -1: 0;
-    currentItemIndexRemoved = YES;
-    suggestedItemIndex = (nextAvailable != -1)? impl->playlist[nextAvailable]: -1;
-  }
   
   vector<int> itemIndexesToRemoveMask(m, 0);
   for (auto it = indexesToRemove.begin(); it != indexesToRemove.end(); ++it)
@@ -179,7 +167,7 @@ struct PlaylistImpl {
   removeIndexesFromVector(shuffledIndexesToRemove, impl->shuffled);
   
   for (int i = 1; i < m; ++i) itemIndexesToRemoveMask[i] += itemIndexesToRemoveMask[i-1];
-  
+  if (currentItem != -1) currentItem -= itemIndexesToRemoveMask[currentItem];
   for (int i = 0; i < m-n; ++i) {
     impl->playlist[i] -= itemIndexesToRemoveMask[impl->playlist[i]];
     impl->shuffled[i] -= itemIndexesToRemoveMask[impl->shuffled[i]];
@@ -208,48 +196,56 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
   return (int)impl->playlistItems.size();
 }
 
+- (PlaylistItem *)moveToItemWithIndex:(int)index {
+  currentItem = impl->playlist[index];
+  return [self currentItem];
+}
+
 - (PlaylistItem *)objectAtIndexedSubscript:(int)index {
   return impl->playlistItems[impl->playlist[index]];
 }
 
-- (void)setCurrentItemIndex:(int)index {
-  _currentItemIndex = index;
-  currentItemIndexRemoved = NO;
-}
-
 - (PlaylistItem *)currentItem {
-  if (_currentItemIndex == -1) return nil;
-  return impl->playlistItems[impl->playlist[_currentItemIndex]];
+  if (currentItem == -1) return nil;
+  return impl->playlistItems[currentItem];
 }
 
-- (PlaylistItem *)nextItemShuffled:(BOOL)shuffled {
-  return [self itemAfterCurrentOneShuffled:shuffled next:YES];
+- (PlaylistItem *)moveToNextItem {
+  return [self moveToItemWithDelta:1];
 }
 
-- (PlaylistItem *)prevItemShuffled:(BOOL)shuffled {
-  return [self itemAfterCurrentOneShuffled:shuffled next:NO];
+- (PlaylistItem *)moveToPrevItem {
+  return [self moveToItemWithDelta:-1];
 }
 
-- (PlaylistItem *)itemAfterCurrentOneShuffled:(BOOL)shuffled next:(BOOL)next {
-  if (_currentItemIndex == -1) return nil;
+- (PlaylistItem *)moveToFirstItem {
+  if (self.numberOfItems == 0) return nil;
+  return impl->playlistItems[currentItem = impl->playlist[0]];
+}
 
+- (void)forgetCurrentItem {
+  currentItem = -1;
+}
+
+- (PlaylistItem *)moveToItemWithDelta:(int)delta {
+  if (currentItem == -1) return nil;
+
+  BOOL shuffled = [PlaylistManager sharedManager].shuffle;
+  BOOL repeat = [PlaylistManager sharedManager].repeat;
+  
   vector<int> &order = shuffled? impl->shuffled: impl->playlist;
   
-  int pos = 0;
-  int lookFor;
-  if (currentItemIndexRemoved == YES) {
-    currentItemIndexRemoved = NO;
-    pos = next? -1: 0;
-    lookFor = suggestedItemIndex;
-  } else {
-    lookFor = _currentItemIndex;
-  }
-  
   int n = (int)order.size();
-  pos += (find(order.begin(), order.end(), lookFor) - order.begin());
-  pos = (pos + (next? 1: -1) + n) % n;
-  
-  return impl->playlistItems[_currentItemIndex = order[pos]];
+  int pos = (int) (find(order.begin(), order.end(), currentItem) - order.begin()) + delta;
+  if (pos == -1 || pos == n) {
+    if (repeat) pos = (pos+n)%n;
+    else {
+      currentItem = -1;
+      return nil;
+    }
+  }
+
+  return impl->playlistItems[currentItem = order[pos]];
 }
 
 @end
