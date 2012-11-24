@@ -14,14 +14,13 @@
   BOOL sortAscending;
   int highlightedRow;
   NSTableColumn *sortedColumn;
-  
-  NSArray *dragRows;
-  IBOutlet NSTableView *playlistTable;
 }
 
 + (PlaylistTableManager *)sharedManager;
 
 @property (nonatomic, strong) Playlist *playlist;
+@property (nonatomic, strong) IBOutlet NSTableView *playlistTable;
+@property (nonatomic, strong) NSArray *dragRows;
 
 - (void)deleteSelectedItems;
 - (void)addTreeNodesToPlaylist:(NSArray *)treeNodes;

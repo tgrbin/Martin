@@ -19,8 +19,12 @@ struct PlaylistImpl;
 
 @property (nonatomic, strong) NSString *name;
 
-- (id)initWithName:(NSString *)n array:(NSArray *)s;
+- (id)initWithName:(NSString *)n playlistItems:(NSArray *)s;
 
+- (id)initWithTreeNodes:(NSArray *)arr; // these two method suggest playlist name based on items
+- (id)initWithPlaylistItems:(NSArray *)arr;
+
+- (void)addPlaylistItems:(NSArray *)arr;
 - (void)addTreeNodes:(NSArray *)treeNodes atPos:(int)pos;
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes;
 - (int)reorderSongs:(NSArray *)rows atPos:(int)pos;

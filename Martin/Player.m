@@ -137,8 +137,8 @@ static Player *sharedPlayer = nil;
 }
 
 - (IBAction)stopPressed:(id)sender {
-  _nowPlayingPlaylist = nil;
   [self stop];
+  _nowPlayingPlaylist = nil;
 }
 
 - (void)setNowPlayingPlaylistIfNecessary {

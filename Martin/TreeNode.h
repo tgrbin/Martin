@@ -16,12 +16,12 @@
 @property (nonatomic, strong) NSMutableArray *children;
 @property (assign) int searchState;
 
-- (id)initWithName:(NSString *) name;
+- (id)initWithName:(NSString *)name;
 - (int)nChildren;
-- (TreeNode *)getChild:(NSInteger) index;
+- (TreeNode *)getChild:(NSInteger)index;
 
-- (void)addChild:(TreeNode *) child;
-- (void)addResult:(TreeNode *) res;
+- (void)addChild:(TreeNode *)child;
+- (void)addResult:(TreeNode *)res;
 - (void)clearResults;
 
 @end

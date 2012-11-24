@@ -28,9 +28,9 @@ static PlaylistTableManager *sharedManager = nil;
 
 - (void)awakeFromNib {
   sharedManager = self;
-  playlistTable.target = self;
-  playlistTable.doubleAction = @selector(itemDoubleClicked);
-  [playlistTable registerForDraggedTypes:@[@"MyDragType"]];
+  _playlistTable.target = self;
+  _playlistTable.doubleAction = @selector(itemDoubleClicked);
+  [_playlistTable registerForDraggedTypes:@[@"MyDragType"]];
   
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(playingItemChanged)
@@ -50,14 +50,14 @@ static PlaylistTableManager *sharedManager = nil;
 }
 
 - (void)itemDoubleClicked {
-  [[Player sharedPlayer] playItemWithIndex:(int) playlistTable.clickedRow];
+  [[Player sharedPlayer] playItemWithIndex:(int)_playlistTable.clickedRow];
 }
 
 - (void)setPlaylist:(Playlist *)playlist {
   _playlist = playlist;
   sortedColumn = nil;
   [self reloadTable];
-  [playlistTable deselectAll:nil];
+  [_playlistTable deselectAll:nil];
 }
 
 #pragma mark - drag and drop
@@ -65,16 +65,16 @@ static PlaylistTableManager *sharedManager = nil;
 - (BOOL)tableView:(NSTableView *)tableView writeRows:(NSArray *)rows toPasteboard:(NSPasteboard *)pboard {
   [pboard declareTypes:@[@"MyDragType"] owner:nil];
   [pboard setData:[NSData data] forType:@"MyDragType"];
-  dragRows = rows;
+  _dragRows = rows;
   return YES;        
 }
 
 - (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
-  if (info.draggingSource != [LibraryOutlineViewManager sharedManager].outlineView && info.draggingSource != tableView) {
-    return NSDragOperationNone;
-  } else {
+  if (info.draggingSource == [LibraryOutlineViewManager sharedManager].outlineView || info.draggingSource == tableView) {
     [tableView setDropRow:row dropOperation:NSTableViewDropAbove];
     return NSDragOperationCopy;
+  } else {
+    return NSDragOperationNone;
   }
 }
 
@@ -82,8 +82,8 @@ static PlaylistTableManager *sharedManager = nil;
   if (info.draggingSource == [LibraryOutlineViewManager sharedManager].outlineView) {
     [_playlist addTreeNodes:[LibraryOutlineViewManager sharedManager].draggingItems atPos:(int)row];
   } else if (info.draggingSource == tableView) {
-    int newPos = [_playlist reorderSongs:dragRows atPos:(int)row];
-    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(newPos, dragRows.count)] byExtendingSelection:NO];
+    int newPos = [_playlist reorderSongs:_dragRows atPos:(int)row];
+    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(newPos, _dragRows.count)] byExtendingSelection:NO];
   } else {
     return NO;
   }
@@ -158,26 +158,26 @@ static PlaylistTableManager *sharedManager = nil;
 }
 
 - (void)deleteSelectedItems {
-  NSIndexSet *selectedIndexes = playlistTable.selectedRowIndexes;
-  int n = (int)playlistTable.numberOfRows;
+  NSIndexSet *selectedIndexes = _playlistTable.selectedRowIndexes;
+  int n = (int)_playlistTable.numberOfRows;
   int m = (int)selectedIndexes.count;
   int selectRow = (int)selectedIndexes.lastIndex;
   
   if (m > 0) {
     [self.playlist removeSongsAtIndexes:selectedIndexes];
-    [playlistTable deselectAll:nil];
+    [_playlistTable deselectAll:nil];
     [self reloadTable];
     
     selectRow = (selectRow < n-1)? selectRow-m+1: n-m-1;
     
-    [playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:selectRow] byExtendingSelection:NO];
-    [playlistTable scrollRowToVisible:selectRow];
+    [_playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:selectRow] byExtendingSelection:NO];
+    [_playlistTable scrollRowToVisible:selectRow];
   }
 }
 
 - (void)reloadTable {
   highlightedRow = -1;
-  [playlistTable reloadData];
+  [_playlistTable reloadData];
 }
 
 #pragma mark - update now playing

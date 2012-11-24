@@ -33,15 +33,15 @@ struct PlaylistImpl {
 
 #pragma mark - init
 
-- (id)initWithName:(NSString *)n array:(NSArray *)s {
-  if( self = [super init] ) {
+- (id)initWithName:(NSString *)n playlistItems:(NSArray *)s {
+  if (self = [super init]) {
     _name = n;
     impl = new PlaylistImpl();
 
     currentItem = -1;
     
     for (id item in s) {
-      impl->playlistItems.push_back([[PlaylistItem alloc] initWithDictionary:item]);
+      impl->playlistItems.push_back(item);
     }
     
     impl->playlist.resize(s.count);
@@ -54,20 +54,79 @@ struct PlaylistImpl {
   return self;
 }
 
+- (id)initWithTreeNodes:(NSArray *)arr {
+  if (self = [self init]) {
+    [self guessNameAndAddItems:arr];
+  }
+  return self;
+}
+
+- (id)initWithPlaylistItems:(NSArray *)arr {
+  if (self = [self initWithName:@"" playlistItems:arr]) {
+    [self guessNameAndAddItems:arr];
+  }
+  return self;
+}
+
 - (id)init {
-  return [self initWithName:@"new playlist" array:@[]];
+  return [self initWithName:@"new playlist" playlistItems:@[]];
+}
+
+- (void)guessNameAndAddItems:(NSArray *)arr { // arr contains treenodes or playlistitems
+  NSMutableDictionary *foldersAndCounts = [NSMutableDictionary new];
+  int currCount = 0;
+  
+  for (id item in arr) {
+    NSString *folderName;
+    if ([item isKindOfClass:[PlaylistItem class]]) {
+      folderName = [[((PlaylistItem *)item).filename stringByDeletingLastPathComponent] lastPathComponent];
+    } else {
+      if ([item isKindOfClass:[TreeLeaf class]]) {
+        folderName = [[((TreeLeaf *)item).song.filename stringByDeletingLastPathComponent] lastPathComponent];
+      } else {
+        folderName = ((TreeNode *)item).name;
+      }
+      [self addTreeNodes:@[item] atPos:currCount];
+    }
+    
+    int oldVal = [foldersAndCounts[folderName] intValue];
+    foldersAndCounts[folderName] = @(oldVal + self.numberOfItems - currCount);
+    currCount = self.numberOfItems;
+  }
+  
+  NSMutableArray *ordered = [NSMutableArray new];
+  for (id item in foldersAndCounts) [ordered addObject:@[item, foldersAndCounts[item]]];
+  [ordered sortUsingComparator:^NSComparisonResult(NSArray *a, NSArray *b) {return [a[1] compare:b[1]];}];
+  
+  NSMutableString *suggestedName = [NSMutableString stringWithFormat:@"%@", ordered[0][0]];
+  for (int i = 1; i < 3; ++i) {
+    if (i == ordered.count) break;
+    [suggestedName appendFormat:@", %@", ordered[i][0]];
+  }
+  _name = suggestedName;
 }
 
 #pragma mark - manage playlist
 
+- (void)addPlaylistItems:(NSArray *)arr {
+  [self addPlaylistItemsOrTreeNodes:arr atPos:self.numberOfItems];
+}
+
 - (void)addTreeNodes:(NSArray *)treeNodes atPos:(int)pos {
+  [self addPlaylistItemsOrTreeNodes:treeNodes atPos:pos];
+}
+
+- (void)addPlaylistItemsOrTreeNodes:(NSArray *)arr atPos:(int)pos {
   int oldSize = (int)impl->playlistItems.size();
-  for (TreeNode *t in treeNodes) [self traverseNodeAndAddItems:t];
+  for (id item in arr) {
+    if ([item isKindOfClass:[PlaylistItem class]]) impl->playlistItems.push_back(item);
+    else [self traverseNodeAndAddItems:item];
+  }
   int newSize = (int)impl->playlistItems.size();
   
   vector<int> newIndexes(newSize-oldSize);
   iota(newIndexes.begin(), newIndexes.end(), oldSize);
-
+  
   impl->playlist.insert(impl->playlist.begin()+pos, newIndexes.begin(), newIndexes.end());
   
   impl->shuffled.insert(impl->shuffled.end(), newIndexes.begin(), newIndexes.end());
