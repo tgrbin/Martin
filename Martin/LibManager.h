@@ -16,6 +16,11 @@ struct LibManagerImpl;
 
 @interface LibManager : NSObject {
   TreeNode *root;
+  
+  NSString *previousSearchQuery;
+  BOOL appendedCharactersToQuery;
+  BOOL poppedCharactersFromQuery;
+  
   struct LibManagerImpl *impl;
 }
 

@@ -21,7 +21,6 @@ using namespace std;
 
 @interface LibManager ()
 @property (atomic, assign) BOOL nowSearching;
-@property (atomic, strong) NSString *previousSearchQuery;
 @property (atomic, strong) NSString *pendingSearchQuery;
 @end
 
@@ -53,6 +52,7 @@ struct compareSongs {
 - (id)init {
   if (self = [super init]) {
     impl = new LibManagerImpl();
+    previousSearchQuery = @"";
     [self loadLibrary];
   }
   return self;
@@ -286,18 +286,20 @@ struct compareSongs {
     NSString *currentQuery = [[NSString alloc] initWithString:query];
     
     for (;;) {
+      NSDate *stamp = [NSDate date];
       impl->queryWords.clear();
       for (NSString *q in [currentQuery componentsSeparatedByString:@" "]) {
         NSString *s = [q stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         if (s.length > 0) impl->queryWords.push_back(s);
       }
       
-      impl->nHit = 0;
-      impl->queryHits.resize(impl->queryWords.size());
-      fill(impl->queryHits.begin(), impl->queryHits.end(), false);
-      
+      impl->queryHits.resize(impl->queryWords.size(), false);
+      appendedCharactersToQuery = [currentQuery hasPrefix:previousSearchQuery];
+      poppedCharactersFromQuery = [previousSearchQuery hasPrefix:currentQuery];
       [self traverse:root];
-      self.previousSearchQuery = [[NSString alloc] initWithString:currentQuery];
+      NSLog(@"search time %lfms", -[stamp timeIntervalSinceNow]*1000.0);
+      
+      previousSearchQuery = [[NSString alloc] initWithString:currentQuery];
       if (self.pendingSearchQuery) {
         currentQuery = [[NSString alloc] initWithString:self.pendingSearchQuery];
         self.pendingSearchQuery = nil;
@@ -312,6 +314,9 @@ struct compareSongs {
 }
 
 - (int)traverse:(TreeNode *)node {
+  if (poppedCharactersFromQuery && (node.searchState == 2 || node.searchState == 3)) return 2;
+  if (appendedCharactersToQuery && node.searchState == 0) return 0;
+  
   vector<int> modified;
 
   for (int i = 0; i < impl->queryWords.size(); ++i) {
@@ -323,13 +328,16 @@ struct compareSongs {
     modified.push_back(i);
   }
   
+  BOOL was2 = (node.searchState == 2);
   node.searchState = 0;
   
   if (impl->nHit == impl->queryWords.size()) {
     node.searchState = 2;
   } else {
     for (int i = 0; i < node.childrenVectorCount; ++i) {
-      if ([self traverse:[node childrenVectorAtIndex:i]]) node.searchState = 1;
+      TreeNode *child = [node childrenVectorAtIndex:i];
+      if (was2) child.searchState = -1; // this will soon be overwritten by 0, it's just for avoiding appendedcharacters if to falsely fire
+      if ([self traverse:child]) node.searchState = 1;
     }
   }
   
