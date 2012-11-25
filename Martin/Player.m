@@ -122,6 +122,7 @@ static Player *sharedPlayer = nil;
 }
 
 - (IBAction)prevPressed:(id)sender {
+  if ([[FilePlayer sharedPlayer] stopped]) return;
   [self setNowPlayingPlaylistIfNecessary];
   [self prev];
 }
@@ -132,6 +133,7 @@ static Player *sharedPlayer = nil;
 }
 
 - (IBAction)nextPressed:(id)sender {
+  if ([[FilePlayer sharedPlayer] stopped]) return;
   [self setNowPlayingPlaylistIfNecessary];
   [self next];
 }

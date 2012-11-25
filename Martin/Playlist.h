@@ -39,6 +39,5 @@ struct PlaylistImpl;
 - (PlaylistItem *)moveToPrevItem;
 - (PlaylistItem *)moveToFirstItem;
 - (PlaylistItem *)moveToItemWithIndex:(int)index;
-- (void)forgetCurrentItem;
 
 @end

@@ -13,6 +13,7 @@
 #import "LibManager.h"
 #import "PlaylistItem.h"
 #import "PlaylistManager.h"
+#import "FilePlayer.h"
 
 #import <algorithm>
 #import <numeric>
@@ -109,14 +110,18 @@ struct PlaylistImpl {
 #pragma mark - manage playlist
 
 - (void)addPlaylistItems:(NSArray *)arr {
+  [self resetCurrentItemIfStopped];
   [self addPlaylistItemsOrTreeNodes:arr atPos:self.numberOfItems];
 }
 
 - (void)addTreeNodes:(NSArray *)treeNodes atPos:(int)pos {
+  [self resetCurrentItemIfStopped];
   [self addPlaylistItemsOrTreeNodes:treeNodes atPos:pos];
 }
 
 - (void)addPlaylistItemsOrTreeNodes:(NSArray *)arr atPos:(int)pos {
+  [self resetCurrentItemIfStopped];
+  
   int oldSize = (int)impl->playlistItems.size();
   for (id item in arr) {
     if ([item isKindOfClass:[PlaylistItem class]]) impl->playlistItems.push_back(item);
@@ -154,6 +159,8 @@ struct PlaylistImpl {
 }
 
 - (int)reorderSongs:(NSArray *)rows atPos:(int)pos {
+  [self resetCurrentItemIfStopped];
+  
   vector<int> tmp;
   
   int len = (int)impl->playlist.size();
@@ -179,6 +186,8 @@ struct PlaylistImpl {
 }
 
 - (void)sortBy:(NSString *)str {
+  [self resetCurrentItemIfStopped];
+  
   BOOL isLength = [str isEqualToString:@"length"];
   BOOL isTrackNumber = [str isEqualToString:@"track number"];
   
@@ -197,10 +206,13 @@ struct PlaylistImpl {
 }
 
 - (void)reverse {
+  [self resetCurrentItemIfStopped];  
   reverse(impl->playlist.begin(), impl->playlist.end());
 }
 
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes {
+  [self resetCurrentItemIfStopped];
+  
   vector<int> indexesToRemove;
   for (NSInteger curr = indexes.firstIndex; curr != NSNotFound; curr = [indexes indexGreaterThanIndex:curr]) {
     indexesToRemove.push_back((int)curr);
@@ -247,6 +259,10 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
     }
   }
   v.resize(vs - rs);
+}
+
+- (void)resetCurrentItemIfStopped {
+  if ([[FilePlayer sharedPlayer] stopped]) currentItem = -1;
 }
 
 #pragma mark - playing songs
