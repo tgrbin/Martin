@@ -10,6 +10,7 @@
 
 @interface LibraryOutlineViewManager : NSObject <NSOutlineViewDataSource> {
   IBOutlet NSTextField *textField;
+  BOOL reloadingTree;
 }
 
 + (LibraryOutlineViewManager *)sharedManager;

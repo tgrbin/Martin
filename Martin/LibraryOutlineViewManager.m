@@ -25,6 +25,10 @@ static LibraryOutlineViewManager *sharedManager;
                                            selector:@selector(libraryRescanFinished)
                                                name:kLibManagerRescanedLibraryNotification
                                              object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(itemDidExpand:)
+                                               name:NSOutlineViewItemDidExpandNotification
+                                             object:nil];
   [self reloadTree];
 }
 
@@ -71,6 +75,8 @@ static LibraryOutlineViewManager *sharedManager;
 #pragma mark - reloading
 
 - (void)reloadTree {
+  reloadingTree = YES;
+  
   [_outlineView reloadData];
   [_outlineView collapseItem:nil collapseChildren:YES];
   
@@ -100,6 +106,19 @@ static LibraryOutlineViewManager *sharedManager;
     }
     if (itemsToExpand.count == 0) break;
     
+    for (id item in itemsToExpand) [_outlineView expandItem:item];
+  }
+  
+  reloadingTree = NO;
+}
+
+- (void)itemDidExpand:(NSNotification *)notification {
+  if (!reloadingTree) {
+    NSMutableArray *itemsToExpand = [NSMutableArray new];
+    for (id item = [notification.userInfo objectForKey:@"NSObject"]; [item nChildren] == 1;) {
+      item = [item getChild:0];
+      [itemsToExpand addObject:item];
+    }
     for (id item in itemsToExpand) [_outlineView expandItem:item];
   }
 }
