@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #define kLibManagerRescanedLibraryNotification @"LibManagerRescanedLibraryNotification"
+#define kLibManagerFinishedSearchNotification @"LibManagerFinishedSearch"
 
 @class TreeNode, Song;
 struct LibManagerImpl;

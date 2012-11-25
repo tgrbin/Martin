@@ -19,6 +19,12 @@
 
 using namespace std;
 
+@interface LibManager ()
+@property (atomic, assign) BOOL nowSearching;
+@property (atomic, strong) NSString *previousSearchQuery;
+@property (atomic, strong) NSString *pendingSearchQuery;
+@end
+
 @implementation LibManager
 
 struct LibManagerImpl {
@@ -251,7 +257,9 @@ struct compareSongs {
     [libStr writeToFile:[self libPath] atomically:YES encoding:NSUTF8StringEncoding error:nil];
 
     [self loadLibrary];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kLibManagerRescanedLibraryNotification object:nil];
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      [[NSNotificationCenter defaultCenter] postNotificationName:kLibManagerRescanedLibraryNotification object:nil];
+    });
     
     impl->needsRescan.clear();
     impl->lines.clear();
@@ -266,27 +274,45 @@ struct compareSongs {
 
 #pragma mark - search
 
-- (void)performSearch:(NSString *) query {
-  NSDate *stamp = [NSDate date];
-  
-  impl->queryWords.clear();
-  
-  for (NSString *q in [query componentsSeparatedByString:@" "]) {
-    NSString *s = [q stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    if (s.length > 0) impl->queryWords.push_back(s);
+- (void)performSearch:(NSString *)query {
+  if (self.nowSearching) {
+    self.pendingSearchQuery = query;
+    NSLog(@"now searching, setting pending query to %@", query);
+    return;
   }
   
-  impl->nHit = 0;
-  impl->queryHits.resize(impl->queryWords.size());
-  fill(impl->queryHits.begin(), impl->queryHits.end(), false);
-  
-  [self traverse:root];
-  
-  NSLog(@"search time: %lfms", -[stamp timeIntervalSinceNow]*1000.0);
+  self.nowSearching = YES;
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    NSString *currentQuery = [[NSString alloc] initWithString:query];
+    
+    for (;;) {
+      impl->queryWords.clear();
+      for (NSString *q in [currentQuery componentsSeparatedByString:@" "]) {
+        NSString *s = [q stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        if (s.length > 0) impl->queryWords.push_back(s);
+      }
+      
+      impl->nHit = 0;
+      impl->queryHits.resize(impl->queryWords.size());
+      fill(impl->queryHits.begin(), impl->queryHits.end(), false);
+      
+      [self traverse:root];
+      self.previousSearchQuery = [[NSString alloc] initWithString:currentQuery];
+      if (self.pendingSearchQuery) {
+        currentQuery = [[NSString alloc] initWithString:self.pendingSearchQuery];
+        self.pendingSearchQuery = nil;
+      } else break;
+    }
+    
+    self.nowSearching = NO;
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      [[NSNotificationCenter defaultCenter] postNotificationName:kLibManagerFinishedSearchNotification object:nil];
+    });
+  });
 }
 
 - (int)traverse:(TreeNode *)node {
-  vector< int > modified;
+  vector<int> modified;
 
   for (int i = 0; i < impl->queryWords.size(); ++i) {
     if (impl->queryHits[i]) continue;

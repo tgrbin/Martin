@@ -26,6 +26,10 @@ static LibraryOutlineViewManager *sharedManager;
                                                name:kLibManagerRescanedLibraryNotification
                                              object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(reloadTree)
+                                               name:kLibManagerFinishedSearchNotification
+                                             object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(itemDidExpand:)
                                                name:NSOutlineViewItemDidExpandNotification
                                              object:nil];
@@ -115,7 +119,7 @@ static LibraryOutlineViewManager *sharedManager;
 - (void)itemDidExpand:(NSNotification *)notification {
   if (!reloadingTree) {
     NSMutableArray *itemsToExpand = [NSMutableArray new];
-    for (id item = [notification.userInfo objectForKey:@"NSObject"]; [item nChildren] == 1;) {
+    for (id item = notification.userInfo[@"NSObject"]; [item nChildren] == 1;) {
       item = [item getChild:0];
       [itemsToExpand addObject:item];
     }
@@ -125,9 +129,10 @@ static LibraryOutlineViewManager *sharedManager;
 
 #pragma mark - search
 
-- (IBAction)search:(NSTextField *)sender {
-  [[LibManager sharedManager] performSearch:sender.stringValue];
-  [self reloadTree];
+- (void)controlTextDidChange:(NSNotification *)obj {
+  NSTextView *field = obj.userInfo[@"NSFieldEditor"];
+  NSString *query = (field.string == nil)? @"": field.string;
+  [[LibManager sharedManager] performSearch:query];
 }
 
 @end

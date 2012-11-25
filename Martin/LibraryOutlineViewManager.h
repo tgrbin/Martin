@@ -8,8 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface LibraryOutlineViewManager : NSObject <NSOutlineViewDataSource> {
-  IBOutlet NSTextField *textField;
+@interface LibraryOutlineViewManager : NSObject <NSOutlineViewDataSource, NSTextFieldDelegate, NSControlTextEditingDelegate> {
   BOOL reloadingTree;
 }
 
