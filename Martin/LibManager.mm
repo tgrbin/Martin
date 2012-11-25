@@ -104,7 +104,7 @@ struct compareSongs {
       
       impl->songs.push_back(song);
       
-      [enumerator nextObject]; // preskoci }
+      [enumerator nextObject]; // preskoci '}'
     } else {
       if (path.count > 0) {
         [treePath removeLastObject];
@@ -159,7 +159,7 @@ struct compareSongs {
 
         if (currentLevel <= lastLevel) { // leaving folder
           int cnt = (lastLevel-currentLevel) + (wasLastElementFolder == YES);
-          for (int i = 0; i < cnt; ++i) impl->lines.push_back(@"-");
+          for (int i = 0; i < cnt; ++i) [self exitFolderButClearIfEmpty];
         }
         
         if (isFolder) { // entering directory
@@ -195,6 +195,8 @@ struct compareSongs {
         lastLevel = currentLevel;
         wasLastElementFolder = isFolder;
       }
+      
+      for (int i = 1; i < lastLevel; ++i) [self exitFolderButClearIfEmpty];
     }
     NSLog(@"done walking, time: %lfs, songs found: %d", -[timestamp timeIntervalSinceNow], numberOfSongs);
     
@@ -254,6 +256,12 @@ struct compareSongs {
     impl->needsRescan.clear();
     impl->lines.clear();
   });
+}
+
+- (void)exitFolderButClearIfEmpty {
+  NSString *lastPushed = impl->lines.back();
+  if ([lastPushed hasPrefix:@"+ "]) impl->lines.pop_back();
+  else impl->lines.push_back(@"-");
 }
 
 #pragma mark - search
