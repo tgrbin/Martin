@@ -25,6 +25,7 @@ static LibraryOutlineViewManager *sharedManager;
                                            selector:@selector(libraryRescanFinished)
                                                name:kLibManagerRescanedLibraryNotification
                                              object:nil];
+  [self reloadTree];
 }
 
 - (void)dealloc {
@@ -41,7 +42,7 @@ static LibraryOutlineViewManager *sharedManager;
 }
 
 - (void)libraryRescanFinished {
-  [_outlineView reloadData];
+  [self reloadTree];
 }
 
 #pragma mark - data source
@@ -67,11 +68,47 @@ static LibraryOutlineViewManager *sharedManager;
   return [NSString stringWithFormat:@"%@ (%d)", [item name], [item nChildren]];
 }
 
+#pragma mark - reloading
+
+- (void)reloadTree {
+  [_outlineView reloadData];
+  [_outlineView collapseItem:nil collapseChildren:YES];
+  
+  int maxVisibleRows = (int) (_outlineView.frame.size.height/_outlineView.rowHeight) - 5;
+  
+  for (;;) {
+    int n = (int)_outlineView.numberOfRows;
+    
+    NSMutableArray *collapsedItems = [NSMutableArray new];
+    for (int i = 0; i < n; ++i) {
+      id item = [_outlineView itemAtRow:i];
+      if ([_outlineView isItemExpanded:item]) continue;
+      [collapsedItems addObject:item];
+    }
+    
+    [collapsedItems sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+      return [obj1 nChildren] > [obj2 nChildren];
+    }];
+    
+    NSMutableArray *itemsToExpand = [NSMutableArray new];
+    for (id item in collapsedItems) {
+      int nc = [item nChildren];
+      if (nc > 0 && n + nc < maxVisibleRows) {
+        n += nc;
+        [itemsToExpand addObject:item];
+      }
+    }
+    if (itemsToExpand.count == 0) break;
+    
+    for (id item in itemsToExpand) [_outlineView expandItem:item];
+  }
+}
+
 #pragma mark - search
 
 - (IBAction)search:(NSTextField *)sender {
   [[LibManager sharedManager] performSearch:sender.stringValue];
-  [_outlineView reloadData];
+  [self reloadTree];
 }
 
 @end
