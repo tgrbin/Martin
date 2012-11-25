@@ -117,6 +117,8 @@ static LibraryOutlineViewManager *sharedManager;
 }
 
 - (void)itemDidExpand:(NSNotification *)notification {
+  if (notification.object != _outlineView) return;
+  
   if (!reloadingTree) {
     NSMutableArray *itemsToExpand = [NSMutableArray new];
     for (id item = notification.userInfo[@"NSObject"]; [item nChildren] == 1;) {

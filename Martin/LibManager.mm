@@ -328,8 +328,8 @@ struct compareSongs {
   if (impl->nHit == impl->queryWords.size()) {
     node.searchState = 2;
   } else {
-    for (TreeNode *c in node.children) {
-      if ([self traverse:c]) node.searchState = 1;
+    for (int i = 0; i < node.childrenVectorCount; ++i) {
+      if ([self traverse:[node childrenVectorAtIndex:i]]) node.searchState = 1;
     }
   }
   

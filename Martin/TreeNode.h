@@ -8,20 +8,23 @@
 
 #import <Foundation/Foundation.h>
 
+struct TreeNodeImpl;
+
 @interface TreeNode : NSObject {
-  NSMutableArray *results;
+  struct TreeNodeImpl *impl;
 }
 
 @property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSMutableArray *children;
-@property (assign) int searchState;
+@property (nonatomic, assign) int searchState;
 
 - (id)initWithName:(NSString *)name;
 - (int)nChildren;
 - (TreeNode *)getChild:(NSInteger)index;
 
 - (void)addChild:(TreeNode *)child;
-- (void)addResult:(TreeNode *)res;
-- (void)clearResults;
+
+// just libmanager uses this while searching
+- (int)childrenVectorCount;
+- (TreeNode *)childrenVectorAtIndex:(int)i;
 
 @end

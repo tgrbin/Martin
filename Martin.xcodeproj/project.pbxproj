@@ -35,8 +35,8 @@
 		79FF140B142F18A500E27235 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 79FF1409142F18A500E27235 /* Credits.rtf */; };
 		79FF140E142F18A500E27235 /* MartinAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF140D142F18A500E27235 /* MartinAppDelegate.m */; };
 		79FF1411142F18A500E27235 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79FF140F142F18A500E27235 /* MainMenu.xib */; };
-		79FF141C142F1ABB00E27235 /* TreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF141B142F1ABB00E27235 /* TreeNode.m */; };
-		79FF141F142F1CF700E27235 /* TreeLeaf.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF141E142F1CF700E27235 /* TreeLeaf.m */; };
+		79FF141C142F1ABB00E27235 /* TreeNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79FF141B142F1ABB00E27235 /* TreeNode.mm */; };
+		79FF141F142F1CF700E27235 /* TreeLeaf.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79FF141E142F1CF700E27235 /* TreeLeaf.mm */; };
 		79FF1422142F1DB100E27235 /* LibManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79FF1421142F1DB100E27235 /* LibManager.mm */; };
 /* End PBXBuildFile section */
 
@@ -92,9 +92,9 @@
 		79FF140D142F18A500E27235 /* MartinAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MartinAppDelegate.m; sourceTree = "<group>"; };
 		79FF1410142F18A500E27235 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		79FF141A142F1ABB00E27235 /* TreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreeNode.h; sourceTree = "<group>"; };
-		79FF141B142F1ABB00E27235 /* TreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TreeNode.m; sourceTree = "<group>"; };
+		79FF141B142F1ABB00E27235 /* TreeNode.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TreeNode.mm; sourceTree = "<group>"; };
 		79FF141D142F1CF700E27235 /* TreeLeaf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreeLeaf.h; sourceTree = "<group>"; };
-		79FF141E142F1CF700E27235 /* TreeLeaf.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TreeLeaf.m; sourceTree = "<group>"; };
+		79FF141E142F1CF700E27235 /* TreeLeaf.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TreeLeaf.mm; sourceTree = "<group>"; };
 		79FF1420142F1DB100E27235 /* LibManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibManager.h; sourceTree = "<group>"; };
 		79FF1421142F1DB100E27235 /* LibManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LibManager.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -252,9 +252,9 @@
 				798643A41437123500F07CDF /* Song.h */,
 				798643A51437123500F07CDF /* Song.m */,
 				79FF141A142F1ABB00E27235 /* TreeNode.h */,
-				79FF141B142F1ABB00E27235 /* TreeNode.m */,
+				79FF141B142F1ABB00E27235 /* TreeNode.mm */,
 				79FF141D142F1CF700E27235 /* TreeLeaf.h */,
-				79FF141E142F1CF700E27235 /* TreeLeaf.m */,
+				79FF141E142F1CF700E27235 /* TreeLeaf.mm */,
 				795C20AC14377A3D00A61B21 /* Playlist.h */,
 				795C20AD14377A3D00A61B21 /* Playlist.mm */,
 				79DEAD60165BD81C0017E4DD /* PlaylistItem.h */,
@@ -333,8 +333,8 @@
 			files = (
 				79FF1407142F18A500E27235 /* main.m in Sources */,
 				79FF140E142F18A500E27235 /* MartinAppDelegate.m in Sources */,
-				79FF141C142F1ABB00E27235 /* TreeNode.m in Sources */,
-				79FF141F142F1CF700E27235 /* TreeLeaf.m in Sources */,
+				79FF141C142F1ABB00E27235 /* TreeNode.mm in Sources */,
+				79FF141F142F1CF700E27235 /* TreeLeaf.mm in Sources */,
 				79FF1422142F1DB100E27235 /* LibManager.mm in Sources */,
 				79F5BC1014363BE10040DF35 /* LibraryOutlineViewManager.m in Sources */,
 				798643A61437123500F07CDF /* Song.m in Sources */,
