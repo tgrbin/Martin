@@ -296,7 +296,7 @@
 										<object class="NSButton" id="673613273">
 											<reference key="NSNextResponder" ref="758786916"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{48, 25}, {39, 38}}</string>
+											<string key="NSFrame">{{82, 26}, {39, 38}}</string>
 											<reference key="NSSuperview" ref="758786916"/>
 											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="298360679"/>
@@ -320,7 +320,7 @@
 										<object class="NSButton" id="298360679">
 											<reference key="NSNextResponder" ref="758786916"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{82, 26}, {39, 38}}</string>
+											<string key="NSFrame">{{48, 26}, {39, 38}}</string>
 											<reference key="NSSuperview" ref="758786916"/>
 											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="1045873681"/>
@@ -665,7 +665,7 @@
 															<string key="NSFrameSize">{156, 623}</string>
 															<reference key="NSSuperview" ref="1000720331"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="809537169"/>
+															<reference key="NSNextKeyView" ref="566755316"/>
 															<string key="NSReuseIdentifierKey">_NS:1197</string>
 															<bool key="NSEnabled">YES</bool>
 															<object class="_NSCornerView" key="NSCornerView">
@@ -760,7 +760,7 @@
 											<string key="NSFrame">{{269, 0}, {158, 625}}</string>
 											<reference key="NSSuperview" ref="773061786"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="566755316"/>
+											<reference key="NSNextKeyView" ref="1000720331"/>
 											<string key="NSReuseIdentifierKey">_NS:1193</string>
 											<int key="NSsFlags">154130</int>
 											<reference key="NSVScroller" ref="809537169"/>
@@ -784,7 +784,7 @@
 															<string key="NSFrameSize">{670, 607}</string>
 															<reference key="NSSuperview" ref="235089209"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="93719460"/>
+															<reference key="NSNextKeyView" ref="135648766"/>
 															<string key="NSReuseIdentifierKey">_NS:1197</string>
 															<bool key="NSEnabled">YES</bool>
 															<object class="NSTableHeaderView" key="NSHeaderView" id="911911819">
@@ -1046,7 +1046,7 @@
 											<string key="NSFrame">{{428, 0}, {672, 625}}</string>
 											<reference key="NSSuperview" ref="773061786"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="135648766"/>
+											<reference key="NSNextKeyView" ref="235089209"/>
 											<string key="NSReuseIdentifierKey">_NS:1193</string>
 											<int key="NSsFlags">154162</int>
 											<reference key="NSVScroller" ref="93719460"/>
@@ -1521,11 +1521,11 @@
 							<reference ref="956898058"/>
 							<reference ref="170065001"/>
 							<reference ref="686255335"/>
-							<reference ref="673613273"/>
-							<reference ref="298360679"/>
 							<reference ref="1045873681"/>
 							<reference ref="347145720"/>
 							<reference ref="679630093"/>
+							<reference ref="298360679"/>
+							<reference ref="673613273"/>
 						</object>
 						<reference key="parent" ref="102670533"/>
 					</object>
@@ -2162,17 +2162,6 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">LibraryOutlineViewManager</string>
 					<string key="superclassName">NSObject</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">search:</string>
-						<string key="NS.object.0">NSTextField</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">search:</string>
-						<object class="IBActionInfo" key="NS.object.0">
-							<string key="name">search:</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-					</object>
 					<object class="NSMutableDictionary" key="outlets">
 						<string key="NS.key.0">outlineView</string>
 						<string key="NS.object.0">NSOutlineView</string>

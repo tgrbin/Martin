@@ -277,7 +277,7 @@ struct compareSongs {
 - (void)performSearch:(NSString *)query {
   if (self.nowSearching) {
     self.pendingSearchQuery = query;
-    NSLog(@"now searching, setting pending query to %@", query);
+//    NSLog(@"now searching, setting pending query to %@", query);
     return;
   }
   
@@ -286,7 +286,7 @@ struct compareSongs {
     NSString *currentQuery = [[NSString alloc] initWithString:query];
     
     for (;;) {
-      NSDate *stamp = [NSDate date];
+//      NSDate *stamp = [NSDate date];
       impl->queryWords.clear();
       for (NSString *q in [currentQuery componentsSeparatedByString:@" "]) {
         NSString *s = [q stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
@@ -297,7 +297,7 @@ struct compareSongs {
       appendedCharactersToQuery = [currentQuery hasPrefix:previousSearchQuery];
       poppedCharactersFromQuery = [previousSearchQuery hasPrefix:currentQuery];
       [self traverse:root];
-      NSLog(@"search time %lfms", -[stamp timeIntervalSinceNow]*1000.0);
+//      NSLog(@"search time %lfms", -[stamp timeIntervalSinceNow]*1000.0);
       
       previousSearchQuery = [[NSString alloc] initWithString:currentQuery];
       if (self.pendingSearchQuery) {
@@ -321,7 +321,22 @@ struct compareSongs {
 
   for (int i = 0; i < impl->queryWords.size(); ++i) {
     if (impl->queryHits[i]) continue;
-    if ([node.name rangeOfString:impl->queryWords[i] options:NSCaseInsensitiveSearch].location == NSNotFound) continue;
+    if ([node.name rangeOfString:impl->queryWords[i] options:NSCaseInsensitiveSearch].location == NSNotFound) {
+      BOOL foundInTag = NO;
+      
+      if ([node isKindOfClass:[TreeLeaf class]]) {
+        NSDictionary *d = ((TreeLeaf *)node).song.tagsDictionary;
+        for (id key in d) {
+          NSString *val = d[key];
+          if ([val rangeOfString:impl->queryWords[i] options:NSCaseInsensitiveSearch].location != NSNotFound) {
+            foundInTag = YES;
+            break;
+          }
+        }
+      }
+        
+      if (!foundInTag) continue;
+    }
     
     impl->queryHits[i] = true;
     ++impl->nHit;
