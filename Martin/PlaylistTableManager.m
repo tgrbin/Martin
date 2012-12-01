@@ -121,10 +121,9 @@ static PlaylistTableManager *sharedManager = nil;
   NSTextFieldCell *cell = (NSTextFieldCell*)c;
   
   if (self.showingNowPlayingPlaylist && row == highlightedRow) {
-    cell.drawsBackground = YES;
-    cell.backgroundColor = [NSColor colorWithCalibratedRed:0.6 green:0.7 blue:0.8 alpha:1.0];
+    cell.font = [NSFont boldSystemFontOfSize:13];
   } else {
-    cell.drawsBackground = NO;
+    cell.font = [NSFont systemFontOfSize:13];
   }
 }
 
