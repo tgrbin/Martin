@@ -8,6 +8,7 @@
 
 #import "MartinAppDelegate.h"
 #import "PlaylistManager.h"
+#import "LibManager.h"
 
 @implementation MartinAppDelegate
 

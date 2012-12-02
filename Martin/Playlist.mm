@@ -7,13 +7,12 @@
 //
 
 #import "Playlist.h"
-#import "TreeLeaf.h"
-#import "TreeNode.h"
-#import "Song.h"
 #import "LibManager.h"
 #import "PlaylistItem.h"
 #import "PlaylistManager.h"
 #import "FilePlayer.h"
+#import "Tree.h"
+#import "Tags.h"
 
 #import <algorithm>
 #import <numeric>
@@ -37,7 +36,7 @@ struct PlaylistImpl {
 - (id)initWithName:(NSString *)n playlistItems:(NSArray *)s {
   if (self = [super init]) {
     _name = n;
-    impl = new PlaylistImpl();
+    impl = new PlaylistImpl;
 
     currentItem = -1;
     
@@ -53,6 +52,10 @@ struct PlaylistImpl {
     random_shuffle(impl->shuffled.begin(), impl->shuffled.end());
   }
   return self;
+}
+
+- (void)dealloc {
+  delete impl;
 }
 
 - (id)initWithTreeNodes:(NSArray *)arr {
@@ -82,11 +85,13 @@ struct PlaylistImpl {
     if ([item isKindOfClass:[PlaylistItem class]]) {
       folderName = [[((PlaylistItem *)item).filename stringByDeletingLastPathComponent] lastPathComponent];
     } else {
-      if ([item isKindOfClass:[TreeLeaf class]]) {
-        folderName = [[((TreeLeaf *)item).song.filename stringByDeletingLastPathComponent] lastPathComponent];
-      } else {
-        folderName = ((TreeNode *)item).name;
-      }
+      int node = [item intValue];
+      int song = [[Tree sharedTree] songFromNode:node];
+      
+      if (song != -1) node = [[Tree sharedTree] parentOfNode:node];
+        
+      folderName = [[Tree sharedTree] nameForNode:node];
+      
       [self addTreeNodes:@[item] atPos:currCount];
     }
     
@@ -124,8 +129,11 @@ struct PlaylistImpl {
   
   int oldSize = (int)impl->playlistItems.size();
   for (id item in arr) {
-    if ([item isKindOfClass:[PlaylistItem class]]) impl->playlistItems.push_back(item);
-    else [self traverseNodeAndAddItems:item];
+    if ([item isKindOfClass:[PlaylistItem class]]) {
+      impl->playlistItems.push_back(item);
+    } else {
+      [self traverseNodeAndAddItems:[item intValue]];
+    }
   }
   int newSize = (int)impl->playlistItems.size();
   
@@ -146,15 +154,18 @@ struct PlaylistImpl {
   random_shuffle(it, impl->shuffled.end());
 }
 
-- (void)traverseNodeAndAddItems:(TreeNode *)node {
-  if ([node isKindOfClass:[TreeLeaf class]]) {
-    PlaylistItem *pi = [[PlaylistItem alloc] initWithInode:((TreeLeaf*)node).song.inode];
-    impl->playlistItems.push_back(pi);
-  } else {
-    int n = node.nChildren;
+- (void)traverseNodeAndAddItems:(int)node {
+  int song = [[Tree sharedTree] songFromNode:node];
+  
+  if (song == -1) {
+    int n = [[Tree sharedTree] numberOfChildrenForNode:node];
     for (int i = 0; i < n; ++i) {
-      [self traverseNodeAndAddItems:[node getChild:i]];
+      [self traverseNodeAndAddItems:[[Tree sharedTree] childAtIndex:i forNode:node]];
     }
+  } else {
+    int inode = [[Tree sharedTree] songDataForP:song]->inode;
+    PlaylistItem *pi = [[PlaylistItem alloc] initWithInode:inode];
+    impl->playlistItems.push_back(pi);
   }
 }
 
@@ -190,15 +201,16 @@ struct PlaylistImpl {
   
   BOOL isLength = [str isEqualToString:@"length"];
   BOOL isTrackNumber = [str isEqualToString:@"track number"];
+  int tagIndex = [Tags indexForTagName:str];
   
-  sort(impl->playlist.begin(), impl->playlist.end(), [&, isLength, isTrackNumber](int a, int b) -> bool {
+  sort(impl->playlist.begin(), impl->playlist.end(), [&, tagIndex, isLength, isTrackNumber](int a, int b) -> bool {
     PlaylistItem *p1 = impl->playlistItems[a];
     PlaylistItem *p2 = impl->playlistItems[b];
     
     if (isLength) return p1.lengthInSeconds < p2.lengthInSeconds;
     
-    NSString *val1 = p1.tags[str];
-    NSString *val2 = p2.tags[str];
+    NSString *val1 = [p1.tags tagForIndex:tagIndex];
+    NSString *val2 = [p2.tags tagForIndex:tagIndex];
     
     if (isTrackNumber) return val1.intValue < val2.intValue;
     return [val1 caseInsensitiveCompare:val2] == NSOrderedAscending;

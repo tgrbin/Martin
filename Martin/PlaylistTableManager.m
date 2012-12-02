@@ -8,13 +8,13 @@
 
 #import "PlaylistTableManager.h"
 #import "LibManager.h"
-#import "TreeNode.h"
 #import "Playlist.h"
 #import "PlaylistItem.h"
 #import "LibraryOutlineViewManager.h"
 #import "Player.h"
 #import "FilePlayer.h"
 #import "PlaylistManager.h"
+#import "Tags.h"
 
 @implementation PlaylistTableManager
 
@@ -31,7 +31,7 @@ static PlaylistTableManager *sharedManager = nil;
   _playlistTable.target = self;
   _playlistTable.doubleAction = @selector(itemDoubleClicked);
   [_playlistTable registerForDraggedTypes:@[@"MyDragType"]];
-  
+
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(playingItemChanged)
                                                name:kFilePlayerStartedPlayingNotification
@@ -41,7 +41,7 @@ static PlaylistTableManager *sharedManager = nil;
                                            selector:@selector(playingItemChanged)
                                                name:kFilePlayerStoppedNotification
                                              object:nil];
-  
+
   _playlist = [PlaylistManager sharedManager].selectedPlaylist;
 }
 
@@ -66,7 +66,7 @@ static PlaylistTableManager *sharedManager = nil;
   [pboard declareTypes:@[@"MyDragType"] owner:nil];
   [pboard setData:[NSData data] forType:@"MyDragType"];
   _dragRows = rows;
-  return YES;        
+  return YES;
 }
 
 - (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
@@ -87,7 +87,7 @@ static PlaylistTableManager *sharedManager = nil;
   } else {
     return NO;
   }
-  
+
   [self reloadTable];
   return YES;
 }
@@ -105,21 +105,21 @@ static PlaylistTableManager *sharedManager = nil;
     [_playlist reverse];
   } else {
     sortAscending = YES;
-    
+
     if (sortedColumn) [tableView setIndicatorImage:nil inTableColumn:sortedColumn];
     sortedColumn = tableColumn;
-    
+
     [tableView setHighlightedTableColumn:tableColumn];
     [_playlist sortBy:tableColumn.identifier];
   }
-  
+
   [tableView setIndicatorImage:[NSImage imageNamed: sortAscending? @"NSAscendingSortIndicator": @"NSDescendingSortIndicator"] inTableColumn:tableColumn];
   [self reloadTable];
 }
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)c forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   NSTextFieldCell *cell = (NSTextFieldCell*)c;
-  
+
   if (self.showingNowPlayingPlaylist && row == highlightedRow) {
     cell.font = [NSFont boldSystemFontOfSize:13];
   } else {
@@ -134,19 +134,19 @@ static PlaylistTableManager *sharedManager = nil;
 }
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-  NSString *tag = tableColumn.identifier;
   PlaylistItem *item = _playlist[(int)row];
-  NSString *value = [item.tags objectForKey:tag];
-  
+  int tagIndex = [Tags indexForTagName:tableColumn.identifier];
+  NSString *value = [item.tags tagForIndex:tagIndex];
+
   if (item == _playlist.currentItem) {
     highlightedRow = (int)row;
   }
-  
-  if ([tag isEqualToString:@"length"]) {
+
+  if ([tableColumn.identifier isEqualToString:@"length"]) {
     int sec = item.lengthInSeconds;
     value = [NSString stringWithFormat:@"%d:%02d", sec/60, sec%60];
   }
-  
+
   return value;
 }
 
@@ -161,14 +161,14 @@ static PlaylistTableManager *sharedManager = nil;
   int n = (int)_playlistTable.numberOfRows;
   int m = (int)selectedIndexes.count;
   int selectRow = (int)selectedIndexes.lastIndex;
-  
+
   if (m > 0) {
     [self.playlist removeSongsAtIndexes:selectedIndexes];
     [_playlistTable deselectAll:nil];
     [self reloadTable];
-    
+
     selectRow = (selectRow < n-1)? selectRow-m+1: n-m-1;
-    
+
     [_playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:selectRow] byExtendingSelection:NO];
     [_playlistTable scrollRowToVisible:selectRow];
   }

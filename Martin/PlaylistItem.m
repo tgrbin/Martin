@@ -8,14 +8,14 @@
 
 #import "PlaylistItem.h"
 #import "LibManager.h"
-#import "Song.h"
+#import "Tree.h"
 
 @implementation PlaylistItem
 
 - (id)initWithInode:(int)inode {
   if (self = [super init]) {
     _inode = inode;
-    _song = [[LibManager sharedManager] songByID:_inode];
+    _p_librarySong = [[Tree sharedTree] songByInode:inode];
   }
   return self;
 }
@@ -26,7 +26,7 @@
     _filename = dictionary[@"filename"];
     _tags = dictionary[@"tags"];
     _lengthInSeconds = [dictionary[@"length"] intValue];
-    if (_inode) _song = [[LibManager sharedManager] songByID:_inode];
+    if (_inode) _p_librarySong = [[Tree sharedTree] songByInode:_inode];
   }
   return self;
 }
@@ -41,17 +41,17 @@
 }
 
 - (NSString *)filename {
-  if (self.song) return self.song.filename;
+  if (_p_librarySong != -1) return [[Tree sharedTree] fullPathForSong:_p_librarySong];
   return _filename;
 }
 
-- (NSDictionary *)tags {
-  if (self.song) return self.song.tagsDictionary;
+- (Tags *)tags {
+  if (_p_librarySong != -1) return [[Tree sharedTree] songDataForP:_p_librarySong]->tags;
   return _tags;
 }
 
 - (int)lengthInSeconds {
-  if (self.song) return self.song.lengthInSeconds;
+  if (_p_librarySong != -1) return [[Tree sharedTree] songDataForP:_p_librarySong]->lengthInSeconds;
   return _lengthInSeconds;
 }
 

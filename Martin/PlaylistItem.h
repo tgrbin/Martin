@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class Song;
+@class Tags;
 
 @interface PlaylistItem : NSObject
 
@@ -17,10 +17,10 @@
 - (NSDictionary *)dictionary;
 
 @property (nonatomic, assign) int inode;
-@property (nonatomic, strong) NSString *filename;
 @property (nonatomic, assign) int lengthInSeconds;
-@property (nonatomic, strong) NSDictionary *tags;
+@property (nonatomic, strong) NSString *filename;
+@property (nonatomic, strong) Tags *tags;
 
-@property (nonatomic, strong) Song *song;
+@property (nonatomic, assign) int p_librarySong;
 
 @end
