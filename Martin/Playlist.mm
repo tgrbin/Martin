@@ -163,8 +163,7 @@ struct PlaylistImpl {
       [self traverseNodeAndAddItems:[[Tree sharedTree] childAtIndex:i forNode:node]];
     }
   } else {
-    int inode = [[Tree sharedTree] songDataForP:song]->inode;
-    PlaylistItem *pi = [[PlaylistItem alloc] initWithInode:inode];
+    PlaylistItem *pi = [[PlaylistItem alloc] initWithLibrarySong:song];
     impl->playlistItems.push_back(pi);
   }
 }

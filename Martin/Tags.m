@@ -37,6 +37,7 @@ static NSString **tagNames;
 + (int)indexForTagName:(NSString *)name {
   static NSMutableDictionary *dict = nil;
   if (dict == nil) {
+    dict = [NSMutableDictionary new];
     for (int i = 0; i < numberOfTags; ++i) {
       dict[tagNames[i]] = @(i);
     }
@@ -47,24 +48,25 @@ static NSString **tagNames;
 
 - (id)init {
   if (self = [super init]) {
-    tagNames = (NSString **)malloc(numberOfTags * sizeof(NSString*));
-    for (int i = 0; i < numberOfTags; ++i) tagNames[i] = nil;
+    tags = (NSString **)malloc(numberOfTags * sizeof(NSString*));
+    for (int i = 0; i < numberOfTags; ++i) tags[i] = nil;
   }
   return self;
 }
 
 - (void)dealloc {
-  for (int i = 0; i < numberOfTags; ++i) [tagNames[i] release];
+  for (int i = 0; i < numberOfTags; ++i) [tags[i] release];
+  free(tags);
   [super dealloc];
 }
 
 - (void)setTag:(NSString *)tag forIndex:(int)i {
-  [tagNames[i] release];
-  tagNames[i] = [tag retain];
+  [tags[i] release];
+  tags[i] = [tag retain];
 }
 
 - (NSString *)tagForIndex:(int)i {
-  return tagNames[i];
+  return tags[i];
 }
 
 @end

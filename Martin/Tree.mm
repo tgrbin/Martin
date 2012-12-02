@@ -55,14 +55,14 @@ struct TreeImpl {
 
 - (int)newNode {
   if (nodesCounter >= impl->nodes.size()) {
-    impl->nodes.resize((impl->nodes.size()+1)*2);
+    impl->nodes.resize(impl->nodes.size()+256);
   }
   return nodesCounter++;
 }
 
 - (int)newSong {
   if (songsCounter >= impl->songs.size()) {
-    impl->songs.resize((impl->songs.size()+1)*2);
+    impl->songs.resize(impl->songs.size()+256);
   }
   if (impl->songs[songsCounter].tags == nil) {
     impl->songs[songsCounter].tags = [Tags new];

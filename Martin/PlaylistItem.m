@@ -12,10 +12,9 @@
 
 @implementation PlaylistItem
 
-- (id)initWithInode:(int)inode {
+- (id)initWithLibrarySong:(int)p_song {
   if (self = [super init]) {
-    _inode = inode;
-    _p_librarySong = [[Tree sharedTree] songByInode:inode];
+    _p_librarySong = p_song;
   }
   return self;
 }

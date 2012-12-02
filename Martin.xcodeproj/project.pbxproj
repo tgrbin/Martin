@@ -35,7 +35,7 @@
 		79FF140B142F18A500E27235 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 79FF1409142F18A500E27235 /* Credits.rtf */; };
 		79FF140E142F18A500E27235 /* MartinAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF140D142F18A500E27235 /* MartinAppDelegate.m */; };
 		79FF1411142F18A500E27235 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79FF140F142F18A500E27235 /* MainMenu.xib */; };
-		79FF1422142F1DB100E27235 /* LibManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79FF1421142F1DB100E27235 /* LibManager.mm */; };
+		79FF1422142F1DB100E27235 /* LibManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79FF1421142F1DB100E27235 /* LibManager.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */

@@ -59,10 +59,10 @@
 
 - (IBAction)changeFolder:(NSTableView *)sender {
   LibraryFolder *lf = [[LibraryFolder libraryFolders] objectAtIndex:sender.clickedRow];
-  
+
   NSOpenPanel *panel = [self configurePanel];
   panel.directoryURL = [NSURL fileURLWithPath:lf.folderPath isDirectory:YES];
-  
+
   if ([panel runModal] == NSFileHandlingPanelOKButton) {
     lf.folderPath = [panel.directoryURL path];
     [sender reloadData];
@@ -86,7 +86,7 @@
 
 - (IBAction)addNewPressed:(id)sender {
   NSOpenPanel *panel = [self configurePanel];
-  
+
   if ([panel runModal] == NSFileHandlingPanelOKButton) {
     LibraryFolder *lf = [[LibraryFolder alloc] init];
     lf.folderPath = [panel.directoryURL path];
@@ -104,9 +104,9 @@
   rescanStatusTextField.stringValue = @"Traversing library folders...";
   rescanProgressIndicator.indeterminate = YES;
   [rescanProgressIndicator startAnimation:nil];
-  
+
   __block int state = -1;
-  
+
   [[LibManager sharedManager] rescanLibraryWithProgressBlock:^(int p) {
     if (state == -1) state = p;
     else if (state != -2) {
@@ -124,7 +124,7 @@
 - (void)libraryRescanFinished {
   rescanStatusTextField.stringValue = [NSString stringWithFormat:@"Done! Total of %d songs in library.", totalSongs];
 
-  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC);
+  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC);
   dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
     [rescanProgressIndicator stopAnimation:nil];
     rescanProgressIndicator.hidden = YES;
@@ -145,7 +145,7 @@
   [self showSpinner];
   [LastFM getAuthURLWithBlock:^(NSString *url) {
     [self hideSpinner];
-    
+
     if (url == nil) {
       [self showAlertWithMsg:@"Sorry, get token failed."];
     } else {
@@ -159,7 +159,7 @@
   [self showSpinner];
   [LastFM getSessionKey:^(BOOL success) {
     [self hideSpinner];
-    
+
     if (success == NO) {
       [self showAlertWithMsg:@"Sorry, get session key failed. Make sure you finished previous steps correctly."];
     } else {
@@ -187,7 +187,7 @@
   NSAlert *alert = [[NSAlert alloc] init];
   [alert setAlertStyle:NSInformationalAlertStyle];
   [alert setMessageText:msg];
-  
+
   [alert beginSheetModalForWindow:self.window
                     modalDelegate:nil
                     didEndSelector:nil
