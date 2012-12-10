@@ -17,8 +17,6 @@ struct LibManagerImpl;
   NSString *previousSearchQuery;
   BOOL appendedCharactersToQuery;
   BOOL poppedCharactersFromQuery;
-
-  struct LibManagerImpl *impl;
 }
 
 + (LibManager *)sharedManager;

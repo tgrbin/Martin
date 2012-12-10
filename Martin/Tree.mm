@@ -24,16 +24,12 @@ struct TreeNode {
   int p_song; // != -1 iff node is a leaf
 };
 
-
-struct TreeImpl {
-  vector<TreeNode> nodes;
-  vector<LibrarySong> songs;
-  map<int, NSString *> libraryPaths;
-  
-  map<int, int> songsByInode;
-};
-
 @implementation Tree
+
+static vector<TreeNode> nodes;
+static vector<LibrarySong> songs;
+static map<int, NSString *> libraryPaths;
+static map<int, int> songsByInode;
 
 + (Tree *)sharedTree {
   static Tree *tree = nil;
@@ -43,29 +39,28 @@ struct TreeImpl {
 
 - (id)init {
   if (self = [super init]) {
-    impl = new TreeImpl;
-    impl->nodes.resize(128);
-    impl->nodes[0].searchState = 2;
-    impl->nodes[0].name = @"";
-    impl->nodes[0].p_song = -1;
-    impl->nodes[0].p_parent = -1;
+    nodes.resize(128);
+    nodes[0].searchState = 2;
+    nodes[0].name = @"";
+    nodes[0].p_song = -1;
+    nodes[0].p_parent = -1;
   }
   return self;
 }
 
 - (int)newNode {
-  if (nodesCounter >= impl->nodes.size()) {
-    impl->nodes.resize(impl->nodes.size()+256);
+  if (nodesCounter >= nodes.size()) {
+    nodes.resize(nodes.size()+256);
   }
   return nodesCounter++;
 }
 
 - (int)newSong {
-  if (songsCounter >= impl->songs.size()) {
-    impl->songs.resize(impl->songs.size()+256);
+  if (songsCounter >= songs.size()) {
+    songs.resize(songs.size()+256);
   }
-  if (impl->songs[songsCounter].tags == nil) {
-    impl->songs[songsCounter].tags = [Tags new];
+  if (songs[songsCounter].tags == nil) {
+    songs[songsCounter].tags = [Tags new];
   }
   return songsCounter++;
 }
@@ -73,92 +68,92 @@ struct TreeImpl {
 - (void)clearTree {
   songsCounter = 0;
   nodesCounter = 1;
-  impl->nodes[0].children.clear();
-  impl->nodes[0].searchState = 2;
-  for (map<int, NSString *>::iterator it = impl->libraryPaths.begin(); it != impl->libraryPaths.end(); ++it) {
+  nodes[0].children.clear();
+  nodes[0].searchState = 2;
+  for (map<int, NSString *>::iterator it = libraryPaths.begin(); it != libraryPaths.end(); ++it) {
     [it->second release];
   }
-  impl->libraryPaths.clear();
-  impl->songsByInode.clear();
+  libraryPaths.clear();
+  songsByInode.clear();
 }
 
 - (int)addChild:(NSString *)name parent:(int)p_parent song:(int)p_song {
   int node = [self newNode];
-  impl->nodes[p_parent].children.push_back(node);
-  [impl->nodes[node].name release];
-  impl->nodes[node].name = [name retain];
-  impl->nodes[node].p_parent = p_parent;
-  impl->nodes[node].children.clear();
-  impl->nodes[node].p_song = p_song;
-  if (p_song != -1) impl->songs[p_song].p_treeLeaf = node;
+  nodes[p_parent].children.push_back(node);
+  [nodes[node].name release];
+  nodes[node].name = [name retain];
+  nodes[node].p_parent = p_parent;
+  nodes[node].children.clear();
+  nodes[node].p_song = p_song;
+  if (p_song != -1) songs[p_song].p_treeLeaf = node;
   return node;
 }
 
 - (void)setLibraryPath:(NSString *)p forNode:(int)p_node {
-  impl->libraryPaths[p_node] = [p retain];
+  libraryPaths[p_node] = [p retain];
 }
 
 - (void)addToSongByInodeMap:(int)song inode:(int)inode {
-  impl->songsByInode.insert(make_pair(inode, song));
+  songsByInode.insert(make_pair(inode, song));
 }
 
 - (int)songByInode:(int)inode {
-  map<int, int>::iterator it = impl->songsByInode.find(inode);
-  if (it == impl->songsByInode.end()) return -1;
+  map<int, int>::iterator it = songsByInode.find(inode);
+  if (it == songsByInode.end()) return -1;
   return it->second;
 }
 
 - (struct LibrarySong *)songDataForP:(int)p_song {
-  return &impl->songs[p_song];
+  return &songs[p_song];
 }
 
 - (NSString *)nameForNode:(int)p_node {
-  return impl->nodes[p_node].name;
+  return nodes[p_node].name;
 }
 
 - (int)numberOfChildrenForNode:(int)p_node {
-  return (int)impl->nodes[p_node].children.size();
+  return (int)nodes[p_node].children.size();
 //  if (_searchState == 0) return 0;
 //  
 //  if (_searchState == 1) {
-//    impl->searchResults.clear();
-//    for (int i = 0; i < impl->children.size(); ++i) {
-//      if (impl->children[i].searchState > 0) impl->searchResults.push_back(impl->children[i]);
+//    searchResults.clear();
+//    for (int i = 0; i < children.size(); ++i) {
+//      if (children[i].searchState > 0) searchResults.push_back(children[i]);
 //    }
 //    _searchState = 4;
 //  }
 //  
 //  if (_searchState == 2) {
-//    for (int i = 0; i < impl->children.size(); ++i) {
-//      impl->children[i].searchState = 2;
+//    for (int i = 0; i < children.size(); ++i) {
+//      children[i].searchState = 2;
 //    }
 //    _searchState = 3;
 //  }
 //  
-//  return (int) (_searchState == 3? impl->children.size(): impl->searchResults.size());
+//  return (int) (_searchState == 3? children.size(): searchResults.size());
 }
 
 - (int)childAtIndex:(int)i forNode:(int)p_node {
-  return impl->nodes[p_node].children[i];
-//  return _searchState == 3? impl->children[i]: impl->searchResults[i];
+  return nodes[p_node].children[i];
+//  return _searchState == 3? children[i]: searchResults[i];
 }
 
 - (int)parentOfNode:(int)p_node {
-  return impl->nodes[p_node].p_parent;
+  return nodes[p_node].p_parent;
 }
 
 - (int)songFromNode:(int)p_node {
-  return impl->nodes[p_node].p_song;
+  return nodes[p_node].p_song;
 }
 
 - (NSString *)fullPathForSong:(int)p_song {
   vector<NSString *> v;
-  for (int node = impl->songs[p_song].p_treeLeaf; ; node = impl->nodes[node].p_parent) {
-    if (impl->nodes[node].p_parent == 0) { // library folder
-      v.push_back(impl->libraryPaths[node]);
+  for (int node = songs[p_song].p_treeLeaf; ; node = nodes[node].p_parent) {
+    if (nodes[node].p_parent == 0) { // library folder
+      v.push_back(libraryPaths[node]);
       break;
     }
-    v.push_back(impl->nodes[node].name);
+    v.push_back(nodes[node].name);
   }
   
   NSMutableString *str = [NSMutableString stringWithString:v.back()];

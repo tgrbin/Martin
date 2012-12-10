@@ -13,7 +13,9 @@
 #import "Tags.h"
 
 #import <algorithm>
+#import <cstdio>
 #import <vector>
+#import <ftw.h>
 
 using namespace std;
 
@@ -24,12 +26,6 @@ using namespace std;
 
 @implementation LibManager
 
-struct LibManagerImpl {
-  vector<NSString *> queryWords;
-  vector<bool> queryHits;
-  int nHit;
-};
-
 + (LibManager *)sharedManager {
   static LibManager *o = nil;
   if (o == nil) o = [LibManager new];
@@ -38,7 +34,6 @@ struct LibManagerImpl {
 
 - (id)init {
   if (self = [super init]) {
-    impl = new LibManagerImpl;
     previousSearchQuery = @"";
     [self loadLibrary];
   }
@@ -47,6 +42,17 @@ struct LibManagerImpl {
 
 static const int kLineBuffSize = 1<<16;
 static char lineBuff[kLineBuffSize];
+
+static vector<int> needsRescan;
+static vector<int> emptyFolders;
+static int numberOfSongsFound;
+
+static vector<int> folderStack;
+static int lineNumber;
+static int lastSongPos;
+static int lastFolderLevel;
+static BOOL wasLastItemFolder;
+static FILE *walkFile;
 
 - (void)loadLibrary {
   @autoreleasepool {
@@ -122,119 +128,26 @@ static char lineBuff[kLineBuffSize];
 - (void)rescanLibraryWithProgressBlock:(void (^)(int))progressBlock {
   __block id selfRef = self;
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    [selfRef rescanLibrary:progressBlock];
+    
+    [selfRef walkLibrary];
+    [selfRef rescanSongs:progressBlock];
     [selfRef loadLibrary];
+
     dispatch_sync(dispatch_get_main_queue(), ^{
       [[NSNotificationCenter defaultCenter] postNotificationName:kLibManagerRescanedLibraryNotification object:nil];
     });
   });
 }
 
-- (void)rescanLibrary:(void (^)(int))block {
+- (void)rescanSongs:(void (^)(int))block {
   @autoreleasepool {
-    vector<NSString *> libraryDisplayNames;
-    vector<NSString *> libraryPaths;
-    for (LibraryFolder *lf in [LibraryFolder libraryFolders]) {
-      libraryDisplayNames.push_back(lf.treeDisplayName);
-      libraryPaths.push_back(lf.folderPath);
-    }
-    
-    FILE *f = fopen(toCstr([self rescanPath]), "w");
-    int lineNumber = 0;
-    
-    NSLog(@"walking folders..");
-    NSDate *timestamp = [NSDate date];
-    int numberOfSongs = 0, lastSongPos = -1;
-    vector<int> needsRescan;
-    vector<int> emptyFolders;
-    vector<int> foldersStack;
-    for (int i = 0; i < libraryPaths.size(); ++i) {
-      NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtPath:libraryPaths[i]];
-      
-      fprintf(f, "%s\n", toCstr(libraryPaths[i]));
-      fprintf(f, "%s\n", toCstr(libraryDisplayNames[i]));
-      lineNumber += 2;
-      
-      int lastLevel = 0;
-      BOOL wasLastElementFolder = NO;
-      for (NSString *file; file = [enumerator nextObject];) {
-        int currentLevel = (int)enumerator.level;
-        NSDictionary *stat = [enumerator fileAttributes];
-        BOOL isFolder = ([stat objectForKey:NSFileType] == NSFileTypeDirectory);
-        
-        if (currentLevel <= lastLevel) { // leaving folder
-          int cnt = (lastLevel-currentLevel) + (wasLastElementFolder == YES);
-          for (int i = 0; i < cnt; ++i) {
-            fprintf(f, "-\n");
-            ++lineNumber;
-            if (foldersStack.back() > lastSongPos) emptyFolders.push_back(foldersStack.back());
-            foldersStack.pop_back();
-          }
-        }
-        
-        if (isFolder) { // entering directory
-          fprintf(f, "+ %s\n", toCstr([file lastPathComponent]));
-          foldersStack.push_back(lineNumber++);
-        } else if ([[[file pathExtension] lowercaseString] isEqualToString:@"mp3"]) {
-          ++numberOfSongs;
-          lastSongPos = lineNumber;
-          
-          int inode = [[stat objectForKey:NSFileSystemFileNumber] intValue];
-          int lastModified = (int) [((NSDate *)[stat objectForKey:NSFileModificationDate]) timeIntervalSince1970];
-          int song = [[Tree sharedTree] songByInode:inode];
-          struct LibrarySong *songData = (song == -1)? NULL: [[Tree sharedTree] songDataForP:song];
-          
-          fprintf(f, "{\n%d\n%d\n", inode, lastModified);
-          lineNumber += 3;
-          
-          if (song == -1 || songData->lastModified != lastModified) {
-            fprintf(f, "%s\n", toCstr(file));
-            needsRescan.push_back(lineNumber++);
-            for (int i = 0; i <= [Tags numberOfTags]; ++i) fprintf(f, "\n");
-            lineNumber += [Tags numberOfTags] + 1;
-          } else {
-            fprintf(f, "%s\n%d\n", toCstr([file lastPathComponent]), songData->lengthInSeconds);
-            lineNumber += 2;
-            for (int i = 0; i < [Tags numberOfTags]; ++i) {
-              NSString *val = [songData->tags tagForIndex:i];
-              if (val == nil || val.length == 0) fprintf(f, "/\n");
-              else fprintf(f, "%s\n", toCstr(val));
-              ++lineNumber;
-            }
-          }
-          
-          fprintf(f, "}\n");
-          ++lineNumber;
-        }
-        
-        lastLevel = currentLevel;
-        wasLastElementFolder = isFolder;
-      }
-      
-      for (int i = 1; i < lastLevel; ++i) {
-        fprintf(f, "-\n");
-        ++lineNumber;
-        if (foldersStack.back() > lastSongPos) emptyFolders.push_back(foldersStack.back());
-        foldersStack.pop_back();
-      }
-    }
-    fclose(f);
-    
-    NSLog(@"done walking, time: %lfs, songs found: %d", -[timestamp timeIntervalSinceNow], numberOfSongs);
-    
-    NSLog(@"rescaning %d files..", (int)needsRescan.size());
-    
-    block(numberOfSongs);
+    block(numberOfSongsFound);
     block((int)needsRescan.size());
     
-    timestamp = [NSDate date];
-    
-    f = fopen(toCstr([self rescanPath]), "r");
+    FILE *f = fopen(toCstr([self rescanPath]), "r");
     FILE *g = fopen(toCstr([self rescanHelperPath]), "w");
     int emptyFolderCount = 0, nextEmptyFolderIndex = 0;
-    emptyFolders.push_back(-1);
-    int songStart = -1;
-    int lastBaseURL = -2;
+    int songStart = -1, lastBaseURL = -2;
     NSString *baseURL;
     int nextRescanIndex = 0;
     ID3Reader *id3 = nil;
@@ -299,15 +212,13 @@ static char lineBuff[kLineBuffSize];
         fprintf(g, "%s", lineBuff);
         if (lineBuff[strlen(lineBuff)-1] != '\n') fprintf(g, "\n");
       }
-      fflush(g);
     }
     
+    fclose(f);
     fclose(g);
     
-    [[NSFileManager defaultManager] removeItemAtPath:[self libPath] error:nil];
-    [[NSFileManager defaultManager] moveItemAtPath:[self rescanHelperPath] toPath:[self libPath] error:nil];
-    
-    NSLog(@"done rescaning, time: %lfs", -[timestamp timeIntervalSinceNow]);
+    unlink(toCstr([self libPath]));
+    rename(toCstr([self rescanHelperPath]), toCstr([self libPath]));
   }
 }
 
@@ -318,6 +229,107 @@ static NSString *stringFromLineBuff() {
 
 static const char *toCstr(NSString *s) {
   return [s cStringUsingEncoding:NSUTF8StringEncoding];
+}
+
+- (int)walkLibrary {
+  vector<NSString *> libraryDisplayNames;
+  vector<NSString *> libraryPaths;
+  for (LibraryFolder *lf in [LibraryFolder libraryFolders]) {
+    libraryDisplayNames.push_back([lf.treeDisplayName retain]);
+    libraryPaths.push_back([lf.folderPath retain]);
+  }
+
+  walkFile = fopen(toCstr([self rescanPath]), "w");
+  lineNumber = 0;
+  lastSongPos = 0;
+  folderStack.clear();
+  
+  for (int i = 0; i < libraryPaths.size(); ++i) {
+    fprintf(walkFile, "%s\n", toCstr(libraryPaths[i]));
+    fprintf(walkFile, "%s\n", toCstr(libraryDisplayNames[i]));
+    lineNumber += 2;
+    
+    lastFolderLevel = 0;
+    wasLastItemFolder = NO;
+
+    if (nftw(toCstr(libraryPaths[i]), ftw_callback, 512, 0) != 0) {
+      fclose(walkFile);
+      return -1;
+    }
+    
+    for (int j = 1; j < lastFolderLevel; ++j) {
+      fprintf(walkFile, "-\n");
+      ++lineNumber;
+      
+      if (folderStack.back() > lastSongPos) emptyFolders.push_back(folderStack.back());
+      folderStack.pop_back();
+    }
+  }
+  
+  fclose(walkFile);
+  emptyFolders.push_back(-1);
+  
+  return 0;
+}
+
+static BOOL isExtensionAcceptable(const char *str) {
+  int len = (int)strlen(str);
+  return strcmp(str + len - 4, ".mp3") == 0;
+}
+
+static int ftw_callback(const char *filename, const struct stat *stat_struct, int flags, struct FTW *ftw_struct) {
+  int currentLevel = ftw_struct->level;
+  BOOL isFolder = (flags == FTW_D);
+  const char *basename = filename + ftw_struct->base;
+  
+  if (currentLevel <= lastFolderLevel) { // leaving folder
+    int cnt = (lastFolderLevel-currentLevel) + (wasLastItemFolder == YES);
+    for (int i = 0; i < cnt; ++i) {
+      fprintf(walkFile, "-\n");
+      ++lineNumber;
+      if (folderStack.back() > lastSongPos) emptyFolders.push_back(folderStack.back());
+      folderStack.pop_back();
+    }
+  }
+  
+  if (isFolder) { // entering directory
+    fprintf(walkFile, "+ %s\n", basename);
+    folderStack.push_back(lineNumber++);
+  } else if (isExtensionAcceptable(filename)) {
+    ++numberOfSongsFound;
+    lastSongPos = lineNumber;
+    
+    int inode = (int)stat_struct->st_ino;
+    int lastModified = (int) stat_struct->st_mtimespec.tv_sec;
+    int song = [[Tree sharedTree] songByInode:inode];
+    struct LibrarySong *songData = (song == -1)? NULL: [[Tree sharedTree] songDataForP:song];
+    
+    fprintf(walkFile, "{\n%d\n%d\n%s\n", inode, lastModified, basename);
+    lineNumber += 4;
+    
+    if (song == -1 || songData->lastModified != lastModified) {
+      needsRescan.push_back(lineNumber - 1);
+      for (int i = 0; i <= [Tags numberOfTags]; ++i) fprintf(walkFile, "\n");
+      lineNumber += [Tags numberOfTags] + 1;
+    } else {
+      fprintf(walkFile, "%d\n", songData->lengthInSeconds);
+      lineNumber += 2;
+      for (int i = 0; i < [Tags numberOfTags]; ++i) {
+        NSString *val = [songData->tags tagForIndex:i];
+        if (val == nil || val.length == 0) fprintf(walkFile, "/\n");
+        else fprintf(walkFile, "%s\n", toCstr(val));
+        ++lineNumber;
+      }
+    }
+    
+    fprintf(walkFile, "}\n");
+    ++lineNumber;
+  }
+  
+  lastFolderLevel = currentLevel;
+  wasLastItemFolder = isFolder;
+
+  return 0;
 }
 
 #pragma mark - search
@@ -335,13 +347,13 @@ static const char *toCstr(NSString *s) {
 //    
 //    for (;;) {
 ////      NSDate *stamp = [NSDate date];
-//      impl->queryWords.clear();
+//      queryWords.clear();
 //      for (NSString *q in [currentQuery componentsSeparatedByString:@" "]) {
 //        NSString *s = [q stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-//        if (s.length > 0) impl->queryWords.push_back(s);
+//        if (s.length > 0) queryWords.push_back(s);
 //      }
 //      
-//      impl->queryHits.resize(impl->queryWords.size(), false);
+//      queryHits.resize(queryWords.size(), false);
 //      appendedCharactersToQuery = [currentQuery hasPrefix:previousSearchQuery];
 //      poppedCharactersFromQuery = [previousSearchQuery hasPrefix:currentQuery];
 //      [self traverse:root];
@@ -367,16 +379,16 @@ static const char *toCstr(NSString *s) {
 //  
 //  vector<int> modified;
 //
-//  for (int i = 0; i < impl->queryWords.size(); ++i) {
-//    if (impl->queryHits[i]) continue;
-//    if ([node.name rangeOfString:impl->queryWords[i] options:NSCaseInsensitiveSearch].location == NSNotFound) {
+//  for (int i = 0; i < queryWords.size(); ++i) {
+//    if (queryHits[i]) continue;
+//    if ([node.name rangeOfString:queryWords[i] options:NSCaseInsensitiveSearch].location == NSNotFound) {
 //      BOOL foundInTag = NO;
 //      
 //      if ([node isKindOfClass:[TreeLeaf class]]) {
 //        NSDictionary *d = ((TreeLeaf *)node).song.tagsDictionary;
 //        for (id key in d) {
 //          NSString *val = d[key];
-//          if ([val rangeOfString:impl->queryWords[i] options:NSCaseInsensitiveSearch].location != NSNotFound) {
+//          if ([val rangeOfString:queryWords[i] options:NSCaseInsensitiveSearch].location != NSNotFound) {
 //            foundInTag = YES;
 //            break;
 //          }
@@ -386,15 +398,15 @@ static const char *toCstr(NSString *s) {
 //      if (!foundInTag) continue;
 //    }
 //    
-//    impl->queryHits[i] = true;
-//    ++impl->nHit;
+//    queryHits[i] = true;
+//    ++nHit;
 //    modified.push_back(i);
 //  }
 //  
 //  BOOL was2 = (node.searchState == 2);
 //  node.searchState = 0;
 //  
-//  if (impl->nHit == impl->queryWords.size()) {
+//  if (nHit == queryWords.size()) {
 //    node.searchState = 2;
 //  } else {
 //    for (int i = 0; i < node.childrenVectorCount; ++i) {
@@ -405,8 +417,8 @@ static const char *toCstr(NSString *s) {
 //  }
 //  
 //  for (int i = 0; i < modified.size(); ++i) {
-//    --impl->nHit;
-//    impl->queryHits[modified[i]] = false;
+//    --nHit;
+//    queryHits[modified[i]] = false;
 //  }
 //  
 //  return node.searchState;

@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @class Tags;
-struct TreeImpl;
 
 struct LibrarySong {
   int inode;
@@ -23,8 +22,6 @@ struct LibrarySong {
 @interface Tree : NSObject {
   int nodesCounter;
   int songsCounter;
-
-  struct TreeImpl *impl;
 }
 
 + (Tree *)sharedTree;
