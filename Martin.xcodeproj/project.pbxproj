@@ -28,6 +28,8 @@
 		79D8FFED149DE5A3009B8955 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79D8FFEC149DE5A3009B8955 /* Carbon.framework */; };
 		79DCB7AA165FFB3B00077082 /* FilePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DCB7A9165FFB3B00077082 /* FilePlayer.m */; };
 		79DEAD62165BD81C0017E4DD /* PlaylistItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DEAD61165BD81C0017E4DD /* PlaylistItem.m */; };
+		79EDE63A1678EB6A0060F9F9 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79EDE6391678EB6A0060F9F9 /* CoreServices.framework */; };
+		79EDE63E1678EB9A0060F9F9 /* FolderWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EDE63D1678EB9A0060F9F9 /* FolderWatcher.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		79F5BC1014363BE10040DF35 /* LibraryOutlineViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F5BC0F14363BE10040DF35 /* LibraryOutlineViewManager.m */; };
 		79FF13FB142F18A500E27235 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79FF13FA142F18A500E27235 /* Cocoa.framework */; };
 		79FF1405142F18A500E27235 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 79FF1403142F18A500E27235 /* InfoPlist.strings */; };
@@ -74,6 +76,9 @@
 		79DCB7A9165FFB3B00077082 /* FilePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilePlayer.m; sourceTree = "<group>"; };
 		79DEAD60165BD81C0017E4DD /* PlaylistItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistItem.h; sourceTree = "<group>"; };
 		79DEAD61165BD81C0017E4DD /* PlaylistItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistItem.m; sourceTree = "<group>"; };
+		79EDE6391678EB6A0060F9F9 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		79EDE63C1678EB9A0060F9F9 /* FolderWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderWatcher.h; sourceTree = "<group>"; };
+		79EDE63D1678EB9A0060F9F9 /* FolderWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FolderWatcher.m; sourceTree = "<group>"; };
 		79F5BC0E14363BE10040DF35 /* LibraryOutlineViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryOutlineViewManager.h; sourceTree = "<group>"; };
 		79F5BC0F14363BE10040DF35 /* LibraryOutlineViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryOutlineViewManager.m; sourceTree = "<group>"; };
 		79FF13F6142F18A500E27235 /* Martin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Martin.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -98,6 +103,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79EDE63A1678EB6A0060F9F9 /* CoreServices.framework in Frameworks */,
 				79242E2016569BA3006379D6 /* AudioToolbox.framework in Frameworks */,
 				79D8FFED149DE5A3009B8955 /* Carbon.framework in Frameworks */,
 				79FF13FB142F18A500E27235 /* Cocoa.framework in Frameworks */,
@@ -118,6 +124,8 @@
 				79242E1D16569A47006379D6 /* ID3Reader.m */,
 				792DC199166B6E5D0003E664 /* Tree.h */,
 				792DC19A166B6E5D0003E664 /* Tree.mm */,
+				79EDE63C1678EB9A0060F9F9 /* FolderWatcher.h */,
+				79EDE63D1678EB9A0060F9F9 /* FolderWatcher.m */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -203,6 +211,7 @@
 		79FF13F9142F18A500E27235 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				79EDE6391678EB6A0060F9F9 /* CoreServices.framework */,
 				79242E1F16569BA3006379D6 /* AudioToolbox.framework */,
 				79FF13FD142F18A500E27235 /* AppKit.framework */,
 				79FF13FE142F18A500E27235 /* CoreData.framework */,
@@ -339,6 +348,7 @@
 				79DCB7AA165FFB3B00077082 /* FilePlayer.m in Sources */,
 				792DC197166B5D390003E664 /* Tags.m in Sources */,
 				792DC19B166B6E5D0003E664 /* Tree.mm in Sources */,
+				79EDE63E1678EB9A0060F9F9 /* FolderWatcher.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

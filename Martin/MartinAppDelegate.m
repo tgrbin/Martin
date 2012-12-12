@@ -9,6 +9,7 @@
 #import "MartinAppDelegate.h"
 #import "PlaylistManager.h"
 #import "LibManager.h"
+#import "FolderWatcher.h"
 
 @implementation MartinAppDelegate
 

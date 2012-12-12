@@ -10,6 +10,7 @@
 #import "LibraryFolder.h"
 #import "LibManager.h"
 #import "LastFM.h"
+#import "FolderWatcher.h"
 
 @implementation PreferencesWindowController
 
@@ -19,12 +20,20 @@
                                              selector:@selector(libraryRescanFinished)
                                                  name:kLibManagerRescanedLibraryNotification
                                                object:nil];
+    _watchFoldersEnabled = [FolderWatcher sharedWatcher].enabled;
   }
   return self;
 }
 
 - (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - watch folders checkbox
+
+- (void)setWatchFoldersEnabled:(BOOL)watchFoldersEnabled {
+  _watchFoldersEnabled = watchFoldersEnabled;
+  [FolderWatcher sharedWatcher].enabled = watchFoldersEnabled;
 }
 
 #pragma mark - library folders table
@@ -65,6 +74,7 @@
 
   if ([panel runModal] == NSFileHandlingPanelOKButton) {
     lf.folderPath = [panel.directoryURL path];
+    [[FolderWatcher sharedWatcher] folderListChanged];
     [sender reloadData];
   }
 }
@@ -79,6 +89,7 @@
 
 - (IBAction)removeFolder:(id)sender {
   [[LibraryFolder libraryFolders] removeObjectAtIndex:foldersTableView.clickedRow];
+  [[FolderWatcher sharedWatcher] folderListChanged];
   [foldersTableView reloadData];
 }
 

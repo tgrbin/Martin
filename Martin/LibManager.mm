@@ -40,8 +40,9 @@ using namespace std;
   return self;
 }
 
-static const int kLineBuffSize = 1<<16;
-static char lineBuff[kLineBuffSize];
+static const int kBuffSize = 1<<16;
+static char lineBuff[kBuffSize];
+static char pathBuff[kBuffSize];
 
 static vector<int> needsRescan;
 static vector<int> emptyFolders;
@@ -63,7 +64,7 @@ static FILE *walkFile;
     
     vector<int> treePath(1, 0);
     
-    while(fgets(lineBuff, kLineBuffSize, f) != NULL) {
+    while(fgets(lineBuff, kBuffSize, f) != NULL) {
       if (lineBuff[0] == 0) break;
       
       char first = lineBuff[0];
@@ -78,20 +79,20 @@ static FILE *walkFile;
         int song = [[Tree sharedTree] newSong];
         struct LibrarySong *songData = [[Tree sharedTree] songDataForP:song];
         
-        fgets(lineBuff, kLineBuffSize, f);
+        fgets(lineBuff, kBuffSize, f);
         sscanf(lineBuff, "%d", &songData->inode);
 
-        fgets(lineBuff, kLineBuffSize, f);
+        fgets(lineBuff, kBuffSize, f);
         sscanf(lineBuff, "%d", &songData->lastModified);
         
-        fgets(lineBuff, kLineBuffSize, f);
+        fgets(lineBuff, kBuffSize, f);
         NSString *fileName = [self stringFromBuff:lineBuff];
 
-        fgets(lineBuff, kLineBuffSize, f);
+        fgets(lineBuff, kBuffSize, f);
         sscanf(lineBuff, "%d", &songData->lengthInSeconds);
         
         for (int i = 0; i < [Tags numberOfTags]; ++i) {
-          fgets(lineBuff, kLineBuffSize, f);
+          fgets(lineBuff, kBuffSize, f);
           NSString *val = [self stringFromBuff:lineBuff];
           if ([val isEqualToString:@"/"]) val = @"";
           [songData->tags setTag:val forIndex:i];
@@ -100,14 +101,14 @@ static FILE *walkFile;
         [[Tree sharedTree] addChild:fileName parent:treePath.back() song:song];
         [[Tree sharedTree] addToSongByInodeMap:song inode:songData->inode];
         
-        fgets(lineBuff, kLineBuffSize, f); // skip '}'
+        fgets(lineBuff, kBuffSize, f); // skip '}'
       } else {
         if (treePath.size() > 1) {
           treePath.pop_back();
         }
         
         NSString *folderName = [self stringFromBuff:lineBuff];
-        fgets(lineBuff, kLineBuffSize, f);
+        fgets(lineBuff, kBuffSize, f);
         NSString *displayName = [self stringFromBuff:lineBuff];
         
         int node = [[Tree sharedTree] addChild:displayName parent:0 song:-1];
@@ -121,7 +122,8 @@ static FILE *walkFile;
 }
 
 - (NSString *)stringFromBuff:(char *)buff {
-  buff[strlen(buff)-1] = 0; // remove newline
+  int len = (int)strlen(buff);
+  if (buff[len-1] == '\n') buff[len-1] = 0;
   return [NSString stringWithCString:buff encoding:NSUTF8StringEncoding];
 }
 
@@ -129,10 +131,12 @@ static FILE *walkFile;
   __block id selfRef = self;
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     
-    [selfRef walkLibrary];
-    [selfRef rescanSongs:progressBlock];
-    [selfRef loadLibrary];
-
+    if ([selfRef walkLibrary] == -1) progressBlock(-1);
+    else {
+      [selfRef rescanSongs:progressBlock];
+      [selfRef loadLibrary];
+    }
+    
     dispatch_sync(dispatch_get_main_queue(), ^{
       [[NSNotificationCenter defaultCenter] postNotificationName:kLibManagerRescanedLibraryNotification object:nil];
     });
@@ -141,76 +145,93 @@ static FILE *walkFile;
 
 - (void)rescanSongs:(void (^)(int))block {
   @autoreleasepool {
+    int songsToRescan = (int) needsRescan.size() - 1;
+
     block(numberOfSongsFound);
-    block((int)needsRescan.size());
+    block(songsToRescan);
     
     FILE *f = fopen(toCstr([self rescanPath]), "r");
     FILE *g = fopen(toCstr([self rescanHelperPath]), "w");
     int emptyFolderCount = 0, nextEmptyFolderIndex = 0;
-    int songStart = -1, lastBaseURL = -2;
-    NSString *baseURL;
+    int songStart = -1, lastBaseURLLineNumber = -2;
     int nextRescanIndex = 0;
     ID3Reader *id3 = nil;
     BOOL id3Failed = NO;
-    for (int ln = 0; fgets(lineBuff, kLineBuffSize, f) != NULL; ++ln) {
+    int lastSentPercentage = -1, songsScanned = 0;
+    vector<int> pathComponents;
+    
+    for (int ln = 0; fgets(lineBuff, kBuffSize, f) != NULL; ++ln) {
+      lineBuff[strlen(lineBuff) - 1] = 0; // remove newline
       
       BOOL writeThrough = YES;
-      if (lineBuff[0] == '+') {
-        if (ln == emptyFolders[nextEmptyFolderIndex]) {
-          ++nextEmptyFolderIndex;
-          ++emptyFolderCount;
-          writeThrough = NO;
-        }
-      } else if (lineBuff[0] == '-') {
-        if (emptyFolderCount > 0) {
-          --emptyFolderCount;
-          writeThrough = NO;
-        }
-      } else if (lineBuff[0] == '{') {
-        songStart = ln;
-      } else if (lineBuff[0] == '}') {
+      
+      if (lineBuff[0] == '}') {
         songStart = -1;
         if (id3) {
+          int percentage = (double)++songsScanned / songsToRescan * 100;
+          if (percentage != lastSentPercentage) {
+            block(lastSentPercentage = percentage);
+          }
           [id3 release];
           id3 = nil;
         }
-      } else if (songStart == -1) {
-        if (lastBaseURL != ln-1) {
-          baseURL = stringFromLineBuff();
-          lastBaseURL = ln;
-        }
       } else if (songStart != -1) {
-        if (ln == needsRescan[nextRescanIndex]) {
-          NSString *path = stringFromLineBuff();
-          NSString *fullPath = [baseURL stringByAppendingPathComponent:path];
-          id3 = [[ID3Reader alloc] initWithFile:fullPath];
+        int fieldPos = ln - songStart;
+        if (fieldPos == 3 && ln == needsRescan[nextRescanIndex]) {
+          int oldLen = (int) strlen(pathBuff);
+          strcat(pathBuff, "/");
+          strcat(pathBuff, lineBuff);
+          id3 = [[ID3Reader alloc] initWithFile:toString(pathBuff)];
           if (id3 == nil) {
-            NSLog(@"id3 read failed for: %@", path);
+            NSLog(@"id3 read failed for: %s", pathBuff);
             id3Failed = YES;
           } else {
             id3Failed = NO;
           }
-          strcpy(lineBuff, toCstr([path lastPathComponent]));
+          pathBuff[oldLen] = 0;
           ++nextRescanIndex;
-        } else if (id3 != nil || id3Failed) {
-          int fieldPos = ln-songStart-4;
-          if (fieldPos == 0) {
+        } else if (fieldPos > 3 && (id3 != nil || id3Failed)) {
+          if (fieldPos == 4) {
             sprintf(lineBuff, "%d", id3Failed? 0: id3.lengthInSeconds);
           } else {
             if (id3Failed) {
               strcpy(lineBuff, "/");
             } else {
-              NSString *tagVal = [id3 tag:[Tags tagNameForIndex:fieldPos-1]];
+              NSString *tagVal = [id3 tag:[Tags tagNameForIndex:fieldPos-5]];
               if (tagVal == nil || tagVal.length == 0) strcpy(lineBuff, "/");
               else strcpy(lineBuff, toCstr(tagVal));
             }
           }
         }
+      } else if (lineBuff[0] == '+') {
+        if (ln == emptyFolders[nextEmptyFolderIndex]) {
+          ++nextEmptyFolderIndex;
+          ++emptyFolderCount;
+          writeThrough = NO;
+        } else {
+          pathComponents.push_back((int)strlen(pathBuff));
+          strcat(pathBuff, "/");
+          strcat(pathBuff, lineBuff + 2);
+        }
+      } else if (lineBuff[0] == '-') {
+        if (emptyFolderCount > 0) {
+          --emptyFolderCount;
+          writeThrough = NO;
+        } else {
+          pathBuff[pathComponents.back()] = 0;
+          pathComponents.pop_back();
+        }
+      } else if (lineBuff[0] == '{') {
+        songStart = ln;
+      } else {
+        if (lastBaseURLLineNumber != ln-1) {
+          strcpy(pathBuff, lineBuff);
+          lastBaseURLLineNumber = ln;
+        }
       }
       
       if (writeThrough) {
-        fprintf(g, "%s", lineBuff);
-        if (lineBuff[strlen(lineBuff)-1] != '\n') fprintf(g, "\n");
+        fprintf(g, "%s\n", lineBuff);
       }
     }
     
@@ -222,13 +243,12 @@ static FILE *walkFile;
   }
 }
 
-static NSString *stringFromLineBuff() {
-  lineBuff[strlen(lineBuff)-1] = 0;
-  return [NSString stringWithCString:lineBuff encoding:NSUTF8StringEncoding];
-}
-
 static const char *toCstr(NSString *s) {
   return [s cStringUsingEncoding:NSUTF8StringEncoding];
+}
+
+static NSString *toString(const char *s) {
+  return [NSString stringWithCString:s encoding:NSUTF8StringEncoding];
 }
 
 - (int)walkLibrary {
@@ -242,7 +262,10 @@ static const char *toCstr(NSString *s) {
   walkFile = fopen(toCstr([self rescanPath]), "w");
   lineNumber = 0;
   lastSongPos = 0;
+  numberOfSongsFound = 0;
   folderStack.clear();
+  emptyFolders.clear();
+  needsRescan.clear();
   
   for (int i = 0; i < libraryPaths.size(); ++i) {
     fprintf(walkFile, "%s\n", toCstr(libraryPaths[i]));
@@ -268,7 +291,11 @@ static const char *toCstr(NSString *s) {
   
   fclose(walkFile);
   emptyFolders.push_back(-1);
-  
+  needsRescan.push_back(-1);
+  for (int i = 0; i < libraryPaths.size(); ++i) {
+    [libraryPaths[i] release];
+    [libraryDisplayNames[i] release];
+  }
   return 0;
 }
 
@@ -281,6 +308,8 @@ static int ftw_callback(const char *filename, const struct stat *stat_struct, in
   int currentLevel = ftw_struct->level;
   BOOL isFolder = (flags == FTW_D);
   const char *basename = filename + ftw_struct->base;
+  
+  if (currentLevel == 0) return 0;
   
   if (currentLevel <= lastFolderLevel) { // leaving folder
     int cnt = (lastFolderLevel-currentLevel) + (wasLastItemFolder == YES);
@@ -313,7 +342,7 @@ static int ftw_callback(const char *filename, const struct stat *stat_struct, in
       lineNumber += [Tags numberOfTags] + 1;
     } else {
       fprintf(walkFile, "%d\n", songData->lengthInSeconds);
-      lineNumber += 2;
+      ++lineNumber;
       for (int i = 0; i < [Tags numberOfTags]; ++i) {
         NSString *val = [songData->tags tagForIndex:i];
         if (val == nil || val.length == 0) fprintf(walkFile, "/\n");

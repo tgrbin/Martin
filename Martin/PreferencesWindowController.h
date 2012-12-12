@@ -15,9 +15,11 @@
   IBOutlet NSTextField *rescanStatusTextField;
   IBOutlet NSProgressIndicator *rescanProgressIndicator;
   int totalSongs;
-  
+
 // lastFM
   IBOutlet NSProgressIndicator *lastfmProgressIndicator;
 }
+
+@property (nonatomic, assign) BOOL watchFoldersEnabled;
 
 @end
