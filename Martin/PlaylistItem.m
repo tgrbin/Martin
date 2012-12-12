@@ -45,7 +45,7 @@
 }
 
 - (Tags *)tags {
-  if (_p_librarySong != -1) return [[Tree sharedTree] songDataForP:_p_librarySong]->tags;
+//  if (_p_librarySong != -1) return [[Tree sharedTree] songDataForP:_p_librarySong]->tags;
   return _tags;
 }
 

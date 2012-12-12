@@ -13,6 +13,7 @@
 #import "FilePlayer.h"
 #import "Tree.h"
 #import "Tags.h"
+#import "TagsUtils.h"
 
 #import <algorithm>
 #import <numeric>
@@ -200,7 +201,7 @@ struct PlaylistImpl {
   
   BOOL isLength = [str isEqualToString:@"length"];
   BOOL isTrackNumber = [str isEqualToString:@"track number"];
-  int tagIndex = [Tags indexForTagName:str];
+  int tagIndex = tagsIndexFromNSString(str);
   
   sort(impl->playlist.begin(), impl->playlist.end(), [&, tagIndex, isLength, isTrackNumber](int a, int b) -> bool {
     PlaylistItem *p1 = impl->playlistItems[a];
@@ -208,8 +209,8 @@ struct PlaylistImpl {
     
     if (isLength) return p1.lengthInSeconds < p2.lengthInSeconds;
     
-    NSString *val1 = [p1.tags tagForIndex:tagIndex];
-    NSString *val2 = [p2.tags tagForIndex:tagIndex];
+    NSString *val1 = [p1.tags tagValueForIndex:tagIndex];
+    NSString *val2 = [p2.tags tagValueForIndex:tagIndex];
     
     if (isTrackNumber) return val1.intValue < val2.intValue;
     return [val1 caseInsensitiveCompare:val2] == NSOrderedAscending;

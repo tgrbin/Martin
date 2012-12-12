@@ -8,15 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Tags : NSObject {
-  __unsafe_unretained NSString **tags;
-}
-
-+ (int)numberOfTags;
-+ (NSString *)tagNameForIndex:(int)i;
-+ (int)indexForTagName:(NSString *)name;
-
-- (void)setTag:(NSString *)tag forIndex:(int)i;
-- (NSString *)tagForIndex:(int)i;
-
+@interface Tags : NSObject
++ (Tags *)createTagsFromCTags:(char **)tags;
+- (NSString *)tagValueForIndex:(int)i;
 @end

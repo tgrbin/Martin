@@ -7,7 +7,8 @@
 //
 
 #import "Tree.h"
-#import "Tags.h"
+#import "TagsUtils.h"
+
 #import <vector>
 #import <map>
 
@@ -59,8 +60,8 @@ static map<int, int> songsByInode;
   if (songsCounter >= songs.size()) {
     songs.resize(songs.size()+256);
   }
-  if (songs[songsCounter].tags == nil) {
-    songs[songsCounter].tags = [Tags new];
+  if (songs[songsCounter].tags == 0) {
+    tagsInit(&songs[songsCounter].tags);
   }
   return songsCounter++;
 }

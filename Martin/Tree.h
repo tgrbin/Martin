@@ -15,8 +15,7 @@ struct LibrarySong {
   int lengthInSeconds;
   int lastModified;
   int p_treeLeaf;
-
-  __unsafe_unretained Tags *tags;
+  char **tags;
 };
 
 @interface Tree : NSObject {

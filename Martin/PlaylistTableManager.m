@@ -15,6 +15,7 @@
 #import "FilePlayer.h"
 #import "PlaylistManager.h"
 #import "Tags.h"
+#import "TagsUtils.h"
 
 @implementation PlaylistTableManager
 
@@ -135,8 +136,8 @@ static PlaylistTableManager *sharedManager = nil;
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   PlaylistItem *item = _playlist[(int)row];
-  int tagIndex = [Tags indexForTagName:tableColumn.identifier];
-  NSString *value = [item.tags tagForIndex:tagIndex];
+  int tagIndex = tagsIndexFromNSString(tableColumn.identifier);
+  NSString *value = [item.tags tagValueForIndex:tagIndex];
 
   if (item == _playlist.currentItem) {
     highlightedRow = (int)row;

@@ -10,7 +10,7 @@
 #import "LibraryFolder.h"
 #import "ID3Reader.h"
 #import "Tree.h"
-#import "Tags.h"
+#import "TagsUtils.h"
 
 #import <algorithm>
 #import <cstdio>
@@ -91,11 +91,10 @@ static FILE *walkFile;
         fgets(lineBuff, kBuffSize, f);
         sscanf(lineBuff, "%d", &songData->lengthInSeconds);
         
-        for (int i = 0; i < [Tags numberOfTags]; ++i) {
+        for (int i = 0; i < kNumberOfTags; ++i) {
           fgets(lineBuff, kBuffSize, f);
-          NSString *val = [self stringFromBuff:lineBuff];
-          if ([val isEqualToString:@"/"]) val = @"";
-          [songData->tags setTag:val forIndex:i];
+          lineBuff[strlen(lineBuff)-1] = 0;
+          tagsSet(songData->tags, i, lineBuff);
         }
         
         [[Tree sharedTree] addChild:fileName parent:treePath.back() song:song];
@@ -197,7 +196,7 @@ static FILE *walkFile;
             if (id3Failed) {
               strcpy(lineBuff, "/");
             } else {
-              NSString *tagVal = [id3 tag:[Tags tagNameForIndex:fieldPos-5]];
+              NSString *tagVal = [id3 tag:tagsNSStringName(fieldPos-5)];
               if (tagVal == nil || tagVal.length == 0) strcpy(lineBuff, "/");
               else strcpy(lineBuff, toCstr(tagVal));
             }
@@ -338,15 +337,13 @@ static int ftw_callback(const char *filename, const struct stat *stat_struct, in
     
     if (song == -1 || songData->lastModified != lastModified) {
       needsRescan.push_back(lineNumber - 1);
-      for (int i = 0; i <= [Tags numberOfTags]; ++i) fprintf(walkFile, "\n");
-      lineNumber += [Tags numberOfTags] + 1;
+      for (int i = 0; i <= kNumberOfTags; ++i) fprintf(walkFile, "\n");
+      lineNumber += kNumberOfTags + 1;
     } else {
       fprintf(walkFile, "%d\n", songData->lengthInSeconds);
       ++lineNumber;
-      for (int i = 0; i < [Tags numberOfTags]; ++i) {
-        NSString *val = [songData->tags tagForIndex:i];
-        if (val == nil || val.length == 0) fprintf(walkFile, "/\n");
-        else fprintf(walkFile, "%s\n", toCstr(val));
+      for (int i = 0; i < kNumberOfTags; ++i) {
+        fprintf(walkFile, "%s\n", songData->tags[i]);
         ++lineNumber;
       }
     }
@@ -453,7 +450,7 @@ static int ftw_callback(const char *filename, const struct stat *stat_struct, in
 //  return node.searchState;
 }
 
-#pragma mark - util
+#pragma mark - lib files
 
 - (NSString *)libPath {
   return [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"martin.lib"];
