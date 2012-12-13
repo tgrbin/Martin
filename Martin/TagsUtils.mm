@@ -27,7 +27,3 @@ void tagsSet(char **tags, int i, char *val) {
   
   strcpy(tags[i], val);
 }
-
-NSString *tagsNSStringGet(char **tags, int i) {
-  return [NSString stringWithCString:tags[i] encoding:NSUTF8StringEncoding];
-}

@@ -10,7 +10,9 @@
 
 @class Tags;
 
-@interface PlaylistItem : NSObject
+@interface PlaylistItem : NSObject {
+  Tags *tags;
+}
 
 - (id)initWithLibrarySong:(int)p_song;
 - (id)initWithDictionary:(NSDictionary *)dictionary;
@@ -19,8 +21,8 @@
 @property (nonatomic, assign) int inode;
 @property (nonatomic, assign) int lengthInSeconds;
 @property (nonatomic, strong) NSString *filename;
-@property (nonatomic, strong) Tags *tags;
-
 @property (nonatomic, assign) int p_librarySong;
+
+- (NSString *)tagValueForIndex:(int)i;
 
 @end

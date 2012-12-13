@@ -196,7 +196,7 @@ static FILE *walkFile;
               strcpy(lineBuff, "/");
             } else {
               NSString *tagVal = [id3 tag:[Tags tagNameForIndex:fieldPos-5]];
-              if (tagVal == nil || tagVal.length == 0) strcpy(lineBuff, "/");
+              if (tagVal == nil || tagVal.length == 0) lineBuff[0] = 0;
               else strcpy(lineBuff, toCstr(tagVal));
             }
           }

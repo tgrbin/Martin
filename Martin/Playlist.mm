@@ -209,8 +209,8 @@ struct PlaylistImpl {
     
     if (isLength) return p1.lengthInSeconds < p2.lengthInSeconds;
     
-    NSString *val1 = [p1.tags tagValueForIndex:tagIndex];
-    NSString *val2 = [p2.tags tagValueForIndex:tagIndex];
+    NSString *val1 = [p1 tagValueForIndex:tagIndex];
+    NSString *val2 = [p2 tagValueForIndex:tagIndex];
     
     if (isTrackNumber) return val1.intValue < val2.intValue;
     return [val1 caseInsensitiveCompare:val2] == NSOrderedAscending;

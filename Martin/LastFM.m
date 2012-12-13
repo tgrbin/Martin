@@ -174,7 +174,7 @@ static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionary
 
 + (void)addItemTags:(PlaylistItem *)item toDictionary:(NSMutableDictionary *)dict {
   for (int i = 0; i < kNumberOfTags; ++i) {
-    NSString *val = [item.tags tagValueForIndex:i];
+    NSString *val = [item tagValueForIndex:i];
     NSString *lastfmTag = [Tags tagNameForIndex:i];
     if ([lastfmTag isEqualToString:@"track"]) lastfmTag = @"trackNumber";
     if ([lastfmTag isEqualToString:@"title"]) lastfmTag = @"track";

@@ -9,6 +9,7 @@
 #import "PlaylistItem.h"
 #import "LibManager.h"
 #import "Tree.h"
+#import "Tags.h"
 
 @implementation PlaylistItem
 
@@ -23,9 +24,13 @@
   if (self = [super init]) {
     _inode = [dictionary[@"inode"] intValue];
     _filename = dictionary[@"filename"];
-    _tags = dictionary[@"tags"];
     _lengthInSeconds = [dictionary[@"length"] intValue];
-    if (_inode) _p_librarySong = [[Tree sharedTree] songByInode:_inode];
+
+    _p_librarySong = _inode? [[Tree sharedTree] songByInode:_inode]: -1;
+
+    if (_p_librarySong == -1 && [dictionary objectForKey:@"tags"] != nil) {
+      tags = [Tags createTagsFromArray:dictionary[@"tags"]];
+    }
   }
   return self;
 }
@@ -35,7 +40,11 @@
   dict[@"inode"] = [NSString stringWithFormat:@"%d", _inode];
   dict[@"length"] = [NSString stringWithFormat:@"%d", self.lengthInSeconds];
   if (self.filename) dict[@"filename"] = self.filename;
-  if (self.tags) dict[@"tags"] = self.tags;
+
+  NSMutableArray *tagsArr = [NSMutableArray array];
+  for (int i = 0; i < kNumberOfTags; ++i) [tagsArr addObject:[self tagValueForIndex:i]];
+  dict[@"tags"] = tagsArr;
+
   return dict;
 }
 
@@ -44,14 +53,18 @@
   return _filename;
 }
 
-- (Tags *)tags {
-//  if (_p_librarySong != -1) return [[Tree sharedTree] songDataForP:_p_librarySong]->tags;
-  return _tags;
-}
-
 - (int)lengthInSeconds {
   if (_p_librarySong != -1) return [[Tree sharedTree] songDataForP:_p_librarySong]->lengthInSeconds;
   return _lengthInSeconds;
+}
+
+- (NSString *)tagValueForIndex:(int)i {
+  if (_p_librarySong != -1) {
+    char **t = [[Tree sharedTree] songDataForP:_p_librarySong]->tags;
+    return [NSString stringWithCString:t[i] encoding:NSUTF8StringEncoding];
+  } else {
+    return [tags tagValueForIndex:i];
+  }
 }
 
 @end

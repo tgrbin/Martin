@@ -10,9 +10,13 @@
 #import "TagsUtils.h"
 
 @interface Tags : NSObject
-+ (NSString *)tagNameForIndex:(int) i;
+
++ (NSString *)tagNameForIndex:(int)i;
 + (int)indexFromTagName:(NSString *)str;
 
 + (Tags *)createTagsFromCTags:(char **)tags;
++ (Tags *)createTagsFromArray:(NSArray *)tags;
+
 - (NSString *)tagValueForIndex:(int)i;
+
 @end

@@ -10,4 +10,3 @@
 
 void tagsInit(char ***tags);
 void tagsSet(char **tags, int i, char *val);
-NSString *tagsNSStringGet(char **tags, int i);
