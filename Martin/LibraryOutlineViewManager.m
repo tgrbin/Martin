@@ -58,22 +58,22 @@ static LibraryOutlineViewManager *sharedManager;
 #pragma mark - data source
 
 - (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item {
-  return [[Tree sharedTree] numberOfChildrenForNode:[item intValue]];
+  return [Tree numberOfChildrenForNode:[item intValue]];
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item {
-  return @([[Tree sharedTree] childAtIndex:(int)index forNode:[item intValue]]);
+  return @([Tree childAtIndex:(int)index forNode:[item intValue]]);
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item {
-  return [[Tree sharedTree] numberOfChildrenForNode:[item intValue]] > 0;
+  return [Tree numberOfChildrenForNode:[item intValue]] > 0;
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
   if (item == nil) return @"";
 
-  int n = [[Tree sharedTree] numberOfChildrenForNode:[item intValue]];
-  NSString *name = [[Tree sharedTree] nameForNode:[item intValue]];
+  int n = [Tree numberOfChildrenForNode:[item intValue]];
+  NSString *name = [Tree nameForNode:[item intValue]];
   return (n == 0)? [name stringByDeletingPathExtension]: [NSString stringWithFormat:@"%@ (%d)", name, n];
 }
 

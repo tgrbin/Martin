@@ -26,7 +26,7 @@
     _filename = dictionary[@"filename"];
     _lengthInSeconds = [dictionary[@"length"] intValue];
 
-    _p_librarySong = _inode? [[Tree sharedTree] songByInode:_inode]: -1;
+    _p_librarySong = _inode? [Tree songByInode:_inode]: -1;
 
     if (_p_librarySong == -1 && [dictionary objectForKey:@"tags"] != nil) {
       tags = [Tags createTagsFromArray:dictionary[@"tags"]];
@@ -49,18 +49,18 @@
 }
 
 - (NSString *)filename {
-  if (_p_librarySong != -1) return [[Tree sharedTree] fullPathForSong:_p_librarySong];
+  if (_p_librarySong != -1) return [Tree fullPathForSong:_p_librarySong];
   return _filename;
 }
 
 - (int)lengthInSeconds {
-  if (_p_librarySong != -1) return [[Tree sharedTree] songDataForP:_p_librarySong]->lengthInSeconds;
+  if (_p_librarySong != -1) return [Tree songDataForP:_p_librarySong]->lengthInSeconds;
   return _lengthInSeconds;
 }
 
 - (NSString *)tagValueForIndex:(int)i {
   if (_p_librarySong != -1) {
-    char **t = [[Tree sharedTree] songDataForP:_p_librarySong]->tags;
+    char **t = [Tree songDataForP:_p_librarySong]->tags;
     return [NSString stringWithCString:t[i] encoding:NSUTF8StringEncoding];
   } else {
     return [tags tagValueForIndex:i];

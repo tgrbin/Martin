@@ -27,18 +27,14 @@ struct TreeNode {
 
 @implementation Tree
 
+static int nodesCounter;
+static int songsCounter;
 static vector<TreeNode> nodes;
 static vector<LibrarySong> songs;
 static map<int, NSString *> libraryPaths;
 static map<int, int> songsByInode;
 
-+ (Tree *)sharedTree {
-  static Tree *tree = nil;
-  if (tree == nil) tree = [[Tree alloc] init];
-  return tree;
-}
-
-- (id)init {
++ (id)init {
   if (self = [super init]) {
     nodes.resize(128);
     nodes[0].searchState = 2;
@@ -49,14 +45,14 @@ static map<int, int> songsByInode;
   return self;
 }
 
-- (int)newNode {
++ (int)newNode {
   if (nodesCounter >= nodes.size()) {
     nodes.resize(nodes.size()+256);
   }
   return nodesCounter++;
 }
 
-- (int)newSong {
++ (int)newSong {
   if (songsCounter >= songs.size()) {
     songs.resize(songs.size()+256);
   }
@@ -66,7 +62,7 @@ static map<int, int> songsByInode;
   return songsCounter++;
 }
 
-- (void)clearTree {
++ (void)clearTree {
   songsCounter = 0;
   nodesCounter = 1;
   nodes[0].children.clear();
@@ -78,7 +74,7 @@ static map<int, int> songsByInode;
   songsByInode.clear();
 }
 
-- (int)addChild:(NSString *)name parent:(int)p_parent song:(int)p_song {
++ (int)addChild:(NSString *)name parent:(int)p_parent song:(int)p_song {
   int node = [self newNode];
   nodes[p_parent].children.push_back(node);
   [nodes[node].name release];
@@ -90,29 +86,29 @@ static map<int, int> songsByInode;
   return node;
 }
 
-- (void)setLibraryPath:(NSString *)p forNode:(int)p_node {
++ (void)setLibraryPath:(NSString *)p forNode:(int)p_node {
   libraryPaths[p_node] = [p retain];
 }
 
-- (void)addToSongByInodeMap:(int)song inode:(int)inode {
++ (void)addToSongByInodeMap:(int)song inode:(int)inode {
   songsByInode.insert(make_pair(inode, song));
 }
 
-- (int)songByInode:(int)inode {
++ (int)songByInode:(int)inode {
   map<int, int>::iterator it = songsByInode.find(inode);
   if (it == songsByInode.end()) return -1;
   return it->second;
 }
 
-- (struct LibrarySong *)songDataForP:(int)p_song {
++ (struct LibrarySong *)songDataForP:(int)p_song {
   return &songs[p_song];
 }
 
-- (NSString *)nameForNode:(int)p_node {
++ (NSString *)nameForNode:(int)p_node {
   return nodes[p_node].name;
 }
 
-- (int)numberOfChildrenForNode:(int)p_node {
++ (int)numberOfChildrenForNode:(int)p_node {
   return (int)nodes[p_node].children.size();
 //  if (_searchState == 0) return 0;
 //  
@@ -134,20 +130,20 @@ static map<int, int> songsByInode;
 //  return (int) (_searchState == 3? children.size(): searchResults.size());
 }
 
-- (int)childAtIndex:(int)i forNode:(int)p_node {
++ (int)childAtIndex:(int)i forNode:(int)p_node {
   return nodes[p_node].children[i];
 //  return _searchState == 3? children[i]: searchResults[i];
 }
 
-- (int)parentOfNode:(int)p_node {
++ (int)parentOfNode:(int)p_node {
   return nodes[p_node].p_parent;
 }
 
-- (int)songFromNode:(int)p_node {
++ (int)songFromNode:(int)p_node {
   return nodes[p_node].p_song;
 }
 
-- (NSString *)fullPathForSong:(int)p_song {
++ (NSString *)fullPathForSong:(int)p_song {
   vector<NSString *> v;
   for (int node = songs[p_song].p_treeLeaf; ; node = nodes[node].p_parent) {
     if (nodes[node].p_parent == 0) { // library folder

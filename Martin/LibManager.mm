@@ -57,7 +57,7 @@ static FILE *walkFile;
 
 - (void)loadLibrary {
   @autoreleasepool {
-    [[Tree sharedTree] clearTree];
+    [Tree clearTree];
     
     FILE *f = fopen(toCstr([self libPath]), "r");
     if (f == NULL) return;
@@ -71,13 +71,13 @@ static FILE *walkFile;
       
       if (first == '+') {
         NSString *folderName = [self stringFromBuff:lineBuff+2];
-        int node = [[Tree sharedTree] addChild:folderName parent:treePath.back() song:-1];
+        int node = [Tree addChild:folderName parent:treePath.back() song:-1];
         treePath.push_back(node);
       } else if (first == '-') {
         treePath.pop_back();
       } else if (first == '{') {
-        int song = [[Tree sharedTree] newSong];
-        struct LibrarySong *songData = [[Tree sharedTree] songDataForP:song];
+        int song = [Tree newSong];
+        struct LibrarySong *songData = [Tree songDataForP:song];
         
         fgets(lineBuff, kBuffSize, f);
         sscanf(lineBuff, "%d", &songData->inode);
@@ -96,8 +96,8 @@ static FILE *walkFile;
           tagsSet(songData->tags, i, lineBuff);
         }
         
-        [[Tree sharedTree] addChild:fileName parent:treePath.back() song:song];
-        [[Tree sharedTree] addToSongByInodeMap:song inode:songData->inode];
+        [Tree addChild:fileName parent:treePath.back() song:song];
+        [Tree addToSongByInodeMap:song inode:songData->inode];
         
         fgets(lineBuff, kBuffSize, f); // skip '}'
       } else {
@@ -109,8 +109,8 @@ static FILE *walkFile;
         fgets(lineBuff, kBuffSize, f);
         NSString *displayName = [self stringFromBuff:lineBuff];
         
-        int node = [[Tree sharedTree] addChild:displayName parent:0 song:-1];
-        [[Tree sharedTree] setLibraryPath:folderName forNode:node];
+        int node = [Tree addChild:displayName parent:0 song:-1];
+        [Tree setLibraryPath:folderName forNode:node];
         treePath.push_back(node);
       }
     }
@@ -328,8 +328,8 @@ static int ftw_callback(const char *filename, const struct stat *stat_struct, in
     
     int inode = (int)stat_struct->st_ino;
     int lastModified = (int) stat_struct->st_mtimespec.tv_sec;
-    int song = [[Tree sharedTree] songByInode:inode];
-    struct LibrarySong *songData = (song == -1)? NULL: [[Tree sharedTree] songDataForP:song];
+    int song = [Tree songByInode:inode];
+    struct LibrarySong *songData = (song == -1)? NULL: [Tree songDataForP:song];
     
     fprintf(walkFile, "{\n%d\n%d\n%s\n", inode, lastModified, basename);
     lineNumber += 4;

@@ -87,11 +87,11 @@ struct PlaylistImpl {
       folderName = [[((PlaylistItem *)item).filename stringByDeletingLastPathComponent] lastPathComponent];
     } else {
       int node = [item intValue];
-      int song = [[Tree sharedTree] songFromNode:node];
+      int song = [Tree songFromNode:node];
       
-      if (song != -1) node = [[Tree sharedTree] parentOfNode:node];
+      if (song != -1) node = [Tree parentOfNode:node];
         
-      folderName = [[Tree sharedTree] nameForNode:node];
+      folderName = [Tree nameForNode:node];
       
       [self addTreeNodes:@[item] atPos:currCount];
     }
@@ -156,12 +156,12 @@ struct PlaylistImpl {
 }
 
 - (void)traverseNodeAndAddItems:(int)node {
-  int song = [[Tree sharedTree] songFromNode:node];
+  int song = [Tree songFromNode:node];
   
   if (song == -1) {
-    int n = [[Tree sharedTree] numberOfChildrenForNode:node];
+    int n = [Tree numberOfChildrenForNode:node];
     for (int i = 0; i < n; ++i) {
-      [self traverseNodeAndAddItems:[[Tree sharedTree] childAtIndex:i forNode:node]];
+      [self traverseNodeAndAddItems:[Tree childAtIndex:i forNode:node]];
     }
   } else {
     PlaylistItem *pi = [[PlaylistItem alloc] initWithLibrarySong:song];

@@ -18,29 +18,24 @@ struct LibrarySong {
   char **tags;
 };
 
-@interface Tree : NSObject {
-  int nodesCounter;
-  int songsCounter;
-}
+@interface Tree : NSObject
 
-+ (Tree *)sharedTree;
++ (void)clearTree;
++ (int)addChild:(NSString *)name parent:(int)p_parent song:(int)p_song;
 
-- (void)clearTree;
-- (int)addChild:(NSString *)name parent:(int)p_parent song:(int)p_song;
++ (NSString *)nameForNode:(int)p_node;
++ (int)numberOfChildrenForNode:(int)p_node;
++ (int)childAtIndex:(int)i forNode:(int)p_node;
++ (int)parentOfNode:(int)p_node;
 
-- (NSString *)nameForNode:(int)p_node;
-- (int)numberOfChildrenForNode:(int)p_node;
-- (int)childAtIndex:(int)i forNode:(int)p_node;
-- (int)parentOfNode:(int)p_node;
++ (int)newSong;
++ (int)songFromNode:(int)p_node;
++ (int)songByInode:(int)inode;
++ (struct LibrarySong *)songDataForP:(int)p_song;
 
-- (int)newSong;
-- (int)songFromNode:(int)p_node;
-- (int)songByInode:(int)inode;
-- (struct LibrarySong *)songDataForP:(int)p_song;
++ (void)setLibraryPath:(NSString *)p forNode:(int)p_node;
++ (void)addToSongByInodeMap:(int)song inode:(int)inode;
 
-- (void)setLibraryPath:(NSString *)p forNode:(int)p_node;
-- (void)addToSongByInodeMap:(int)song inode:(int)inode;
-
-- (NSString *)fullPathForSong:(int)p_song;
++ (NSString *)fullPathForSong:(int)p_song;
 
 @end
