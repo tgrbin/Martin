@@ -201,7 +201,7 @@ struct PlaylistImpl {
   
   BOOL isLength = [str isEqualToString:@"length"];
   BOOL isTrackNumber = [str isEqualToString:@"track number"];
-  int tagIndex = tagsIndexFromNSString(str);
+  int tagIndex = [Tags indexFromTagName:str];
   
   sort(impl->playlist.begin(), impl->playlist.end(), [&, tagIndex, isLength, isTrackNumber](int a, int b) -> bool {
     PlaylistItem *p1 = impl->playlistItems[a];

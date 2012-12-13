@@ -10,7 +10,6 @@
 #import "LastFM.h"
 #import "PlaylistItem.h"
 #import "Tags.h"
-#import "TagsUtils.h"
 
 @implementation LastFM
 
@@ -176,7 +175,7 @@ static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionary
 + (void)addItemTags:(PlaylistItem *)item toDictionary:(NSMutableDictionary *)dict {
   for (int i = 0; i < kNumberOfTags; ++i) {
     NSString *val = [item.tags tagValueForIndex:i];
-    NSString *lastfmTag = tagsNSStringName(i);
+    NSString *lastfmTag = [Tags tagNameForIndex:i];
     if ([lastfmTag isEqualToString:@"track"]) lastfmTag = @"trackNumber";
     if ([lastfmTag isEqualToString:@"title"]) lastfmTag = @"track";
     [dict setValue:val forKey:lastfmTag];

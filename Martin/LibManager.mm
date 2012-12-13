@@ -10,7 +10,7 @@
 #import "LibraryFolder.h"
 #import "ID3Reader.h"
 #import "Tree.h"
-#import "TagsUtils.h"
+#import "Tags.h"
 
 #import <algorithm>
 #import <cstdio>
@@ -93,7 +93,6 @@ static FILE *walkFile;
         
         for (int i = 0; i < kNumberOfTags; ++i) {
           fgets(lineBuff, kBuffSize, f);
-          lineBuff[strlen(lineBuff)-1] = 0;
           tagsSet(songData->tags, i, lineBuff);
         }
         
@@ -196,7 +195,7 @@ static FILE *walkFile;
             if (id3Failed) {
               strcpy(lineBuff, "/");
             } else {
-              NSString *tagVal = [id3 tag:tagsNSStringName(fieldPos-5)];
+              NSString *tagVal = [id3 tag:[Tags tagNameForIndex:fieldPos-5]];
               if (tagVal == nil || tagVal.length == 0) strcpy(lineBuff, "/");
               else strcpy(lineBuff, toCstr(tagVal));
             }

@@ -8,9 +8,6 @@
 
 #define kNumberOfTags 5
 
-NSString *tagsNSStringName(int);
-int tagsIndexFromNSString(NSString *);
-
-void tagsInit(char ***);
-void tagsSet(char **, int, const char *);
-NSString *tagsNSStringGet(char **, int);
+void tagsInit(char ***tags);
+void tagsSet(char **tags, int i, char *val);
+NSString *tagsNSStringGet(char **tags, int i);

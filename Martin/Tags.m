@@ -6,15 +6,34 @@
 //
 //
 
-#import <malloc/malloc.h>
 #import "Tags.h"
-#import "TagsUtils.h"
+
+static const char *tagNames[] = { "track number", "artist", "album", "title", "genre" };
 
 @interface Tags()
 @property (nonatomic, unsafe_unretained) NSString **values;
 @end
 
 @implementation Tags
+
++ (NSString *)tagNameForIndex:(int)i {
+  static NSString *arr[kNumberOfTags];
+  if (arr[0] == nil) {
+    for (int i = 0; i < kNumberOfTags; ++i) arr[i] = [[NSString alloc] initWithCString:tagNames[i] encoding:NSUTF8StringEncoding];
+  }
+  return arr[i];
+}
+
++ (int)indexFromTagName:(NSString *)str {
+  static NSMutableDictionary *dict = nil;
+  if (dict == nil) {
+    dict = [NSMutableDictionary new];
+    for (int i = 0; i < kNumberOfTags; ++i) {
+      dict[[self tagNameForIndex:i]] = @(i);
+    }
+  }
+  return [dict[str] intValue];
+}
 
 + (Tags *)createTagsFromCTags:(char **)tags {
   Tags *t = [[Tags alloc] init];

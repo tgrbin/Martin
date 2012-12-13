@@ -136,7 +136,7 @@ static PlaylistTableManager *sharedManager = nil;
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   PlaylistItem *item = _playlist[(int)row];
-  int tagIndex = tagsIndexFromNSString(tableColumn.identifier);
+  int tagIndex = [Tags indexFromTagName:tableColumn.identifier];
   NSString *value = [item.tags tagValueForIndex:tagIndex];
 
   if (item == _playlist.currentItem) {
