@@ -22,6 +22,8 @@ struct LibManagerImpl;
 + (LibManager *)sharedManager;
 
 - (void)rescanLibraryWithProgressBlock:(void (^)(int))progressBlock;
+- (void)rescanFolder:(const char *)folderPath withBlock:(void (^)(int))block;
+
 - (void)performSearch:(NSString *)query;
 
 @end

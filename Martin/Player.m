@@ -14,6 +14,7 @@
 #import "PlaylistItem.h"
 #import "FilePlayer.h"
 #import "Playlist.h"
+#import "LibManager.h"
 
 @implementation Player
 
@@ -27,7 +28,7 @@ static Player *sharedPlayer = nil;
   sharedPlayer = self;
   [self setupHotkeyEvents];
   seekSlider.enabled = NO;
-  
+
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(trackFinished)
                                                name:kFilePlayerPlayedItemNotification
@@ -41,7 +42,7 @@ static Player *sharedPlayer = nil;
 - (void)startPlayingCurrentItem {
   if (_nowPlayingPlaylist.numberOfItems == 0) return;
   if (_nowPlayingPlaylist.currentItem == nil) [_nowPlayingPlaylist moveToFirstItem];
-  
+
   [[FilePlayer sharedPlayer] startPlayingItem:_nowPlayingPlaylist.currentItem];
   [self startSeekTimer];
   [self setPlayOrPause:YES];
@@ -122,9 +123,13 @@ static Player *sharedPlayer = nil;
 }
 
 - (IBAction)prevPressed:(id)sender {
-  if ([[FilePlayer sharedPlayer] stopped]) return;
-  [self setNowPlayingPlaylistIfNecessary];
-  [self prev];
+  [[LibManager sharedManager] rescanFolder:"/Users/tomislav/Music/Klasika/Chopin" withBlock:^(int p) {
+
+  }];
+
+//  if ([[FilePlayer sharedPlayer] stopped]) return;
+//  [self setNowPlayingPlaylistIfNecessary];
+//  [self prev];
 }
 
 - (IBAction)playOrPausePressed:(id)sender {
@@ -161,7 +166,7 @@ static OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent
 
   Player *player = (__bridge Player *)userData;
   int _id = hkCom.id;
-  
+
   if (_id == 1 ) [player playOrPause];
   else if (_id == 2) [player prev];
   else if (_id == 3) [player next];
@@ -175,17 +180,17 @@ static OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent
   EventTypeSpec eventType;
   eventType.eventClass = kEventClassKeyboard;
   eventType.eventKind = kEventHotKeyPressed;
-  
+
   InstallApplicationEventHandler(&hotkeyHandler, 1, &eventType, (__bridge void *)self, NULL);
-  
+
   hkID.signature = 'play';
   hkID.id = 1;
   RegisterEventHotKey(7, shiftKey+cmdKey, hkID, GetApplicationEventTarget(), 0, &hkRef);
-  
+
   hkID.signature = 'prev';
   hkID.id = 2;
   RegisterEventHotKey(13, shiftKey+cmdKey, hkID, GetApplicationEventTarget(), 0, &hkRef);
-  
+
   hkID.signature = 'next';
   hkID.id = 3;
   RegisterEventHotKey(14, shiftKey+cmdKey, hkID, GetApplicationEventTarget(), 0, &hkRef);

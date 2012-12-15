@@ -132,12 +132,7 @@ static FILE *walkFile;
     if ([selfRef walkLibrary] == -1) progressBlock(-1);
     else {
       [selfRef rescanSongs:progressBlock];
-      [selfRef loadLibrary];
     }
-    
-    dispatch_sync(dispatch_get_main_queue(), ^{
-      [[NSNotificationCenter defaultCenter] postNotificationName:kLibManagerRescanedLibraryNotification object:nil];
-    });
   });
 }
 
@@ -156,7 +151,7 @@ static FILE *walkFile;
     ID3Reader *id3 = nil;
     BOOL id3Failed = NO;
     int lastSentPercentage = -1, songsScanned = 0;
-    vector<int> pathComponents;
+    vector<size_t> pathComponents;
     
     emptyFolders.push_back(-1);
     needsRescan.push_back(-1);
@@ -180,7 +175,7 @@ static FILE *walkFile;
       } else if (songStart != -1) {
         int fieldPos = ln - songStart;
         if (fieldPos == 3 && ln == needsRescan[nextRescanIndex]) {
-          int oldLen = (int) strlen(pathBuff);
+          size_t oldLen = strlen(pathBuff);
           strcat(pathBuff, "/");
           strcat(pathBuff, lineBuff);
           id3 = [[ID3Reader alloc] initWithFile:toString(pathBuff)];
@@ -211,7 +206,7 @@ static FILE *walkFile;
           ++emptyFolderCount;
           writeThrough = NO;
         } else {
-          pathComponents.push_back((int)strlen(pathBuff));
+          pathComponents.push_back(strlen(pathBuff));
           strcat(pathBuff, "/");
           strcat(pathBuff, lineBuff + 2);
         }
@@ -242,6 +237,12 @@ static FILE *walkFile;
     
     unlink(toCstr([self libPath]));
     rename(toCstr([self rescanHelperPath]), toCstr([self libPath]));
+    
+    [self loadLibrary];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [[NSNotificationCenter defaultCenter] postNotificationName:kLibManagerRescanedLibraryNotification object:nil];
+    });
   }
 }
 
@@ -363,61 +364,82 @@ static int ftw_callback(const char *filename, const struct stat *stat_struct, in
   return 0;
 }
 
-- (void)rescanFolder:(const char *)folderPath {
-  [self initWalk];
-  
-  size_t folderPathLength = strlen(folderPath);
-  FILE *f = fopen(toCstr([self libPath]), "r");
-  vector<size_t> slashPositions;
-  int mismatchCount = 0;
-  BOOL withinSong = NO;
-  
-  for (pathBuff[0] = 0; fgets(lineBuff, kBuffSize, f) != NULL;) {
-    char firstChar = lineBuff[0];
+- (void)rescanFolder:(const char *)folderPath withBlock:(void (^)(int))block {
+  @autoreleasepool {
+    [self initWalk];
     
-    lineBuff[strlen(lineBuff)-1] = 0; // remove newline
+    FILE *f = fopen(toCstr([self libPath]), "r");
+    vector<size_t> slashPositions;
+    BOOL withinSong = NO;
     
-    if (firstChar == '+') {
-      size_t prevSlash = slashPositions.size() > 0? slashPositions.back(): -1;
-      strcat(pathBuff, lineBuff+2);
-      size_t len = strlen(pathBuff);
-      slashPositions.push_back(len);
-      pathBuff[len] = '/';
-      pathBuff[len+1] = 0;
+    for (pathBuff[0] = 0; fgets(lineBuff, kBuffSize, f) != NULL;) {
+      char firstChar = lineBuff[0];
       
-      if (mismatchCount > 0) ++mismatchCount;
-      else {
-        len = strlen(lineBuff)-2;
-        if (strncmp(lineBuff + 2, folderPath + prevSlash + 1, len) == 0) {
-          if (folderPath[prevSlash+len+1] == 0) {
-            fprintf(walkFile, "%s\n", lineBuff);
-            nftw(folderPath, ftw_callback, 512, 0);
+      lineBuff[strlen(lineBuff)-1] = 0; // remove newline
+      
+      if (firstChar == '+') {
+        strcat(pathBuff, lineBuff+2);
+        size_t len = strlen(pathBuff);
+        slashPositions.push_back(len);
+        
+        if (strcmp(folderPath, pathBuff) == 0) {
+          fprintf(walkFile, "%s\n", lineBuff);
+          ++lineNumber;
+          
+          lastFolderLevel = 0;
+          wasLastItemFolder = NO;
+          nftw(folderPath, ftw_callback, 512, 0);
+          for (int i = 0; i < lastFolderLevel; ++i) {
             fprintf(walkFile, "-\n");
-            
-            // skip lines until this folder is exausted
-          } else if (folderPath[prevSlash+len+1] != '/') {
-            mismatchCount = 1;
+            ++lineNumber;
           }
-        } else {
-          mismatchCount = 1;
+          
+          BOOL inSong = NO;
+          for (int depth = 1; depth > 0;) {
+            fgets(lineBuff, kBuffSize, f);
+            if (lineBuff[0] == '{') inSong = YES;
+            if (lineBuff[0] == '}') inSong = NO;
+            if (inSong) continue;
+            if (lineBuff[0] == '+') ++depth;
+            if (lineBuff[0] == '-') --depth;
+          }
+
+          slashPositions.pop_back();
+          pathBuff[slashPositions.back() + 1] = 0;
+          
+          continue;
         }
+        
+        pathBuff[len] = '/';
+        pathBuff[len+1] = 0;
+      } else if (firstChar == '-') {
+        slashPositions.pop_back();
+        pathBuff[slashPositions.back() + 1] = 0;
+      } else if (firstChar == '{') {
+        withinSong = YES;
+      } else if (firstChar == '}') {
+        withinSong = NO;
+      } else if (withinSong == NO) { // new base url
+        strcpy(pathBuff, lineBuff);
+        strcat(pathBuff, "/");
+        slashPositions.clear();
+        slashPositions.push_back(strlen(pathBuff)-1);
+        fprintf(walkFile, "%s\n", lineBuff);
+        fgets(lineBuff, kBuffSize, f);
+        fprintf(walkFile, "%s", lineBuff);
+        lineNumber += 2;
+        continue;
       }
-    } else if (firstChar == '-') {
-      pathBuff[slashPositions.back()] = 0;
-      slashPositions.pop_back();
-    } else if (firstChar == '{') {
-      withinSong = YES;
-    } else if (firstChar == '}') {
-      withinSong = NO;
-    } else if (withinSong == NO) {
-      // new base url
+      
+      fprintf(walkFile, "%s\n", lineBuff);
+      ++lineNumber;
     }
     
-    fprintf(walkFile, "%s\n", lineBuff);
+    fclose(walkFile);
+    fclose(f);
+    
+    [self rescanSongs:block];
   }
-  
-  fclose(walkFile);
-  fclose(f);
 }
 
 #pragma mark - search

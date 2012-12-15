@@ -34,15 +34,12 @@ static vector<LibrarySong> songs;
 static map<int, NSString *> libraryPaths;
 static map<int, int> songsByInode;
 
-+ (id)init {
-  if (self = [super init]) {
-    nodes.resize(128);
-    nodes[0].searchState = 2;
-    nodes[0].name = @"";
-    nodes[0].p_song = -1;
-    nodes[0].p_parent = -1;
-  }
-  return self;
++ (void)initialize {
+  nodes.resize(128);
+  nodes[0].searchState = 2;
+  nodes[0].name = @"";
+  nodes[0].p_song = -1;
+  nodes[0].p_parent = -1;
 }
 
 + (int)newNode {
