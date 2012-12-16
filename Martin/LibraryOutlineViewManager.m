@@ -24,7 +24,7 @@ static LibraryOutlineViewManager *sharedManager;
   [LibManager sharedManager];
 
   [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(libraryRescanFinished)
+                                           selector:@selector(reloadTree)
                                                name:kLibManagerRescanedLibraryNotification
                                              object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self
@@ -35,6 +35,10 @@ static LibraryOutlineViewManager *sharedManager;
                                            selector:@selector(itemDidExpand:)
                                                name:NSOutlineViewItemDidExpandNotification
                                              object:nil];
+
+  _outlineView.target = self;
+  _outlineView.doubleAction = @selector(itemDoubleClicked);
+
   [self reloadTree];
 }
 
@@ -51,8 +55,12 @@ static LibraryOutlineViewManager *sharedManager;
   return YES;
 }
 
-- (void)libraryRescanFinished {
-  [self reloadTree];
+#pragma mark - double click
+
+- (void)itemDoubleClicked {
+  id item = [_outlineView itemAtRow:_outlineView.selectedRow];
+  if ([_outlineView isItemExpanded:item]) [_outlineView collapseItem:item];
+  else [_outlineView expandItem:item];
 }
 
 #pragma mark - data source

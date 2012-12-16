@@ -14,7 +14,6 @@
 #import "PlaylistItem.h"
 #import "FilePlayer.h"
 #import "Playlist.h"
-#import "LibManager.h"
 
 @implementation Player
 
@@ -123,13 +122,9 @@ static Player *sharedPlayer = nil;
 }
 
 - (IBAction)prevPressed:(id)sender {
-  [[LibManager sharedManager] rescanFolder:"/Users/tomislav/Music/Klasika/Chopin" withBlock:^(int p) {
-
-  }];
-
-//  if ([[FilePlayer sharedPlayer] stopped]) return;
-//  [self setNowPlayingPlaylistIfNecessary];
-//  [self prev];
+  if ([[FilePlayer sharedPlayer] stopped]) return;
+  [self setNowPlayingPlaylistIfNecessary];
+  [self prev];
 }
 
 - (IBAction)playOrPausePressed:(id)sender {
