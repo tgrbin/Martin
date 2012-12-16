@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class Tags;
+#define kLibrarySearchFinishedNotification @"LibManagerSearchFinished"
 
 struct LibrarySong {
   int inode;
@@ -39,5 +39,7 @@ struct LibrarySong {
 
 + (NSString *)fullPathForSong:(int)p_song;
 + (NSString *)fullPathForNode:(int)p_node;
+
++ (void)performSearch:(NSString *)query;
 
 @end

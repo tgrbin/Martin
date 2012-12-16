@@ -8,22 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-#define kLibManagerRescanedLibraryNotification @"LibManagerRescanedLibraryNotification"
-#define kLibManagerFinishedSearchNotification @"LibManagerFinishedSearch"
+#define kLibraryRescanStartedNotification @"LibManagerRescanStarted"
+#define kLibraryRescanFinishedNotification @"LibManagerRescanEnded"
 
-struct LibManagerImpl;
+@interface LibManager : NSObject
 
-@interface LibManager : NSObject {
-  NSString *previousSearchQuery;
-  BOOL appendedCharactersToQuery;
-  BOOL poppedCharactersFromQuery;
-}
-
-+ (LibManager *)sharedManager;
-
-- (void)rescanLibraryWithProgressBlock:(void (^)(int))progressBlock;
-- (void)rescanFolder:(const char *)folderPath withBlock:(void (^)(int))block;
-
-- (void)performSearch:(NSString *)query;
++ (void)rescanLibrary;
++ (void)rescanFolder:(NSString *)folderPath;
 
 @end

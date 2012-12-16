@@ -18,7 +18,7 @@
   if (self = [super initWithWindowNibName:@"PreferencesWindowController"]) {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(libraryRescanFinished)
-                                                 name:kLibManagerRescanedLibraryNotification
+                                                 name:kLibraryRescanFinishedNotification
                                                object:nil];
     _watchFoldersEnabled = [FolderWatcher sharedWatcher].enabled;
   }
@@ -116,20 +116,20 @@
   rescanProgressIndicator.indeterminate = YES;
   [rescanProgressIndicator startAnimation:nil];
 
-  __block int state = -1;
+  [LibManager rescanLibrary];
 
-  [[LibManager sharedManager] rescanLibraryWithProgressBlock:^(int p) {
-    if (state == -1) state = p;
-    else if (state != -2) {
-      totalSongs = state;
-      rescanStatusTextField.stringValue = [NSString stringWithFormat:@"Found %d songs, rescanning %d of them..", totalSongs, p];
-      rescanProgressIndicator.indeterminate = NO;
-      rescanProgressIndicator.doubleValue = 0;
-      state = -2;
-    } else {
-      rescanProgressIndicator.doubleValue = p;
-    }
-  }];
+//  [[LibManager sharedManager] rescanLibraryWithProgressBlock:^(int p) {
+//    if (state == -1) state = p;
+//    else if (state != -2) {
+//      totalSongs = state;
+//      rescanStatusTextField.stringValue = [NSString stringWithFormat:@"Found %d songs, rescanning %d of them..", totalSongs, p];
+//      rescanProgressIndicator.indeterminate = NO;
+//      rescanProgressIndicator.doubleValue = 0;
+//      state = -2;
+//    } else {
+//      rescanProgressIndicator.doubleValue = p;
+//    }
+//  }];
 }
 
 - (void)libraryRescanFinished {

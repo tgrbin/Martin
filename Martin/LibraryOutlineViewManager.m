@@ -23,15 +23,13 @@ static LibraryOutlineViewManager *sharedManager;
 - (void)awakeFromNib {
   sharedManager = self;
 
-  [LibManager sharedManager];
-
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(reloadTree)
-                                               name:kLibManagerRescanedLibraryNotification
+                                               name:kLibraryRescanFinishedNotification
                                              object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(reloadTree)
-                                               name:kLibManagerFinishedSearchNotification
+                                               name:kLibrarySearchFinishedNotification
                                              object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(itemDidExpand:)
@@ -76,9 +74,7 @@ static LibraryOutlineViewManager *sharedManager;
 - (IBAction)contextMenuRescanFolder:(id)sender {
   NSArray *items = [self itemsToProcessFromContextMenu];
   NSString *path = [Tree fullPathForNode:[items[0] intValue]];
-  [[LibManager sharedManager] rescanFolder:[path cStringUsingEncoding:NSUTF8StringEncoding] withBlock:^(int p) {
-    NSLog(@"%d", p);
-  }];
+  [LibManager rescanFolder:path];
 }
 
 - (NSArray *)itemsToProcessFromContextMenu {
@@ -203,7 +199,7 @@ static LibraryOutlineViewManager *sharedManager;
 - (void)controlTextDidChange:(NSNotification *)obj {
   NSTextView *field = obj.userInfo[@"NSFieldEditor"];
   NSString *query = (field.string == nil)? @"": field.string;
-  [[LibManager sharedManager] performSearch:query];
+//  [[LibManager sharedManager] performSearch:query];
 }
 
 @end
