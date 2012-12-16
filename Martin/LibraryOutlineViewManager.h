@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface LibraryOutlineViewManager : NSObject <NSOutlineViewDataSource, NSTextFieldDelegate, NSControlTextEditingDelegate> {
+@interface LibraryOutlineViewManager : NSObject <NSOutlineViewDataSource, NSTextFieldDelegate, NSControlTextEditingDelegate, NSMenuDelegate> {
   BOOL reloadingTree;
 }
 

@@ -27,6 +27,7 @@ struct LibrarySong {
 + (int)numberOfChildrenForNode:(int)p_node;
 + (int)childAtIndex:(int)i forNode:(int)p_node;
 + (int)parentOfNode:(int)p_node;
++ (BOOL)isLeaf:(int)p_node;
 
 + (int)newSong;
 + (int)songFromNode:(int)p_node;
@@ -37,5 +38,6 @@ struct LibrarySong {
 + (void)addToSongByInodeMap:(int)song inode:(int)inode;
 
 + (NSString *)fullPathForSong:(int)p_song;
++ (NSString *)fullPathForNode:(int)p_node;
 
 @end

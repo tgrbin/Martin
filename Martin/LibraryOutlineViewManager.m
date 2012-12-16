@@ -9,6 +9,8 @@
 #import "LibraryOutlineViewManager.h"
 #import "LibManager.h"
 #import "Tree.h"
+#import "PlaylistManager.h"
+#import "PlaylistTableManager.h"
 
 @implementation LibraryOutlineViewManager
 
@@ -55,12 +57,67 @@ static LibraryOutlineViewManager *sharedManager;
   return YES;
 }
 
-#pragma mark - double click
+#pragma mark - mouse events
 
 - (void)itemDoubleClicked {
   id item = [_outlineView itemAtRow:_outlineView.selectedRow];
-  if ([_outlineView isItemExpanded:item]) [_outlineView collapseItem:item];
-  else [_outlineView expandItem:item];
+  if ([Tree isLeaf:[item intValue]]) {
+    [[PlaylistTableManager sharedManager] addTreeNodesToPlaylist:@[item]];
+  } else {
+    if ([_outlineView isItemExpanded:item]) [_outlineView collapseItem:item];
+    else [_outlineView expandItem:item];
+  }
+}
+
+- (IBAction)contextMenuNewPlaylist:(id)sender {
+  [[PlaylistManager sharedManager] addNewPlaylistWithTreeNodes:[self itemsToProcessFromContextMenu]];
+}
+
+- (IBAction)contextMenuRescanFolder:(id)sender {
+  NSArray *items = [self itemsToProcessFromContextMenu];
+
+}
+
+- (NSArray *)itemsToProcessFromContextMenu {
+  NSIndexSet *selectedRows = _outlineView.selectedRowIndexes;
+  NSMutableArray *items = [NSMutableArray new];
+
+  if ([selectedRows containsIndex:_outlineView.clickedRow]) {
+    for (NSUInteger row = selectedRows.firstIndex; row != NSNotFound; row = [selectedRows indexGreaterThanIndex:row]) {
+      [items addObject:[_outlineView itemAtRow:row]];
+    }
+  } else {
+    [items addObject:[_outlineView itemAtRow:_outlineView.clickedRow]];
+  }
+
+  return items;
+}
+
+#pragma mark - menu delegate
+
+- (void)menuNeedsUpdate:(NSMenu *)menu {
+  NSArray *items = [self itemsToProcessFromContextMenu];
+  BOOL onlyFolders = YES;
+  for (id item in items) {
+    if ([Tree isLeaf:[item intValue]]) {
+      onlyFolders = NO;
+      break;
+    }
+  }
+
+  if (onlyFolders) {
+    if (menu.numberOfItems == 1) {
+      NSMenuItem *item = [NSMenuItem new];
+      item.target = self;
+      item.action = @selector(contextMenuRescanFolder:);
+      [menu addItem:item];
+    }
+
+    NSMenuItem *item = [menu itemAtIndex:1];
+    item.title = [NSString stringWithFormat:@"Rescan folder%@", items.count > 1? @"s": @""];
+  } else {
+    if (menu.numberOfItems == 2) [menu removeItemAtIndex:1];
+  }
 }
 
 #pragma mark - data source

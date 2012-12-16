@@ -24,4 +24,6 @@
 
 - (void)savePlaylists;
 
+- (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes;
+
 @end

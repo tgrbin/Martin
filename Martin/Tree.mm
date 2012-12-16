@@ -136,18 +136,26 @@ static map<int, int> songsByInode;
   return nodes[p_node].p_parent;
 }
 
++ (BOOL)isLeaf:(int)p_node {
+  return nodes[p_node].children.size() == 0;
+}
+
 + (int)songFromNode:(int)p_node {
   return nodes[p_node].p_song;
 }
 
 + (NSString *)fullPathForSong:(int)p_song {
+  return [self fullPathForNode:songs[p_song].p_treeLeaf];
+}
+
++ (NSString *)fullPathForNode:(int)p_node {
   vector<NSString *> v;
-  for (int node = songs[p_song].p_treeLeaf; ; node = nodes[node].p_parent) {
-    if (nodes[node].p_parent == 0) { // library folder
-      v.push_back(libraryPaths[node]);
+  for (;; p_node = nodes[p_node].p_parent) {
+    if (nodes[p_node].p_parent == 0) { // library folder
+      v.push_back(libraryPaths[p_node]);
       break;
     }
-    v.push_back(nodes[node].name);
+    v.push_back(nodes[p_node].name);
   }
   
   NSMutableString *str = [NSMutableString stringWithString:v.back()];
