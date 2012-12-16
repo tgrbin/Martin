@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7909CE9E167DBA980011E6A3 /* SleepPreventer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7909CE9D167DBA980011E6A3 /* SleepPreventer.m */; };
+		7909CEA1167DBDE90011E6A3 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7909CEA0167DBDE80011E6A3 /* IOKit.framework */; };
 		79242E1E16569A47006379D6 /* ID3Reader.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E1D16569A47006379D6 /* ID3Reader.m */; };
 		79242E2016569BA3006379D6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79242E1F16569BA3006379D6 /* AudioToolbox.framework */; };
 		79242E231656AB1C006379D6 /* LibraryFolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E221656AB1C006379D6 /* LibraryFolder.m */; };
@@ -41,6 +43,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7909CE9C167DBA980011E6A3 /* SleepPreventer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SleepPreventer.h; sourceTree = "<group>"; };
+		7909CE9D167DBA980011E6A3 /* SleepPreventer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SleepPreventer.m; sourceTree = "<group>"; };
+		7909CEA0167DBDE80011E6A3 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		79242E1C16569A47006379D6 /* ID3Reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ID3Reader.h; sourceTree = "<group>"; };
 		79242E1D16569A47006379D6 /* ID3Reader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ID3Reader.m; sourceTree = "<group>"; };
 		79242E1F16569BA3006379D6 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -104,6 +109,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7909CEA1167DBDE90011E6A3 /* IOKit.framework in Frameworks */,
 				79EDE63A1678EB6A0060F9F9 /* CoreServices.framework in Frameworks */,
 				79242E2016569BA3006379D6 /* AudioToolbox.framework in Frameworks */,
 				79D8FFED149DE5A3009B8955 /* Carbon.framework in Frameworks */,
@@ -191,6 +197,8 @@
 		79DAD732165BEC27004AA7B9 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				7909CE9C167DBA980011E6A3 /* SleepPreventer.h */,
+				7909CE9D167DBA980011E6A3 /* SleepPreventer.m */,
 			);
 			name = Misc;
 			sourceTree = "<group>";
@@ -215,6 +223,7 @@
 		79FF13F9142F18A500E27235 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7909CEA0167DBDE80011E6A3 /* IOKit.framework */,
 				79EDE6391678EB6A0060F9F9 /* CoreServices.framework */,
 				79242E1F16569BA3006379D6 /* AudioToolbox.framework */,
 				79FF13FD142F18A500E27235 /* AppKit.framework */,
@@ -351,6 +360,7 @@
 				792DC197166B5D390003E664 /* Tags.m in Sources */,
 				792DC19B166B6E5D0003E664 /* Tree.mm in Sources */,
 				79EDE63E1678EB9A0060F9F9 /* FolderWatcher.m in Sources */,
+				7909CE9E167DBA980011E6A3 /* SleepPreventer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

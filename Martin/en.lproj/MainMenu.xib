@@ -129,21 +129,13 @@
 				</object>
 				<string key="NSName">_NSMainMenu</string>
 			</object>
-			<object class="NSMenu" id="863215572">
+			<object class="NSMenu" id="818050652">
 				<string key="NSTitle"/>
 				<object class="NSMutableArray" key="NSMenuItems">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<object class="NSMenuItem" id="547449749">
-						<reference key="NSMenu" ref="863215572"/>
+					<object class="NSMenuItem" id="841742892">
+						<reference key="NSMenu" ref="818050652"/>
 						<string key="NSTitle">New playlist</string>
-						<string key="NSKeyEquiv"/>
-						<int key="NSMnemonicLoc">2147483647</int>
-						<reference key="NSOnImage" ref="35465992"/>
-						<reference key="NSMixedImage" ref="502551668"/>
-					</object>
-					<object class="NSMenuItem" id="47109602">
-						<reference key="NSMenu" ref="863215572"/>
-						<string key="NSTitle">Rescan folder</string>
 						<string key="NSKeyEquiv"/>
 						<int key="NSMnemonicLoc">2147483647</int>
 						<reference key="NSOnImage" ref="35465992"/>
@@ -1192,7 +1184,7 @@
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">menu</string>
 						<reference key="source" ref="262899611"/>
-						<reference key="destination" ref="863215572"/>
+						<reference key="destination" ref="818050652"/>
 					</object>
 					<int key="connectionID">785</int>
 				</object>
@@ -1208,17 +1200,9 @@
 					<object class="IBActionConnection" key="connection">
 						<string key="label">contextMenuNewPlaylist:</string>
 						<reference key="source" ref="698072505"/>
-						<reference key="destination" ref="547449749"/>
+						<reference key="destination" ref="841742892"/>
 					</object>
 					<int key="connectionID">786</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">contextMenuRescanFolder:</string>
-						<reference key="source" ref="698072505"/>
-						<reference key="destination" ref="47109602"/>
-					</object>
-					<int key="connectionID">787</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -1415,7 +1399,7 @@
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">delegate</string>
-						<reference key="source" ref="863215572"/>
+						<reference key="source" ref="818050652"/>
 						<reference key="destination" ref="698072505"/>
 					</object>
 					<int key="connectionID">788</int>
@@ -1994,23 +1978,17 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">781</int>
-						<reference key="object" ref="863215572"/>
+						<reference key="object" ref="818050652"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="547449749"/>
-							<reference ref="47109602"/>
+							<reference ref="841742892"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">782</int>
-						<reference key="object" ref="547449749"/>
-						<reference key="parent" ref="863215572"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">783</int>
-						<reference key="object" ref="47109602"/>
-						<reference key="parent" ref="863215572"/>
+						<reference key="object" ref="841742892"/>
+						<reference key="parent" ref="818050652"/>
 					</object>
 				</object>
 			</object>
@@ -2101,7 +2079,6 @@
 					<string>770.IBPluginDependency</string>
 					<string>781.IBPluginDependency</string>
 					<string>782.IBPluginDependency</string>
-					<string>783.IBPluginDependency</string>
 				</object>
 				<object class="NSArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2136,7 +2113,6 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>PlaylistTableView</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>

@@ -78,7 +78,7 @@ static void handleEvent(
   char **paths = eventPaths;
 
   for (int i = 0; i < numEvents; i++) {
-    NSLog(@"Change %llu in %s, flags %d\n", eventIds[i], paths[i], eventFlags[i]);
+    NSLog(@"Change %llu in %s, flags %d\n", eventIds[i], paths[i], eventFlags[i]&kFSEventStreamEventFlagMustScanSubDirs);
   }
 }
 

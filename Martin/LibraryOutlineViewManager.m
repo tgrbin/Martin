@@ -75,7 +75,10 @@ static LibraryOutlineViewManager *sharedManager;
 
 - (IBAction)contextMenuRescanFolder:(id)sender {
   NSArray *items = [self itemsToProcessFromContextMenu];
-
+  NSString *path = [Tree fullPathForNode:[items[0] intValue]];
+  [[LibManager sharedManager] rescanFolder:[path cStringUsingEncoding:NSUTF8StringEncoding] withBlock:^(int p) {
+    NSLog(@"%d", p);
+  }];
 }
 
 - (NSArray *)itemsToProcessFromContextMenu {
