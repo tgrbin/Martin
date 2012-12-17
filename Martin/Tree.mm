@@ -40,6 +40,9 @@ static map<int, int> songsByInode;
   nodes[0].searchState = 2;
   nodes[0].p_song = -1;
   nodes[0].p_parent = -1;
+
+  nodes[0].name = (char*)malloc(1);
+  nodes[0].name[0] = 0;
 }
 
 + (int)newNode {
@@ -119,30 +122,31 @@ static map<int, int> songsByInode;
 }
 
 + (int)numberOfChildrenForNode:(int)p_node {
-  return (int)nodes[p_node].children.size();
-//  if (_searchState == 0) return 0;
-//  
-//  if (_searchState == 1) {
-//    searchResults.clear();
-//    for (int i = 0; i < children.size(); ++i) {
-//      if (children[i].searchState > 0) searchResults.push_back(children[i]);
-//    }
-//    _searchState = 4;
-//  }
-//  
-//  if (_searchState == 2) {
-//    for (int i = 0; i < children.size(); ++i) {
-//      children[i].searchState = 2;
-//    }
-//    _searchState = 3;
-//  }
-//  
-//  return (int) (_searchState == 3? children.size(): searchResults.size());
+  struct TreeNode &node = nodes[p_node];
+  
+  if (node.searchState == 0) return 0;
+  
+  if (node.searchState == 1) {
+    node.searchMatchingChildren.clear();
+    for (auto it = node.children.begin(); it != node.children.end(); ++it) {
+      if (nodes[*it].searchState > 0) node.searchMatchingChildren.push_back(*it);
+    }
+    node.searchState = 4;
+  }
+  
+  if (node.searchState == 2) {
+    for (auto it = node.children.begin(); it != node.children.end(); ++it) {
+      nodes[*it].searchState = 2;
+    }
+    node.searchState = 3;
+  }
+  
+  return (int) (node.searchState == 3? node.children.size(): node.searchMatchingChildren.size());
 }
 
 + (int)childAtIndex:(int)i forNode:(int)p_node {
-  return nodes[p_node].children[i];
-//  return _searchState == 3? children[i]: searchResults[i];
+  struct TreeNode &node = nodes[p_node];
+  return node.searchState == 3? node.children[i]: node.searchMatchingChildren[i];
 }
 
 + (int)parentOfNode:(int)p_node {
@@ -193,7 +197,10 @@ static BOOL queryHits[kBuffSize];
 static int numberOfHits;
 
 + (void)performSearch:(NSString *)query {
-  if (searchLock == nil) searchLock = [NSLock new];
+  if (searchLock == nil) {
+    searchLock = [NSLock new];
+    previousSearchQuery = @"";
+  }
 
   if (query.length >= kBuffSize) return;
   
@@ -260,10 +267,10 @@ static void initKMPStructures(NSString *query) {
     int i = 0;
     int j = t[0] = -1;
     while (i < len) {
-      while (j > -1 && w[i] != w[j]) j = t[j];
+      while (j > -1 && toupper(w[i]) != toupper(w[j])) j = t[j];
       ++i;
       ++j;
-      if (w[i] == w[j]) t[i] = t[j];
+      if (toupper(w[i]) == toupper(w[j])) t[i] = t[j];
       else t[i] = j;
     }
   }
@@ -275,10 +282,9 @@ static BOOL kmpSearch(int wordIndex, const char *str) {
   size_t len = wordLen[wordIndex];
   
   size_t strLen = strlen(str);
-  int i = 0;
-  int j = 0;
+  int i = 0, j = 0;
   while (j < strLen) {
-    while (i > -1 && w[i] != w[j]) i = t[i];
+    while (i > -1 && toupper(w[i]) != toupper(str[j])) i = t[i];
     ++i;
     ++j;
     if (i >= len) return YES;
@@ -292,11 +298,11 @@ static BOOL searchInNode(int wordIndex, const struct TreeNode &node) {
   if (node.p_song == -1) return NO;
   
   struct LibrarySong &song = songs[node.p_song];
-  for (int j = 0; j < kNumberOfTags; ++j) {
-    if (kmpSearch(wordIndex, song.tags[j]) == YES) return YES;
+  for (int i = 0; i < kNumberOfTags; ++i) {
+    if (kmpSearch(wordIndex, song.tags[i]) == YES) return YES;
   }
 
-  return YES;
+  return NO;
 }
 
 static int searchTree(int p_node) {
