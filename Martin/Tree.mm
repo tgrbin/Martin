@@ -9,13 +9,14 @@
 #import "Tree.h"
 #import "TagsUtils.h"
 
+#import <malloc/malloc.h>
 #import <vector>
 #import <map>
 
 using namespace std;
 
 struct TreeNode {
-  NSString *name;
+  char *name;
   vector<int> children;
 
   int searchState;
@@ -37,7 +38,6 @@ static map<int, int> songsByInode;
 + (void)initialize {
   nodes.resize(128);
   nodes[0].searchState = 2;
-  nodes[0].name = @"";
   nodes[0].p_song = -1;
   nodes[0].p_parent = -1;
 }
@@ -71,11 +71,10 @@ static map<int, int> songsByInode;
   songsByInode.clear();
 }
 
-+ (int)addChild:(NSString *)name parent:(int)p_parent song:(int)p_song {
++ (int)addChild:(char *)name parent:(int)p_parent song:(int)p_song {
   int node = [self newNode];
   nodes[p_parent].children.push_back(node);
-  [nodes[node].name release];
-  nodes[node].name = [name retain];
+  [self setName:name forNode:node];
   nodes[node].p_parent = p_parent;
   nodes[node].children.clear();
   nodes[node].p_song = p_song;
@@ -101,8 +100,22 @@ static map<int, int> songsByInode;
   return &songs[p_song];
 }
 
++ (void)setName:(char *)name forNode:(int)p_node {
+  char **nodeName = &nodes[p_node].name;
+  size_t len = strlen(name);
+  if (len > 0 && name[len-1] == '\n') name[--len] = 0;
+  
+  if (*nodeName == NULL) {
+    *nodeName = (char *)malloc(len+1);
+  } else {
+    if (malloc_size(*nodeName) < len+1) *nodeName = (char *)realloc(*nodeName, len+1);
+  }
+  
+  strcpy(*nodeName, name);
+}
+
 + (NSString *)nameForNode:(int)p_node {
-  return nodes[p_node].name;
+  return [NSString stringWithCString:nodes[p_node].name encoding:NSUTF8StringEncoding];
 }
 
 + (int)numberOfChildrenForNode:(int)p_node {
@@ -149,18 +162,15 @@ static map<int, int> songsByInode;
 }
 
 + (NSString *)fullPathForNode:(int)p_node {
-  vector<NSString *> v;
+  vector<char *> v;
   for (;; p_node = nodes[p_node].p_parent) {
-    if (nodes[p_node].p_parent == 0) { // library folder
-      v.push_back(libraryPaths[p_node]);
-      break;
-    }
+    if (nodes[p_node].p_parent == 0) break;
     v.push_back(nodes[p_node].name);
   }
   
-  NSMutableString *str = [NSMutableString stringWithString:v.back()];
-  for (v.pop_back(); v.size(); v.pop_back()) {
-    [str appendFormat:@"/%@", v.back()];
+  NSMutableString *str = [NSMutableString stringWithString:libraryPaths[p_node]];
+  for (; v.size(); v.pop_back()) {
+    [str appendFormat:@"/%@", [NSString stringWithCString:v.back() encoding:NSUTF8StringEncoding]];
   }
   return str;
 }
@@ -277,8 +287,7 @@ static BOOL kmpSearch(int wordIndex, const char *str) {
 }
 
 static BOOL searchInNode(int wordIndex, const struct TreeNode &node) {
-  const char *name = [node.name cStringUsingEncoding:NSUTF8StringEncoding];
-  if (kmpSearch(wordIndex, name)) return YES;
+  if (kmpSearch(wordIndex, node.name)) return YES;
   
   if (node.p_song == -1) return NO;
   

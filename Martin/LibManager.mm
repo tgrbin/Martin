@@ -36,7 +36,7 @@ static int lastFolderLevel;
 static BOOL wasLastItemFolder;
 static FILE *walkFile;
 
-+ (void)initialize {
++ (void)initLibrary {
   loadLibrary();
 }
 
@@ -173,8 +173,7 @@ static void loadLibrary() {
       if (firstChar == 0) break;
       
       if (firstChar == '+') {
-        NSString *folderName = stringFromBuff(lineBuff+2);
-        int node = [Tree addChild:folderName parent:treePath.back() song:-1];
+        int node = [Tree addChild:lineBuff+2 parent:treePath.back() song:-1];
         treePath.push_back(node);
       } else if (firstChar == '-') {
         treePath.pop_back();
@@ -189,7 +188,8 @@ static void loadLibrary() {
         sscanf(lineBuff, "%d", &songData->lastModified);
         
         fgets(lineBuff, kBuffSize, f);
-        NSString *fileName = stringFromBuff(lineBuff);
+        [Tree addChild:lineBuff parent:treePath.back() song:song];
+        [Tree addToSongByInodeMap:song inode:songData->inode];
         
         fgets(lineBuff, kBuffSize, f);
         sscanf(lineBuff, "%d", &songData->lengthInSeconds);
@@ -199,9 +199,6 @@ static void loadLibrary() {
           tagsSet(songData->tags, i, lineBuff);
         }
         
-        [Tree addChild:fileName parent:treePath.back() song:song];
-        [Tree addToSongByInodeMap:song inode:songData->inode];
-        
         fgets(lineBuff, kBuffSize, f); // skip '}'
       } else {
         if (treePath.size() > 1) {
@@ -210,9 +207,8 @@ static void loadLibrary() {
         
         NSString *folderName = stringFromBuff(lineBuff);
         fgets(lineBuff, kBuffSize, f);
-        NSString *displayName = stringFromBuff(lineBuff);
         
-        int node = [Tree addChild:displayName parent:0 song:-1];
+        int node = [Tree addChild:lineBuff parent:0 song:-1];
         [Tree setLibraryPath:folderName forNode:node];
         treePath.push_back(node);
       }

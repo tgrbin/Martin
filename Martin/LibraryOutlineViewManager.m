@@ -39,6 +39,7 @@ static LibraryOutlineViewManager *sharedManager;
   _outlineView.target = self;
   _outlineView.doubleAction = @selector(itemDoubleClicked);
 
+  [LibManager initLibrary];
   [self reloadTree];
 }
 

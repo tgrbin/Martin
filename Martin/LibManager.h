@@ -13,6 +13,7 @@
 
 @interface LibManager : NSObject
 
++ (void)initLibrary;
 + (void)rescanLibrary;
 + (void)rescanFolder:(NSString *)folderPath;
 
