@@ -203,18 +203,34 @@ struct PlaylistImpl {
   BOOL isTrackNumber = [str isEqualToString:@"track number"];
   int tagIndex = [Tags indexFromTagName:str];
   
-  sort(impl->playlist.begin(), impl->playlist.end(), [&, tagIndex, isLength, isTrackNumber](int a, int b) -> bool {
-    PlaylistItem *p1 = impl->playlistItems[a];
-    PlaylistItem *p2 = impl->playlistItems[b];
+  @autoreleasepool {
+    sort(impl->playlist.begin(), impl->playlist.end(), [&, tagIndex, isLength, isTrackNumber](int a, int b) -> bool {
+      PlaylistItem *p1 = impl->playlistItems[a];
+      PlaylistItem *p2 = impl->playlistItems[b];
+      
+      if (isLength) return p1.lengthInSeconds < p2.lengthInSeconds;
     
-    if (isLength) return p1.lengthInSeconds < p2.lengthInSeconds;
-    
-    NSString *val1 = [p1 tagValueForIndex:tagIndex];
-    NSString *val2 = [p2 tagValueForIndex:tagIndex];
-    
-    if (isTrackNumber) return val1.intValue < val2.intValue;
-    return [val1 caseInsensitiveCompare:val2] == NSOrderedAscending;
-  });
+      if (p1.p_librarySong != -1 && p2.p_librarySong != -1) {
+        struct LibrarySong *s1 = [Tree songDataForP:p1.p_librarySong];
+        struct LibrarySong *s2 = [Tree songDataForP:p2.p_librarySong];
+        
+        if (isTrackNumber) {
+          int t1, t2;
+          if (sscanf(s1->tags[tagIndex], "%d", &t1) == 1 && sscanf(s2->tags[tagIndex], "%d", &t2) == 1) {
+            return t1 < t2;
+          } else return strcasecmp(s1->tags[tagIndex], s2->tags[tagIndex]) < 0;
+        } else {
+          return strcasecmp(s1->tags[tagIndex], s2->tags[tagIndex]) < 0;
+        }
+      } else {
+        NSString *val1 = [p1 tagValueForIndex:tagIndex];
+        NSString *val2 = [p2 tagValueForIndex:tagIndex];
+        
+        if (isTrackNumber) return val1.intValue < val2.intValue;
+        return [val1 caseInsensitiveCompare:val2] == NSOrderedAscending;
+      }
+    });
+  }
 }
 
 - (void)reverse {
