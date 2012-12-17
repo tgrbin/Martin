@@ -42,4 +42,6 @@ struct LibrarySong {
 
 + (void)performSearch:(NSString *)query;
 
++ (NSArray *)filterRootElements:(NSArray *)nodes;
+
 @end

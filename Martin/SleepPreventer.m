@@ -24,7 +24,7 @@ static IOPMAssertionID assertionID;
 + (void)setAllowsSleep:(BOOL)isAllowed {
   if (isAllowed == sleepAllowed) return;
 
-  if (sleepAllowed == YES) {
+  if (sleepAllowed == NO) {
     NSString *message = @"Martin is still playing.";
     IOPMAssertionCreateWithName(kIOPMAssertionTypeNoIdleSleep,
                                 kIOPMAssertionLevelOn,

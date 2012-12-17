@@ -12,6 +12,7 @@
 #import <malloc/malloc.h>
 #import <vector>
 #import <map>
+#import <set>
 
 using namespace std;
 
@@ -179,9 +180,41 @@ static map<int, int> songsByInode;
   return str;
 }
 
+static set<int> rootElements;
+static set<int> removedRootElements;
+
++ (NSArray *)filterRootElements:(NSArray *)nodes {
+  rootElements.clear();
+  removedRootElements.clear();
+  for (id item in nodes) rootElements.insert([item intValue]);
+  
+  for (id item in nodes) {
+    int node = [item intValue];
+    if (rootElements.count(node) == 0) continue;
+    excludeSubtree(node);
+  }
+
+  NSMutableArray *result = [NSMutableArray array];
+  for (auto it = rootElements.begin(); it != rootElements.end(); ++it) [result addObject:@(*it)];
+  return result;
+}
+
+static void excludeSubtree(int p_node) {
+  if (removedRootElements.count(p_node)) return;
+  
+  struct TreeNode &node = nodes[p_node];
+  for (auto it = node.children.begin(); it != node.children.end(); ++it) {
+    if (rootElements.count(*it)) {
+      rootElements.erase(*it);
+      removedRootElements.insert(*it);
+    }
+    excludeSubtree(*it);
+  }
+}
+
 #pragma mark - search
 
-static const int kBuffSize = 128; // maximum number of characters in query
+static const int kBuffSize = 256; // maximum number of characters in query
 static NSLock *searchLock;
 static BOOL appendedCharactersToQuery;
 static BOOL poppedCharactersFromQuery;
@@ -202,7 +235,7 @@ static int numberOfHits;
     previousSearchQuery = @"";
   }
 
-  if (query.length >= kBuffSize) return;
+  if (query.length > kBuffSize/2) return;
   
   @synchronized(searchLock) {
     if (nowSearching == YES) {

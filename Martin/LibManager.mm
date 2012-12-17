@@ -36,6 +36,9 @@ static int lastFolderLevel;
 static BOOL wasLastItemFolder;
 static FILE *walkFile;
 
+static int numberOfPathsToRescan;
+static char **pathsToRescan;
+
 + (void)initLibrary {
   loadLibrary();
 }
@@ -47,10 +50,24 @@ static FILE *walkFile;
   });
 }
 
-+ (void)rescanFolder:(NSString *)folderPath {
++ (void)rescanTreeNodes:(NSArray *)treeNodes {
+  NSArray *arr = [Tree filterRootElements:treeNodes];
+  
+  numberOfPathsToRescan = (int)arr.count;
+  pathsToRescan = (char**) malloc(numberOfPathsToRescan * sizeof(char*));
+  for (int i = 0; i < numberOfPathsToRescan; ++i) {
+    NSString *path = [Tree fullPathForNode:[arr[i] intValue]];
+    pathsToRescan[i] = (char*) malloc(kBuffSize);
+    [path getCString:pathsToRescan[i] maxLength:kBuffSize encoding:NSUTF8StringEncoding];
+  }
+  
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    rescanFolder([folderPath cStringUsingEncoding:NSUTF8StringEncoding]);
+    rescanFolders();
     rescanID3s();
+    dispatch_async(dispatch_get_main_queue(), ^{
+      for (int i = 0; i < numberOfPathsToRescan; ++i) free(pathsToRescan[i]);
+      free(pathsToRescan);
+    });
   });
 }
 
@@ -325,13 +342,15 @@ static void rescanID3s() {
   }
 }
 
-static void rescanFolder(const char *folderPath) {
+static void rescanFolders() {
   @autoreleasepool {
     initWalk();
     
     FILE *f = fopen(libPath(), "r");
     vector<size_t> slashPositions;
     BOOL withinSong = NO;
+    
+    int nextPathIndex = 0;
     
     for (pathBuff[0] = 0; fgets(lineBuff, kBuffSize, f) != NULL;) {
       char firstChar = lineBuff[0];
@@ -343,13 +362,13 @@ static void rescanFolder(const char *folderPath) {
         size_t len = strlen(pathBuff);
         slashPositions.push_back(len);
         
-        if (strcmp(folderPath, pathBuff) == 0) {
+        if (nextPathIndex != numberOfPathsToRescan && strcmp(pathsToRescan[nextPathIndex], pathBuff) == 0) {
           fprintf(walkFile, "%s\n", lineBuff);
           ++lineNumber;
           
           lastFolderLevel = 0;
           wasLastItemFolder = NO;
-          nftw(folderPath, ftw_callback, 512, 0);
+          nftw(pathsToRescan[nextPathIndex++], ftw_callback, 512, 0);
           for (int i = 0; i < lastFolderLevel; ++i) {
             fprintf(walkFile, "-\n");
             ++lineNumber;
