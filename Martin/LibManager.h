@@ -16,5 +16,6 @@
 + (void)initLibrary;
 + (void)rescanLibrary;
 + (void)rescanTreeNodes:(NSArray *)treeNodes;
++ (void)rescanPaths:(NSArray *)paths;
 
 @end

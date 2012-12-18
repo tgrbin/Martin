@@ -180,6 +180,8 @@ static map<int, int> songsByInode;
   return str;
 }
 
+#pragma mark - filtering nodes set so that no node is child of another
+
 static set<int> rootElements;
 static set<int> removedRootElements;
 
@@ -209,6 +211,41 @@ static void excludeSubtree(int p_node) {
       removedRootElements.insert(*it);
     }
     excludeSubtree(*it);
+  }
+}
+
+#pragma mark - finding nodes for paths
+
++ (NSArray *)nodesForPaths:(NSArray *)paths {
+  NSMutableArray *nodes = [[NSMutableArray alloc] init];
+  for (NSString *path in paths) {
+    [nodes addObject:@(nodeForPath(path))];
+  }
+  [nodes sortUsingSelector:@selector(compare:)];
+  return [nodes autorelease];
+}
+
+static int nodeForPath(NSString *path) {
+  @autoreleasepool {
+    for (auto it = libraryPaths.begin(); it != libraryPaths.end(); ++it) {
+      if ([path hasPrefix:it->second]) {
+        NSArray *folders = [[path substringFromIndex:it->second.length+1] componentsSeparatedByString:@"/"];
+        int node = it->first;
+        
+        for (NSString *folder in folders) {
+          for (auto child = nodes[node].children.begin(); child != nodes[node].children.end(); ++child) {
+            if ([folder isEqualToString:[Tree nameForNode:*child]]) {
+              node = *child;
+              break;
+            }
+          }
+        }
+        
+        return node;
+      }
+    }
+    
+    return -1;
   }
 }
 

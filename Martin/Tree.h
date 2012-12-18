@@ -32,10 +32,10 @@ struct LibrarySong {
 + (int)newSong;
 + (int)songFromNode:(int)p_node;
 + (int)songByInode:(int)inode;
++ (void)addToSongByInodeMap:(int)song inode:(int)inode;
 + (struct LibrarySong *)songDataForP:(int)p_song;
 
 + (void)setLibraryPath:(NSString *)p forNode:(int)p_node;
-+ (void)addToSongByInodeMap:(int)song inode:(int)inode;
 
 + (NSString *)fullPathForSong:(int)p_song;
 + (NSString *)fullPathForNode:(int)p_node;
@@ -43,5 +43,6 @@ struct LibrarySong {
 + (void)performSearch:(NSString *)query;
 
 + (NSArray *)filterRootElements:(NSArray *)nodes;
++ (NSArray *)nodesForPaths:(NSArray *)paths;
 
 @end

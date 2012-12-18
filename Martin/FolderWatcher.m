@@ -8,8 +8,11 @@
 
 #import "FolderWatcher.h"
 #import "LibraryFolder.h"
+#import "FSEventsProcessor.h"
 
 @implementation FolderWatcher
+
+static const double eventLatency = 0.5;
 
 static NSString * const kFWEnabledKey = @"fwenabledkey";
 
@@ -60,7 +63,7 @@ static NSString * const kFWEnabledKey = @"fwenabledkey";
                                     NULL,
                                     (CFArrayRef)paths,
                                     kFSEventStreamEventIdSinceNow,
-                                    1.0, // latency
+                                    eventLatency,
                                     kFSEventStreamCreateFlagNone);
 
   FSEventStreamScheduleWithRunLoop(eventStream, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
@@ -79,6 +82,7 @@ static void handleEvent(
 
   for (int i = 0; i < numEvents; i++) {
     NSLog(@"Change %llu in %s, flags %d\n", eventIds[i], paths[i], eventFlags[i]&kFSEventStreamEventFlagMustScanSubDirs);
+    [[FSEventsProcessor sharedProcessor] pathChanged:paths[i]];
   }
 }
 

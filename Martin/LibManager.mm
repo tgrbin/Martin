@@ -51,12 +51,32 @@ static char **pathsToRescan;
 }
 
 + (void)rescanTreeNodes:(NSArray *)treeNodes {
-  NSArray *arr = [Tree filterRootElements:treeNodes];
+  [self rescanFilteredNodes:[Tree filterRootElements:treeNodes]];
+}
+
++ (void)rescanPaths:(NSArray *)paths {
+  NSMutableArray *arr = [NSMutableArray arrayWithArray:paths];
+  [arr sortUsingSelector:@selector(compare:)];
   
-  numberOfPathsToRescan = (int)arr.count;
+  NSMutableArray *purged = [[NSMutableArray alloc] init];
+  int currentRoot = -1;
+  for (int i = 0; i < arr.count; ++i) {
+    if (currentRoot == -1 || [arr[i] hasPrefix:arr[currentRoot]] == NO) {
+      currentRoot = i;
+      [purged addObject:arr[i]];
+    }
+  }
+  
+  [self rescanFilteredNodes:[Tree nodesForPaths:purged]];
+  [purged release];
+}
+
+// no node in nodes is a child of another one
++ (void)rescanFilteredNodes:(NSArray *)nodes {
+  numberOfPathsToRescan = (int)nodes.count;
   pathsToRescan = (char**) malloc(numberOfPathsToRescan * sizeof(char*));
   for (int i = 0; i < numberOfPathsToRescan; ++i) {
-    NSString *path = [Tree fullPathForNode:[arr[i] intValue]];
+    NSString *path = [Tree fullPathForNode:[nodes[i] intValue]];
     pathsToRescan[i] = (char*) malloc(kBuffSize);
     [path getCString:pathsToRescan[i] maxLength:kBuffSize encoding:NSUTF8StringEncoding];
   }
@@ -342,6 +362,33 @@ static void rescanID3s() {
   }
 }
 
+static BOOL startWalkingInRescan(FILE *f, BOOL isLibaryPath, int pathIndex) {
+  lastFolderLevel = 0;
+  wasLastItemFolder = NO;
+  nftw(pathsToRescan[pathIndex], ftw_callback, 512, 0);
+  for (int i = isLibaryPath? 1: 0; i < lastFolderLevel; ++i) {
+    fprintf(walkFile, "-\n");
+    ++lineNumber;
+  }
+  
+  BOOL inSong = NO;
+  for (int depth = 0;;) {
+    if (isLibaryPath == NO && depth == -1) break;
+    
+    if (fgets(lineBuff, kBuffSize, f) == NULL) return NO;
+    
+    if (isLibaryPath == YES && inSong == NO && depth == 0 && lineBuff[0] == '/') break;
+    
+    if (lineBuff[0] == '{') inSong = YES;
+    if (lineBuff[0] == '}') inSong = NO;
+    if (inSong) continue;
+    if (lineBuff[0] == '+') ++depth;
+    if (lineBuff[0] == '-') --depth;
+  }
+  
+  return YES;
+}
+
 static void rescanFolders() {
   @autoreleasepool {
     initWalk();
@@ -349,10 +396,15 @@ static void rescanFolders() {
     FILE *f = fopen(libPath(), "r");
     vector<size_t> slashPositions;
     BOOL withinSong = NO;
+    BOOL justRescannedLibraryPath = NO;
     
     int nextPathIndex = 0;
     
-    for (pathBuff[0] = 0; fgets(lineBuff, kBuffSize, f) != NULL;) {
+    for (pathBuff[0] = 0;;) {
+      if (justRescannedLibraryPath == NO && fgets(lineBuff, kBuffSize, f) == NULL) break;
+      
+      justRescannedLibraryPath = NO;
+      
       char firstChar = lineBuff[0];
       
       lineBuff[strlen(lineBuff)-1] = 0; // remove newline
@@ -366,27 +418,10 @@ static void rescanFolders() {
           fprintf(walkFile, "%s\n", lineBuff);
           ++lineNumber;
           
-          lastFolderLevel = 0;
-          wasLastItemFolder = NO;
-          nftw(pathsToRescan[nextPathIndex++], ftw_callback, 512, 0);
-          for (int i = 0; i < lastFolderLevel; ++i) {
-            fprintf(walkFile, "-\n");
-            ++lineNumber;
-          }
-          
-          BOOL inSong = NO;
-          for (int depth = 1; depth > 0;) {
-            fgets(lineBuff, kBuffSize, f);
-            if (lineBuff[0] == '{') inSong = YES;
-            if (lineBuff[0] == '}') inSong = NO;
-            if (inSong) continue;
-            if (lineBuff[0] == '+') ++depth;
-            if (lineBuff[0] == '-') --depth;
-          }
+          startWalkingInRescan(f, NO, nextPathIndex++);
           
           slashPositions.pop_back();
           pathBuff[slashPositions.back() + 1] = 0;
-          
           continue;
         }
         
@@ -400,6 +435,8 @@ static void rescanFolders() {
       } else if (firstChar == '}') {
         withinSong = NO;
       } else if (withinSong == NO) { // new base url
+        BOOL rescanWholeLibraryFolder = (nextPathIndex != numberOfPathsToRescan && strcmp(pathsToRescan[nextPathIndex], lineBuff) == 0);
+        
         strcpy(pathBuff, lineBuff);
         strcat(pathBuff, "/");
         slashPositions.clear();
@@ -408,6 +445,12 @@ static void rescanFolders() {
         fgets(lineBuff, kBuffSize, f);
         fprintf(walkFile, "%s", lineBuff);
         lineNumber += 2;
+        
+        if (rescanWholeLibraryFolder) {
+          if (startWalkingInRescan(f, YES, nextPathIndex++) == NO) break;
+          justRescannedLibraryPath = YES;
+        }
+
         continue;
       }
       
