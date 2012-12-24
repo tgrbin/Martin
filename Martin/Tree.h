@@ -17,10 +17,11 @@ struct LibrarySong {
   char **tags;
 };
 
+struct TreeNode;
+
 @interface Tree : NSObject
 
 + (void)clearTree;
-+ (int)addChild:(char *)name parent:(int)p_parent song:(int)p_song;
 
 + (int)numberOfChildrenForNode:(int)p_node;
 + (int)childAtIndex:(int)i forNode:(int)p_node;
@@ -28,13 +29,12 @@ struct LibrarySong {
 + (BOOL)isLeaf:(int)p_node;
 + (NSString *)nameForNode:(int)p_node;
 
-+ (int)newSong;
 + (int)songFromNode:(int)p_node;
-+ (int)songByInode:(int)inode;
-+ (void)addToSongByInodeMap:(int)song inode:(int)inode;
-+ (struct LibrarySong *)songDataForP:(int)p_song;
 
-+ (void)setLibraryPath:(NSString *)p forNode:(int)p_node;
++ (int)songByInode:(int)inode;
++ (int)nodeByInode:(int)inode;
+
++ (void)addToNodeByInodeMap:(int)node;
 
 + (NSString *)fullPathForSong:(int)p_song;
 
@@ -42,5 +42,9 @@ struct LibrarySong {
 
 // won't return paths that are subpaths of another path
 + (NSArray *)pathsForNodes:(NSArray *)nodes;
+
++ (int)addChild:(char *)name parent:(int)p_parent;
++ (struct LibrarySong *)newSong;
++ (struct TreeNode *)treeNodeDataForP:(int)p_node;
 
 @end

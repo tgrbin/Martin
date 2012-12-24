@@ -11,6 +11,7 @@
 #import "ID3Reader.h"
 #import "Tree.h"
 #import "Tags.h"
+#import "TreeNode.h"
 
 #import <algorithm>
 #import <cstdio>
@@ -199,6 +200,15 @@ static int ftw_callback(const char *filename, const struct stat *stat_struct, in
   return 0;
 }
 
+#pragma mark - load library
+
+static int readTreeNode(FILE *f, int parent) {
+  int node = [Tree addChild:lineBuff+2 parent:parent];
+  fscanf(f, "%d\n", &[Tree treeNodeDataForP:node]->inode);
+  [Tree addToNodeByInodeMap:node];
+  return node;
+}
+
 static void loadLibrary() {
   @autoreleasepool {
     [Tree clearTree];
@@ -214,50 +224,36 @@ static void loadLibrary() {
       if (firstChar == 0) break;
       
       if (firstChar == '+') {
-        int node = [Tree addChild:lineBuff+2 parent:treePath.back() song:-1];
-        treePath.push_back(node);
+        
+        treePath.push_back( readTreeNode(f, treePath.back()) );
+        
       } else if (firstChar == '-') {
+        
         treePath.pop_back();
+        
       } else if (firstChar == '{') {
-        int song = [Tree newSong];
-        struct LibrarySong *songData = [Tree songDataForP:song];
+        int node = readTreeNode(f, treePath.back());
+        struct LibrarySong *songData = [Tree newSong];
         
-        fgets(lineBuff, kBuffSize, f);
-        sscanf(lineBuff, "%d", &songData->inode);
+        songData->p_treeLeaf = node;
+        [Tree treeNodeDataForP:node]->p_song = node;
         
-        fgets(lineBuff, kBuffSize, f);
-        sscanf(lineBuff, "%d", &songData->lastModified);
-        
-        fgets(lineBuff, kBuffSize, f);
-        [Tree addChild:lineBuff parent:treePath.back() song:song];
-        [Tree addToSongByInodeMap:song inode:songData->inode];
-        
-        fgets(lineBuff, kBuffSize, f);
-        sscanf(lineBuff, "%d", &songData->lengthInSeconds);
-        
+        fscanf(f, "%d\n", &songData->lastModified);
+        fscanf(f, "%d\n", &songData->lengthInSeconds);
         for (int i = 0; i < kNumberOfTags; ++i) {
           fgets(lineBuff, kBuffSize, f);
           tagsSet(songData->tags, i, lineBuff);
         }
         
-        fgets(lineBuff, kBuffSize, f); // skip '}'
-      } else {
-        if (treePath.size() > 1) {
-          treePath.pop_back();
-        }
-        
-        NSString *folderName = stringFromBuff(lineBuff);
-        fgets(lineBuff, kBuffSize, f);
-        
-        int node = [Tree addChild:lineBuff parent:0 song:-1];
-        [Tree setLibraryPath:folderName forNode:node];
-        treePath.push_back(node);
+        fscanf(f, "}\n");
       }
     }
     
     fclose(f);
   }
 }
+
+#pragma mark - rescan songs
 
 static void rescanID3s() {
   @autoreleasepool {

@@ -8,6 +8,7 @@
 
 #import "Tree.h"
 #import "TagsUtils.h"
+#import "TreeNode.h"
 
 #import <malloc/malloc.h>
 #import <vector>
@@ -16,26 +17,13 @@
 
 using namespace std;
 
-struct TreeNode {
-  char *name;
-  vector<int> children;
-
-  uint8 searchState;
-  vector<int> searchMatchingChildren;
-  
-  int inode;
-  int p_parent;
-  int p_song; // != -1 iff node is a leaf
-};
-
 @implementation Tree
 
 static int nodesCounter;
 static int songsCounter;
 static vector<TreeNode> nodes;
 static vector<LibrarySong> songs;
-static map<int, NSString *> libraryPaths;
-static map<int, int> songsByInode;
+static map<int, int> nodeByInode;
 
 + (void)initialize {
   nodes.resize(128);
@@ -54,14 +42,14 @@ static map<int, int> songsByInode;
   return nodesCounter++;
 }
 
-+ (int)newSong {
++ (struct LibrarySong *)newSong {
   if (songsCounter >= songs.size()) {
     songs.resize(songs.size()+256);
   }
   if (songs[songsCounter].tags == 0) {
     tagsInit(&songs[songsCounter].tags);
   }
-  return songsCounter++;
+  return &songs[songsCounter++];
 }
 
 + (void)clearTree {
@@ -69,40 +57,39 @@ static map<int, int> songsByInode;
   nodesCounter = 1;
   nodes[0].children.clear();
   nodes[0].searchState = 2;
-  for (map<int, NSString *>::iterator it = libraryPaths.begin(); it != libraryPaths.end(); ++it) {
-    [it->second release];
-  }
-  libraryPaths.clear();
-  songsByInode.clear();
+  nodeByInode.clear();
 }
 
-+ (int)addChild:(char *)name parent:(int)p_parent song:(int)p_song {
++ (int)addChild:(char *)name parent:(int)p_parent {
   int node = [self newNode];
   nodes[p_parent].children.push_back(node);
   [self setName:name forNode:node];
   nodes[node].p_parent = p_parent;
   nodes[node].children.clear();
-  nodes[node].p_song = p_song;
-  if (p_song != -1) songs[p_song].p_treeLeaf = node;
+  nodes[node].p_song = -1;
   return node;
 }
 
-+ (void)setLibraryPath:(NSString *)p forNode:(int)p_node {
-  libraryPaths[p_node] = [p retain];
-}
-
-+ (void)addToSongByInodeMap:(int)song inode:(int)inode {
-  songsByInode.insert(make_pair(inode, song));
++ (void)addToNodeByInodeMap:(int)node {
+  nodeByInode.insert(make_pair(nodes[node].inode, node));
 }
 
 + (int)songByInode:(int)inode {
-  map<int, int>::iterator it = songsByInode.find(inode);
-  if (it == songsByInode.end()) return -1;
-  return it->second;
+  int node = [self nodeByInode:inode];
+  return node == -1? -1: nodes[node].p_song;
+}
+
++ (int)nodeByInode:(int)inode {
+  map<int, int>::iterator it = nodeByInode.find(inode);
+  return (it == nodeByInode.end())? -1: it->second;
 }
 
 + (struct LibrarySong *)songDataForP:(int)p_song {
   return &songs[p_song];
+}
+
++ (struct TreeNode *)treeNodeDataForP:(int)p_node {
+  return &nodes[p_node];
 }
 
 + (void)setName:(char *)name forNode:(int)p_node {

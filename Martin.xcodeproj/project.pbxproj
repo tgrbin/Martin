@@ -66,6 +66,7 @@
 		795C20CD14378D9600A61B21 /* PlaylistTableManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistTableManager.m; sourceTree = "<group>"; };
 		799EF5EB16884D7000AD3A67 /* RescanProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RescanProxy.h; sourceTree = "<group>"; };
 		799EF5EC16884D7000AD3A67 /* RescanProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RescanProxy.m; sourceTree = "<group>"; };
+		799EF5F0168863BE00AD3A67 /* TreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreeNode.h; sourceTree = "<group>"; };
 		79AF97E9145305C200BE8391 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		79AF97EA145305C200BE8391 /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Player.m; sourceTree = "<group>"; };
 		79B3706B149D21EA003372CB /* LastFM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFM.h; sourceTree = "<group>"; };
@@ -142,6 +143,7 @@
 				792DC196166B5D390003E664 /* Tags.m */,
 				799EF5EB16884D7000AD3A67 /* RescanProxy.h */,
 				799EF5EC16884D7000AD3A67 /* RescanProxy.m */,
+				799EF5F0168863BE00AD3A67 /* TreeNode.h */,
 			);
 			name = Library;
 			sourceTree = "<group>";
