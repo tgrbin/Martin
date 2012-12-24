@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		7909CE9E167DBA980011E6A3 /* SleepPreventer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7909CE9D167DBA980011E6A3 /* SleepPreventer.m */; };
 		7909CEA1167DBDE90011E6A3 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7909CEA0167DBDE80011E6A3 /* IOKit.framework */; };
-		791F69991680D479009C50E5 /* FSEventsProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 791F69981680D479009C50E5 /* FSEventsProcessor.m */; };
 		79242E1E16569A47006379D6 /* ID3Reader.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E1D16569A47006379D6 /* ID3Reader.m */; };
 		79242E2016569BA3006379D6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79242E1F16569BA3006379D6 /* AudioToolbox.framework */; };
 		79242E231656AB1C006379D6 /* LibraryFolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E221656AB1C006379D6 /* LibraryFolder.m */; };
@@ -20,6 +19,7 @@
 		792DC19B166B6E5D0003E664 /* Tree.mm in Sources */ = {isa = PBXBuildFile; fileRef = 792DC19A166B6E5D0003E664 /* Tree.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		795C20AE14377A3E00A61B21 /* Playlist.mm in Sources */ = {isa = PBXBuildFile; fileRef = 795C20AD14377A3D00A61B21 /* Playlist.mm */; };
 		795C20CE14378D9600A61B21 /* PlaylistTableManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 795C20CD14378D9600A61B21 /* PlaylistTableManager.m */; };
+		799EF5ED16884D7000AD3A67 /* RescanProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 799EF5EC16884D7000AD3A67 /* RescanProxy.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		79AF97EB145305C200BE8391 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 79AF97EA145305C200BE8391 /* Player.m */; };
 		79B3706D149D21EA003372CB /* LastFM.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B3706C149D21EA003372CB /* LastFM.m */; };
 		79C2ACB5144AB39200C2699B /* PlaylistManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C2ACB4144AB39200C2699B /* PlaylistManager.m */; };
@@ -47,8 +47,6 @@
 		7909CE9C167DBA980011E6A3 /* SleepPreventer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SleepPreventer.h; sourceTree = "<group>"; };
 		7909CE9D167DBA980011E6A3 /* SleepPreventer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SleepPreventer.m; sourceTree = "<group>"; };
 		7909CEA0167DBDE80011E6A3 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		791F69971680D479009C50E5 /* FSEventsProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSEventsProcessor.h; sourceTree = "<group>"; };
-		791F69981680D479009C50E5 /* FSEventsProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSEventsProcessor.m; sourceTree = "<group>"; };
 		79242E1C16569A47006379D6 /* ID3Reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ID3Reader.h; sourceTree = "<group>"; };
 		79242E1D16569A47006379D6 /* ID3Reader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ID3Reader.m; sourceTree = "<group>"; };
 		79242E1F16569BA3006379D6 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -66,6 +64,8 @@
 		795C20AD14377A3D00A61B21 /* Playlist.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Playlist.mm; sourceTree = "<group>"; };
 		795C20CC14378D9600A61B21 /* PlaylistTableManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistTableManager.h; sourceTree = "<group>"; };
 		795C20CD14378D9600A61B21 /* PlaylistTableManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistTableManager.m; sourceTree = "<group>"; };
+		799EF5EB16884D7000AD3A67 /* RescanProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RescanProxy.h; sourceTree = "<group>"; };
+		799EF5EC16884D7000AD3A67 /* RescanProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RescanProxy.m; sourceTree = "<group>"; };
 		79AF97E9145305C200BE8391 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		79AF97EA145305C200BE8391 /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Player.m; sourceTree = "<group>"; };
 		79B3706B149D21EA003372CB /* LastFM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFM.h; sourceTree = "<group>"; };
@@ -140,8 +140,8 @@
 				79EDE63D1678EB9A0060F9F9 /* FolderWatcher.m */,
 				792DC195166B5D390003E664 /* Tags.h */,
 				792DC196166B5D390003E664 /* Tags.m */,
-				791F69971680D479009C50E5 /* FSEventsProcessor.h */,
-				791F69981680D479009C50E5 /* FSEventsProcessor.m */,
+				799EF5EB16884D7000AD3A67 /* RescanProxy.h */,
+				799EF5EC16884D7000AD3A67 /* RescanProxy.m */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -366,7 +366,7 @@
 				792DC19B166B6E5D0003E664 /* Tree.mm in Sources */,
 				79EDE63E1678EB9A0060F9F9 /* FolderWatcher.m in Sources */,
 				7909CE9E167DBA980011E6A3 /* SleepPreventer.m in Sources */,
-				791F69991680D479009C50E5 /* FSEventsProcessor.m in Sources */,
+				799EF5ED16884D7000AD3A67 /* RescanProxy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

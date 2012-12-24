@@ -10,9 +10,6 @@
 
 @interface LibraryFolder : NSObject
 
-@property (nonatomic, strong) NSString *folderPath;
-@property (nonatomic, strong) NSString *treeDisplayName;
-
 + (NSMutableArray *)libraryFolders;
 + (void)save;
 

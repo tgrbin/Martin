@@ -20,9 +20,10 @@ struct TreeNode {
   char *name;
   vector<int> children;
 
-  int searchState;
+  uint8 searchState;
   vector<int> searchMatchingChildren;
   
+  int inode;
   int p_parent;
   int p_song; // != -1 iff node is a leaf
 };
@@ -41,7 +42,7 @@ static map<int, int> songsByInode;
   nodes[0].searchState = 2;
   nodes[0].p_song = -1;
   nodes[0].p_parent = -1;
-
+  nodes[0].inode = -1;
   nodes[0].name = (char*)malloc(1);
   nodes[0].name[0] = 0;
 }
@@ -163,95 +164,51 @@ static map<int, int> songsByInode;
 }
 
 + (NSString *)fullPathForSong:(int)p_song {
-  return [self fullPathForNode:songs[p_song].p_treeLeaf];
+  return fullPathForNode(songs[p_song].p_treeLeaf);
 }
 
-+ (NSString *)fullPathForNode:(int)p_node {
+static NSString *fullPathForNode(int p_node) {
   vector<char *> v;
-  for (;; p_node = nodes[p_node].p_parent) {
-    if (nodes[p_node].p_parent == 0) break;
+  for (; p_node > 0; p_node = nodes[p_node].p_parent) {
     v.push_back(nodes[p_node].name);
   }
   
-  NSMutableString *str = [NSMutableString stringWithString:libraryPaths[p_node]];
+  NSMutableString *str = [NSMutableString new];
   for (; v.size(); v.pop_back()) {
-    [str appendFormat:@"/%@", [NSString stringWithCString:v.back() encoding:NSUTF8StringEncoding]];
+    [str appendFormat:@"%@/", [NSString stringWithCString:v.back() encoding:NSUTF8StringEncoding]];
   }
   return str;
 }
 
-#pragma mark - filtering nodes set so that no node is child of another
+#pragma mark - rescanning
 
-static set<int> rootElements;
-static set<int> removedRootElements;
+static set<int> nodesToFindPathsFor;
+static NSMutableArray *pathsForNodes;
 
-+ (NSArray *)filterRootElements:(NSArray *)nodes {
-  rootElements.clear();
-  removedRootElements.clear();
-  for (id item in nodes) rootElements.insert([item intValue]);
++ (NSArray *)pathsForNodes:(NSArray *)nodes {
+  nodesToFindPathsFor.clear();
+  for (NSNumber *num in nodes) nodesToFindPathsFor.insert(num.intValue);
+
+  if (pathsForNodes == nil) pathsForNodes = [NSMutableArray new];
+  [pathsForNodes removeAllObjects];
   
-  for (id item in nodes) {
-    int node = [item intValue];
-    if (rootElements.count(node) == 0) continue;
-    excludeSubtree(node);
-  }
-
-  NSMutableArray *result = [NSMutableArray array];
-  for (auto it = rootElements.begin(); it != rootElements.end(); ++it) [result addObject:@(*it)];
-  return result;
+  findPathsForNodes(0);
+  return pathsForNodes;
 }
 
-static void excludeSubtree(int p_node) {
-  if (removedRootElements.count(p_node)) return;
-  
-  struct TreeNode &node = nodes[p_node];
-  for (auto it = node.children.begin(); it != node.children.end(); ++it) {
-    if (rootElements.count(*it)) {
-      rootElements.erase(*it);
-      removedRootElements.insert(*it);
+static void findPathsForNodes(int p_node) {
+  if (nodesToFindPathsFor.count(p_node)) {
+    [pathsForNodes addObject:fullPathForNode(p_node)];
+  } else {
+    for (auto child = nodes[p_node].children.begin(); child != nodes[p_node].children.end(); ++child) {
+      findPathsForNodes(*child);
     }
-    excludeSubtree(*it);
-  }
-}
-
-#pragma mark - finding nodes for paths
-
-+ (NSArray *)nodesForPaths:(NSArray *)paths {
-  NSMutableArray *nodes = [[NSMutableArray alloc] init];
-  for (NSString *path in paths) {
-    [nodes addObject:@(nodeForPath(path))];
-  }
-  [nodes sortUsingSelector:@selector(compare:)];
-  return [nodes autorelease];
-}
-
-static int nodeForPath(NSString *path) {
-  @autoreleasepool {
-    for (auto it = libraryPaths.begin(); it != libraryPaths.end(); ++it) {
-      if ([path hasPrefix:it->second]) {
-        NSArray *folders = [[path substringFromIndex:it->second.length+1] componentsSeparatedByString:@"/"];
-        int node = it->first;
-        
-        for (NSString *folder in folders) {
-          for (auto child = nodes[node].children.begin(); child != nodes[node].children.end(); ++child) {
-            if ([folder isEqualToString:[Tree nameForNode:*child]]) {
-              node = *child;
-              break;
-            }
-          }
-        }
-        
-        return node;
-      }
-    }
-    
-    return -1;
   }
 }
 
 #pragma mark - search
 
-static const int kBuffSize = 256; // maximum number of characters in query
+static const int kBuffSize = 256; // maximum number of characters in a query
 static NSLock *searchLock;
 static BOOL appendedCharactersToQuery;
 static BOOL poppedCharactersFromQuery;

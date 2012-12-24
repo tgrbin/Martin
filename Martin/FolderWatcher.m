@@ -8,7 +8,7 @@
 
 #import "FolderWatcher.h"
 #import "LibraryFolder.h"
-#import "FSEventsProcessor.h"
+#import "RescanProxy.h"
 
 @implementation FolderWatcher
 
@@ -51,17 +51,12 @@ static NSString * const kFWEnabledKey = @"fwenabledkey";
 }
 
 - (void)startWatchingFolders {
-  NSMutableArray *paths = [NSMutableArray array];
-  for (LibraryFolder *lf in [LibraryFolder libraryFolders]) {
-    [paths addObject:lf.folderPath];
-  }
-
-  if (paths.count == 0) return;
+  if ([LibraryFolder libraryFolders].count == 0) return;
 
   eventStream = FSEventStreamCreate(NULL,
                                     &handleEvent,
                                     NULL,
-                                    (CFArrayRef)paths,
+                                    (CFArrayRef)[LibraryFolder libraryFolders],
                                     kFSEventStreamEventIdSinceNow,
                                     eventLatency,
                                     kFSEventStreamCreateFlagNone);
@@ -82,7 +77,8 @@ static void handleEvent(
 
   for (int i = 0; i < numEvents; i++) {
     NSLog(@"Change %llu in %s, flags %d\n", eventIds[i], paths[i], eventFlags[i]&kFSEventStreamEventFlagMustScanSubDirs);
-    [[FSEventsProcessor sharedProcessor] pathChanged:paths[i]];
+    [[RescanProxy sharedProxy] rescanFolder:[NSString stringWithCString:paths[i] encoding:NSUTF8StringEncoding]
+                                recursively:eventFlags[i]&kFSEventStreamEventFlagMustScanSubDirs];
   }
 }
 

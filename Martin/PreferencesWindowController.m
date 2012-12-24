@@ -8,9 +8,9 @@
 
 #import "PreferencesWindowController.h"
 #import "LibraryFolder.h"
-#import "LibManager.h"
 #import "LastFM.h"
 #import "FolderWatcher.h"
+#import "RescanProxy.h"
 
 @implementation PreferencesWindowController
 
@@ -43,37 +43,25 @@
 }
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-  NSString *colId = tableColumn.identifier;
-  if (![colId isEqualToString:@"remove"]) {
-    LibraryFolder *lf = [[LibraryFolder libraryFolders] objectAtIndex:row];
-    return [lf valueForKey:colId];
-  }
-  return nil;
-}
+  if ([tableColumn.identifier isEqualToString:@"remove"]) return nil;
 
-- (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-  NSString *colId = tableColumn.identifier;
-  if ([colId isEqualToString:@"treeDisplayName"]) {
-    LibraryFolder *lf = [[LibraryFolder libraryFolders] objectAtIndex:row];
-    [lf setValue:object forKey:colId];
-  }
+  return [[LibraryFolder libraryFolders] objectAtIndex:row];
 }
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   if ([tableColumn.identifier isEqualToString:@"folderPath"]) {
-    LibraryFolder *lf = [[LibraryFolder libraryFolders] objectAtIndex:row];
-    ((NSButtonCell *)cell).title = lf.folderPath;
+    ((NSButtonCell *)cell).title = [[LibraryFolder libraryFolders] objectAtIndex:row];
   }
 }
 
 - (IBAction)changeFolder:(NSTableView *)sender {
-  LibraryFolder *lf = [[LibraryFolder libraryFolders] objectAtIndex:sender.clickedRow];
+  NSString *folderPath = [[LibraryFolder libraryFolders] objectAtIndex:sender.clickedRow];
 
   NSOpenPanel *panel = [self configurePanel];
-  panel.directoryURL = [NSURL fileURLWithPath:lf.folderPath isDirectory:YES];
+  panel.directoryURL = [NSURL fileURLWithPath:folderPath isDirectory:YES];
 
   if ([panel runModal] == NSFileHandlingPanelOKButton) {
-    lf.folderPath = [panel.directoryURL path];
+    [[LibraryFolder libraryFolders] replaceObjectAtIndex:sender.clickedRow withObject:[panel.directoryURL path]];
     [[FolderWatcher sharedWatcher] folderListChanged];
     [sender reloadData];
   }
@@ -99,10 +87,7 @@
   NSOpenPanel *panel = [self configurePanel];
 
   if ([panel runModal] == NSFileHandlingPanelOKButton) {
-    LibraryFolder *lf = [[LibraryFolder alloc] init];
-    lf.folderPath = [panel.directoryURL path];
-    lf.treeDisplayName = [lf.folderPath lastPathComponent];
-    [[LibraryFolder libraryFolders] addObject:lf];
+    [[LibraryFolder libraryFolders] addObject:[panel.directoryURL path]];
     [foldersTableView reloadData];
   }
 }
@@ -116,7 +101,7 @@
   rescanProgressIndicator.indeterminate = YES;
   [rescanProgressIndicator startAnimation:nil];
 
-  [LibManager rescanLibrary];
+  [[RescanProxy sharedProxy] rescanAll];
 
 //  [[LibManager sharedManager] rescanLibraryWithProgressBlock:^(int p) {
 //    if (state == -1) state = p;

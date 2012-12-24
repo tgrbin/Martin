@@ -14,8 +14,6 @@
 @interface LibManager : NSObject
 
 + (void)initLibrary;
-+ (void)rescanLibrary;
-+ (void)rescanTreeNodes:(NSArray *)treeNodes;
-+ (void)rescanPaths:(NSArray *)paths;
++ (void)rescanPaths:(NSArray *)paths recursively:(NSArray *)recursively;
 
 @end

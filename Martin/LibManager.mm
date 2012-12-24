@@ -43,53 +43,57 @@ static char **pathsToRescan;
   loadLibrary();
 }
 
-+ (void)rescanLibrary {
-  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    walkLibrary();
-    rescanID3s();
-  });
++ (void)rescanPaths:(NSArray *)paths recursively:(NSArray *)recursively {
+  
 }
 
-+ (void)rescanTreeNodes:(NSArray *)treeNodes {
-  [self rescanFilteredNodes:[Tree filterRootElements:treeNodes]];
-}
-
-+ (void)rescanPaths:(NSArray *)paths {
-  NSMutableArray *arr = [NSMutableArray arrayWithArray:paths];
-  [arr sortUsingSelector:@selector(compare:)];
-  
-  NSMutableArray *purged = [[NSMutableArray alloc] init];
-  int currentRoot = -1;
-  for (int i = 0; i < arr.count; ++i) {
-    if (currentRoot == -1 || [arr[i] hasPrefix:arr[currentRoot]] == NO) {
-      currentRoot = i;
-      [purged addObject:arr[i]];
-    }
-  }
-  
-  [self rescanFilteredNodes:[Tree nodesForPaths:purged]];
-  [purged release];
-}
-
-// no node in nodes is a child of another one
-+ (void)rescanFilteredNodes:(NSArray *)nodes {
-  numberOfPathsToRescan = (int)nodes.count;
-  pathsToRescan = (char**) malloc(numberOfPathsToRescan * sizeof(char*));
-  for (int i = 0; i < numberOfPathsToRescan; ++i) {
-    NSString *path = [Tree fullPathForNode:[nodes[i] intValue]];
-    pathsToRescan[i] = (char*) malloc(kBuffSize);
-    [path getCString:pathsToRescan[i] maxLength:kBuffSize encoding:NSUTF8StringEncoding];
-  }
-  
-  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    rescanFolders();
-    rescanID3s();
-    dispatch_async(dispatch_get_main_queue(), ^{
-      for (int i = 0; i < numberOfPathsToRescan; ++i) free(pathsToRescan[i]);
-      free(pathsToRescan);
-    });
-  });
-}
+//+ (void)rescanLibrary {
+//  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//    walkLibrary();
+//    rescanID3s();
+//  });
+//}
+//
+//+ (void)rescanTreeNodes:(NSArray *)treeNodes {
+//  [self rescanFilteredNodes:[Tree filterRootElements:treeNodes]];
+//}
+//
+//+ (void)rescanPaths:(NSArray *)paths {
+//  NSMutableArray *arr = [NSMutableArray arrayWithArray:paths];
+//  [arr sortUsingSelector:@selector(compare:)];
+//  
+//  NSMutableArray *purged = [[NSMutableArray alloc] init];
+//  int currentRoot = -1;
+//  for (int i = 0; i < arr.count; ++i) {
+//    if (currentRoot == -1 || [arr[i] hasPrefix:arr[currentRoot]] == NO) {
+//      currentRoot = i;
+//      [purged addObject:arr[i]];
+//    }
+//  }
+//  
+//  [self rescanFilteredNodes:[Tree nodesForPaths:purged]];
+//  [purged release];
+//}
+//
+//// no node in nodes is a child of another one
+//+ (void)rescanFilteredNodes:(NSArray *)nodes {
+//  numberOfPathsToRescan = (int)nodes.count;
+//  pathsToRescan = (char**) malloc(numberOfPathsToRescan * sizeof(char*));
+//  for (int i = 0; i < numberOfPathsToRescan; ++i) {
+//    NSString *path = [Tree fullPathForNode:[nodes[i] intValue]];
+//    pathsToRescan[i] = (char*) malloc(kBuffSize);
+//    [path getCString:pathsToRescan[i] maxLength:kBuffSize encoding:NSUTF8StringEncoding];
+//  }
+//  
+//  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//    rescanFolders();
+//    rescanID3s();
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//      for (int i = 0; i < numberOfPathsToRescan; ++i) free(pathsToRescan[i]);
+//      free(pathsToRescan);
+//    });
+//  });
+//}
 
 #pragma mark - functions
 

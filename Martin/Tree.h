@@ -11,7 +11,6 @@
 #define kLibrarySearchFinishedNotification @"LibManagerSearchFinished"
 
 struct LibrarySong {
-  int inode;
   int lengthInSeconds;
   int lastModified;
   int p_treeLeaf;
@@ -38,11 +37,10 @@ struct LibrarySong {
 + (void)setLibraryPath:(NSString *)p forNode:(int)p_node;
 
 + (NSString *)fullPathForSong:(int)p_song;
-+ (NSString *)fullPathForNode:(int)p_node;
 
 + (void)performSearch:(NSString *)query;
 
-+ (NSArray *)filterRootElements:(NSArray *)nodes;
-+ (NSArray *)nodesForPaths:(NSArray *)paths;
+// won't return paths that are subpaths of another path
++ (NSArray *)pathsForNodes:(NSArray *)nodes;
 
 @end

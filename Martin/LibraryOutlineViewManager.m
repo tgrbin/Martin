@@ -11,6 +11,7 @@
 #import "Tree.h"
 #import "PlaylistManager.h"
 #import "PlaylistTableManager.h"
+#import "RescanProxy.h"
 
 @implementation LibraryOutlineViewManager
 
@@ -73,7 +74,7 @@ static LibraryOutlineViewManager *sharedManager;
 }
 
 - (IBAction)contextMenuRescanFolder:(id)sender {
-  [LibManager rescanTreeNodes:[self itemsToProcessFromContextMenu]];
+  [[RescanProxy sharedProxy] rescanRecursivelyTreeNodes:[self itemsToProcessFromContextMenu]];
 }
 
 - (NSArray *)itemsToProcessFromContextMenu {
