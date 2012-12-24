@@ -16,6 +16,7 @@
 #import <algorithm>
 #import <cstdio>
 #import <vector>
+#import <set>
 #import <ftw.h>
 
 using namespace std;
@@ -37,15 +38,25 @@ static int lastFolderLevel;
 static BOOL wasLastItemFolder;
 static FILE *walkFile;
 
-static int numberOfPathsToRescan;
-static char **pathsToRescan;
+static set<uint64> pathsToRescan[2];
 
 + (void)initLibrary {
   loadLibrary();
 }
 
 + (void)rescanPaths:(NSArray *)paths recursively:(NSArray *)recursively {
+  pathsToRescan[0].clear();
+  pathsToRescan[1].clear();
   
+  for (int i = 0; i < paths.count; ++i) {
+    [paths[i] getCString:pathBuff maxLength:kBuffSize encoding:NSUTF8StringEncoding];
+    pathsToRescan[ [recursively[i] boolValue] ].insert( folderHash(pathBuff) );
+  }
+  
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    rescanLibrary();
+    rescanID3s();
+  });
 }
 
 //+ (void)rescanLibrary {
@@ -96,7 +107,13 @@ static char **pathsToRescan;
 //  });
 //}
 
-#pragma mark - functions
+#pragma mark - helper functions
+
+static uint64 folderHash(const char *f) {
+  unsigned long hash = 5381;
+  for (int c; (c = *f++); hash = ((hash << 5) + hash) + c);
+  return hash;
+}
 
 static NSString *stringFromBuff(char *buff) {
   size_t len = strlen(buff);
@@ -389,7 +406,7 @@ static BOOL startWalkingInRescan(FILE *f, BOOL isLibaryPath, int pathIndex) {
   return YES;
 }
 
-static void rescanFolders() {
+static void rescanLibrary() {
   @autoreleasepool {
     initWalk();
     
