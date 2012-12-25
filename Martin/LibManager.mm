@@ -19,6 +19,7 @@
 #import <vector>
 #import <set>
 #import <ftw.h>
+#import <dirent.h>
 
 using namespace std;
 
@@ -90,54 +91,6 @@ static set<uint64> pathsToRescan[2];
   });
 }
 
-//+ (void)rescanLibrary {
-//  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//    walkLibrary();
-//    rescanID3s();
-//  });
-//}
-//
-//+ (void)rescanTreeNodes:(NSArray *)treeNodes {
-//  [self rescanFilteredNodes:[Tree filterRootElements:treeNodes]];
-//}
-//
-//+ (void)rescanPaths:(NSArray *)paths {
-//  NSMutableArray *arr = [NSMutableArray arrayWithArray:paths];
-//  [arr sortUsingSelector:@selector(compare:)];
-//  
-//  NSMutableArray *purged = [[NSMutableArray alloc] init];
-//  int currentRoot = -1;
-//  for (int i = 0; i < arr.count; ++i) {
-//    if (currentRoot == -1 || [arr[i] hasPrefix:arr[currentRoot]] == NO) {
-//      currentRoot = i;
-//      [purged addObject:arr[i]];
-//    }
-//  }
-//  
-//  [self rescanFilteredNodes:[Tree nodesForPaths:purged]];
-//  [purged release];
-//}
-//
-//// no node in nodes is a child of another one
-//+ (void)rescanFilteredNodes:(NSArray *)nodes {
-//  numberOfPathsToRescan = (int)nodes.count;
-//  pathsToRescan = (char**) malloc(numberOfPathsToRescan * sizeof(char*));
-//  for (int i = 0; i < numberOfPathsToRescan; ++i) {
-//    NSString *path = [Tree fullPathForNode:[nodes[i] intValue]];
-//    pathsToRescan[i] = (char*) malloc(kBuffSize);
-//    [path getCString:pathsToRescan[i] maxLength:kBuffSize encoding:NSUTF8StringEncoding];
-//  }
-//  
-//  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//    rescanFolders();
-//    rescanID3s();
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//      for (int i = 0; i < numberOfPathsToRescan; ++i) free(pathsToRescan[i]);
-//      free(pathsToRescan);
-//    });
-//  });
-//}
-
 #pragma mark - helper functions
 
 static void walkPrint(const char *format, ...) {
@@ -184,12 +137,14 @@ static void initWalk() {
   lineNumber = 0;
   numberOfSongsFound = 0;
   needsRescan.clear();
+  pathBuff[0] = 0;
 }
 
 static void endWalk() {
   fclose(walkFile);
   pathsToRescan[0].clear();
   pathsToRescan[1].clear();
+  pathBuff[0] = 0;
 }
 
 static const char *toCstr(NSString *s) {
@@ -209,7 +164,7 @@ static BOOL isExtensionAcceptable(const char *str) {
 
 static int readTreeNode(FILE *f, int parent) {
   int node = [Tree addChild:lineBuff+2 parent:parent];
-  fscanf(f, "%d\n", &[Tree treeNodeDataForP:node]->inode);
+  fscanf(f, "%lld\n", &[Tree treeNodeDataForP:node]->inode);
   [Tree addToNodeByInodeMap:node];
   return node;
 }
@@ -237,7 +192,7 @@ static void loadLibrary() {
         songData->p_treeLeaf = node;
         [Tree treeNodeDataForP:node]->p_song = node;
         
-        fscanf(f, "%d\n", &songData->lastModified);
+        fscanf(f, "%ld\n", &songData->lastModified);
         fscanf(f, "%d\n", &songData->lengthInSeconds);
         for (int i = 0; i < kNumberOfTags; ++i) {
           fgets(lineBuff, kBuffSize, f);
@@ -258,6 +213,8 @@ static BOOL rescanSong(FILE *f) {
   ID3Reader *id3 = [[ID3Reader alloc] initWithFile:@(pathBuff)];
 
   if (id3 == nil) {
+    fprintf(f, "0\n");
+    for (int i = 0; i < kNumberOfTags; ++i) fprintf(f, "\n");
     return NO;
   } else {
     fprintf(f, "%d\n", id3.lengthInSeconds);
@@ -265,7 +222,6 @@ static BOOL rescanSong(FILE *f) {
       NSString *val = [id3 tag:[Tags tagNameForIndex:i]];
       fprintf(f, "%s\n", val? [val UTF8String]: "");
     }
-    
     [id3 release];
     return YES;
   }
@@ -279,10 +235,8 @@ static void rescanID3s() {
     int linesToForward = 0;
     int nextRescanIndex = 0;
     vector<size_t> pathComponents;
-    
+ 
     needsRescan.push_back(-1);
-    
-    pathBuff[0] = 0;
     
     for (int ln = 0; fgets(lineBuff, kBuffSize, f) != NULL; ++ln) {
       lineBuff[strlen(lineBuff) - 1] = 0; // remove newline
@@ -292,12 +246,12 @@ static void rescanID3s() {
       } else {
         if (ln == needsRescan[nextRescanIndex] + 3) {
           
-          if (rescanSong(g)) {
-            for (int i = 0; i < 1 + kNumberOfTags; ++i, ++ln) fgets(lineBuff, kBuffSize, f);
-          } else {
+          if (rescanSong(g) == NO) {
             NSLog(@"id3 read failed for: %s", pathBuff);
-            linesToForward = 1 + kNumberOfTags;
           }
+          
+          // consume these lines, rescanSong filled them
+          for (int i = 0; i < 1 + kNumberOfTags; ++i, ++ln) fgets(lineBuff, kBuffSize, f);
           
           // report status!
           
@@ -339,6 +293,26 @@ static void rescanID3s() {
 
 #pragma mark - walking
 
+static void walkSong(const char *name, int p_song, const struct stat *statBuff) {
+  time_t lastModified = statBuff->st_mtimespec.tv_sec;
+  
+  walkPrint("{ %s", name);
+  walkPrint("%lld", statBuff->st_ino);
+  walkPrint("%ld", lastModified);
+  
+  struct LibrarySong *song = (p_song == -1)? NULL: [Tree songDataForP:p_song];
+  
+  if (p_song == -1 || song->lastModified != lastModified) {
+    needsRescan.push_back(lineNumber - 3);
+    for (int i = 0; i <= kNumberOfTags; ++i) walkPrint("");
+  } else {
+    walkPrint("%d", song->lengthInSeconds);
+    for (int i = 0; i < kNumberOfTags; ++i) walkPrint("%s", song->tags[i]);
+  }
+  
+  walkPrint("}");
+}
+
 static int ftw_callback(const char *filename, const struct stat *stat_struct, int flags, struct FTW *ftw_struct) {
   int currentLevel = ftw_struct->level;
   BOOL isFolder = (flags == FTW_D);
@@ -356,24 +330,7 @@ static int ftw_callback(const char *filename, const struct stat *stat_struct, in
     walkPrint("%d", inode);
   } else if (isExtensionAcceptable(filename)) {
     ++numberOfSongsFound;
-    
-    int lastModified = (int) stat_struct->st_mtimespec.tv_sec;
-    int song = [Tree songByInode:inode];
-    struct LibrarySong *songData = (song == -1)? NULL: [Tree songDataForP:song];
-    
-    walkPrint("{ %s", basename);
-    walkPrint("%d", inode);
-    walkPrint("%d", lastModified);
-    
-    if (song == -1 || songData->lastModified != lastModified) {
-      needsRescan.push_back(lineNumber - 3);
-      for (int i = 0; i <= kNumberOfTags; ++i) walkPrint("");
-    } else {
-      walkPrint("%d", songData->lengthInSeconds);
-      for (int i = 0; i < kNumberOfTags; ++i) walkPrint("%s", songData->tags[i]);
-    }
-    
-    walkPrint("}");
+    walkSong(basename, [Tree songByInode:inode], stat_struct);
   }
   
   lastFolderLevel = currentLevel;
@@ -391,84 +348,85 @@ static void walkFolder(const char *folder) {
   for (int i = 0; i < lastFolderLevel; ++i) walkPrint("-");
 }
 
-static void walkTreeNode(int p_node) {
+static void walkTreeNode(int);
+
+static void walkFolderNonRecursively() {
+  static struct stat statBuff;
   
-}
-
-static void rescanLibrary() {
-  @autoreleasepool {
-    initWalk();
-    
-    FILE *f = fopen(libPath(), "r");
-    vector<size_t> slashPositions;
-    BOOL withinSong = NO;
-    BOOL justRescannedLibraryPath = NO;
-    
-    int nextPathIndex = 0;
-    
-    for (pathBuff[0] = 0;;) {
-      if (justRescannedLibraryPath == NO && fgets(lineBuff, kBuffSize, f) == NULL) break;
+  walkPrint("+ %s", strrchr(pathBuff, '/') + 1);
+  DIR *dir = opendir(pathBuff);
+  size_t pathLen = strlen(pathBuff);
+  
+  for (struct dirent *entry; (entry = readdir(dir)) != NULL;) {
+    int node = [Tree nodeByInode:entry->d_ino];
+    if (entry->d_type == DT_DIR) {
       
-      justRescannedLibraryPath = NO;
-      
-      char firstChar = lineBuff[0];
-      
-      lineBuff[strlen(lineBuff)-1] = 0; // remove newline
-      
-      if (firstChar == '+') {
-        strcat(pathBuff, lineBuff+2);
-        size_t len = strlen(pathBuff);
-        slashPositions.push_back(len);
-        
-        if (nextPathIndex != numberOfPathsToRescan && strcmp(pathsToRescan[nextPathIndex], pathBuff) == 0) {
-          fprintf(walkFile, "%s\n", lineBuff);
-          ++lineNumber;
-          
-          startWalkingInRescan(f, NO, nextPathIndex++);
-          
-          slashPositions.pop_back();
-          pathBuff[slashPositions.back() + 1] = 0;
-          continue;
-        }
-        
-        pathBuff[len] = '/';
-        pathBuff[len+1] = 0;
-      } else if (firstChar == '-') {
-        slashPositions.pop_back();
-        pathBuff[slashPositions.back() + 1] = 0;
-      } else if (firstChar == '{') {
-        withinSong = YES;
-      } else if (firstChar == '}') {
-        withinSong = NO;
-      } else if (withinSong == NO) { // new base url
-        BOOL rescanWholeLibraryFolder = (nextPathIndex != numberOfPathsToRescan && strcmp(pathsToRescan[nextPathIndex], lineBuff) == 0);
-        
-        strcpy(pathBuff, lineBuff);
-        strcat(pathBuff, "/");
-        slashPositions.clear();
-        slashPositions.push_back(strlen(pathBuff)-1);
-        fprintf(walkFile, "%s\n", lineBuff);
-        fgets(lineBuff, kBuffSize, f);
-        fprintf(walkFile, "%s", lineBuff);
-        lineNumber += 2;
-        
-        if (rescanWholeLibraryFolder) {
-          if (startWalkingInRescan(f, YES, nextPathIndex++) == NO) break;
-          justRescannedLibraryPath = YES;
-        }
-
-        continue;
+      if (node == -1) {
+        walkPrint("+ %s", entry->d_name);
+        walkPrint("-");
+      } else {
+        walkTreeNode(node);
       }
       
-      fprintf(walkFile, "%s\n", lineBuff);
-      ++lineNumber;
+    } else if (entry->d_type == DT_REG && isExtensionAcceptable(entry->d_name)) {
+      strcat(pathBuff, "/");
+      strcat(pathBuff, entry->d_name);
+      
+      stat(pathBuff, &statBuff);
+      
+      int p_song = (node == -1)? -1: [Tree treeNodeDataForP:node]->p_song;
+      walkSong(entry->d_name, p_song, &statBuff);
+      
+      pathBuff[pathLen] = 0;
     }
-    
-    fclose(walkFile);
-    fclose(f);
-    
-    rescanID3s();
   }
+  
+  closedir(dir);
+  walkPrint("-");
+}
+
+static void dumpSong(struct TreeNode *node) {
+  struct LibrarySong *song = [Tree songDataForP:node->p_song];
+  
+  walkPrint("{ %s", node->name);
+  walkPrint("%lld", node->inode);
+  walkPrint("%ld", song->lastModified);
+  walkPrint("%d", song->lengthInSeconds);
+  for (int i = 0; i < kNumberOfTags; ++i) walkPrint("%s", song->tags[i]);
+  walkPrint("}");
+}
+
+static void walkTreeNode(int p_node) {
+  struct TreeNode *node = [Tree treeNodeDataForP:p_node];
+  
+  size_t pathSize = strlen(pathBuff);
+  strcat(pathBuff, "/");
+  strcat(pathBuff, node->name);
+  
+  uint64 hash = folderHash(pathBuff);
+  
+  if (pathsToRescan[0].count(hash)) {
+    walkFolderNonRecursively();
+  } else if (pathsToRescan[1].count(hash)) {
+    walkFolder(pathBuff);
+  } else {
+    if (node->p_song != -1) {
+      dumpSong(node);
+    } else {
+      if (p_node > 0) {
+        walkPrint("+ %s", node->name);
+        walkPrint("%lld", node->inode);
+      }
+      
+      for (auto child = node->children.begin(); child != node->children.end(); ++child) {
+        walkTreeNode(*child);
+      }
+      
+      if (p_node) walkPrint("-");
+    }
+  }
+  
+  pathBuff[pathSize] = 0;
 }
 
 @end

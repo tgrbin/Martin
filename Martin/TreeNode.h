@@ -16,7 +16,7 @@ struct TreeNode {
 
   ino_t inode;
   int p_parent;
-  int p_song; // != -1 iff node is a leaf
+  int p_song;
 
   uint8 searchState;
   vector<int> searchMatchingChildren;

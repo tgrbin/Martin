@@ -11,6 +11,7 @@
 #import "LastFM.h"
 #import "FolderWatcher.h"
 #import "RescanProxy.h"
+#import "LibManager.h"
 
 @implementation PreferencesWindowController
 

@@ -12,7 +12,7 @@
 
 struct LibrarySong {
   int lengthInSeconds;
-  int lastModified;
+  time_t lastModified;
   int p_treeLeaf;
   char **tags;
 };
