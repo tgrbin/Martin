@@ -77,7 +77,7 @@ static void handleEvent(
 
   for (int i = 0; i < numEvents; i++) {
     NSLog(@"Change %llu in %s, flags %d\n", eventIds[i], paths[i], eventFlags[i]&kFSEventStreamEventFlagMustScanSubDirs);
-    [[RescanProxy sharedProxy] rescanFolder:[NSString stringWithCString:paths[i] encoding:NSUTF8StringEncoding]
+    [[RescanProxy sharedProxy] rescanFolder:@(paths[i])
                                 recursively:eventFlags[i]&kFSEventStreamEventFlagMustScanSubDirs];
   }
 }

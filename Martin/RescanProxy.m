@@ -46,9 +46,7 @@ static const double maxTimeWithoutRescan = 3;
 }
 
 - (void)rescanAll {
-  for (NSString *folder in [LibraryFolder libraryFolders]) {
-    [self rescanFolder:folder recursively:YES];
-  }
+  [self rescanFolder:@"" recursively:YES];
 }
 
 - (void)rescanRecursivelyTreeNodes:(NSArray *)treeNodes {

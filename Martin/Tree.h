@@ -31,8 +31,8 @@ struct TreeNode;
 
 + (int)songFromNode:(int)p_node;
 
-+ (int)songByInode:(int)inode;
-+ (int)nodeByInode:(int)inode;
++ (int)songByInode:(ino_t)inode;
++ (int)nodeByInode:(ino_t)inode;
 
 + (void)addToNodeByInodeMap:(int)node;
 
@@ -45,6 +45,7 @@ struct TreeNode;
 
 + (int)addChild:(char *)name parent:(int)p_parent;
 + (struct LibrarySong *)newSong;
++ (struct LibrarySong *)songDataForP:(int)p_song;
 + (struct TreeNode *)treeNodeDataForP:(int)p_node;
 
 @end

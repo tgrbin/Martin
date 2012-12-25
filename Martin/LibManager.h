@@ -15,5 +15,6 @@
 
 + (void)initLibrary;
 + (void)rescanPaths:(NSArray *)paths recursively:(NSArray *)recursively;
++ (void)rescanAll;
 
 @end

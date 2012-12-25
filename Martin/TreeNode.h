@@ -14,7 +14,7 @@ struct TreeNode {
   char *name;
   vector<int> children;
 
-  int inode;
+  ino_t inode;
   int p_parent;
   int p_song; // != -1 iff node is a leaf
 

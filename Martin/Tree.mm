@@ -23,7 +23,7 @@ static int nodesCounter;
 static int songsCounter;
 static vector<TreeNode> nodes;
 static vector<LibrarySong> songs;
-static map<int, int> nodeByInode;
+static map<ino_t, int> nodeByInode;
 
 + (void)initialize {
   nodes.resize(128);
@@ -74,13 +74,13 @@ static map<int, int> nodeByInode;
   nodeByInode.insert(make_pair(nodes[node].inode, node));
 }
 
-+ (int)songByInode:(int)inode {
++ (int)songByInode:(ino_t)inode {
   int node = [self nodeByInode:inode];
   return node == -1? -1: nodes[node].p_song;
 }
 
-+ (int)nodeByInode:(int)inode {
-  map<int, int>::iterator it = nodeByInode.find(inode);
++ (int)nodeByInode:(ino_t)inode {
+  map<ino_t, int>::iterator it = nodeByInode.find(inode);
   return (it == nodeByInode.end())? -1: it->second;
 }
 
