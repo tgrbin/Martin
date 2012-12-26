@@ -61,7 +61,13 @@ static set<uint64> pathsToRescan[2];
         stat(folder, &statBuff);
         int node = [Tree nodeByInode:statBuff.st_ino];
         if (node == -1) walkFolder(folder, YES);
-        else walkTreeNode(node);
+        else {
+          if ([Tree treeNodeDataForP:node]->p_parent > 0) {
+            strcpy(pathBuff, folder);
+            *strrchr(pathBuff, '/') = 0;
+          }
+          walkTreeNode(node, YES);
+        }
       } else {
         walkFolder(folder, YES);
       }
@@ -86,7 +92,7 @@ static set<uint64> pathsToRescan[2];
   
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     initWalk();
-    walkTreeNode(0);
+    walkTreeNode(0, YES);
     endWalk();
     rescanID3s();
   });
@@ -276,7 +282,8 @@ static void rescanID3s() {
     fclose(g);
     
     unlink(libPath());
-    rename(rescanHelperPath(), libPath());    
+    rename(rescanHelperPath(), libPath());
+// TODO: unlink extra files
 //    unlink(rescanHelperPath());
 //    unlink(rescanPath());
     
@@ -345,7 +352,7 @@ static void walkFolder(const char *folder, BOOL _onRootLevel) {
   for (int i = 0; i < lastFolderLevel; ++i) walkPrint("-");
 }
 
-static void walkTreeNode(int);
+static void walkTreeNode(int, BOOL);
 
 static void walkFolderNonRecursively(BOOL _onRootLevel) {
   static struct stat statBuff;
@@ -372,7 +379,7 @@ static void walkFolderNonRecursively(BOOL _onRootLevel) {
       } else {
         [Tree setName:entry->d_name forNode:node];
         pathBuff[pathLen] = 0;
-        walkTreeNode(node);
+        walkTreeNode(node, NO);
       }
     } else if (entry->d_type == DT_REG && isExtensionAcceptable(entry->d_name)) {
       stat(pathBuff, &statBuff);
@@ -399,7 +406,7 @@ static void dumpSong(struct TreeNode *node) {
   walkPrint("}");
 }
 
-static void walkTreeNode(int p_node) {
+static void walkTreeNode(int p_node, BOOL _onRootLevel) {
   struct TreeNode *node = [Tree treeNodeDataForP:p_node];
   
   if (node->p_song != -1) {
@@ -412,17 +419,17 @@ static void walkTreeNode(int p_node) {
     uint64 hash = folderHash(pathBuff);
     
     if (pathsToRescan[0].count(hash)) {
-      walkFolderNonRecursively(node->p_parent == 0);
+      walkFolderNonRecursively(_onRootLevel);
     } else if (pathsToRescan[1].count(hash)) {
-      walkFolder(pathBuff, node->p_parent == 0);
+      walkFolder(pathBuff, _onRootLevel);
     } else {
       if (p_node > 0) {
-        walkPrint("+ %s", node->name);
+        walkPrint("+ %s", _onRootLevel? pathBuff: node->name);
         walkPrint("%lld", node->inode);
       }
       
       for (auto child = node->children.begin(); child != node->children.end(); ++child) {
-        walkTreeNode(*child);
+        walkTreeNode(*child, p_node == 0);
       }
       
       if (p_node > 0) walkPrint("-");

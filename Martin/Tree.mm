@@ -153,7 +153,7 @@ static map<ino_t, int> nodeByInode;
 }
 
 + (NSString *)fullPathForSong:(int)p_song {
-  return fullPathForNode(songs[p_song].p_treeLeaf);
+  return [[fullPathForNode(songs[p_song].p_treeLeaf) retain] autorelease];
 }
 
 static NSString *fullPathForNode(int p_node) {
