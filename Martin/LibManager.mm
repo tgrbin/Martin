@@ -166,6 +166,7 @@ static BOOL isExtensionAcceptable(const char *str) {
   int len = (int)strlen(str);
   if (strcasecmp(str + len - 4, ".mp3") == 0) return YES;
   if (strcasecmp(str + len - 4, ".m4a") == 0) return YES;
+  if (strcasecmp(str + len - 5, ".flac") == 0) return YES;
   return NO;
 }
 
@@ -201,8 +202,9 @@ static void loadLibrary() {
       songData->p_treeLeaf = node;
       [Tree treeNodeDataForP:node]->p_song = song;
       
-      fscanf(f, "%ld\n", &songData->lastModified);
-      fscanf(f, "%d\n", &songData->lengthInSeconds);
+      fscanf(f, "%ld", &songData->lastModified);
+      fscanf(f, "%d", &songData->lengthInSeconds);
+      fgets(lineBuff, kBuffSize, f); // read just the newline
       for (int i = 0; i < kNumberOfTags; ++i) {
         fgets(lineBuff, kBuffSize, f);
         tagsSet(songData->tags, i, lineBuff);
