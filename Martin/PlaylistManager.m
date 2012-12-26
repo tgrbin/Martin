@@ -12,6 +12,7 @@
 #import "PlaylistItem.h"
 #import "Player.h"
 #import "LibraryOutlineViewManager.h"
+#import "FilePlayer.h"
 
 @implementation PlaylistManager
 
@@ -27,6 +28,11 @@ static PlaylistManager *sharedManager = nil;
   playlistsTable.doubleAction = @selector(playlistItemDoubleClicked);
   [playlistsTable registerForDraggedTypes:@[@"MyDragType"]];
   [self updateSelectedPlaylist];
+
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(handlePlayerEvent)
+                                               name:kFilePlayerEventNotification
+                                             object:nil];
 }
 
 - (id)init {
@@ -75,6 +81,10 @@ static PlaylistManager *sharedManager = nil;
 - (void)updateSelectedPlaylist {
   _selectedPlaylist = [playlists objectAtIndex:playlistsTable.selectedRow];
   [PlaylistTableManager sharedManager].playlist = _selectedPlaylist;
+}
+
+- (void)handlePlayerEvent {
+  [playlistsTable reloadData];
 }
 
 #pragma mark - buttons
@@ -135,6 +145,7 @@ static PlaylistManager *sharedManager = nil;
     [self updateSelectedPlaylist];
     return YES;
   }
+
   return NO;
 }
 
@@ -153,6 +164,16 @@ static PlaylistManager *sharedManager = nil;
 }
 
 #pragma mark - table delegate
+
+- (void)tableView:(NSTableView *)tableView willDisplayCell:(id)c forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+  NSTextFieldCell *cell = (NSTextFieldCell*)c;
+
+  if (playlists[row] == [Player sharedPlayer].nowPlayingPlaylist) {
+    cell.font = [NSFont boldSystemFontOfSize:13];
+  } else {
+    cell.font = [NSFont systemFontOfSize:13];
+  }
+}
 
 - (void)tableViewSelectionDidChange:(NSNotification *)notification {
   [self updateSelectedPlaylist];

@@ -67,4 +67,8 @@
   }
 }
 
+- (NSString *)prettyName {
+  return [NSString stringWithFormat:@"%@ - %@ - %@", [self tagValueForIndex:2], [self tagValueForIndex:1], [self tagValueForIndex:3]];
+}
+
 @end

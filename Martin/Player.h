@@ -14,6 +14,7 @@
   NSTimer *seekTimer;
   IBOutlet NSSlider *seekSlider;
   IBOutlet NSButton *playOrPauseButton;
+  IBOutlet NSTextField *nowPlayingTextField;
 }
 
 + (Player *)sharedPlayer;

@@ -35,7 +35,7 @@ static FilePlayer *sharedPlayer = nil;
   _stopped = NO;
 
   playlistItem = item;
-  [[NSNotificationCenter defaultCenter] postNotificationName:kFilePlayerStartedPlayingNotification object:item];
+  [self postNotification:kFilePlayerStartedPlayingNotification];
 }
 
 - (void)togglePause {
@@ -47,7 +47,7 @@ static FilePlayer *sharedPlayer = nil;
 - (void)stop {
   if (sound) {
     [sound stop];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kFilePlayerStoppedPlayingNotification object:playlistItem];
+    [self postNotification:kFilePlayerStoppedPlayingNotification];
   }
   sound = nil;
   playlistItem = nil;
@@ -75,8 +75,13 @@ static FilePlayer *sharedPlayer = nil;
   sound = nil;
   if (success) {
     [self stop];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kFilePlayerPlayedItemNotification object:playlistItem];
+    [self postNotification:kFilePlayerPlayedItemNotification];
   }
+}
+
+- (void)postNotification:(NSString *)notification {
+  [[NSNotificationCenter defaultCenter] postNotificationName:notification object:playlistItem];
+  [[NSNotificationCenter defaultCenter] postNotificationName:kFilePlayerEventNotification object:nil];
 }
 
 @end

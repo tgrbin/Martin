@@ -25,4 +25,6 @@
 
 - (NSString *)tagValueForIndex:(int)i;
 
+- (NSString *)prettyName;
+
 @end

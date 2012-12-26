@@ -46,6 +46,8 @@ static Player *sharedPlayer = nil;
   [self startSeekTimer];
   [self setPlayOrPause:YES];
   [LastFM updateNowPlaying:_nowPlayingPlaylist.currentItem];
+
+  nowPlayingTextField.stringValue = _nowPlayingPlaylist.currentItem.prettyName;
 }
 
 - (void)trackFinished {
@@ -57,6 +59,7 @@ static Player *sharedPlayer = nil;
   [self setPlayOrPause:YES];
   [self disableTimer];
   [[FilePlayer sharedPlayer] stop];
+  nowPlayingTextField.stringValue = @"";
 }
 
 - (void)playOrPause {
