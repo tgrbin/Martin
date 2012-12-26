@@ -40,7 +40,7 @@ static PlaylistTableManager *sharedManager = nil;
 
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(playingItemChanged)
-                                               name:kFilePlayerStoppedNotification
+                                               name:kFilePlayerStoppedPlayingNotification
                                              object:nil];
 
   _playlist = [PlaylistManager sharedManager].selectedPlaylist;

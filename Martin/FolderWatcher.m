@@ -10,7 +10,9 @@
 #import "LibraryFolder.h"
 #import "RescanProxy.h"
 
-@implementation FolderWatcher
+@implementation FolderWatcher {
+  FSEventStreamRef eventStream;
+}
 
 static const double eventLatency = 0.3;
 

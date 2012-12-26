@@ -25,15 +25,15 @@ static FilePlayer *sharedPlayer = nil;
 
 - (void)startPlayingItem:(PlaylistItem *)item {
   [self stop];
-  
+
   sound = [[NSSound alloc] initWithContentsOfFile:item.filename byReference:YES];
   sound.delegate = self;
   sound.volume = _volume;
   [sound play];
-  
+
   _playing = YES;
   _stopped = NO;
-  
+
   playlistItem = item;
   [[NSNotificationCenter defaultCenter] postNotificationName:kFilePlayerStartedPlayingNotification object:item];
 }
@@ -47,7 +47,7 @@ static FilePlayer *sharedPlayer = nil;
 - (void)stop {
   if (sound) {
     [sound stop];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kFilePlayerStoppedNotification object:playlistItem];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kFilePlayerStoppedPlayingNotification object:playlistItem];
   }
   sound = nil;
   playlistItem = nil;

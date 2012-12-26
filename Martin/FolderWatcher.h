@@ -9,9 +9,7 @@
 #import <CoreServices/CoreServices.h>
 #import <Foundation/Foundation.h>
 
-@interface FolderWatcher : NSObject {
-  FSEventStreamRef eventStream;
-}
+@interface FolderWatcher : NSObject
 
 + (FolderWatcher *)sharedWatcher;
 
