@@ -14,7 +14,8 @@
 
 static const double eventLatency = 0.3;
 
-static NSString * const kFWEnabledKey = @"fwenabledkey";
+static NSString * const kFWEnabledKey = @"kFWEnabledKey";
+static NSString * const kFWLastEventKey = @"kFWLastEventKey";
 
 + (FolderWatcher *)sharedWatcher {
   static FolderWatcher *o = nil;
@@ -44,7 +45,10 @@ static NSString * const kFWEnabledKey = @"fwenabledkey";
 
   if (_enabled != enabled) {
     if (enabled) [self startWatchingFolders];
-    else [self stopWatchingFolders];
+    else {
+      [[NSUserDefaults standardUserDefaults] removeObjectForKey:kFWLastEventKey];
+      [self stopWatchingFolders];
+    }
   }
 
   _enabled = enabled;
@@ -57,12 +61,18 @@ static NSString * const kFWEnabledKey = @"fwenabledkey";
                                     &handleEvent,
                                     NULL,
                                     (CFArrayRef)[LibraryFolder libraryFolders],
-                                    kFSEventStreamEventIdSinceNow,
+                                    [self lastEventId],
                                     eventLatency,
                                     kFSEventStreamCreateFlagNone);
 
   FSEventStreamScheduleWithRunLoop(eventStream, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
   FSEventStreamStart(eventStream);
+}
+
+- (FSEventStreamEventId)lastEventId {
+  NSNumber *n = [[NSUserDefaults standardUserDefaults] objectForKey:kFWLastEventKey];
+  if (n == nil) return kFSEventStreamEventIdSinceNow;
+  return [n longLongValue];
 }
 
 static void handleEvent(
@@ -80,6 +90,8 @@ static void handleEvent(
     [[RescanProxy sharedProxy] rescanFolder:@(paths[i])
                                 recursively:eventFlags[i]&kFSEventStreamEventFlagMustScanSubDirs];
   }
+
+  [[NSUserDefaults standardUserDefaults] setObject:@(eventIds[numEvents-1]) forKey:kFWLastEventKey];
 }
 
 - (void)stopWatchingFolders {

@@ -66,6 +66,8 @@ static const double maxTimeWithoutRescan = 3;
 
 - (void)rescanFolder:(NSString *)folderPath recursively:(BOOL)_recursively {
   @synchronized(rescanLock) {
+    if (pathsToRescan.count == 0) [self setTimer:&sinceLastRescanTimer withDelay:maxTimeWithoutRescan];
+
     [pathsToRescan addObject:folderPath];
     [recursively addObject:@(_recursively)];
 

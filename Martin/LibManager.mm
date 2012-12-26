@@ -371,6 +371,7 @@ static void walkFolderNonRecursively(BOOL _onRootLevel) {
         walkFolder(pathBuff, NO);
       } else {
         [Tree setName:entry->d_name forNode:node];
+        pathBuff[pathLen] = 0;
         walkTreeNode(node);
       }
     } else if (entry->d_type == DT_REG && isExtensionAcceptable(entry->d_name)) {
