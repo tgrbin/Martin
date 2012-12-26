@@ -32,9 +32,11 @@ static char pathBuff[kBuffSize];
 static vector<int> needsRescan;
 static int numberOfSongsFound;
 
-static int lineNumber;
+
 static int lastFolderLevel;
 static BOOL wasLastItemFolder;
+static BOOL onRootLevel;
+static int lineNumber;
 static FILE *walkFile;
 
 static set<uint64> pathsToRescan[2];
@@ -46,9 +48,7 @@ static set<uint64> pathsToRescan[2];
 + (void)rescanAll {
   static struct stat statBuff;
   
-  dispatch_sync(dispatch_get_main_queue(), ^{
-    [[NSNotificationCenter defaultCenter] postNotificationName:kLibraryRescanStartedNotification object:nil];
-  });
+  [[NSNotificationCenter defaultCenter] postNotificationName:kLibraryRescanStartedNotification object:nil];
 
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     initWalk();
@@ -59,15 +59,14 @@ static set<uint64> pathsToRescan[2];
       
       if (watchingFolders) {
         stat(folder, &statBuff);
-        
         int node = [Tree nodeByInode:statBuff.st_ino];
-        if (node == -1) walkFolder(folder);
+        if (node == -1) walkFolder(folder, YES);
         else walkTreeNode(node);
       } else {
-        walkFolder(folder);
+        walkFolder(folder, YES);
       }
     }
-  
+    
     endWalk();
     rescanID3s();
   });
@@ -76,10 +75,12 @@ static set<uint64> pathsToRescan[2];
 + (void)rescanPaths:(NSArray *)paths recursively:(NSArray *)recursively {
   for (int i = 0; i < paths.count; ++i) {
     [paths[i] getCString:pathBuff maxLength:kBuffSize encoding:NSUTF8StringEncoding];
+    size_t pathLen = strlen(pathBuff);
+    if (pathBuff[pathLen-1] == '/') pathBuff[pathLen-1] = 0;
     pathsToRescan[ [recursively[i] boolValue] ].insert( folderHash(pathBuff) );
   }
   
-  dispatch_sync(dispatch_get_main_queue(), ^{
+  dispatch_async(dispatch_get_main_queue(), ^{
     [[NSNotificationCenter defaultCenter] postNotificationName:kLibraryRescanStartedNotification object:nil];
   });
   
@@ -170,41 +171,38 @@ static int readTreeNode(FILE *f, int parent) {
 }
 
 static void loadLibrary() {
-  @autoreleasepool {
-    [Tree clearTree];
+  [Tree clearTree];
+  
+  FILE *f = fopen(libPath(), "r");
+  if (f == NULL) return;
+  
+  vector<int> treePath(1, 0);
+  
+  while(fgets(lineBuff, kBuffSize, f) != NULL) {
+    char firstChar = lineBuff[0];
     
-    FILE *f = fopen(libPath(), "r");
-    if (f == NULL) return;
-    
-    vector<int> treePath(1, 0);
-    
-    while(fgets(lineBuff, kBuffSize, f) != NULL) {
-      char firstChar = lineBuff[0];
+    if (firstChar == '+') {
+      treePath.push_back( readTreeNode(f, treePath.back()) );
+    } else if (firstChar == '-') {
+      treePath.pop_back();
+    } else if (firstChar == '{') {
+      int node = readTreeNode(f, treePath.back());
+      int song = [Tree newSong];
+      struct LibrarySong *songData = [Tree songDataForP:song];
       
-      if (firstChar == '+') {
-        treePath.push_back( readTreeNode(f, treePath.back()) );
-      } else if (firstChar == '-') {
-        treePath.pop_back();
-      } else if (firstChar == '{') {
-        int node = readTreeNode(f, treePath.back());
-        struct LibrarySong *songData = [Tree newSong];
-        
-        songData->p_treeLeaf = node;
-        [Tree treeNodeDataForP:node]->p_song = node;
-        
-        fscanf(f, "%ld\n", &songData->lastModified);
-        fscanf(f, "%d\n", &songData->lengthInSeconds);
-        for (int i = 0; i < kNumberOfTags; ++i) {
-          fgets(lineBuff, kBuffSize, f);
-          tagsSet(songData->tags, i, lineBuff);
-        }
-        
-        fscanf(f, "}\n");
+      songData->p_treeLeaf = node;
+      [Tree treeNodeDataForP:node]->p_song = song;
+      
+      fscanf(f, "%ld\n", &songData->lastModified);
+      fscanf(f, "%d\n", &songData->lengthInSeconds);
+      for (int i = 0; i < kNumberOfTags; ++i) {
+        fgets(lineBuff, kBuffSize, f);
+        tagsSet(songData->tags, i, lineBuff);
       }
     }
-    
-    fclose(f);
   }
+  
+  fclose(f);
 }
 
 #pragma mark - rescan songs
@@ -235,8 +233,8 @@ static void rescanID3s() {
     int linesToForward = 0;
     int nextRescanIndex = 0;
     vector<size_t> pathComponents;
- 
-    needsRescan.push_back(-1);
+    
+    needsRescan.push_back(-5);
     
     for (int ln = 0; fgets(lineBuff, kBuffSize, f) != NULL; ++ln) {
       lineBuff[strlen(lineBuff) - 1] = 0; // remove newline
@@ -245,29 +243,26 @@ static void rescanID3s() {
         --linesToForward;
       } else {
         if (ln == needsRescan[nextRescanIndex] + 3) {
+          if (rescanSong(g) == NO) NSLog(@"id3 read failed for: %s", pathBuff);
+          for (int i = 0; i < kNumberOfTags; ++i, ++ln) fgets(lineBuff, kBuffSize, f);
           
-          if (rescanSong(g) == NO) {
-            NSLog(@"id3 read failed for: %s", pathBuff);
-          }
+          // TODO: report status!
           
-          // consume these lines, rescanSong filled them
-          for (int i = 0; i < 1 + kNumberOfTags; ++i, ++ln) fgets(lineBuff, kBuffSize, f);
-          
-          // report status!
-          
+          ++nextRescanIndex;
+          continue;
         } else {
           char firstChar = lineBuff[0];
           if (firstChar == '+' || firstChar == '{') {
             pathComponents.push_back(strlen(pathBuff));
-            strcat(pathBuff, "/");
             strcat(pathBuff, lineBuff + 2);
             
             if (firstChar == '+') {
+              strcat(pathBuff, "/");
               linesToForward = 1;
             } else {
               linesToForward = (ln == needsRescan[nextRescanIndex])? 2: 3 + kNumberOfTags;
             }
-          } else if (firstChar == '-') {
+          } else if (firstChar == '-' || firstChar == '}') {
             pathBuff[pathComponents.back()] = 0;
             pathComponents.pop_back();
           }
@@ -281,7 +276,9 @@ static void rescanID3s() {
     fclose(g);
     
     unlink(libPath());
-    rename(rescanHelperPath(), libPath());
+    rename(rescanHelperPath(), libPath());    
+//    unlink(rescanHelperPath());
+//    unlink(rescanPath());
     
     loadLibrary();
     
@@ -319,14 +316,13 @@ static int ftw_callback(const char *filename, const struct stat *stat_struct, in
   ino_t inode = stat_struct->st_ino;
   const char *basename = filename + ftw_struct->base;
   
-  if (currentLevel <= lastFolderLevel) { // leaving folder
+  if (currentLevel <= lastFolderLevel) { // we left some folders
     int cnt = (lastFolderLevel-currentLevel) + (wasLastItemFolder == YES);
     for (int i = 0; i < cnt; ++i) walkPrint("-");
   }
   
   if (isFolder) {
-    // library root folders output full path
-    walkPrint("+ %s", (currentLevel == 0)? filename: basename);
+    walkPrint("+ %s", (currentLevel == 0 && onRootLevel)? filename: basename);
     walkPrint("%d", inode);
   } else if (isExtensionAcceptable(filename)) {
     ++numberOfSongsFound;
@@ -339,9 +335,10 @@ static int ftw_callback(const char *filename, const struct stat *stat_struct, in
   return 0;
 }
 
-static void walkFolder(const char *folder) {
+static void walkFolder(const char *folder, BOOL _onRootLevel) {
   lastFolderLevel = 0;
   wasLastItemFolder = NO;
+  onRootLevel = _onRootLevel;
   
   nftw(folder, ftw_callback, 512, 0);
   
@@ -350,35 +347,40 @@ static void walkFolder(const char *folder) {
 
 static void walkTreeNode(int);
 
-static void walkFolderNonRecursively() {
+static void walkFolderNonRecursively(BOOL _onRootLevel) {
   static struct stat statBuff;
   
-  walkPrint("+ %s", strrchr(pathBuff, '/') + 1);
   DIR *dir = opendir(pathBuff);
   size_t pathLen = strlen(pathBuff);
   
   for (struct dirent *entry; (entry = readdir(dir)) != NULL;) {
+    if (entry->d_name[0] == '.') {
+      if (entry->d_name[1] == 0) {
+        walkPrint("+ %s", _onRootLevel? pathBuff: strrchr(pathBuff, '/') + 1);
+        walkPrint("%lld", entry->d_ino);
+      }
+      continue;
+    }
+    
     int node = [Tree nodeByInode:entry->d_ino];
+    strcat(pathBuff, "/");
+    strcat(pathBuff, entry->d_name);
+    
     if (entry->d_type == DT_DIR) {
-      
       if (node == -1) {
-        walkPrint("+ %s", entry->d_name);
-        walkPrint("-");
+        walkFolder(pathBuff, NO);
       } else {
+        [Tree setName:entry->d_name forNode:node];
         walkTreeNode(node);
       }
-      
     } else if (entry->d_type == DT_REG && isExtensionAcceptable(entry->d_name)) {
-      strcat(pathBuff, "/");
-      strcat(pathBuff, entry->d_name);
-      
       stat(pathBuff, &statBuff);
       
       int p_song = (node == -1)? -1: [Tree treeNodeDataForP:node]->p_song;
       walkSong(entry->d_name, p_song, &statBuff);
-      
-      pathBuff[pathLen] = 0;
     }
+    
+    pathBuff[pathLen] = 0;
   }
   
   closedir(dir);
@@ -399,19 +401,19 @@ static void dumpSong(struct TreeNode *node) {
 static void walkTreeNode(int p_node) {
   struct TreeNode *node = [Tree treeNodeDataForP:p_node];
   
-  size_t pathSize = strlen(pathBuff);
-  strcat(pathBuff, "/");
-  strcat(pathBuff, node->name);
-  
-  uint64 hash = folderHash(pathBuff);
-  
-  if (pathsToRescan[0].count(hash)) {
-    walkFolderNonRecursively();
-  } else if (pathsToRescan[1].count(hash)) {
-    walkFolder(pathBuff);
+  if (node->p_song != -1) {
+    dumpSong(node);
   } else {
-    if (node->p_song != -1) {
-      dumpSong(node);
+    size_t pathSize = strlen(pathBuff);
+    if (node->p_parent > 0) strcat(pathBuff, "/");
+    strcat(pathBuff, node->name);
+    
+    uint64 hash = folderHash(pathBuff);
+    
+    if (pathsToRescan[0].count(hash)) {
+      walkFolderNonRecursively(node->p_parent == 0);
+    } else if (pathsToRescan[1].count(hash)) {
+      walkFolder(pathBuff, node->p_parent == 0);
     } else {
       if (p_node > 0) {
         walkPrint("+ %s", node->name);
@@ -422,11 +424,11 @@ static void walkTreeNode(int p_node) {
         walkTreeNode(*child);
       }
       
-      if (p_node) walkPrint("-");
+      if (p_node > 0) walkPrint("-");
     }
+    
+    pathBuff[pathSize] = 0;
   }
-  
-  pathBuff[pathSize] = 0;
 }
 
 @end

@@ -13,9 +13,9 @@
 - (id)initWithFile:(NSString *)_file {
   if (self = [super init]) {
     AudioFileID fileID = nil;
-    const char *filename = [_file cStringUsingEncoding:NSUTF8StringEncoding];
+    const char *filename = [_file UTF8String];
     CFURLRef url = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, (UInt8*)filename, strlen(filename), false);
-    
+
     if (AudioFileOpenURL(url, kAudioFileReadPermission, 0, &fileID) == noErr) {
       CFDictionaryRef dict = nil;
       UInt32 size = sizeof(dict);

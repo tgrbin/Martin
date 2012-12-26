@@ -44,7 +44,8 @@ struct TreeNode;
 + (NSArray *)pathsForNodes:(NSArray *)nodes;
 
 + (int)addChild:(char *)name parent:(int)p_parent;
-+ (struct LibrarySong *)newSong;
++ (void)setName:(char *)name forNode:(int)p_node;
++ (int)newSong;
 + (struct LibrarySong *)songDataForP:(int)p_song;
 + (struct TreeNode *)treeNodeDataForP:(int)p_node;
 

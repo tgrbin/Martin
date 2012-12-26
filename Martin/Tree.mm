@@ -42,14 +42,14 @@ static map<ino_t, int> nodeByInode;
   return nodesCounter++;
 }
 
-+ (struct LibrarySong *)newSong {
++ (int)newSong {
   if (songsCounter >= songs.size()) {
     songs.resize(songs.size()+256);
   }
   if (songs[songsCounter].tags == 0) {
     tagsInit(&songs[songsCounter].tags);
   }
-  return &songs[songsCounter++];
+  return songsCounter++;
 }
 
 + (void)clearTree {
@@ -107,7 +107,9 @@ static map<ino_t, int> nodeByInode;
 }
 
 + (NSString *)nameForNode:(int)p_node {
-  return [NSString stringWithCString:nodes[p_node].name encoding:NSUTF8StringEncoding];
+  NSString *str = @( nodes[p_node].name );
+  if (nodes[p_node].p_parent == 0) return [str lastPathComponent];
+  return str;
 }
 
 + (int)numberOfChildrenForNode:(int)p_node {
@@ -143,7 +145,7 @@ static map<ino_t, int> nodeByInode;
 }
 
 + (BOOL)isLeaf:(int)p_node {
-  return nodes[p_node].children.size() == 0;
+  return nodes[p_node].p_song != -1;
 }
 
 + (int)songFromNode:(int)p_node {
@@ -162,9 +164,10 @@ static NSString *fullPathForNode(int p_node) {
   
   NSMutableString *str = [NSMutableString new];
   for (; v.size(); v.pop_back()) {
-    [str appendFormat:@"%@/", [NSString stringWithCString:v.back() encoding:NSUTF8StringEncoding]];
+    [str appendString:@(v.back())];
+    if (v.size() > 1) [str appendString:@"/"];
   }
-  return str;
+  return [str autorelease];
 }
 
 #pragma mark - rescanning

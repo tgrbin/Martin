@@ -39,20 +39,29 @@ static const double maxTimeWithoutRescan = 3;
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(rescanFinished)
-                                                 name:kLibrarySearchFinishedNotification
+                                                 name:kLibraryRescanFinishedNotification
                                                object:nil];
   }
   return self;
 }
 
 - (void)rescanAll {
-  [self rescanFolder:@"" recursively:YES];
+  [LibManager rescanAll];
 }
 
 - (void)rescanRecursivelyTreeNodes:(NSArray *)treeNodes {
-  for (NSString *folder in [Tree pathsForNodes:treeNodes]) {
-    [self rescanFolder:folder recursively:YES];
+  BOOL wasEmpty;
+
+  @synchronized(rescanLock) {
+    wasEmpty = pathsToRescan.count == 0;
+
+    for (NSString *folderPath in [Tree pathsForNodes:treeNodes]) {
+      [pathsToRescan addObject:folderPath];
+      [recursively addObject:@YES];
+    }
   }
+
+  if (wasEmpty) [self initiateRescan];
 }
 
 - (void)rescanFolder:(NSString *)folderPath recursively:(BOOL)_recursively {
@@ -68,7 +77,9 @@ static const double maxTimeWithoutRescan = 3;
   @synchronized(rescanLock) {
     nowRescaning = NO;
 
-    [self setTimer:&sinceLastRescanTimer withDelay:maxTimeWithoutRescan];
+    if (pathsToRescan.count) {
+      [self setTimer:&sinceLastRescanTimer withDelay:maxTimeWithoutRescan];
+    }
   }
 }
 
@@ -88,20 +99,22 @@ static const double maxTimeWithoutRescan = 3;
 
 - (void)setTimer:(NSTimer **)timer withDelay:(double)delay {
   if (*timer == nil) {
-    *timer = [NSTimer scheduledTimerWithTimeInterval:delay
-                                              target:self
-                                            selector:@selector(initiateRescan)
-                                            userInfo:nil
-                                             repeats:NO];
+    *timer = [[NSTimer scheduledTimerWithTimeInterval:delay
+                                               target:self
+                                             selector:@selector(initiateRescan)
+                                             userInfo:nil
+                                              repeats:NO] retain];
   } else {
     (*timer).fireDate = [NSDate dateWithTimeIntervalSinceNow:delay];
   }
 }
 
 - (void)destroyTimer:(NSTimer **)timer {
-  [*timer invalidate];
-  [*timer release];
-  *timer = nil;
+  if (*timer) {
+    [*timer invalidate];
+    [*timer release];
+    *timer = nil;
+  }
 }
 
 @end

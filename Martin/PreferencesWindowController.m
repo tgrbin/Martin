@@ -89,6 +89,7 @@
 
   if ([panel runModal] == NSFileHandlingPanelOKButton) {
     [[LibraryFolder libraryFolders] addObject:[panel.directoryURL path]];
+    [[FolderWatcher sharedWatcher] folderListChanged];
     [foldersTableView reloadData];
   }
 }

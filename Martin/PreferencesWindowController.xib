@@ -263,7 +263,6 @@
 														<reference key="NSSuperview" ref="1061756726"/>
 														<reference key="NSWindow"/>
 														<string key="NSReuseIdentifierKey">_NS:60</string>
-														<bool key="NSEnabled">YES</bool>
 														<int key="NSsFlags">1</int>
 														<reference key="NSTarget" ref="1061756726"/>
 														<string key="NSAction">_doScroller:</string>
@@ -291,7 +290,7 @@
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView" ref="216205087"/>
 												<string key="NSReuseIdentifierKey">_NS:9</string>
-												<int key="NSsFlags">133810</int>
+												<int key="NSsFlags">133682</int>
 												<reference key="NSVScroller" ref="801017460"/>
 												<reference key="NSHScroller" ref="775655459"/>
 												<reference key="NSContentView" ref="216205087"/>
@@ -399,7 +398,7 @@
 												<string key="NSReuseIdentifierKey">_NS:9</string>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSButtonCell" key="NSCell" id="220203822">
-													<int key="NSCellFlags">-2080374784</int>
+													<int key="NSCellFlags">67108864</int>
 													<int key="NSCellFlags2">268435456</int>
 													<string key="NSContents">Watch folders for changes</string>
 													<reference key="NSSupport" ref="261597804"/>

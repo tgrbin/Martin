@@ -12,13 +12,13 @@
 
 @implementation FolderWatcher
 
-static const double eventLatency = 0.5;
+static const double eventLatency = 0.3;
 
 static NSString * const kFWEnabledKey = @"fwenabledkey";
 
 + (FolderWatcher *)sharedWatcher {
   static FolderWatcher *o = nil;
-  if (o == nil) o = [[FolderWatcher alloc] init];
+  if (o == nil) o = [FolderWatcher new];
   return o;
 }
 

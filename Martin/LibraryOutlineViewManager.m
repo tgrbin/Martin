@@ -136,9 +136,11 @@ static LibraryOutlineViewManager *sharedManager;
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
   if (item == nil) return @"";
 
-  int n = [Tree numberOfChildrenForNode:[item intValue]];
-  NSString *name = [Tree nameForNode:[item intValue]];
-  return (n == 0)? [name stringByDeletingPathExtension]: [NSString stringWithFormat:@"%@ (%d)", name, n];
+  int node = [item intValue];
+  NSString *name = [Tree nameForNode:node];
+
+  if ([Tree isLeaf:node]) return [name stringByDeletingPathExtension];
+  return [NSString stringWithFormat:@"%@ (%d)", name, [Tree numberOfChildrenForNode:node]];
 }
 
 #pragma mark - reloading
