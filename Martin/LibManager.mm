@@ -164,7 +164,9 @@ static NSString *toString(const char *s) {
 
 static BOOL isExtensionAcceptable(const char *str) {
   int len = (int)strlen(str);
-  return strcmp(str + len - 4, ".mp3") == 0;
+  if (strcmp(str + len - 4, ".mp3") == 0) return YES;
+  if (strcmp(str + len - 4, ".m4a") == 0) return YES;
+  return NO;
 }
 
 #pragma mark - load library
