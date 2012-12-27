@@ -13,7 +13,7 @@
 + (RescanProxy *)sharedProxy;
 
 - (void)rescanAll;
-- (void)rescanFolder:(NSString *)folderPath recursively:(BOOL)recursively;
+- (void)rescanFolders:(NSArray *)folderPaths recursively:(NSArray *)recursively;
 - (void)rescanRecursivelyTreeNodes:(NSArray *)treeNodes;
 
 @end

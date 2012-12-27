@@ -86,12 +86,18 @@ static void handleEvent(
                        const FSEventStreamEventId eventIds[])
 {
   char **paths = eventPaths;
+  NSMutableArray *folders = [NSMutableArray new];
+  NSMutableArray *recursively = [NSMutableArray new];
 
   for (int i = 0; i < numEvents; i++) {
-    NSLog(@"Change %llu in %s, flags %d\n", eventIds[i], paths[i], eventFlags[i]&kFSEventStreamEventFlagMustScanSubDirs);
-    [[RescanProxy sharedProxy] rescanFolder:@(paths[i])
-                                recursively:eventFlags[i]&kFSEventStreamEventFlagMustScanSubDirs];
+//    NSLog(@"Change %llu in %s, flags %d\n", eventIds[i], paths[i], eventFlags[i]&kFSEventStreamEventFlagMustScanSubDirs);
+    [folders addObject:@(paths[i])];
+    [recursively addObject:@(eventFlags[i]&kFSEventStreamEventFlagMustScanSubDirs)];
   }
+
+  [[RescanProxy sharedProxy] rescanFolders:folders recursively:recursively];
+  [folders release];
+  [recursively release];
 
   [[NSUserDefaults standardUserDefaults] setObject:@(eventIds[numEvents-1]) forKey:kFWLastEventKey];
 }

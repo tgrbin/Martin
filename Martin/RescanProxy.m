@@ -25,9 +25,15 @@ static const double maxTimeWithoutRescan = 3;
   NSTimer *sinceLastRescanTimer;
 }
 
+// this object is added to the queue when rescan all is requested
+static id specialRescanAllObject;
+
 + (RescanProxy *)sharedProxy {
   static RescanProxy *o;
-  if (o == nil) o = [RescanProxy new];
+  if (o == nil) {
+    o = [RescanProxy new];
+    specialRescanAllObject = @0;
+  }
   return o;
 }
 
@@ -46,30 +52,31 @@ static const double maxTimeWithoutRescan = 3;
 }
 
 - (void)rescanAll {
-  [LibManager rescanAll];
+  @synchronized(rescanLock) {
+    [pathsToRescan addObject:specialRescanAllObject];
+    if (pathsToRescan.count == 1) [self initiateRescan];
+  }
 }
 
 - (void)rescanRecursivelyTreeNodes:(NSArray *)treeNodes {
-  BOOL wasEmpty;
-
   @synchronized(rescanLock) {
-    wasEmpty = pathsToRescan.count == 0;
+    BOOL wasEmpty = pathsToRescan.count == 0;
 
     for (NSString *folderPath in [Tree pathsForNodes:treeNodes]) {
       [pathsToRescan addObject:folderPath];
       [recursively addObject:@YES];
     }
-  }
 
-  if (wasEmpty) [self initiateRescan];
+    if (wasEmpty) [self initiateRescan];
+  }
 }
 
-- (void)rescanFolder:(NSString *)folderPath recursively:(BOOL)_recursively {
+- (void)rescanFolders:(NSArray *)folderPaths recursively:(NSArray *)_recursively {
   @synchronized(rescanLock) {
     if (pathsToRescan.count == 0) [self setTimer:&sinceLastRescanTimer withDelay:maxTimeWithoutRescan];
 
-    [pathsToRescan addObject:folderPath];
-    [recursively addObject:@(_recursively)];
+    [pathsToRescan addObjectsFromArray:folderPaths];
+    [recursively addObjectsFromArray:_recursively];
 
     [self setTimer:&quietTimeTimer withDelay:minQuietTime];
   }
@@ -80,7 +87,8 @@ static const double maxTimeWithoutRescan = 3;
     nowRescaning = NO;
 
     if (pathsToRescan.count) {
-      [self setTimer:&sinceLastRescanTimer withDelay:maxTimeWithoutRescan];
+      if (quietTimeTimer == nil) [self initiateRescan];
+      else [self setTimer:&sinceLastRescanTimer withDelay:maxTimeWithoutRescan];
     }
   }
 }
@@ -92,9 +100,20 @@ static const double maxTimeWithoutRescan = 3;
 
     if (nowRescaning == NO && pathsToRescan.count > 0) {
       nowRescaning = YES;
-      [LibManager rescanPaths:pathsToRescan recursively:recursively];
-      [pathsToRescan removeAllObjects];
-      [recursively removeAllObjects];
+      if (pathsToRescan[0] == specialRescanAllObject) {
+        [LibManager rescanAll];
+        [pathsToRescan removeObjectAtIndex:0];
+      } else {
+        NSUInteger rescanAllIndex = [pathsToRescan indexOfObject:specialRescanAllObject];
+        if (rescanAllIndex == NSNotFound) rescanAllIndex = pathsToRescan.count;
+
+        NSRange range = NSMakeRange(0, rescanAllIndex);
+        [LibManager rescanPaths:[pathsToRescan subarrayWithRange:range]
+                    recursively:[recursively subarrayWithRange:range]];
+
+        [pathsToRescan removeObjectsInRange:range];
+        [recursively removeObjectsInRange:range];
+      }
     }
   }
 }
