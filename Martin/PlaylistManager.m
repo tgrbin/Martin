@@ -13,6 +13,7 @@
 #import "Player.h"
 #import "LibraryOutlineViewManager.h"
 #import "FilePlayer.h"
+#import "DefaultsManager.h"
 
 @implementation PlaylistManager
 
@@ -38,6 +39,8 @@ static PlaylistManager *sharedManager = nil;
 - (id)init {
   if (self = [super init]) {
     playlists = [NSMutableArray new];
+    _shuffle = [[DefaultsManager objectForKey:kDefaultsKeyShuffle] boolValue];
+    _repeat = [[DefaultsManager objectForKey:kDefaultsKeyRepeat] boolValue];
 
     NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"Playlists" ofType:@"plist"];
     NSDictionary *data = [NSDictionary dictionaryWithContentsOfFile:plistPath];
@@ -52,6 +55,16 @@ static PlaylistManager *sharedManager = nil;
   }
 
   return self;
+}
+
+- (void)setShuffle:(BOOL)shuffle {
+  _shuffle = shuffle;
+  [DefaultsManager setObject:@(_shuffle) forKey:kDefaultsKeyShuffle];
+}
+
+- (void)setRepeat:(BOOL)repeat {
+  _repeat = repeat;
+  [DefaultsManager setObject:@(_repeat) forKey:kDefaultsKeyRepeat];
 }
 
 - (void)savePlaylists {

@@ -23,7 +23,6 @@
 @property (nonatomic, assign) BOOL repeat;
 
 - (void)savePlaylists;
-
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes;
 
 @end
