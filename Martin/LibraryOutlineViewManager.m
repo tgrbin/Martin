@@ -153,7 +153,7 @@ static LibraryOutlineViewManager *sharedManager;
   return [NSString stringWithFormat:@"%@ (%d)", name, [Tree numberOfChildrenForNode:node]];
 }
 
-#pragma mark - reloading
+#pragma mark - auto expanding
 
 - (void)reloadTree {
   reloadingTree = YES;
@@ -161,31 +161,23 @@ static LibraryOutlineViewManager *sharedManager;
   [_outlineView reloadData];
   [_outlineView collapseItem:nil collapseChildren:YES];
 
-  int maxVisibleRows = (int) (_outlineView.frame.size.height/_outlineView.rowHeight) - 5;
+  int visibleRows = (int) (_outlineView.frame.size.height/_outlineView.rowHeight) - 5;
+  int minRows = MAX(3, visibleRows / 10);
 
   for (;;) {
     int n = (int)_outlineView.numberOfRows;
 
-    NSMutableArray *collapsedItems = [NSMutableArray new];
+    NSMutableArray *itemsToExpand = [NSMutableArray array];
+    int m = 0;
     for (int i = 0; i < n; ++i) {
-      id item = [_outlineView itemAtRow:i];
-      if ([_outlineView isItemExpanded:item]) continue;
-      [collapsedItems addObject:item];
+      NSNumber *item = [_outlineView itemAtRow:i];
+      if ([_outlineView isItemExpanded:item] || [Tree isLeaf:item.intValue]) continue;
+      m += [Tree numberOfChildrenForNode:item.intValue] + 1;
+      [itemsToExpand addObject:item];
     }
 
-    [collapsedItems sortUsingComparator:^NSComparisonResult(NSNumber *a, NSNumber *b) {
-      return [Tree numberOfChildrenForNode:a.intValue] > [Tree numberOfChildrenForNode:b.intValue];
-    }];
-
-    NSMutableArray *itemsToExpand = [NSMutableArray new];
-    for (NSNumber *item in collapsedItems) {
-      int nc = [Tree numberOfChildrenForNode:item.intValue];
-      if (nc > 0 && n + nc < maxVisibleRows) {
-        n += nc;
-        [itemsToExpand addObject:item];
-      }
-    }
     if (itemsToExpand.count == 0) break;
+    if (n >= minRows && m >= visibleRows) break;
 
     for (id item in itemsToExpand) [_outlineView expandItem:item];
   }

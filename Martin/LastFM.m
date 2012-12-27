@@ -42,7 +42,7 @@ static NSString *currentToken = nil;
       }
     }
 
-    dispatch_sync(dispatch_get_main_queue(), ^{ callbackBlock(result); });
+    dispatch_async(dispatch_get_main_queue(), ^{ callbackBlock(result); });
   });
 }
 
@@ -74,7 +74,7 @@ static NSString *currentToken = nil;
       }
     }
 
-    dispatch_sync(dispatch_get_main_queue(), ^{ callbackBlock(success); });
+    dispatch_async(dispatch_get_main_queue(), ^{ callbackBlock(success); });
   });
 }
 
