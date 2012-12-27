@@ -22,41 +22,33 @@
 
 using namespace std;
 
-@implementation Playlist
-
-struct PlaylistImpl {
+@implementation Playlist {
   vector<PlaylistItem *> playlistItems;
-
-  // these vectors hold indexes within playlistItems vector
+    
+  // these variables hold indexes within playlistItems vector
+  int currentItem;
   vector<int> playlist;
   vector<int> shuffled;
-};
+}
 
 #pragma mark - init
 
 - (id)initWithName:(NSString *)n playlistItems:(NSArray *)s {
   if (self = [super init]) {
     _name = n;
-    impl = new PlaylistImpl;
 
     currentItem = -1;
     
     for (id item in s) {
-      impl->playlistItems.push_back(item);
+      playlistItems.push_back(item);
     }
     
-    impl->playlist.resize(s.count);
-    iota(impl->playlist.begin(), impl->playlist.end(), 0);
+    playlist.resize(s.count);
+    iota(playlist.begin(), playlist.end(), 0);
     
-    impl->shuffled = impl->playlist;
-    srand((unsigned int) time(0));
-    random_shuffle(impl->shuffled.begin(), impl->shuffled.end());
+    [self shuffle];
   }
   return self;
-}
-
-- (void)dealloc {
-  delete impl;
 }
 
 - (id)initWithTreeNodes:(NSArray *)arr {
@@ -88,11 +80,9 @@ struct PlaylistImpl {
     } else {
       int node = [item intValue];
       int song = [Tree songFromNode:node];
-      
       if (song != -1) node = [Tree parentOfNode:node];
         
       folderName = [Tree nameForNode:node];
-      
       [self addTreeNodes:@[item] atPos:currCount];
     }
     
@@ -128,31 +118,31 @@ struct PlaylistImpl {
 - (void)addPlaylistItemsOrTreeNodes:(NSArray *)arr atPos:(int)pos {
   [self resetCurrentItemIfStopped];
   
-  int oldSize = (int)impl->playlistItems.size();
+  int oldSize = (int)playlistItems.size();
   for (id item in arr) {
     if ([item isKindOfClass:[PlaylistItem class]]) {
-      impl->playlistItems.push_back(item);
+      playlistItems.push_back(item);
     } else {
       [self traverseNodeAndAddItems:[item intValue]];
     }
   }
-  int newSize = (int)impl->playlistItems.size();
+  int newSize = (int)playlistItems.size();
   
   vector<int> newIndexes(newSize-oldSize);
   iota(newIndexes.begin(), newIndexes.end(), oldSize);
   
-  impl->playlist.insert(impl->playlist.begin()+pos, newIndexes.begin(), newIndexes.end());
+  playlist.insert(playlist.begin()+pos, newIndexes.begin(), newIndexes.end());
   
-  impl->shuffled.insert(impl->shuffled.end(), newIndexes.begin(), newIndexes.end());
+  shuffled.insert(shuffled.end(), newIndexes.begin(), newIndexes.end());
   
   vector<int>::iterator it;
   if (currentItem == -1) {
-    it = impl->shuffled.begin();
+    it = shuffled.begin();
   } else {
-    it = find(impl->shuffled.begin(), impl->shuffled.end(), currentItem) + 1;
+    it = find(shuffled.begin(), shuffled.end(), currentItem) + 1;
   }
   
-  random_shuffle(it, impl->shuffled.end());
+  random_shuffle(it, shuffled.end());
 }
 
 - (void)traverseNodeAndAddItems:(int)node {
@@ -165,7 +155,7 @@ struct PlaylistImpl {
     }
   } else {
     PlaylistItem *pi = [[PlaylistItem alloc] initWithLibrarySong:song];
-    impl->playlistItems.push_back(pi);
+    playlistItems.push_back(pi);
   }
 }
 
@@ -174,7 +164,7 @@ struct PlaylistImpl {
   
   vector<int> tmp;
   
-  int len = (int)impl->playlist.size();
+  int len = (int)playlist.size();
   int rowsLen = (int)rows.count;
   int j = 0, k = 0, posDelta = 0;
   
@@ -182,17 +172,17 @@ struct PlaylistImpl {
     int nextRow = (j < rowsLen)? [rows[j] intValue]: len;
     if (i == nextRow) {
       if (i < pos) ++posDelta;
-      tmp.push_back(impl->playlist[nextRow]);
+      tmp.push_back(playlist[nextRow]);
       ++j;
     } else {
-      if (i != k) impl->playlist[k] = impl->playlist[i];
+      if (i != k) playlist[k] = playlist[i];
       ++k;
     }
   }
   
-  for(; k < len; ++k ) impl->playlist.pop_back();
+  for(; k < len; ++k ) playlist.pop_back();
   pos -= posDelta;
-  impl->playlist.insert(impl->playlist.begin()+pos, tmp.begin(), tmp.end());
+  playlist.insert(playlist.begin()+pos, tmp.begin(), tmp.end());
   return pos;
 }
 
@@ -204,9 +194,9 @@ struct PlaylistImpl {
   int tagIndex = [Tags indexFromTagName:str];
   
   @autoreleasepool {
-    sort(impl->playlist.begin(), impl->playlist.end(), [&, tagIndex, isLength, isTrackNumber](int a, int b) -> bool {
-      PlaylistItem *p1 = impl->playlistItems[a];
-      PlaylistItem *p2 = impl->playlistItems[b];
+    sort(playlist.begin(), playlist.end(), [&, tagIndex, isLength, isTrackNumber](int a, int b) -> bool {
+      PlaylistItem *p1 = playlistItems[a];
+      PlaylistItem *p2 = playlistItems[b];
       
       if (isLength) return p1.lengthInSeconds < p2.lengthInSeconds;
     
@@ -235,7 +225,7 @@ struct PlaylistImpl {
 
 - (void)reverse {
   [self resetCurrentItemIfStopped];  
-  reverse(impl->playlist.begin(), impl->playlist.end());
+  reverse(playlist.begin(), playlist.end());
 }
 
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes {
@@ -244,7 +234,7 @@ struct PlaylistImpl {
   vector<int> indexesToRemove;
   for (NSInteger curr = indexes.firstIndex; curr != NSNotFound; curr = [indexes indexGreaterThanIndex:curr]) {
     indexesToRemove.push_back((int)curr);
-    if (impl->playlist[curr] == currentItem) currentItem = -1;
+    if (playlist[curr] == currentItem) currentItem = -1;
   }
   
   int n = (int)indexesToRemove.size();
@@ -252,24 +242,24 @@ struct PlaylistImpl {
   
   vector<int> itemIndexesToRemoveMask(m, 0);
   for (auto it = indexesToRemove.begin(); it != indexesToRemove.end(); ++it)
-    itemIndexesToRemoveMask[impl->playlist[*it]] = 1;
+    itemIndexesToRemoveMask[playlist[*it]] = 1;
   
   vector<int> itemIndexesToRemove;
   vector<int> shuffledIndexesToRemove;
   for (int i = 0; i < m; ++i) {
-    if (itemIndexesToRemoveMask[impl->shuffled[i]]) shuffledIndexesToRemove.push_back(i);
+    if (itemIndexesToRemoveMask[shuffled[i]]) shuffledIndexesToRemove.push_back(i);
     if (itemIndexesToRemoveMask[i]) itemIndexesToRemove.push_back(i);
   }
   
-  removeIndexesFromVector(itemIndexesToRemove, impl->playlistItems);
-  removeIndexesFromVector(indexesToRemove, impl->playlist);
-  removeIndexesFromVector(shuffledIndexesToRemove, impl->shuffled);
+  removeIndexesFromVector(itemIndexesToRemove, playlistItems);
+  removeIndexesFromVector(indexesToRemove, playlist);
+  removeIndexesFromVector(shuffledIndexesToRemove, shuffled);
   
   for (int i = 1; i < m; ++i) itemIndexesToRemoveMask[i] += itemIndexesToRemoveMask[i-1];
   if (currentItem != -1) currentItem -= itemIndexesToRemoveMask[currentItem];
   for (int i = 0; i < m-n; ++i) {
-    impl->playlist[i] -= itemIndexesToRemoveMask[impl->playlist[i]];
-    impl->shuffled[i] -= itemIndexesToRemoveMask[impl->shuffled[i]];
+    playlist[i] -= itemIndexesToRemoveMask[playlist[i]];
+    shuffled[i] -= itemIndexesToRemoveMask[shuffled[i]];
   }
 }
 
@@ -293,24 +283,38 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
   if ([[FilePlayer sharedPlayer] stopped]) currentItem = -1;
 }
 
+- (void)shuffle {
+  shuffled = playlist;
+  srand((unsigned int) time(0));
+  random_shuffle(shuffled.begin(), shuffled.end());
+  
+  if (currentItem != -1) {
+    int pos = (int) (find(shuffled.begin(), shuffled.end(), currentItem) - shuffled.begin());
+    int t = shuffled[pos];
+    shuffled[pos] = shuffled[0];
+    shuffled[0] = t;
+  }
+}
+
 #pragma mark - playing songs
 
 - (int)numberOfItems {
-  return (int)impl->playlistItems.size();
+  return (int)playlistItems.size();
 }
 
 - (PlaylistItem *)moveToItemWithIndex:(int)index {
-  currentItem = impl->playlist[index];
+  currentItem = playlist[index];
+  [self shuffle];
   return [self currentItem];
 }
 
 - (PlaylistItem *)objectAtIndexedSubscript:(int)index {
-  return impl->playlistItems[impl->playlist[index]];
+  return playlistItems[playlist[index]];
 }
 
 - (PlaylistItem *)currentItem {
   if (currentItem == -1) return nil;
-  return impl->playlistItems[currentItem];
+  return playlistItems[currentItem];
 }
 
 - (PlaylistItem *)moveToNextItem {
@@ -323,7 +327,7 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 
 - (PlaylistItem *)moveToFirstItem {
   if (self.numberOfItems == 0) return nil;
-  return impl->playlistItems[currentItem = impl->playlist[0]];
+  return playlistItems[currentItem = playlist[0]];
 }
 
 - (void)forgetCurrentItem {
@@ -333,10 +337,10 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 - (PlaylistItem *)moveToItemWithDelta:(int)delta {
   if (currentItem == -1) return nil;
 
-  BOOL shuffled = [PlaylistManager sharedManager].shuffle;
+  BOOL shuffle = [PlaylistManager sharedManager].shuffle;
   BOOL repeat = [PlaylistManager sharedManager].repeat;
   
-  vector<int> &order = shuffled? impl->shuffled: impl->playlist;
+  vector<int> &order = shuffle? shuffled: playlist;
   
   int n = (int)order.size();
   int pos = (int) (find(order.begin(), order.end(), currentItem) - order.begin()) + delta;
@@ -348,7 +352,7 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
     }
   }
 
-  return impl->playlistItems[currentItem = order[pos]];
+  return playlistItems[currentItem = order[pos]];
 }
 
 @end

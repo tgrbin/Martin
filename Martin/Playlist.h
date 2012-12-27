@@ -9,13 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @class PlaylistItem;
-struct PlaylistImpl;
 
-@interface Playlist : NSObject {
-  int currentItem; // this is index in playlistItems vector, doesn't correspond with the playlist order
-  
-  struct PlaylistImpl *impl;
-}
+@interface Playlist : NSObject
 
 @property (nonatomic, strong) NSString *name;
 
@@ -39,5 +34,7 @@ struct PlaylistImpl;
 - (PlaylistItem *)moveToPrevItem;
 - (PlaylistItem *)moveToFirstItem;
 - (PlaylistItem *)moveToItemWithIndex:(int)index;
+
+- (void)shuffle;
 
 @end
