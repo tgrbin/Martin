@@ -16,5 +16,6 @@
 @property (nonatomic, assign) BOOL enabled;
 
 - (void)folderListChanged;
+- (void)storeLastEventId;
 
 @end

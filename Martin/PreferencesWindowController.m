@@ -40,6 +40,7 @@
   _watchFoldersEnabled = watchFoldersEnabled;
   [FolderWatcher sharedWatcher].enabled = watchFoldersEnabled;
   rescanLibraryButton.hidden = watchFoldersEnabled;
+  if (_watchFoldersEnabled) [[RescanProxy sharedProxy] rescanAll];
 }
 
 #pragma mark - library folders table

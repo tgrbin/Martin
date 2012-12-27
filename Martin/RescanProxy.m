@@ -11,6 +11,7 @@
 #import "LibManager.h"
 #import "RescanState.h"
 #import "Tree.h"
+#import "FolderWatcher.h"
 
 static const double minQuietTime = 0.5;
 static const double maxTimeWithoutRescan = 3;
@@ -87,6 +88,7 @@ static id specialRescanAllObject;
 
 - (void)rescanFinished {
   @synchronized(rescanLock) {
+    [[FolderWatcher sharedWatcher] storeLastEventId];
     nowRescaning = NO;
 
     if (pathsToRescan.count) {

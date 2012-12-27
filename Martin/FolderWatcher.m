@@ -16,6 +16,8 @@
 }
 
 static const double eventLatency = 0.3;
+static FSEventStreamEventId lastEventId;
+static BOOL eventArrived;
 
 + (FolderWatcher *)sharedWatcher {
   static FolderWatcher *o = nil;
@@ -72,6 +74,10 @@ static const double eventLatency = 0.3;
   }
 }
 
+- (void)storeLastEventId {
+  if (eventArrived) [DefaultsManager setObject:@(lastEventId) forKey:kDefaultsKeyLastFSEvent];
+}
+
 static void handleEvent(
                        ConstFSEventStreamRef streamRef,
                        void *clientCallBackInfo,
@@ -85,7 +91,7 @@ static void handleEvent(
   NSMutableArray *recursively = [NSMutableArray new];
 
   for (int i = 0; i < numEvents; i++) {
-//    NSLog(@"Change %llu in %s, flags %d\n", eventIds[i], paths[i], eventFlags[i]&kFSEventStreamEventFlagMustScanSubDirs);
+    NSLog(@"Change %llu in %s, flags %d\n", eventIds[i], paths[i], eventFlags[i]&kFSEventStreamEventFlagMustScanSubDirs);
     [folders addObject:@(paths[i])];
     [recursively addObject:@(eventFlags[i]&kFSEventStreamEventFlagMustScanSubDirs)];
   }
@@ -94,7 +100,8 @@ static void handleEvent(
   [folders release];
   [recursively release];
 
-  [DefaultsManager setObject:@(eventIds[numEvents-1]) forKey:kDefaultsKeyLastFSEvent];
+  lastEventId = eventIds[numEvents-1];
+  eventArrived = YES;
 }
 
 @end

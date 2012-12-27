@@ -69,6 +69,7 @@ static RescanState *sharedState;
     tf.stringValue = self.message;
 
     if (_state == kRescanStateReadingID3s) {
+      [pi stopAnimation:nil];
       pi.indeterminate = NO;
       pi.doubleValue = self.currentPercentage;
     } else {
