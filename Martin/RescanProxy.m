@@ -9,6 +9,7 @@
 #import "RescanProxy.h"
 #import "LibraryFolder.h"
 #import "LibManager.h"
+#import "RescanState.h"
 #import "Tree.h"
 
 static const double minQuietTime = 0.5;
@@ -53,8 +54,10 @@ static id specialRescanAllObject;
 
 - (void)rescanAll {
   @synchronized(rescanLock) {
-    [pathsToRescan addObject:specialRescanAllObject];
-    if (pathsToRescan.count == 1) [self initiateRescan];
+    if (pathsToRescan.lastObject != specialRescanAllObject) {
+      [pathsToRescan addObject:specialRescanAllObject];
+      if (pathsToRescan.count == 1) [self initiateRescan];
+    }
   }
 }
 

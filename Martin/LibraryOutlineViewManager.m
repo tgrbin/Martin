@@ -12,6 +12,7 @@
 #import "PlaylistManager.h"
 #import "PlaylistTableManager.h"
 #import "RescanProxy.h"
+#import "RescanState.h"
 
 @implementation LibraryOutlineViewManager
 

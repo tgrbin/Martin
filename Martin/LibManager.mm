@@ -13,6 +13,7 @@
 #import "Tags.h"
 #import "TreeNode.h"
 #import "FolderWatcher.h"
+#import "RescanState.h"
 
 #import <algorithm>
 #import <cstdio>
@@ -30,8 +31,6 @@ static char lineBuff[kBuffSize];
 static char pathBuff[kBuffSize];
 
 static vector<int> needsRescan;
-static int numberOfSongsFound;
-
 
 static int lastFolderLevel;
 static BOOL wasLastItemFolder;
@@ -48,8 +47,6 @@ static set<uint64> pathsToRescan[2];
 + (void)rescanAll {
   static struct stat statBuff;
   
-  [[NSNotificationCenter defaultCenter] postNotificationName:kLibraryRescanStartedNotification object:nil];
-
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     initWalk();
     
@@ -85,10 +82,6 @@ static set<uint64> pathsToRescan[2];
     if (pathBuff[pathLen-1] == '/') pathBuff[pathLen-1] = 0;
     pathsToRescan[ [recursively[i] boolValue] ].insert( folderHash(pathBuff) );
   }
-  
-  dispatch_async(dispatch_get_main_queue(), ^{
-    [[NSNotificationCenter defaultCenter] postNotificationName:kLibraryRescanStartedNotification object:nil];
-  });
   
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     initWalk();
@@ -140,9 +133,9 @@ static const char *rescanHelperPath() {
 }
 
 static void initWalk() {
+  [RescanState sharedState].state = kRescanStateTraversing;
   walkFile = fopen(rescanPath(), "w");
   lineNumber = 0;
-  numberOfSongsFound = 0;
   needsRescan.clear();
   pathBuff[0] = 0;
 }
@@ -152,14 +145,6 @@ static void endWalk() {
   pathsToRescan[0].clear();
   pathsToRescan[1].clear();
   pathBuff[0] = 0;
-}
-
-static const char *toCstr(NSString *s) {
-  return [s cStringUsingEncoding:NSUTF8StringEncoding];
-}
-
-static NSString *toString(const char *s) {
-  return [NSString stringWithCString:s encoding:NSUTF8StringEncoding];
 }
 
 static BOOL isExtensionAcceptable(const char *str) {
@@ -218,24 +203,28 @@ static void loadLibrary() {
 
 static BOOL rescanSong(FILE *f) {
   ID3Reader *id3 = [[ID3Reader alloc] initWithFile:@(pathBuff)];
-
-  if (id3 == nil) {
-    fprintf(f, "0\n");
-    for (int i = 0; i < kNumberOfTags; ++i) fprintf(f, "\n");
-    return NO;
-  } else {
+  BOOL success = (id3 != nil);
+  
+  if (success) {
     fprintf(f, "%d\n", id3.lengthInSeconds);
     for (int i = 0; i < kNumberOfTags; ++i) {
       NSString *val = [id3 tag:[Tags tagNameForIndex:i]];
       fprintf(f, "%s\n", val? [val UTF8String]: "");
     }
     [id3 release];
-    return YES;
+  } else {
+    fprintf(f, "0\n");
+    for (int i = 0; i < kNumberOfTags; ++i) fprintf(f, "\n");
   }
+  
+  ++[RescanState sharedState].alreadyRescannedSongs;
+  return success;
 }
 
 static void rescanID3s() {
   @autoreleasepool {
+    [RescanState sharedState].state = kRescanStateReadingID3s;
+
     FILE *f = fopen(rescanPath(), "r");
     FILE *g = fopen(rescanHelperPath(), "w");
     
@@ -254,8 +243,6 @@ static void rescanID3s() {
         if (ln == needsRescan[nextRescanIndex] + 3) {
           if (rescanSong(g) == NO) NSLog(@"id3 read failed for: %s", pathBuff);
           for (int i = 0; i < kNumberOfTags; ++i, ++ln) fgets(lineBuff, kBuffSize, f);
-          
-          // TODO: report status!
           
           ++nextRescanIndex;
           continue;
@@ -286,15 +273,15 @@ static void rescanID3s() {
     
     unlink(libPath());
     rename(rescanHelperPath(), libPath());
-// TODO: unlink extra files
-//    unlink(rescanHelperPath());
-//    unlink(rescanPath());
+
+#if nDEBUG
+    unlink(rescanHelperPath());
+    unlink(rescanPath());
+#endif
     
+    [RescanState sharedState].state = kRescanStateReloadingLibrary;
     loadLibrary();
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-      [[NSNotificationCenter defaultCenter] postNotificationName:kLibraryRescanFinishedNotification object:nil];
-    });
+    [RescanState sharedState].state = kRescanStateIdle;
   }
 }
 
@@ -311,6 +298,7 @@ static void walkSong(const char *name, int p_song, const struct stat *statBuff) 
   
   if (p_song == -1 || song->lastModified != lastModified) {
     needsRescan.push_back(lineNumber - 3);
+    ++[RescanState sharedState].songsToRescan;
     for (int i = 0; i <= kNumberOfTags; ++i) walkPrint("");
   } else {
     walkPrint("%d", song->lengthInSeconds);
@@ -318,6 +306,8 @@ static void walkSong(const char *name, int p_song, const struct stat *statBuff) 
   }
   
   walkPrint("}");
+  
+  ++[RescanState sharedState].numberOfSongsFound;
 }
 
 static int ftw_callback(const char *filename, const struct stat *stat_struct, int flags, struct FTW *ftw_struct) {
@@ -335,7 +325,6 @@ static int ftw_callback(const char *filename, const struct stat *stat_struct, in
     walkPrint("+ %s", (currentLevel == 0 && onRootLevel)? filename: basename);
     walkPrint("%d", inode);
   } else if (isExtensionAcceptable(filename)) {
-    ++numberOfSongsFound;
     walkSong(basename, [Tree songByInode:inode], stat_struct);
   }
   
@@ -407,6 +396,8 @@ static void dumpSong(struct TreeNode *node) {
   walkPrint("%d", song->lengthInSeconds);
   for (int i = 0; i < kNumberOfTags; ++i) walkPrint("%s", song->tags[i]);
   walkPrint("}");
+  
+  ++[RescanState sharedState].numberOfSongsFound;
 }
 
 static void walkTreeNode(int p_node, BOOL _onRootLevel) {

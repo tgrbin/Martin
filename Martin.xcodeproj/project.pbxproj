@@ -26,6 +26,7 @@
 		79C38221165D5E2D00C4C627 /* PlaylistTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C38220165D5E2D00C4C627 /* PlaylistTableView.m */; };
 		79C38225165D630300C4C627 /* LibraryOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C38224165D630300C4C627 /* LibraryOutlineView.m */; };
 		79D5760F1431074D00A2DA67 /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 79D5760E1431074D00A2DA67 /* icon.icns */; };
+		79D63C65168C438100A248F9 /* RescanState.m in Sources */ = {isa = PBXBuildFile; fileRef = 79D63C64168C438100A248F9 /* RescanState.m */; };
 		79D8FFED149DE5A3009B8955 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79D8FFEC149DE5A3009B8955 /* Carbon.framework */; };
 		79DCB7AA165FFB3B00077082 /* FilePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DCB7A9165FFB3B00077082 /* FilePlayer.m */; };
 		79DEAD62165BD81C0017E4DD /* PlaylistItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DEAD61165BD81C0017E4DD /* PlaylistItem.m */; };
@@ -76,6 +77,8 @@
 		79C38223165D630300C4C627 /* LibraryOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryOutlineView.h; sourceTree = "<group>"; };
 		79C38224165D630300C4C627 /* LibraryOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryOutlineView.m; sourceTree = "<group>"; };
 		79D5760E1431074D00A2DA67 /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = icon.icns; path = ../icon.icns; sourceTree = "<group>"; };
+		79D63C63168C438100A248F9 /* RescanState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RescanState.h; sourceTree = "<group>"; };
+		79D63C64168C438100A248F9 /* RescanState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RescanState.m; sourceTree = "<group>"; };
 		79D8FFEC149DE5A3009B8955 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		79DCB7A8165FFB3B00077082 /* FilePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilePlayer.h; sourceTree = "<group>"; };
 		79DCB7A9165FFB3B00077082 /* FilePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilePlayer.m; sourceTree = "<group>"; };
@@ -141,6 +144,8 @@
 				799EF5EB16884D7000AD3A67 /* RescanProxy.h */,
 				799EF5EC16884D7000AD3A67 /* RescanProxy.m */,
 				799EF5F0168863BE00AD3A67 /* TreeNode.h */,
+				79D63C63168C438100A248F9 /* RescanState.h */,
+				79D63C64168C438100A248F9 /* RescanState.m */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -363,6 +368,7 @@
 				792DC19B166B6E5D0003E664 /* Tree.mm in Sources */,
 				79EDE63E1678EB9A0060F9F9 /* FolderWatcher.m in Sources */,
 				799EF5ED16884D7000AD3A67 /* RescanProxy.m in Sources */,
+				79D63C65168C438100A248F9 /* RescanState.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

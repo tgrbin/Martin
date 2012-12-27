@@ -11,19 +11,23 @@
 #import "LastFM.h"
 #import "FolderWatcher.h"
 #import "RescanProxy.h"
-#import "LibManager.h"
+#import "RescanState.h"
 
 @implementation PreferencesWindowController
 
 - (id)init {
   if (self = [super initWithWindowNibName:@"PreferencesWindowController"]) {
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(libraryRescanFinished)
-                                                 name:kLibraryRescanFinishedNotification
+                                             selector:@selector(rescanStateChanged)
+                                                 name:kLibraryRescanStateChangedNotification
                                                object:nil];
     _watchFoldersEnabled = [FolderWatcher sharedWatcher].enabled;
   }
   return self;
+}
+
+- (void)awakeFromNib {
+  rescanLibraryButton.hidden = _watchFoldersEnabled;
 }
 
 - (void)dealloc {
@@ -35,6 +39,7 @@
 - (void)setWatchFoldersEnabled:(BOOL)watchFoldersEnabled {
   _watchFoldersEnabled = watchFoldersEnabled;
   [FolderWatcher sharedWatcher].enabled = watchFoldersEnabled;
+  rescanLibraryButton.hidden = watchFoldersEnabled;
 }
 
 #pragma mark - library folders table
@@ -63,8 +68,7 @@
 
   if ([panel runModal] == NSFileHandlingPanelOKButton) {
     [[LibraryFolder libraryFolders] replaceObjectAtIndex:sender.clickedRow withObject:[panel.directoryURL path]];
-    [[FolderWatcher sharedWatcher] folderListChanged];
-    [sender reloadData];
+    [self folderListChanged];
   }
 }
 
@@ -78,7 +82,16 @@
 
 - (IBAction)removeFolder:(id)sender {
   [[LibraryFolder libraryFolders] removeObjectAtIndex:foldersTableView.clickedRow];
-  [[FolderWatcher sharedWatcher] folderListChanged];
+  [self folderListChanged];
+}
+
+- (void)folderListChanged {
+  if (_watchFoldersEnabled) {
+    [[FolderWatcher sharedWatcher] folderListChanged];
+    [[RescanProxy sharedProxy] rescanAll];
+    [LibraryFolder save];
+  }
+
   [foldersTableView reloadData];
 }
 
@@ -89,52 +102,33 @@
 
   if ([panel runModal] == NSFileHandlingPanelOKButton) {
     [[LibraryFolder libraryFolders] addObject:[panel.directoryURL path]];
-    [[FolderWatcher sharedWatcher] folderListChanged];
-    [foldersTableView reloadData];
+    [self folderListChanged];
   }
 }
 
 - (IBAction)rescanPressed:(id)sender {
-  [LibraryFolder save];
-  rescanLibraryButton.hidden = YES;
-  rescanStatusTextField.hidden = NO;
-  rescanProgressIndicator.hidden = NO;
-  rescanStatusTextField.stringValue = @"Traversing library folders...";
-  rescanProgressIndicator.indeterminate = YES;
-  [rescanProgressIndicator startAnimation:nil];
-
   [[RescanProxy sharedProxy] rescanAll];
-
-//  [[LibManager sharedManager] rescanLibraryWithProgressBlock:^(int p) {
-//    if (state == -1) state = p;
-//    else if (state != -2) {
-//      totalSongs = state;
-//      rescanStatusTextField.stringValue = [NSString stringWithFormat:@"Found %d songs, rescanning %d of them..", totalSongs, p];
-//      rescanProgressIndicator.indeterminate = NO;
-//      rescanProgressIndicator.doubleValue = 0;
-//      state = -2;
-//    } else {
-//      rescanProgressIndicator.doubleValue = p;
-//    }
-//  }];
 }
 
-- (void)libraryRescanFinished {
-  rescanStatusTextField.stringValue = [NSString stringWithFormat:@"Done! Total of %d songs in library.", totalSongs];
+#pragma mark - rescan state
 
-  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC);
-  dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-    [rescanProgressIndicator stopAnimation:nil];
-    rescanProgressIndicator.hidden = YES;
-    rescanStatusTextField.hidden = YES;
-    rescanLibraryButton.hidden = NO;
-  });
-}
+- (void)rescanStateChanged {
+  RescanStateEnum state = [RescanState sharedState].state;
 
-#pragma mark - window delegate
+  if (state == kRescanStateIdle) {
+    rescanStatusTextField.hidden = rescanProgressIndicator.hidden = YES;
+  } else {
+    rescanStatusTextField.hidden = rescanProgressIndicator.hidden = NO;
+    rescanStatusTextField.stringValue = [RescanState sharedState].message;
 
-- (void)windowWillClose:(NSNotification *)notification {
-  [LibraryFolder save];
+    if (state == kRescanStateReadingID3s) {
+      rescanProgressIndicator.indeterminate = NO;
+      rescanProgressIndicator.doubleValue = [RescanState sharedState].currentPercentage;
+    } else {
+      rescanProgressIndicator.indeterminate = YES;
+      [rescanProgressIndicator startAnimation:nil];
+    }
+  }
 }
 
 #pragma mark - lastfm

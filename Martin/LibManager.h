@@ -8,9 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#define kLibraryRescanStartedNotification @"LibManagerRescanStarted"
-#define kLibraryRescanFinishedNotification @"LibManagerRescanEnded"
-
 @interface LibManager : NSObject
 
 + (void)initLibrary;
