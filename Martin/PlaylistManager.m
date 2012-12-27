@@ -49,7 +49,7 @@ static PlaylistManager *sharedManager = nil;
       NSArray *playlistItemsDictionaries = (NSArray*) [data objectForKey:key];
       NSMutableArray *playlistItems = [NSMutableArray new];
       for (id item in playlistItemsDictionaries) [playlistItems addObject:[[PlaylistItem alloc] initWithDictionary:item]];
-      Playlist *playlist = [[Playlist alloc] initWithName:key playlistItems:playlistItems];
+      Playlist *playlist = [[Playlist alloc] initWithName:key andPlaylistItems:playlistItems];
       [playlists addObject:playlist];
     }
   }
@@ -84,8 +84,15 @@ static PlaylistManager *sharedManager = nil;
   [plistDict writeToFile:plistPath atomically:YES];
 }
 
+- (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes andName:(NSString *)name {
+  [self addPlaylist:[[Playlist alloc] initWithName:name andTreeNodes:nodes]];
+}
+
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes {
-  Playlist *p = [[Playlist alloc] initWithTreeNodes:nodes];
+  [self addPlaylist:[[Playlist alloc] initWithTreeNodes:nodes]];
+}
+
+- (void)addPlaylist:(Playlist *)p {
   [playlists addObject:p];
   [playlistsTable reloadData];
   [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:playlists.count-1] byExtendingSelection:NO];

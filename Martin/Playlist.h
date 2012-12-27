@@ -14,7 +14,8 @@
 
 @property (nonatomic, strong) NSString *name;
 
-- (id)initWithName:(NSString *)n playlistItems:(NSArray *)s;
+- (id)initWithName:(NSString *)n andPlaylistItems:(NSArray *)arr;
+- (id)initWithName:(NSString *)n andTreeNodes:(NSArray *)arr;
 
 - (id)initWithTreeNodes:(NSArray *)arr; // these two method suggest playlist name based on items
 - (id)initWithPlaylistItems:(NSArray *)arr;

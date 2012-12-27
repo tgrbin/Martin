@@ -33,7 +33,7 @@ using namespace std;
 
 #pragma mark - init
 
-- (id)initWithName:(NSString *)n playlistItems:(NSArray *)s {
+- (id)initWithName:(NSString *)n andPlaylistItems:(NSArray *)s {
   if (self = [super init]) {
     _name = n;
 
@@ -51,6 +51,14 @@ using namespace std;
   return self;
 }
 
+- (id)initWithName:(NSString *)n andTreeNodes:(NSArray *)arr {
+  if (self = [self init]) {
+    [self guessNameAndAddItems:arr];
+    _name = n;
+  }
+  return self;
+}
+
 - (id)initWithTreeNodes:(NSArray *)arr {
   if (self = [self init]) {
     [self guessNameAndAddItems:arr];
@@ -59,14 +67,14 @@ using namespace std;
 }
 
 - (id)initWithPlaylistItems:(NSArray *)arr {
-  if (self = [self initWithName:@"" playlistItems:arr]) {
+  if (self = [self initWithName:@"" andPlaylistItems:arr]) {
     [self guessNameAndAddItems:arr];
   }
   return self;
 }
 
 - (id)init {
-  return [self initWithName:@"new playlist" playlistItems:@[]];
+  return [self initWithName:@"new playlist" andPlaylistItems:@[]];
 }
 
 - (void)guessNameAndAddItems:(NSArray *)arr { // arr contains treenodes or playlistitems

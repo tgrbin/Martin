@@ -211,4 +211,25 @@ static LibraryOutlineViewManager *sharedManager;
   [Tree performSearch:_searchTextField.stringValue];
 }
 
+- (BOOL)isCommandEnterEvent:(NSEvent *)e {
+  NSUInteger flags = (e.modifierFlags & NSDeviceIndependentModifierFlagsMask);
+  BOOL isCommand = (flags & NSCommandKeyMask) == NSCommandKeyMask;
+  BOOL isEnter = (e.type == NSEnterCharacter || e.type == NSNewlineCharacter || e.type == NSCarriageReturnCharacter);
+  return (isCommand && isEnter);
+}
+
+- (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
+  if (_searchTextField.stringValue.length == 0) return NO;
+
+  if (commandSelector == @selector(noop:) && [self isCommandEnterEvent:[NSApp currentEvent]]) {
+    [[PlaylistManager sharedManager] addNewPlaylistWithTreeNodes:@[ @0 ] andName:_searchTextField.stringValue];
+    return YES;
+  } else if (commandSelector == @selector(insertNewline:)) {
+    [[PlaylistTableManager sharedManager] addTreeNodesToPlaylist:@[ @0 ]];
+    return YES;
+  }
+
+  return NO;
+}
+
 @end
