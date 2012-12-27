@@ -217,6 +217,13 @@ static int kmpLookup[kBuffSize][kBuffSize];
 static BOOL queryHits[kBuffSize];
 static int numberOfHits;
 
++ (void)resetSearchState {
+  @synchronized(searchLock) {
+    [previousSearchQuery release];
+    previousSearchQuery = @"";
+  }
+}
+
 + (void)performSearch:(NSString *)query {
   if (searchLock == nil) {
     searchLock = [NSLock new];

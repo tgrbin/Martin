@@ -26,11 +26,11 @@ static LibraryOutlineViewManager *sharedManager;
   sharedManager = self;
 
   [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(reloadTree)
+                                           selector:@selector(libraryRescanned)
                                                name:kLibraryRescanFinishedNotification
                                              object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(reloadTree)
+                                           selector:@selector(searchFinished)
                                                name:kLibrarySearchFinishedNotification
                                              object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self
@@ -44,9 +44,8 @@ static LibraryOutlineViewManager *sharedManager;
 
   _outlineView.target = self;
   _outlineView.doubleAction = @selector(itemDoubleClicked);
-
   [LibManager initLibrary];
-  [self reloadTree];
+  [_outlineView reloadData];
 }
 
 - (void)dealloc {
@@ -155,7 +154,7 @@ static LibraryOutlineViewManager *sharedManager;
 
 #pragma mark - auto expanding
 
-- (void)reloadTree {
+- (void)searchFinished {
   reloadingTree = YES;
 
   [_outlineView reloadData];
@@ -185,6 +184,14 @@ static LibraryOutlineViewManager *sharedManager;
   reloadingTree = NO;
 }
 
+- (void)libraryRescanned {
+  [_outlineView reloadData];
+  if (_searchTextField.stringValue.length > 0) {
+    [Tree resetSearchState];
+    [Tree performSearch:_searchTextField.stringValue];
+  }
+}
+
 - (void)itemDidExpand:(NSNotification *)notification {
   if (notification.object != _outlineView) return;
 
@@ -201,9 +208,7 @@ static LibraryOutlineViewManager *sharedManager;
 #pragma mark - search
 
 - (void)controlTextDidChange:(NSNotification *)obj {
-  NSTextView *field = obj.userInfo[@"NSFieldEditor"];
-  NSString *query = (field.string == nil)? @"": field.string;
-  [Tree performSearch:query];
+  [Tree performSearch:_searchTextField.stringValue];
 }
 
 @end

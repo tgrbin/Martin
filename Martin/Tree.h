@@ -40,6 +40,7 @@ struct TreeNode;
 + (NSString *)fullPathForSong:(int)p_song;
 
 + (void)performSearch:(NSString *)query;
++ (void)resetSearchState;
 
 // won't return paths that are subpaths of another path
 + (NSArray *)pathsForNodes:(NSArray *)nodes;
