@@ -8,23 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
-@class Tags;
-
-@interface PlaylistItem : NSObject {
-  Tags *tags;
-}
+@interface PlaylistItem : NSObject
 
 - (id)initWithLibrarySong:(int)p_song;
 - (id)initWithDictionary:(NSDictionary *)dictionary;
 - (NSDictionary *)dictionary;
 
-@property (nonatomic, assign) int inode;
-@property (nonatomic, assign) int lengthInSeconds;
-@property (nonatomic, strong) NSString *filename;
-@property (nonatomic, assign) int p_librarySong;
+@property (nonatomic, strong, readonly) NSString *filename;
+@property (nonatomic, readonly) ino_t inode;
+@property (nonatomic, readonly) int lengthInSeconds;
+@property (nonatomic, readonly) int p_librarySong;
 
 - (NSString *)tagValueForIndex:(int)i;
-
 - (NSString *)prettyName;
 
 @end

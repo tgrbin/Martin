@@ -152,6 +152,10 @@ static map<ino_t, int> nodeByInode;
   return nodes[p_node].p_song;
 }
 
++ (ino_t)inodeForSong:(int)p_song {
+  return nodes[songs[p_song].p_treeLeaf].inode;
+}
+
 + (NSString *)fullPathForSong:(int)p_song {
   return [[fullPathForNode(songs[p_song].p_treeLeaf) retain] autorelease];
 }

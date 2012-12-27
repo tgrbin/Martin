@@ -166,7 +166,6 @@ static BOOL isExtensionAcceptable(const char *str) {
   int len = (int)strlen(str);
   if (strcasecmp(str + len - 4, ".mp3") == 0) return YES;
   if (strcasecmp(str + len - 4, ".m4a") == 0) return YES;
-  if (strcasecmp(str + len - 5, ".flac") == 0) return YES;
   return NO;
 }
 

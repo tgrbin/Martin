@@ -30,6 +30,7 @@ struct TreeNode;
 + (NSString *)nameForNode:(int)p_node;
 
 + (int)songFromNode:(int)p_node;
++ (ino_t)inodeForSong:(int)p_song;
 
 + (int)songByInode:(ino_t)inode;
 + (int)nodeByInode:(ino_t)inode;
