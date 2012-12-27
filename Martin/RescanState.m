@@ -37,7 +37,6 @@ static RescanState *sharedState;
   _state = state;
   [self post:kLibraryRescanStateChangedNotification];
 
-  NSLog(@"state: %d, total songs: %d, songs to rescan: %d, rescanned: %d", _state, _numberOfSongsFound, _songsToRescan, _alreadyRescannedSongs);
   if (_state == kRescanStateTraversing) {
     _alreadyRescannedSongs = 0;
     _numberOfSongsFound = 0;
@@ -60,6 +59,23 @@ static RescanState *sharedState;
   }
   if (_state == kRescanStateReloadingLibrary) return @"Reloading library";
   return @"";
+}
+
+- (void)setupProgressIndicator:(NSProgressIndicator *)pi andTextField:(NSTextField *)tf {
+  if (_state == kRescanStateIdle) {
+    tf.hidden = pi.hidden = YES;
+  } else {
+    tf.hidden = pi.hidden = NO;
+    tf.stringValue = self.message;
+
+    if (_state == kRescanStateReadingID3s) {
+      pi.indeterminate = NO;
+      pi.doubleValue = self.currentPercentage;
+    } else {
+      pi.indeterminate = YES;
+      [pi startAnimation:nil];
+    }
+  }
 }
 
 @end

@@ -16,5 +16,8 @@
 
 @property (nonatomic, strong) IBOutlet NSOutlineView *outlineView;
 @property (nonatomic, strong) NSArray *draggingItems;
+@property (weak) IBOutlet NSView *rescanStatusView;
+@property (weak) IBOutlet NSProgressIndicator *rescanIndicator;
+@property (weak) IBOutlet NSTextField *rescanMessage;
 
 @end

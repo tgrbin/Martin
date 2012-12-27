@@ -32,4 +32,6 @@ typedef enum {
 @property (nonatomic) int alreadyRescannedSongs;
 @property (nonatomic, readonly) int currentPercentage;
 
+- (void)setupProgressIndicator:(NSProgressIndicator *)pi andTextField:(NSTextField *)tf;
+
 @end

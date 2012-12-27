@@ -34,6 +34,10 @@ static LibraryOutlineViewManager *sharedManager;
                                                name:kLibrarySearchFinishedNotification
                                              object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(rescanStateChanged)
+                                               name:kLibraryRescanStateChangedNotification
+                                             object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(itemDidExpand:)
                                                name:NSOutlineViewItemDidExpandNotification
                                              object:nil];
@@ -47,6 +51,11 @@ static LibraryOutlineViewManager *sharedManager;
 
 - (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)rescanStateChanged {
+  [[RescanState sharedState] setupProgressIndicator:_rescanIndicator andTextField:_rescanMessage];
+  _rescanStatusView.hidden = _rescanMessage.isHidden;
 }
 
 #pragma mark - drag and drop

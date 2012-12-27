@@ -89,9 +89,9 @@
   if (_watchFoldersEnabled) {
     [[FolderWatcher sharedWatcher] folderListChanged];
     [[RescanProxy sharedProxy] rescanAll];
-    [LibraryFolder save];
   }
 
+  [LibraryFolder save];
   [foldersTableView reloadData];
 }
 
@@ -113,22 +113,8 @@
 #pragma mark - rescan state
 
 - (void)rescanStateChanged {
-  RescanStateEnum state = [RescanState sharedState].state;
-
-  if (state == kRescanStateIdle) {
-    rescanStatusTextField.hidden = rescanProgressIndicator.hidden = YES;
-  } else {
-    rescanStatusTextField.hidden = rescanProgressIndicator.hidden = NO;
-    rescanStatusTextField.stringValue = [RescanState sharedState].message;
-
-    if (state == kRescanStateReadingID3s) {
-      rescanProgressIndicator.indeterminate = NO;
-      rescanProgressIndicator.doubleValue = [RescanState sharedState].currentPercentage;
-    } else {
-      rescanProgressIndicator.indeterminate = YES;
-      [rescanProgressIndicator startAnimation:nil];
-    }
-  }
+  [[RescanState sharedState] setupProgressIndicator:rescanProgressIndicator
+                                       andTextField:rescanStatusTextField];
 }
 
 #pragma mark - lastfm
