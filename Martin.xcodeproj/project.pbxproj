@@ -27,6 +27,7 @@
 		79C38225165D630300C4C627 /* LibraryOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C38224165D630300C4C627 /* LibraryOutlineView.m */; };
 		79D5760F1431074D00A2DA67 /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 79D5760E1431074D00A2DA67 /* icon.icns */; };
 		79D63C65168C438100A248F9 /* RescanState.m in Sources */ = {isa = PBXBuildFile; fileRef = 79D63C64168C438100A248F9 /* RescanState.m */; };
+		79D63C69168C88F900A248F9 /* DefaultsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79D63C68168C88F900A248F9 /* DefaultsManager.m */; };
 		79D8FFED149DE5A3009B8955 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79D8FFEC149DE5A3009B8955 /* Carbon.framework */; };
 		79DCB7AA165FFB3B00077082 /* FilePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DCB7A9165FFB3B00077082 /* FilePlayer.m */; };
 		79DEAD62165BD81C0017E4DD /* PlaylistItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DEAD61165BD81C0017E4DD /* PlaylistItem.m */; };
@@ -79,6 +80,8 @@
 		79D5760E1431074D00A2DA67 /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = icon.icns; path = ../icon.icns; sourceTree = "<group>"; };
 		79D63C63168C438100A248F9 /* RescanState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RescanState.h; sourceTree = "<group>"; };
 		79D63C64168C438100A248F9 /* RescanState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RescanState.m; sourceTree = "<group>"; };
+		79D63C67168C88F900A248F9 /* DefaultsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultsManager.h; sourceTree = "<group>"; };
+		79D63C68168C88F900A248F9 /* DefaultsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultsManager.m; sourceTree = "<group>"; };
 		79D8FFEC149DE5A3009B8955 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		79DCB7A8165FFB3B00077082 /* FilePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilePlayer.h; sourceTree = "<group>"; };
 		79DCB7A9165FFB3B00077082 /* FilePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilePlayer.m; sourceTree = "<group>"; };
@@ -206,6 +209,8 @@
 		79DAD732165BEC27004AA7B9 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				79D63C67168C88F900A248F9 /* DefaultsManager.h */,
+				79D63C68168C88F900A248F9 /* DefaultsManager.m */,
 			);
 			name = Misc;
 			sourceTree = "<group>";
@@ -369,6 +374,7 @@
 				79EDE63E1678EB9A0060F9F9 /* FolderWatcher.m in Sources */,
 				799EF5ED16884D7000AD3A67 /* RescanProxy.m in Sources */,
 				79D63C65168C438100A248F9 /* RescanState.m in Sources */,
+				79D63C69168C88F900A248F9 /* DefaultsManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

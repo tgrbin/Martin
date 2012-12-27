@@ -10,13 +10,13 @@
 #import "LastFM.h"
 #import "PlaylistItem.h"
 #import "Tags.h"
+#import "DefaultsManager.h"
 
 @implementation LastFM
 
 static NSString * const apiURL = @"http://ws.audioscrobbler.com/2.0/";
 static NSString * const apiKey = @"3a570389ed801f07f07a7ea3d29d6673";
 static NSString * const apiSecret = @"6a6d7126bbaedb1413768474fb1c80bd";
-static NSString * const sessionKeyKey = @"lastfmSessionKey";
 
 static NSString *currentToken = nil;
 
@@ -68,8 +68,7 @@ static NSString *currentToken = nil;
 
       if (l != NSNotFound && r != NSNotFound) {
         NSString *sessionKey = [str substringWithRange:NSMakeRange(l+5, r-l-5)];
-        [[NSUserDefaults standardUserDefaults] setObject:sessionKey forKey:sessionKeyKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        [DefaultsManager setObject:sessionKey forKey:kDefaultsKeyLastFMSession];
         success = YES;
       }
     }
@@ -79,8 +78,7 @@ static NSString *currentToken = nil;
 }
 
 + (void)resetSessionKey {
-  [[NSUserDefaults standardUserDefaults] removeObjectForKey:sessionKeyKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
+  [DefaultsManager setObject:nil forKey:kDefaultsKeyLastFMSession];
 }
 
 + (NSString *)md5HexDigest:(NSString *)input {
@@ -183,7 +181,7 @@ static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionary
 }
 
 + (NSString *)sessionKey {
-  return [[NSUserDefaults standardUserDefaults] objectForKey:sessionKeyKey];
+  return [DefaultsManager objectForKey:kDefaultsKeyLastFMSession];
 }
 
 @end

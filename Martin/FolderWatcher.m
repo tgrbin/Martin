@@ -9,15 +9,13 @@
 #import "FolderWatcher.h"
 #import "LibraryFolder.h"
 #import "RescanProxy.h"
+#import "DefaultsManager.h"
 
 @implementation FolderWatcher {
   FSEventStreamRef eventStream;
 }
 
 static const double eventLatency = 0.3;
-
-static NSString * const kFWEnabledKey = @"kFWEnabledKey";
-static NSString * const kFWLastEventKey = @"kFWLastEventKey";
 
 + (FolderWatcher *)sharedWatcher {
   static FolderWatcher *o = nil;
@@ -34,26 +32,20 @@ static NSString * const kFWLastEventKey = @"kFWLastEventKey";
 
 - (id)init {
   if (self = [super init]) {
-    _enabled = ([[NSUserDefaults standardUserDefaults] objectForKey:kFWEnabledKey] != nil);
+    _enabled = [[DefaultsManager objectForKey:kDefaultsKeyFolderWatcher] boolValue];
     if (_enabled) [self startWatchingFolders];
   }
   return self;
 }
 
 - (void)setEnabled:(BOOL)enabled {
-  if (enabled) [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:kFWEnabledKey];
-  else [[NSUserDefaults standardUserDefaults] removeObjectForKey:kFWEnabledKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
-
-  if (_enabled != enabled) {
-    if (enabled) [self startWatchingFolders];
-    else {
-      [[NSUserDefaults standardUserDefaults] removeObjectForKey:kFWLastEventKey];
-      [self stopWatchingFolders];
-    }
-  }
+  if (_enabled == enabled) return;
 
   _enabled = enabled;
+  [DefaultsManager setObject:@(_enabled) forKey:kDefaultsKeyFolderWatcher];
+
+  if (_enabled) [self startWatchingFolders];
+  else [self stopWatchingFolders];
 }
 
 - (void)startWatchingFolders {
@@ -63,7 +55,7 @@ static NSString * const kFWLastEventKey = @"kFWLastEventKey";
                                     &handleEvent,
                                     NULL,
                                     (CFArrayRef)[LibraryFolder libraryFolders],
-                                    [self lastEventId],
+                                    [[DefaultsManager objectForKey:kDefaultsKeyLastFSEvent] longLongValue],
                                     eventLatency,
                                     kFSEventStreamCreateFlagNone);
 
@@ -71,10 +63,13 @@ static NSString * const kFWLastEventKey = @"kFWLastEventKey";
   FSEventStreamStart(eventStream);
 }
 
-- (FSEventStreamEventId)lastEventId {
-  NSNumber *n = [[NSUserDefaults standardUserDefaults] objectForKey:kFWLastEventKey];
-  if (n == nil) return kFSEventStreamEventIdSinceNow;
-  return [n longLongValue];
+- (void)stopWatchingFolders {
+  if (eventStream != nil) {
+    FSEventStreamStop(eventStream);
+    FSEventStreamInvalidate(eventStream);
+    FSEventStreamRelease(eventStream);
+    eventStream = nil;
+  }
 }
 
 static void handleEvent(
@@ -99,16 +94,7 @@ static void handleEvent(
   [folders release];
   [recursively release];
 
-  [[NSUserDefaults standardUserDefaults] setObject:@(eventIds[numEvents-1]) forKey:kFWLastEventKey];
-}
-
-- (void)stopWatchingFolders {
-  if (eventStream != nil) {
-    FSEventStreamStop(eventStream);
-    FSEventStreamInvalidate(eventStream);
-    FSEventStreamRelease(eventStream);
-    eventStream = nil;
-  }
+  [DefaultsManager setObject:@(eventIds[numEvents-1]) forKey:kDefaultsKeyLastFSEvent];
 }
 
 @end
