@@ -728,7 +728,6 @@
 																	<bool key="NSAllowsTypeSelect">NO</bool>
 																	<int key="NSTableViewDraggingDestinationStyle">0</int>
 																	<int key="NSTableViewGroupRowStyle">1</int>
-																	<bool key="NSOutlineViewAutosaveExpandedItemsKey">YES</bool>
 																</object>
 															</object>
 															<string key="NSFrame">{{1, 1}, {266, 584}}</string>
@@ -801,7 +800,7 @@
 															<string key="NSFrameSize">{156, 623}</string>
 															<reference key="NSSuperview" ref="1000720331"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="809537169"/>
+															<reference key="NSNextKeyView" ref="566755316"/>
 															<string key="NSReuseIdentifierKey">_NS:1197</string>
 															<bool key="NSEnabled">YES</bool>
 															<object class="_NSCornerView" key="NSCornerView">
@@ -896,7 +895,7 @@
 											<string key="NSFrame">{{269, 0}, {158, 625}}</string>
 											<reference key="NSSuperview" ref="773061786"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="566755316"/>
+											<reference key="NSNextKeyView" ref="1000720331"/>
 											<string key="NSReuseIdentifierKey">_NS:1193</string>
 											<int key="NSsFlags">154130</int>
 											<reference key="NSVScroller" ref="809537169"/>
@@ -920,7 +919,7 @@
 															<string key="NSFrameSize">{670, 607}</string>
 															<reference key="NSSuperview" ref="235089209"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="93719460"/>
+															<reference key="NSNextKeyView" ref="135648766"/>
 															<string key="NSReuseIdentifierKey">_NS:1197</string>
 															<bool key="NSEnabled">YES</bool>
 															<object class="NSTableHeaderView" key="NSHeaderView" id="911911819">
@@ -1181,7 +1180,7 @@
 											<string key="NSFrame">{{428, 0}, {672, 625}}</string>
 											<reference key="NSSuperview" ref="773061786"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="135648766"/>
+											<reference key="NSNextKeyView" ref="235089209"/>
 											<string key="NSReuseIdentifierKey">_NS:1193</string>
 											<int key="NSsFlags">154162</int>
 											<reference key="NSVScroller" ref="93719460"/>

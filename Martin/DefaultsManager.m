@@ -18,7 +18,8 @@ static NSDictionary *defaultValues;
     @(kDefaultsKeyFolderWatcher): @YES,
     @(kDefaultsKeyShuffle): @NO,
     @(kDefaultsKeyRepeat): @NO,
-    @(kDefaultsKeyLibraryFolders): @[]
+    @(kDefaultsKeyLibraryFolders): @[],
+    @(kDefaultsKeyTreeState): @[]
   };
 }
 

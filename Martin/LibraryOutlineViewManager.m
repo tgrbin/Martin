@@ -13,8 +13,12 @@
 #import "PlaylistTableManager.h"
 #import "RescanProxy.h"
 #import "RescanState.h"
+#import "TreeStateManager.h"
 
-@implementation LibraryOutlineViewManager
+@implementation LibraryOutlineViewManager {
+  BOOL userIsManipulatingTree;
+  NSMutableSet *userExpandedItems;
+}
 
 static LibraryOutlineViewManager *sharedManager;
 
@@ -41,11 +45,15 @@ static LibraryOutlineViewManager *sharedManager;
                                            selector:@selector(itemDidExpand:)
                                                name:NSOutlineViewItemDidExpandNotification
                                              object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(itemDidCollapse:)
+                                               name:NSOutlineViewItemDidCollapseNotification
+                                             object:nil];
 
   _outlineView.target = self;
   _outlineView.doubleAction = @selector(itemDoubleClicked);
-  [LibManager initLibrary];
-  [_outlineView reloadData];
+
+  [self initTree];
 }
 
 - (void)dealloc {
@@ -55,6 +63,22 @@ static LibraryOutlineViewManager *sharedManager;
 - (void)rescanStateChanged {
   [[RescanState sharedState] setupProgressIndicator:_rescanIndicator andTextField:_rescanMessage];
   _rescanStatusView.hidden = _rescanMessage.isHidden;
+}
+
+#pragma mark - init tree
+
+- (void)initTree {
+  [LibManager initLibrary];
+  [_outlineView reloadData];
+
+  [TreeStateManager restoreState];
+
+  userExpandedItems = [NSMutableSet new];
+  for (int i = 0; i < _outlineView.numberOfRows; ++i) {
+    id item = [_outlineView itemAtRow:i];
+    if ([_outlineView isItemExpanded:item]) [userExpandedItems addObject:item];
+  }
+  userIsManipulatingTree = YES;
 }
 
 #pragma mark - drag and drop
@@ -155,33 +179,8 @@ static LibraryOutlineViewManager *sharedManager;
 #pragma mark - auto expanding
 
 - (void)searchFinished {
-  reloadingTree = YES;
-
   [_outlineView reloadData];
-  [_outlineView collapseItem:nil collapseChildren:YES];
-
-  int visibleRows = (int) (_outlineView.frame.size.height/_outlineView.rowHeight) - 5;
-  int minRows = MAX(3, visibleRows / 10);
-
-  for (;;) {
-    int n = (int)_outlineView.numberOfRows;
-
-    NSMutableArray *itemsToExpand = [NSMutableArray array];
-    int m = 0;
-    for (int i = 0; i < n; ++i) {
-      NSNumber *item = [_outlineView itemAtRow:i];
-      if ([_outlineView isItemExpanded:item] || [Tree isLeaf:item.intValue]) continue;
-      m += [Tree numberOfChildrenForNode:item.intValue] + 1;
-      [itemsToExpand addObject:item];
-    }
-
-    if (itemsToExpand.count == 0) break;
-    if (n >= minRows && m >= visibleRows) break;
-
-    for (id item in itemsToExpand) [_outlineView expandItem:item];
-  }
-
-  reloadingTree = NO;
+  [self autoExpandSearchResults];
 }
 
 - (void)libraryRescanned {
@@ -192,17 +191,70 @@ static LibraryOutlineViewManager *sharedManager;
   }
 }
 
-- (void)itemDidExpand:(NSNotification *)notification {
-  if (notification.object != _outlineView) return;
+// autoexpanding will never cause the need to scroll results
+// items with less children have advantage when expanding
+// if user opened something that is kept open
+- (void)autoExpandSearchResults {
+  userIsManipulatingTree = NO;
 
-  if (!reloadingTree) {
-    NSMutableArray *itemsToExpand = [NSMutableArray new];
-    for (int node = [notification.userInfo[@"NSObject"] intValue]; [Tree numberOfChildrenForNode:node] == 1;) {
-      node = [Tree childAtIndex:0 forNode:node];
-      [itemsToExpand addObject:@(node)];
+  [_outlineView collapseItem:nil collapseChildren:YES];
+  for (id item in userExpandedItems) [self expandWholePathForItem:item];
+
+  for (int visibleRows = (int) (_outlineView.frame.size.height/_outlineView.rowHeight) - 5;;) {
+    NSInteger n = _outlineView.numberOfRows;
+    NSMutableArray *itemsToExpand = [NSMutableArray array];
+    int k = -1;
+
+    for (int j = 0; j < 2; ++j) {
+      for (int i = 0; i < n; ++i) {
+        NSNumber *item = [_outlineView itemAtRow:i];
+        if ([_outlineView isItemExpanded:item] || [Tree isLeaf:item.intValue]) continue;
+        int nChildren = [Tree numberOfChildrenForNode:item.intValue];
+
+        if (j == 0) {
+          if (k == -1 || k > nChildren) k = nChildren;
+        } else {
+          if (nChildren == k) [itemsToExpand addObject:item];
+        }
+      }
     }
+
+    if (itemsToExpand.count == 0 || n + itemsToExpand.count*k > visibleRows) break;
     for (id item in itemsToExpand) [_outlineView expandItem:item];
   }
+
+  userIsManipulatingTree = YES;
+}
+
+- (void)expandWholePathForItem:(id)item {
+  NSMutableArray *arr = [NSMutableArray array];
+  for (int node = [item intValue]; node != -1; node = [Tree parentOfNode:node]) [arr addObject:@(node)];
+  for(; arr.count > 0; [arr removeLastObject]) {
+    [_outlineView expandItem:[arr lastObject]];
+  }
+}
+
+// when you click on item that has only one child, that child is also expanded
+- (void)itemDidExpand:(NSNotification *)notification {
+  if (notification.object != _outlineView || userIsManipulatingTree == NO) return;
+
+  id item = notification.userInfo[@"NSObject"];
+
+  [userExpandedItems addObject:item];
+
+  for (int node = [item intValue]; [Tree numberOfChildrenForNode:node] == 1;) {
+    node = [Tree childAtIndex:0 forNode:node];
+    id child = @(node);
+    [_outlineView expandItem:child];
+    [userExpandedItems addObject:child];
+  }
+}
+
+- (void)itemDidCollapse:(NSNotification *)notification {
+  if (notification.object != _outlineView || userIsManipulatingTree == NO) return;
+
+  id item = notification.userInfo[@"NSObject"];
+  [userExpandedItems removeObject:item];
 }
 
 #pragma mark - search

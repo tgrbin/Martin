@@ -74,16 +74,6 @@ static tr1::unordered_map<ino_t, int> nodeByInode;
   nodeByInode.insert(make_pair(nodes[node].inode, node));
 }
 
-+ (int)songByInode:(ino_t)inode {
-  int node = [self nodeByInode:inode];
-  return node == -1? -1: nodes[node].p_song;
-}
-
-+ (int)nodeByInode:(ino_t)inode {
-  tr1::unordered_map<ino_t, int>::iterator it = nodeByInode.find(inode);
-  return (it == nodeByInode.end())? -1: it->second;
-}
-
 + (struct LibrarySong *)songDataForP:(int)p_song {
   return &songs[p_song];
 }
@@ -154,6 +144,16 @@ static tr1::unordered_map<ino_t, int> nodeByInode;
 
 + (ino_t)inodeForSong:(int)p_song {
   return nodes[songs[p_song].p_treeLeaf].inode;
+}
+
++ (int)songByInode:(ino_t)inode {
+  int node = [self nodeByInode:inode];
+  return node == -1? -1: nodes[node].p_song;
+}
+
++ (int)nodeByInode:(ino_t)inode {
+  tr1::unordered_map<ino_t, int>::iterator it = nodeByInode.find(inode);
+  return (it == nodeByInode.end())? -1: it->second;
 }
 
 + (NSString *)fullPathForSong:(int)p_song {
