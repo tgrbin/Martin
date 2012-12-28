@@ -12,8 +12,8 @@
 
 #import <malloc/malloc.h>
 #import <vector>
-#import <map>
-#import <set>
+#import <unordered_map>
+#import <unordered_set>
 
 using namespace std;
 
@@ -23,7 +23,7 @@ static int nodesCounter;
 static int songsCounter;
 static vector<TreeNode> nodes;
 static vector<LibrarySong> songs;
-static map<ino_t, int> nodeByInode;
+static unordered_map<ino_t, int> nodeByInode;
 
 + (void)initialize {
   nodes.resize(128);
@@ -80,7 +80,7 @@ static map<ino_t, int> nodeByInode;
 }
 
 + (int)nodeByInode:(ino_t)inode {
-  map<ino_t, int>::iterator it = nodeByInode.find(inode);
+  unordered_map<ino_t, int>::iterator it = nodeByInode.find(inode);
   return (it == nodeByInode.end())? -1: it->second;
 }
 
@@ -176,7 +176,7 @@ static NSString *fullPathForNode(int p_node) {
 
 #pragma mark - rescanning
 
-static set<int> nodesToFindPathsFor;
+static unordered_set<int> nodesToFindPathsFor;
 static NSMutableArray *pathsForNodes;
 
 + (NSArray *)pathsForNodes:(NSArray *)nodes {

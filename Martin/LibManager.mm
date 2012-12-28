@@ -18,9 +18,9 @@
 #import <algorithm>
 #import <cstdio>
 #import <vector>
-#import <set>
 #import <ftw.h>
 #import <dirent.h>
+#import <unordered_set>
 
 using namespace std;
 
@@ -38,7 +38,7 @@ static BOOL onRootLevel;
 static int lineNumber;
 static FILE *walkFile;
 
-static set<uint64> pathsToRescan[2];
+static unordered_set<uint64> pathsToRescan[2];
 
 + (void)initLibrary {
   loadLibrary();
