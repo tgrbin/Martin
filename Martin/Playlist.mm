@@ -44,7 +44,7 @@ using namespace std;
     }
     
     playlist.resize(s.count);
-    iota(playlist.begin(), playlist.end(), 0);
+    [self myIota:playlist start:0];
     
     [self shuffle];
   }
@@ -137,7 +137,7 @@ using namespace std;
   int newSize = (int)playlistItems.size();
   
   vector<int> newIndexes(newSize-oldSize);
-  iota(newIndexes.begin(), newIndexes.end(), oldSize);
+  [self myIota:newIndexes start:oldSize];
   
   playlist.insert(playlist.begin()+pos, newIndexes.begin(), newIndexes.end());
   
@@ -361,6 +361,11 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
   }
 
   return playlistItems[currentItem = order[pos]];
+}
+
+- (void)myIota:(vector<int>&) v start:(int)s {
+  size_t n = v.size();
+  for (int i = 0; i < n; ++i) v[i] = s+i;
 }
 
 @end
