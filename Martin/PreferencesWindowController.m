@@ -52,23 +52,23 @@
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   if ([tableColumn.identifier isEqualToString:@"remove"]) return nil;
 
-  return [[LibraryFolder libraryFolders] objectAtIndex:row];
+  return [LibraryFolder libraryFolders][row];
 }
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   if ([tableColumn.identifier isEqualToString:@"folderPath"]) {
-    ((NSButtonCell *)cell).title = [[LibraryFolder libraryFolders] objectAtIndex:row];
+    ((NSButtonCell *)cell).title = [LibraryFolder libraryFolders][row];
   }
 }
 
 - (IBAction)changeFolder:(NSTableView *)sender {
-  NSString *folderPath = [[LibraryFolder libraryFolders] objectAtIndex:sender.clickedRow];
+  NSString *folderPath = [LibraryFolder libraryFolders][sender.clickedRow];
 
   NSOpenPanel *panel = [self configurePanel];
   panel.directoryURL = [NSURL fileURLWithPath:folderPath isDirectory:YES];
 
   if ([panel runModal] == NSFileHandlingPanelOKButton) {
-    [[LibraryFolder libraryFolders] replaceObjectAtIndex:sender.clickedRow withObject:[panel.directoryURL path]];
+    [LibraryFolder libraryFolders][sender.clickedRow] = [panel.directoryURL path];
     [self folderListChanged];
   }
 }

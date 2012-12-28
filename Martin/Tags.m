@@ -48,7 +48,7 @@ static const char *tagNames[] = { "track number", "artist", "album", "title", "g
   Tags *t = [[Tags alloc] init];
   t.values = (NSString **)malloc(kNumberOfTags * sizeof(NSString*));
   for (int i = 0; i < kNumberOfTags; ++i) {
-    t.values[i] = [[tags objectAtIndex:i] retain];
+    t.values[i] = [tags[i] retain];
   }
   return t;
 }

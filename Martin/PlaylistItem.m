@@ -35,7 +35,7 @@
 
     _p_librarySong = _inode? [Tree songByInode:_inode]: -1;
 
-    if (_p_librarySong == -1 && [dictionary objectForKey:@"tags"] != nil) {
+    if (_p_librarySong == -1 && dictionary[@"tags"] != nil) {
       tags = [Tags createTagsFromArray:dictionary[@"tags"]];
     }
   }
@@ -71,7 +71,7 @@
   [self checkLibrarySong];
   if (_p_librarySong != -1) {
     char **t = [Tree songDataForP:_p_librarySong]->tags;
-    return [NSString stringWithCString:t[i] encoding:NSUTF8StringEncoding];
+    return @(t[i]);
   } else {
     return [tags tagValueForIndex:i];
   }

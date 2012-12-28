@@ -18,7 +18,7 @@
     NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:plistPath];
 
     arr = [NSMutableArray new];
-    for (id item in [plist objectForKey:@"LibraryFolders"]) {
+    for (id item in plist[@"LibraryFolders"]) {
       [arr addObject:item];
     }
   }

@@ -108,28 +108,22 @@ static uint64 folderHash(const char *f) {
   return hash;
 }
 
-static NSString *stringFromBuff(char *buff) {
-  size_t len = strlen(buff);
-  if (len > 0 && buff[len-1] == '\n') buff[len-1] = 0;
-  return [NSString stringWithCString:buff encoding:NSUTF8StringEncoding];
-}
-
 static const char *libPath() {
   static NSString *path = nil;
   if (path == nil) path = [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"martin.lib"] retain];
-  return [path cStringUsingEncoding:NSUTF8StringEncoding];
+  return [path UTF8String];
 }
 
 static const char *rescanPath() {
   static NSString *path = nil;
   if (path == nil) path = [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"martin_rescan.lib"] retain];
-  return [path cStringUsingEncoding:NSUTF8StringEncoding];
+  return [path UTF8String];
 }
 
 static const char *rescanHelperPath() {
   static NSString *path = nil;
   if (path == nil) path = [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"martin_rescan_helper.lib"] retain];
-  return [path cStringUsingEncoding:NSUTF8StringEncoding];
+  return [path UTF8String];
 }
 
 static void initWalk() {

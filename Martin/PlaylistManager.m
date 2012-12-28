@@ -46,7 +46,7 @@ static PlaylistManager *sharedManager = nil;
     NSDictionary *data = [NSDictionary dictionaryWithContentsOfFile:plistPath];
 
     for (NSString *key in data) {
-      NSArray *playlistItemsDictionaries = (NSArray*) [data objectForKey:key];
+      NSArray *playlistItemsDictionaries = (NSArray*) data[key];
       NSMutableArray *playlistItems = [NSMutableArray new];
       for (id item in playlistItemsDictionaries) [playlistItems addObject:[[PlaylistItem alloc] initWithDictionary:item]];
       Playlist *playlist = [[Playlist alloc] initWithName:key andPlaylistItems:playlistItems];
@@ -100,7 +100,7 @@ static PlaylistManager *sharedManager = nil;
 }
 
 - (void)updateSelectedPlaylist {
-  _selectedPlaylist = [playlists objectAtIndex:playlistsTable.selectedRow];
+  _selectedPlaylist = playlists[playlistsTable.selectedRow];
   [PlaylistTableManager sharedManager].playlist = _selectedPlaylist;
 }
 

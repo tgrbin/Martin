@@ -36,16 +36,12 @@ using namespace std;
 - (id)initWithName:(NSString *)n andPlaylistItems:(NSArray *)s {
   if (self = [super init]) {
     _name = n;
-
     currentItem = -1;
     
-    for (id item in s) {
-      playlistItems.push_back(item);
-    }
+    for (id item in s) playlistItems.push_back(item);
     
     playlist.resize(s.count);
     [self myIota:playlist start:0];
-    
     [self shuffle];
   }
   return self;

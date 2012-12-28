@@ -130,7 +130,7 @@ static void updateNowPlayingCallback(WSMethodInvocationRef ref, void *info, CFDi
 
   [params setValue:[self apiSignatureForParams:params] forKey:@"api_sig"];
 
-  NSDictionary *dict = [NSDictionary dictionaryWithObject:params forKey:@"params"];
+  NSDictionary *dict = @{@"params": params};
   WSMethodInvocationSetParameters(myRef, (__bridge CFDictionaryRef)dict, (__bridge CFArrayRef)[dict allKeys]);
 
   WSMethodInvocationSetCallBack(myRef, &updateNowPlayingCallback, NULL);
@@ -163,7 +163,7 @@ static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionary
   [params setValue:sessionKey forKey:@"sk"];
   [params setValue:[self apiSignatureForParams:params] forKey:@"api_sig"];
 
-  NSDictionary *dict = [NSDictionary dictionaryWithObject:params forKey:@"params"];
+  NSDictionary *dict = @{@"params": params};
   WSMethodInvocationSetParameters(myRef, (__bridge CFDictionaryRef)dict, (__bridge CFArrayRef)[dict allKeys]);
 
   WSMethodInvocationSetCallBack(myRef, &scrobbleCallback, NULL);
