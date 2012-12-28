@@ -17,7 +17,8 @@ static NSDictionary *defaultValues;
     @(kDefaultsKeyLastFSEvent): @(kFSEventStreamEventIdSinceNow),
     @(kDefaultsKeyFolderWatcher): @YES,
     @(kDefaultsKeyShuffle): @NO,
-    @(kDefaultsKeyRepeat): @NO
+    @(kDefaultsKeyRepeat): @NO,
+    @(kDefaultsKeyLibraryFolders): @[]
   };
 }
 

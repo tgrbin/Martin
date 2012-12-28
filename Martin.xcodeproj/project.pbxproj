@@ -13,7 +13,6 @@
 		79242E231656AB1C006379D6 /* LibraryFolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E221656AB1C006379D6 /* LibraryFolder.m */; };
 		79242E301656B0CF006379D6 /* PreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E2E1656B0CF006379D6 /* PreferencesWindowController.m */; };
 		79242E311656B0CF006379D6 /* PreferencesWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79242E2F1656B0CF006379D6 /* PreferencesWindowController.xib */; };
-		79242E3B1656B45D006379D6 /* Preferences.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79242E3A1656B45D006379D6 /* Preferences.plist */; };
 		792DC197166B5D390003E664 /* Tags.m in Sources */ = {isa = PBXBuildFile; fileRef = 792DC196166B5D390003E664 /* Tags.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		792DC19B166B6E5D0003E664 /* Tree.mm in Sources */ = {isa = PBXBuildFile; fileRef = 792DC19A166B6E5D0003E664 /* Tree.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		795C20AE14377A3E00A61B21 /* Playlist.mm in Sources */ = {isa = PBXBuildFile; fileRef = 795C20AD14377A3D00A61B21 /* Playlist.mm */; };
@@ -54,7 +53,6 @@
 		79242E2D1656B0CF006379D6 /* PreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesWindowController.h; sourceTree = "<group>"; };
 		79242E2E1656B0CF006379D6 /* PreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesWindowController.m; sourceTree = "<group>"; };
 		79242E2F1656B0CF006379D6 /* PreferencesWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PreferencesWindowController.xib; sourceTree = "<group>"; };
-		79242E3A1656B45D006379D6 /* Preferences.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Preferences.plist; sourceTree = "<group>"; };
 		792DC195166B5D390003E664 /* Tags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tags.h; sourceTree = "<group>"; };
 		792DC196166B5D390003E664 /* Tags.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tags.m; sourceTree = "<group>"; };
 		792DC199166B6E5D0003E664 /* Tree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tree.h; sourceTree = "<group>"; };
@@ -201,7 +199,6 @@
 				79D5760E1431074D00A2DA67 /* icon.icns */,
 				79C2ACB7144AB46A00C2699B /* Playlists.plist */,
 				79FF140F142F18A500E27235 /* MainMenu.xib */,
-				79242E3A1656B45D006379D6 /* Preferences.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -341,7 +338,6 @@
 				79D5760F1431074D00A2DA67 /* icon.icns in Resources */,
 				79C2ACB8144AB46A00C2699B /* Playlists.plist in Resources */,
 				79242E311656B0CF006379D6 /* PreferencesWindowController.xib in Resources */,
-				79242E3B1656B45D006379D6 /* Preferences.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

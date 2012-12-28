@@ -7,29 +7,20 @@
 //
 
 #import "LibraryFolder.h"
+#import "DefaultsManager.h"
 
 @implementation LibraryFolder
 
 + (NSMutableArray *)libraryFolders {
   static NSMutableArray *arr = nil;
-
   if (arr == nil) {
-    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"Preferences" ofType:@"plist"];
-    NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:plistPath];
-
-    arr = [NSMutableArray new];
-    for (id item in plist[@"LibraryFolders"]) {
-      [arr addObject:item];
-    }
+    arr = [NSMutableArray arrayWithArray:[DefaultsManager objectForKey:kDefaultsKeyLibraryFolders]];
   }
-
   return arr;
 }
 
 + (void)save {
-  NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"Preferences" ofType:@"plist"];
-  NSDictionary *plist = @{ @"LibraryFolders": [self libraryFolders] };
-  [plist writeToFile:plistPath atomically:YES];
+  [DefaultsManager setObject:[self libraryFolders] forKey:kDefaultsKeyLibraryFolders];
 }
 
 @end
