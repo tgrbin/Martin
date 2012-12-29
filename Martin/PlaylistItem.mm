@@ -27,37 +27,38 @@
   return self;
 }
 
-- (id)initWithDictionary:(NSDictionary *)dictionary {
+- (id)initWithFileStream:(FILE *)f {
+  static const int kBuffSize = 1<<16;
+  static char buff[kBuffSize];
+  static char **ctags;
+  if (ctags == NULL) tagsInit(&ctags);
+  
   if (self = [super init]) {
-    _inode = [dictionary[@"inode"] intValue];
-    _filename = dictionary[@"filename"];
-    _lengthInSeconds = [dictionary[@"length"] intValue];
+    fgets(buff, kBuffSize, f);
+    sscanf(buff, "%lld", &_inode);
+
+    fgets(buff, kBuffSize, f);
+    sscanf(buff, "%d", &_lengthInSeconds);
+
+    fgets(buff, kBuffSize, f);
+    _filename = @(buff);
 
     _p_librarySong = _inode? [Tree songByInode:_inode]: -1;
 
-    if (_p_librarySong == -1 && dictionary[@"tags"] != nil) {
-      tags = [Tags createTagsFromArray:dictionary[@"tags"]];
+    for (int i = 0; i < kNumberOfTags; ++i) {
+      fgets(buff, kBuffSize, f);
+      if (_p_librarySong == -1) tagsSet(ctags, i, buff);
     }
+    
+    if (_p_librarySong == -1) tags = [Tags createTagsFromCTags:ctags];
   }
+  
   return self;
-}
-
-- (NSDictionary *)dictionary {
-  NSMutableDictionary *dict = [NSMutableDictionary new];
-  dict[@"inode"] = [NSString stringWithFormat:@"%lld", _inode];
-  dict[@"length"] = [NSString stringWithFormat:@"%d", self.lengthInSeconds];
-  if (self.filename) dict[@"filename"] = self.filename;
-
-  NSMutableArray *tagsArr = [NSMutableArray array];
-  for (int i = 0; i < kNumberOfTags; ++i) [tagsArr addObject:[self tagValueForIndex:i]];
-  dict[@"tags"] = tagsArr;
-
-  return dict;
 }
 
 - (NSString *)filename {
   [self checkLibrarySong];
-  if (_p_librarySong != -1) return [Tree fullPathForSong:_p_librarySong];
+  if (_p_librarySong != -1) return [Tree pathForSong:_p_librarySong];
   return _filename;
 }
 
@@ -84,6 +85,26 @@
 - (void)checkLibrarySong {
   if (_p_librarySong == -1) return;
   if ([Tree inodeForSong:_p_librarySong] != _inode) _p_librarySong = [Tree songByInode:_inode];
+}
+
+- (void)outputToFileStream:(FILE *)f {
+  [self checkLibrarySong];
+  
+  fprintf(f, "{\n");
+  fprintf(f, "%lld\n", _inode);
+  
+  if (_p_librarySong == -1) {
+    fprintf(f, "%d\n", _lengthInSeconds);
+    fprintf(f, "%s\n", _filename == nil? "": [_filename UTF8String]);
+    for (int i = 0; i < kNumberOfTags; ++i) fprintf(f, "%s\n", [[tags tagValueForIndex:i] UTF8String]);
+  } else {
+    struct LibrarySong *song = [Tree songDataForP:_p_librarySong];
+    fprintf(f, "%d\n", song->lengthInSeconds);
+    fprintf(f, "%s\n", [Tree cStringPathForSong:_p_librarySong]);
+    for (int i = 0; i < kNumberOfTags; ++i) fprintf(f, "%s\n", song->tags[i]);
+  }
+  
+  fprintf(f, "}\n");
 }
 
 @end

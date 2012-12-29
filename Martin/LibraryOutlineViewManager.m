@@ -193,9 +193,6 @@ static LibraryOutlineViewManager *sharedManager;
   }
 }
 
-// autoexpanding will never cause the need to scroll results
-// items with less children have advantage when expanding
-// if user opened something that is kept open
 - (void)autoExpandSearchResults {
   userIsManipulatingTree = NO;
 
@@ -236,7 +233,6 @@ static LibraryOutlineViewManager *sharedManager;
   }
 }
 
-// when you click on item that has only one child, that child is also expanded
 - (void)itemDidExpand:(NSNotification *)notification {
   if (notification.object != _outlineView || userIsManipulatingTree == NO) return;
 

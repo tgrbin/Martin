@@ -37,7 +37,8 @@ struct TreeNode;
 
 + (void)addToNodeByInodeMap:(int)node;
 
-+ (NSString *)fullPathForSong:(int)p_song;
++ (char *)cStringPathForSong:(int)p_song;
++ (NSString *)pathForSong:(int)p_song;
 
 + (void)performSearch:(NSString *)query;
 + (void)resetSearchState;

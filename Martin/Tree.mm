@@ -156,22 +156,36 @@ static tr1::unordered_map<ino_t, int> nodeByInode;
   return (it == nodeByInode.end())? -1: it->second;
 }
 
-+ (NSString *)fullPathForSong:(int)p_song {
-  return [[fullPathForNode(songs[p_song].p_treeLeaf) retain] autorelease];
++ (char *)cStringPathForSong:(int)p_song {
+  return cStringPathForNode(songs[p_song].p_treeLeaf);
+}
+
++ (NSString *)pathForSong:(int)p_song {
+  return fullPathForNode(songs[p_song].p_treeLeaf);
+}
+
+static char *cStringPathForNode(int p_node) {
+  static char buff[1<<16];
+  
+  vector<int> path;
+  for (; p_node > 0; p_node = nodes[p_node].p_parent) path.push_back(p_node);
+  reverse(path.begin(), path.end());
+  
+  size_t n = path.size();
+  char *name, *pos = buff;
+  for (int i = 0; i < n; ++i) {
+    name = nodes[path[i]].name;
+    strcpy(pos, name);
+    pos += strlen(name);
+    *pos++ = '/';
+  }
+  *--pos = 0;
+  
+  return buff;
 }
 
 static NSString *fullPathForNode(int p_node) {
-  vector<char *> v;
-  for (; p_node > 0; p_node = nodes[p_node].p_parent) {
-    v.push_back(nodes[p_node].name);
-  }
-  
-  NSMutableString *str = [NSMutableString new];
-  for (; v.size(); v.pop_back()) {
-    [str appendString:@(v.back())];
-    if (v.size() > 1) [str appendString:@"/"];
-  }
-  return [str autorelease];
+  return @( cStringPathForNode(p_node) );
 }
 
 #pragma mark - rescanning

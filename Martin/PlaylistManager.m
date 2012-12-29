@@ -14,6 +14,8 @@
 #import "LibraryOutlineViewManager.h"
 #import "FilePlayer.h"
 #import "DefaultsManager.h"
+#import "PlaylistPersistence.h"
+#import "LibManager.h"
 
 @implementation PlaylistManager
 
@@ -38,20 +40,14 @@ static PlaylistManager *sharedManager = nil;
 
 - (id)init {
   if (self = [super init]) {
-    playlists = [NSMutableArray new];
+    [LibManager initLibrary];
+
     _shuffle = [[DefaultsManager objectForKey:kDefaultsKeyShuffle] boolValue];
     _repeat = [[DefaultsManager objectForKey:kDefaultsKeyRepeat] boolValue];
 
-    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"Playlists" ofType:@"plist"];
-    NSDictionary *data = [NSDictionary dictionaryWithContentsOfFile:plistPath];
-
-    for (NSString *key in data) {
-      NSArray *playlistItemsDictionaries = (NSArray*) data[key];
-      NSMutableArray *playlistItems = [NSMutableArray new];
-      for (id item in playlistItemsDictionaries) [playlistItems addObject:[[PlaylistItem alloc] initWithDictionary:item]];
-      Playlist *playlist = [[Playlist alloc] initWithName:key andPlaylistItems:playlistItems];
-      [playlists addObject:playlist];
-    }
+    NSDate *timestamp = [NSDate date];
+    playlists = [PlaylistPersistence loadPlaylists];
+    NSLog(@"playlists loading took: %.2lfms", -[timestamp timeIntervalSinceNow]*1000.);
   }
 
   return self;
@@ -69,19 +65,9 @@ static PlaylistManager *sharedManager = nil;
 }
 
 - (void)savePlaylists {
-  NSMutableArray *keys = [NSMutableArray new];
-  NSMutableArray *values = [NSMutableArray new];
-
-  for (Playlist *p in playlists) {
-    [keys addObject:p.name];
-    NSMutableArray *arr = [NSMutableArray new];
-    for (int i = 0; i < p.numberOfItems; ++i) [arr addObject:[p[i] dictionary]];
-    [values addObject:arr];
-  }
-
-  NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"Playlists" ofType:@"plist"];
-  NSDictionary *plistDict = [NSDictionary dictionaryWithObjects:values forKeys:keys];
-  [plistDict writeToFile:plistPath atomically:YES];
+  NSDate *timestamp = [NSDate date];
+  [PlaylistPersistence savePlaylists:playlists];
+  NSLog(@"playlists saving took: %.2lfms", -[timestamp timeIntervalSinceNow]*1000.);
 }
 
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes andName:(NSString *)name {
@@ -181,7 +167,8 @@ static PlaylistManager *sharedManager = nil;
 }
 
 - (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-  ((Playlist*)playlists[row]).name = (NSString *)object;
+  NSString *newName = (NSString *)object;
+  ((Playlist*)playlists[row]).name = [newName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 }
 
 #pragma mark - table delegate

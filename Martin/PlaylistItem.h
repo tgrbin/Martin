@@ -11,8 +11,7 @@
 @interface PlaylistItem : NSObject
 
 - (id)initWithLibrarySong:(int)p_song;
-- (id)initWithDictionary:(NSDictionary *)dictionary;
-- (NSDictionary *)dictionary;
+- (id)initWithFileStream:(FILE *)f;
 
 @property (nonatomic, strong, readonly) NSString *filename;
 @property (nonatomic, readonly) ino_t inode;
@@ -21,5 +20,7 @@
 
 - (NSString *)tagValueForIndex:(int)i;
 - (NSString *)prettyName;
+
+- (void)outputToFileStream:(FILE *)f;
 
 @end

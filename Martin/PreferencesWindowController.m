@@ -164,7 +164,7 @@
 }
 
 - (void)showAlertWithMsg:(NSString *)msg {
-  NSAlert *alert = [[NSAlert alloc] init];
+  NSAlert *alert = [NSAlert new];
   [alert setAlertStyle:NSInformationalAlertStyle];
   [alert setMessageText:msg];
 

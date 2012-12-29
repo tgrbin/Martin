@@ -14,6 +14,7 @@
 #import "TreeNode.h"
 #import "FolderWatcher.h"
 #import "RescanState.h"
+#import "ResourcePath.h"
 
 #import <algorithm>
 #import <cstdio>
@@ -41,7 +42,12 @@ static FILE *walkFile;
 static tr1::unordered_set<uint64> pathsToRescan[2];
 
 + (void)initLibrary {
-  loadLibrary();
+  static BOOL libraryLoaded = NO;
+  
+  if (libraryLoaded == NO) {
+    loadLibrary();
+    libraryLoaded = YES;
+  }
 }
 
 + (void)rescanAll {
@@ -108,27 +114,9 @@ static uint64 folderHash(const char *f) {
   return hash;
 }
 
-static const char *libPath() {
-  static NSString *path = nil;
-  if (path == nil) path = [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"martin.lib"] retain];
-  return [path UTF8String];
-}
-
-static const char *rescanPath() {
-  static NSString *path = nil;
-  if (path == nil) path = [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"martin_rescan.lib"] retain];
-  return [path UTF8String];
-}
-
-static const char *rescanHelperPath() {
-  static NSString *path = nil;
-  if (path == nil) path = [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"martin_rescan_helper.lib"] retain];
-  return [path UTF8String];
-}
-
 static void initWalk() {
   [RescanState sharedState].state = kRescanStateTraversing;
-  walkFile = fopen(rescanPath(), "w");
+  walkFile = fopen([ResourcePath rescanPath], "w");
   lineNumber = 0;
   needsRescan.clear();
   pathBuff[0] = 0;
@@ -160,7 +148,7 @@ static int readTreeNode(FILE *f, int parent) {
 static void loadLibrary() {
   [Tree clearTree];
   
-  FILE *f = fopen(libPath(), "r");
+  FILE *f = fopen([ResourcePath libPath], "r");
   if (f == NULL) return;
   
   vector<int> treePath(1, 0);
@@ -219,8 +207,8 @@ static void rescanID3s() {
   @autoreleasepool {
     [RescanState sharedState].state = kRescanStateReadingID3s;
 
-    FILE *f = fopen(rescanPath(), "r");
-    FILE *g = fopen(rescanHelperPath(), "w");
+    FILE *f = fopen([ResourcePath rescanPath], "r");
+    FILE *g = fopen([ResourcePath rescanHelperPath], "w");
     
     int linesToForward = 0;
     int nextRescanIndex = 0;
@@ -265,13 +253,11 @@ static void rescanID3s() {
     fclose(f);
     fclose(g);
     
-    unlink(libPath());
-    rename(rescanHelperPath(), libPath());
+    unlink([ResourcePath libPath]);
+    rename([ResourcePath rescanHelperPath], [ResourcePath libPath]);
 
-#if nDEBUG
-    unlink(rescanHelperPath());
-    unlink(rescanPath());
-#endif
+//    unlink([ResourcePath rescanHelperPath]);
+//    unlink([ResourcePath rescanPath]);
     
     [RescanState sharedState].state = kRescanStateReloadingLibrary;
     loadLibrary();
