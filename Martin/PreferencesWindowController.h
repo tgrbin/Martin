@@ -14,6 +14,7 @@
   IBOutlet NSButton *rescanLibraryButton;
   IBOutlet NSTextField *rescanStatusTextField;
   IBOutlet NSProgressIndicator *rescanProgressIndicator;
+  IBOutlet NSProgressIndicator *rescanDeterminateIndicator;
   int totalSongs;
 
 // lastFM

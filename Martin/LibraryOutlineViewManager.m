@@ -61,7 +61,9 @@ static LibraryOutlineViewManager *sharedManager;
 }
 
 - (void)rescanStateChanged {
-  [[RescanState sharedState] setupProgressIndicator:_rescanIndicator andTextField:_rescanMessage];
+  [[RescanState sharedState] setupProgressIndicator:_determinateRescanIndicator
+                     indeterminateProgressIndicator:_rescanIndicator
+                                       andTextField:_rescanMessage];
   _rescanStatusView.hidden = _rescanMessage.isHidden;
 }
 

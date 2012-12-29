@@ -61,20 +61,21 @@ static RescanState *sharedState;
   return @"";
 }
 
-- (void)setupProgressIndicator:(NSProgressIndicator *)pi andTextField:(NSTextField *)tf {
+- (void)setupProgressIndicator:(NSProgressIndicator *)pi indeterminateProgressIndicator:(NSProgressIndicator *)ipi andTextField:(NSTextField *)tf {
   if (_state == kRescanStateIdle) {
-    tf.hidden = pi.hidden = YES;
+    tf.hidden = pi.hidden = ipi.hidden = YES;
   } else {
-    tf.hidden = pi.hidden = NO;
+    tf.hidden = NO;
     tf.stringValue = self.message;
 
     if (_state == kRescanStateReadingID3s) {
-      [pi stopAnimation:nil];
-      pi.indeterminate = NO;
+      ipi.hidden = YES;
+      pi.hidden = NO;
       pi.doubleValue = self.currentPercentage;
     } else {
-      pi.indeterminate = YES;
-      [pi startAnimation:nil];
+      pi.hidden = YES;
+      ipi.hidden = NO;
+      [ipi startAnimation:nil];
     }
   }
 }

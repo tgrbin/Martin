@@ -114,7 +114,8 @@
 #pragma mark - rescan state
 
 - (void)rescanStateChanged {
-  [[RescanState sharedState] setupProgressIndicator:rescanProgressIndicator
+  [[RescanState sharedState] setupProgressIndicator:rescanDeterminateIndicator
+                     indeterminateProgressIndicator:rescanProgressIndicator
                                        andTextField:rescanStatusTextField];
 }
 

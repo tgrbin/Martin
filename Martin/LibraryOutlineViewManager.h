@@ -18,6 +18,8 @@
 @property (assign) IBOutlet NSView *rescanStatusView;
 @property (assign) IBOutlet NSProgressIndicator *rescanIndicator;
 @property (assign) IBOutlet NSTextField *rescanMessage;
+@property (assign) IBOutlet NSProgressIndicator *determinateRescanIndicator;
+
 @property (assign) IBOutlet NSTextField *searchTextField;
 
 @end

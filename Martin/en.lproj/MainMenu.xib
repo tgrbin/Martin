@@ -570,10 +570,20 @@
 																	<string key="NSFrame">{{5, 7}, {16, 16}}</string>
 																	<reference key="NSSuperview" ref="147152046"/>
 																	<reference key="NSWindow"/>
-																	<reference key="NSNextKeyView" ref="1051719216"/>
-																	<bool key="NSViewCanDrawConcurrently">YES</bool>
+																	<reference key="NSNextKeyView" ref="990287424"/>
 																	<string key="NSReuseIdentifierKey">_NS:945</string>
 																	<int key="NSpiFlags">20746</int>
+																	<double key="NSMaxValue">100</double>
+																</object>
+																<object class="NSProgressIndicator" id="990287424">
+																	<reference key="NSNextResponder" ref="147152046"/>
+																	<int key="NSvFlags">268</int>
+																	<string key="NSFrame">{{5, 7}, {16, 16}}</string>
+																	<reference key="NSSuperview" ref="147152046"/>
+																	<reference key="NSWindow"/>
+																	<reference key="NSNextKeyView" ref="1051719216"/>
+																	<string key="NSReuseIdentifierKey">_NS:945</string>
+																	<int key="NSpiFlags">20744</int>
 																	<double key="NSMaxValue">100</double>
 																</object>
 																<object class="NSTextField" id="1051719216">
@@ -800,7 +810,7 @@
 															<string key="NSFrameSize">{156, 623}</string>
 															<reference key="NSSuperview" ref="1000720331"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="566755316"/>
+															<reference key="NSNextKeyView" ref="809537169"/>
 															<string key="NSReuseIdentifierKey">_NS:1197</string>
 															<bool key="NSEnabled">YES</bool>
 															<object class="_NSCornerView" key="NSCornerView">
@@ -895,7 +905,7 @@
 											<string key="NSFrame">{{269, 0}, {158, 625}}</string>
 											<reference key="NSSuperview" ref="773061786"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="1000720331"/>
+											<reference key="NSNextKeyView" ref="566755316"/>
 											<string key="NSReuseIdentifierKey">_NS:1193</string>
 											<int key="NSsFlags">154130</int>
 											<reference key="NSVScroller" ref="809537169"/>
@@ -919,7 +929,7 @@
 															<string key="NSFrameSize">{670, 607}</string>
 															<reference key="NSSuperview" ref="235089209"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="135648766"/>
+															<reference key="NSNextKeyView" ref="93719460"/>
 															<string key="NSReuseIdentifierKey">_NS:1197</string>
 															<bool key="NSEnabled">YES</bool>
 															<object class="NSTableHeaderView" key="NSHeaderView" id="911911819">
@@ -1180,7 +1190,7 @@
 											<string key="NSFrame">{{428, 0}, {672, 625}}</string>
 											<reference key="NSSuperview" ref="773061786"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="235089209"/>
+											<reference key="NSNextKeyView" ref="135648766"/>
 											<string key="NSReuseIdentifierKey">_NS:1193</string>
 											<int key="NSsFlags">154162</int>
 											<reference key="NSVScroller" ref="93719460"/>
@@ -1362,6 +1372,14 @@
 						<reference key="destination" ref="89268315"/>
 					</object>
 					<int key="connectionID">805</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">determinateRescanIndicator</string>
+						<reference key="source" ref="698072505"/>
+						<reference key="destination" ref="990287424"/>
+					</object>
+					<int key="connectionID">809</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -2186,6 +2204,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="1051719216"/>
 							<reference ref="711893303"/>
+							<reference ref="990287424"/>
 						</object>
 						<reference key="parent" ref="598450410"/>
 					</object>
@@ -2207,6 +2226,11 @@
 						<int key="objectID">797</int>
 						<reference key="object" ref="999572503"/>
 						<reference key="parent" ref="1051719216"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">807</int>
+						<reference key="object" ref="990287424"/>
+						<reference key="parent" ref="437474512"/>
 					</object>
 				</object>
 			</object>
@@ -2305,6 +2329,7 @@
 					<string>796.IBPluginDependency</string>
 					<string>797.IBPluginDependency</string>
 					<string>803.IBPluginDependency</string>
+					<string>807.IBPluginDependency</string>
 				</object>
 				<object class="NSArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2399,6 +2424,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="unlocalizedProperties">
@@ -2413,7 +2439,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">806</int>
+			<int key="maxID">809</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2441,6 +2467,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>determinateRescanIndicator</string>
 							<string>outlineView</string>
 							<string>rescanIndicator</string>
 							<string>rescanMessage</string>
@@ -2449,6 +2476,7 @@
 						</object>
 						<object class="NSArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSProgressIndicator</string>
 							<string>NSOutlineView</string>
 							<string>NSProgressIndicator</string>
 							<string>NSTextField</string>
@@ -2460,6 +2488,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>determinateRescanIndicator</string>
 							<string>outlineView</string>
 							<string>rescanIndicator</string>
 							<string>rescanMessage</string>
@@ -2468,6 +2497,10 @@
 						</object>
 						<object class="NSArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBToOneOutletInfo">
+								<string key="name">determinateRescanIndicator</string>
+								<string key="candidateClassName">NSProgressIndicator</string>
+							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">outlineView</string>
 								<string key="candidateClassName">NSOutlineView</string>
@@ -2637,6 +2670,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>foldersTableView</string>
 							<string>lastfmProgressIndicator</string>
+							<string>rescanDeterminateIndicator</string>
 							<string>rescanLibraryButton</string>
 							<string>rescanProgressIndicator</string>
 							<string>rescanStatusTextField</string>
@@ -2644,6 +2678,7 @@
 						<object class="NSArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSTableView</string>
+							<string>NSProgressIndicator</string>
 							<string>NSProgressIndicator</string>
 							<string>NSButton</string>
 							<string>NSProgressIndicator</string>
@@ -2656,6 +2691,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>foldersTableView</string>
 							<string>lastfmProgressIndicator</string>
+							<string>rescanDeterminateIndicator</string>
 							<string>rescanLibraryButton</string>
 							<string>rescanProgressIndicator</string>
 							<string>rescanStatusTextField</string>
@@ -2668,6 +2704,10 @@
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">lastfmProgressIndicator</string>
+								<string key="candidateClassName">NSProgressIndicator</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">rescanDeterminateIndicator</string>
 								<string key="candidateClassName">NSProgressIndicator</string>
 							</object>
 							<object class="IBToOneOutletInfo">

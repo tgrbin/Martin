@@ -55,10 +55,14 @@ static id specialRescanAllObject;
 
 - (void)rescanAll {
   @synchronized(rescanLock) {
-    if (pathsToRescan.lastObject != specialRescanAllObject) {
-      [pathsToRescan addObject:specialRescanAllObject];
-      if (pathsToRescan.count == 1) [self initiateRescan];
+    if (pathsToRescan.count >= 2) {
+      id last = pathsToRescan.lastObject;
+      id beforeLast = pathsToRescan[pathsToRescan.count-2];
+      if (last == specialRescanAllObject && beforeLast == specialRescanAllObject) return;
     }
+
+    [pathsToRescan addObject:specialRescanAllObject];
+    if (pathsToRescan.count == 1) [self initiateRescan];
   }
 }
 
