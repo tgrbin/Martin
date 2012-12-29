@@ -60,6 +60,7 @@ static Player *sharedPlayer = nil;
   [self disableTimer];
   [[FilePlayer sharedPlayer] stop];
   nowPlayingTextField.stringValue = @"";
+  _nowPlayingPlaylist = nil;
 }
 
 - (void)playOrPause {
@@ -143,7 +144,6 @@ static Player *sharedPlayer = nil;
 
 - (IBAction)stopPressed:(id)sender {
   [self stop];
-  _nowPlayingPlaylist = nil;
 }
 
 - (void)setNowPlayingPlaylistIfNecessary {

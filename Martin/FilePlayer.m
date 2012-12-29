@@ -72,7 +72,6 @@ static FilePlayer *sharedPlayer = nil;
 #pragma mark - nssound delegate
 
 - (void)sound:(NSSound *)s didFinishPlaying:(BOOL)success {
-  sound = nil;
   if (success) {
     [self stop];
     [self postNotification:kFilePlayerPlayedItemNotification];
