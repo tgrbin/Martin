@@ -31,7 +31,7 @@ static PlaylistTableManager *sharedManager = nil;
   sharedManager = self;
   _playlistTable.target = self;
   _playlistTable.doubleAction = @selector(itemDoubleClicked);
-  [_playlistTable registerForDraggedTypes:@[@"MyDragType"]];
+  [_playlistTable registerForDraggedTypes:@[kMyDragType]];
 
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(playingItemChanged)
@@ -64,8 +64,8 @@ static PlaylistTableManager *sharedManager = nil;
 #pragma mark - drag and drop
 
 - (BOOL)tableView:(NSTableView *)tableView writeRows:(NSArray *)rows toPasteboard:(NSPasteboard *)pboard {
-  [pboard declareTypes:@[@"MyDragType"] owner:nil];
-  [pboard setData:[NSData data] forType:@"MyDragType"];
+  [pboard declareTypes:@[kMyDragType] owner:nil];
+  [pboard setData:[NSData data] forType:kMyDragType];
   _dragRows = rows;
   return YES;
 }

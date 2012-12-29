@@ -29,7 +29,7 @@ static PlaylistManager *sharedManager = nil;
   sharedManager = self;
   playlistsTable.target = [Player sharedPlayer];
   playlistsTable.doubleAction = @selector(playlistItemDoubleClicked);
-  [playlistsTable registerForDraggedTypes:@[@"MyDragType"]];
+  [playlistsTable registerForDraggedTypes:@[kMyDragType]];
   [self updateSelectedPlaylist];
 
   [[NSNotificationCenter defaultCenter] addObserver:self

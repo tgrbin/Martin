@@ -8,6 +8,7 @@
 
 #import "FilePlayer.h"
 #import "PlaylistItem.h"
+#import "DefaultsManager.h"
 
 @implementation FilePlayer
 
@@ -20,7 +21,7 @@ static FilePlayer *sharedPlayer = nil;
 - (void)awakeFromNib {
   sharedPlayer = self;
   _stopped = YES;
-  self.volume = 0.5;
+  self.volume = [[DefaultsManager objectForKey:kDefaultsKeyVolume] doubleValue];
 }
 
 - (void)startPlayingItem:(PlaylistItem *)item {
@@ -81,6 +82,12 @@ static FilePlayer *sharedPlayer = nil;
 - (void)postNotification:(NSString *)notification {
   [[NSNotificationCenter defaultCenter] postNotificationName:notification object:playlistItem];
   [[NSNotificationCenter defaultCenter] postNotificationName:kFilePlayerEventNotification object:nil];
+}
+
+#pragma mark - saving state
+
+- (void)storeVolume {
+  [DefaultsManager setObject:@(_volume) forKey:kDefaultsKeyVolume];
 }
 
 @end

@@ -17,7 +17,8 @@ typedef enum {
   kDefaultsKeyRepeat,
   kDefaultsKeyLastFMSession,
   kDefaultsKeyLibraryFolders,
-  kDefaultsKeyTreeState
+  kDefaultsKeyTreeState,
+  kDefaultsKeyVolume
 } DefaultsKey;
 
 + (id)objectForKey:(DefaultsKey)key;

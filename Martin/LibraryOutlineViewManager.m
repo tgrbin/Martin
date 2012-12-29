@@ -86,8 +86,8 @@ static LibraryOutlineViewManager *sharedManager;
 #pragma mark - drag and drop
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pboard {
-  [pboard declareTypes:@[@"MyDragType"] owner:nil];
-  [pboard setData:[NSData data] forType:@"MyDragType"];
+  [pboard declareTypes:@[kMyDragType] owner:nil];
+  [pboard setData:[NSData data] forType:kMyDragType];
   _draggingItems = items;
   return YES;
 }

@@ -11,6 +11,7 @@
 #import "LibManager.h"
 #import "FolderWatcher.h"
 #import "TreeStateManager.h"
+#import "FilePlayer.h"
 
 @implementation MartinAppDelegate
 
@@ -22,6 +23,7 @@
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
   [[PlaylistManager sharedManager] savePlaylists];
   [TreeStateManager saveState];
+  [[FilePlayer sharedPlayer] storeVolume];
   return YES;
 }
 

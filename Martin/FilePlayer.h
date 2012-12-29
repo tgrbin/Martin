@@ -35,4 +35,6 @@
 - (void)togglePause;
 - (void)stop;
 
+- (void)storeVolume;
+
 @end

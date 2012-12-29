@@ -185,12 +185,12 @@
 				795C20CD14378D9600A61B21 /* PlaylistTableManager.m */,
 				79C2ACB3144AB39200C2699B /* PlaylistManager.h */,
 				79C2ACB4144AB39200C2699B /* PlaylistManager.m */,
+				79FF140C142F18A500E27235 /* MartinAppDelegate.h */,
+				79FF140D142F18A500E27235 /* MartinAppDelegate.m */,
 				79C3821F165D5E2D00C4C627 /* PlaylistTableView.h */,
 				79C38220165D5E2D00C4C627 /* PlaylistTableView.m */,
 				79C38223165D630300C4C627 /* LibraryOutlineView.h */,
 				79C38224165D630300C4C627 /* LibraryOutlineView.m */,
-				79FF140C142F18A500E27235 /* MartinAppDelegate.h */,
-				79FF140D142F18A500E27235 /* MartinAppDelegate.m */,
 			);
 			name = UI;
 			sourceTree = "<group>";
