@@ -44,10 +44,7 @@ static PlaylistManager *sharedManager = nil;
 
     _shuffle = [[DefaultsManager objectForKey:kDefaultsKeyShuffle] boolValue];
     _repeat = [[DefaultsManager objectForKey:kDefaultsKeyRepeat] boolValue];
-
-    NSDate *timestamp = [NSDate date];
     playlists = [PlaylistPersistence loadPlaylists];
-    NSLog(@"playlists loading took: %.2lfms", -[timestamp timeIntervalSinceNow]*1000.);
   }
 
   return self;
@@ -65,9 +62,7 @@ static PlaylistManager *sharedManager = nil;
 }
 
 - (void)savePlaylists {
-  NSDate *timestamp = [NSDate date];
   [PlaylistPersistence savePlaylists:playlists];
-  NSLog(@"playlists saving took: %.2lfms", -[timestamp timeIntervalSinceNow]*1000.);
 }
 
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes andName:(NSString *)name {

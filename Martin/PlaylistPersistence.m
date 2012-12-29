@@ -19,7 +19,6 @@
 
   for (Playlist *p in playlists) {
     fprintf(f, " %s\n", [p.name UTF8String]);
-
     for (int i = 0; i < p.numberOfItems; ++i) {
       [p[i] outputToFileStream:f];
     }

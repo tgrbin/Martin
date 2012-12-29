@@ -104,6 +104,10 @@ static LibraryOutlineViewManager *sharedManager;
   }
 }
 
+- (IBAction)contextMenuAddToPlaylist:(id)sender {
+  [[PlaylistTableManager sharedManager] addTreeNodesToPlaylist:[self itemsToProcessFromContextMenu]];
+}
+
 - (IBAction)contextMenuNewPlaylist:(id)sender {
   [[PlaylistManager sharedManager] addNewPlaylistWithTreeNodes:[self itemsToProcessFromContextMenu]];
 }
@@ -140,17 +144,17 @@ static LibraryOutlineViewManager *sharedManager;
   }
 
   if (onlyFolders) {
-    if (menu.numberOfItems == 1) {
+    if (menu.numberOfItems == 2) {
       NSMenuItem *item = [NSMenuItem new];
       item.target = self;
       item.action = @selector(contextMenuRescanFolder:);
       [menu addItem:item];
     }
 
-    NSMenuItem *item = [menu itemAtIndex:1];
+    NSMenuItem *item = [menu itemAtIndex:2];
     item.title = [NSString stringWithFormat:@"Rescan folder%@", items.count > 1? @"s": @""];
   } else {
-    if (menu.numberOfItems == 2) [menu removeItemAtIndex:1];
+    if (menu.numberOfItems == 3) [menu removeItemAtIndex:2];
   }
 }
 
