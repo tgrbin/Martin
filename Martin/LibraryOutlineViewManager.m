@@ -192,6 +192,8 @@ static LibraryOutlineViewManager *sharedManager;
 - (void)autoExpandSearchResults {
   [self closeAllExceptWhatUserOpened];
 
+  if (_searchTextField.stringValue.length == 0) return;
+
   userIsManipulatingTree = NO;
   for (int visibleRows = (int) (_outlineView.frame.size.height/_outlineView.rowHeight) - 5;;) {
     NSInteger n = _outlineView.numberOfRows;
@@ -216,7 +218,6 @@ static LibraryOutlineViewManager *sharedManager;
     if (itemsToExpand.count == 0 || n + itemsToExpand.count*k > visibleRows) break;
     for (id item in itemsToExpand) [_outlineView expandItem:item];
   }
-
   userIsManipulatingTree = YES;
 }
 
