@@ -29,26 +29,12 @@ static LibraryOutlineViewManager *sharedManager;
 - (void)awakeFromNib {
   sharedManager = self;
 
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(libraryRescanned)
-                                               name:kLibraryRescanFinishedNotification
-                                             object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(searchFinished)
-                                               name:kLibrarySearchFinishedNotification
-                                             object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(rescanStateChanged)
-                                               name:kLibraryRescanStateChangedNotification
-                                             object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(itemDidExpand:)
-                                               name:NSOutlineViewItemDidExpandNotification
-                                             object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(itemDidCollapse:)
-                                               name:NSOutlineViewItemDidCollapseNotification
-                                             object:nil];
+  [self observe:kLibraryRescanFinishedNotification withAction:@selector(libraryRescanned)];
+  [self observe:kLibrarySearchFinishedNotification withAction:@selector(searchFinished)];
+  [self observe:kLibraryRescanStateChangedNotification withAction:@selector(rescanStateChanged)];
+
+  [self observe:NSOutlineViewItemDidExpandNotification withAction:@selector(itemDidExpand:)];
+  [self observe:NSOutlineViewItemDidCollapseNotification withAction:@selector(itemDidCollapse:)];
 
   _outlineView.target = self;
   _outlineView.doubleAction = @selector(itemDoubleClicked);
@@ -58,13 +44,6 @@ static LibraryOutlineViewManager *sharedManager;
 
 - (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)rescanStateChanged {
-  [[RescanState sharedState] setupProgressIndicator:_determinateRescanIndicator
-                     indeterminateProgressIndicator:_rescanIndicator
-                                       andTextField:_rescanMessage];
-  _rescanStatusView.hidden = _rescanMessage.isHidden;
 }
 
 #pragma mark - init tree
@@ -182,7 +161,7 @@ static LibraryOutlineViewManager *sharedManager;
   return [NSString stringWithFormat:@"%@ (%d)", name, [Tree numberOfChildrenForNode:node]];
 }
 
-#pragma mark - auto expanding
+#pragma mark - libmanager notifications
 
 - (void)searchFinished {
   [_outlineView reloadData];
@@ -191,18 +170,29 @@ static LibraryOutlineViewManager *sharedManager;
 
 - (void)libraryRescanned {
   [_outlineView reloadData];
+  [Tree restoreNodesForStoredInodesAndLevelsToSet:userExpandedItems];
   if (_searchTextField.stringValue.length > 0) {
     [Tree resetSearchState];
     [Tree performSearch:_searchTextField.stringValue];
+  } else {
+    [self closeAllExceptWhatUserOpened];
   }
 }
 
+- (void)rescanStateChanged {
+  if ([RescanState sharedState].state == kRescanStateReloadingLibrary) [Tree storeInodesAndLevelsForNodes:userExpandedItems];
+  [[RescanState sharedState] setupProgressIndicator:_determinateRescanIndicator
+                     indeterminateProgressIndicator:_rescanIndicator
+                                       andTextField:_rescanMessage];
+  _rescanStatusView.hidden = _rescanMessage.isHidden;
+}
+
+#pragma mark - auto expanding
+
 - (void)autoExpandSearchResults {
+  [self closeAllExceptWhatUserOpened];
+
   userIsManipulatingTree = NO;
-
-  [_outlineView collapseItem:nil collapseChildren:YES];
-  for (id item in userExpandedItems) [self expandWholePathForItem:item];
-
   for (int visibleRows = (int) (_outlineView.frame.size.height/_outlineView.rowHeight) - 5;;) {
     NSInteger n = _outlineView.numberOfRows;
     NSMutableArray *itemsToExpand = [NSMutableArray array];
@@ -226,6 +216,13 @@ static LibraryOutlineViewManager *sharedManager;
     for (id item in itemsToExpand) [_outlineView expandItem:item];
   }
 
+  userIsManipulatingTree = YES;
+}
+
+- (void)closeAllExceptWhatUserOpened {
+  userIsManipulatingTree = NO;
+  [_outlineView collapseItem:nil collapseChildren:YES];
+  for (id item in userExpandedItems) [self expandWholePathForItem:item];
   userIsManipulatingTree = YES;
 }
 
@@ -284,6 +281,15 @@ static LibraryOutlineViewManager *sharedManager;
   }
 
   return NO;
+}
+
+#pragma mark - util
+
+- (void)observe:(NSString *)name withAction:(SEL)action {
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:action
+                                               name:name
+                                             object:nil];
 }
 
 @end

@@ -41,6 +41,7 @@
     sscanf(buff, "%d", &_lengthInSeconds);
 
     fgets(buff, kBuffSize, f);
+    buff[strlen(buff)-1] = 0;
     _filename = @(buff);
 
     _p_librarySong = _inode? [Tree songByInode:_inode]: -1;

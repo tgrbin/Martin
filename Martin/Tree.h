@@ -52,4 +52,7 @@ struct TreeNode;
 + (struct LibrarySong *)songDataForP:(int)p_song;
 + (struct TreeNode *)treeNodeDataForP:(int)p_node;
 
++ (void)storeInodesAndLevelsForNodes:(NSSet *)nodes;
++ (void)restoreNodesForStoredInodesAndLevelsToSet:(NSMutableSet *)set;
+
 @end
