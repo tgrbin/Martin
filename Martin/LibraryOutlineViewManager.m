@@ -203,6 +203,7 @@ static LibraryOutlineViewManager *sharedManager;
         NSNumber *item = [_outlineView itemAtRow:i];
         if ([_outlineView isItemExpanded:item] || [Tree isLeaf:item.intValue]) continue;
         int nChildren = [Tree numberOfChildrenForNode:item.intValue];
+        if (nChildren == 0) continue;
 
         if (j == 0) {
           if (k == -1 || k > nChildren) k = nChildren;
