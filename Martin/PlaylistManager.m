@@ -107,21 +107,53 @@ static PlaylistManager *sharedManager = nil;
 
 #pragma mark - drag and drop
 
+- (BOOL)tableView:(NSTableView *)tableView writeRows:(NSArray *)rows toPasteboard:(NSPasteboard *)pboard {
+  [pboard declareTypes:@[kMyDragType] owner:nil];
+  [pboard setData:[NSData data] forType:kMyDragType];
+  dragRows = rows;
+  return YES;
+}
+
 - (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
-  if (info.draggingSource == [LibraryOutlineViewManager sharedManager].outlineView) {
-    return NSDragOperationCopy;
-  } else if (info.draggingSource == [PlaylistTableManager sharedManager].playlistTable) {
-    return NSDragOperationCopy;
-  } else {
-    return NSDragOperationNone;
+  if (info.draggingSource == [LibraryOutlineViewManager sharedManager].outlineView
+   || info.draggingSource == [PlaylistTableManager sharedManager].playlistTable
+   || info.draggingSource == playlistsTable)
+  {
+      return NSDragOperationCopy;
   }
+
+  return NSDragOperationNone;
 }
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
   BOOL fromLibrary = info.draggingSource == [LibraryOutlineViewManager sharedManager].outlineView;
   BOOL fromPlaylist = info.draggingSource == [PlaylistTableManager sharedManager].playlistTable;
+  BOOL fromPlaylistsTable = info.draggingSource == playlistsTable;
 
-  if (fromLibrary || fromPlaylist) {
+  if (fromPlaylistsTable) {
+    if (dropOperation == NSTableViewDropAbove) {
+      NSMutableIndexSet *rowsToRelocate = [NSMutableIndexSet new];
+      NSMutableArray *objectsToRelocate = [NSMutableArray new];
+      __block NSInteger dest = row;
+      for (NSNumber *n in dragRows) {
+        int i = n.intValue;
+        [objectsToRelocate addObject:playlists[i]];
+        [rowsToRelocate addIndex:i];
+        if (i < row) --dest;
+      };
+
+      NSIndexSet *destIndexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(dest, dragRows.count)];
+      [playlists removeObjectsAtIndexes:rowsToRelocate];
+      [playlists insertObjects:objectsToRelocate atIndexes:destIndexSet];
+      [playlistsTable reloadData];
+      ignoreSelectionChange = YES;
+      [playlistsTable selectRowIndexes:destIndexSet byExtendingSelection:NO];
+      ignoreSelectionChange = NO;
+    } else {
+
+    }
+    return YES;
+  } else if (fromLibrary || fromPlaylist) {
     NSArray *items;
 
     if (fromLibrary) items = [LibraryOutlineViewManager sharedManager].draggingItems;
@@ -179,7 +211,9 @@ static PlaylistManager *sharedManager = nil;
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)notification {
-  [self updateSelectedPlaylist];
+  if (ignoreSelectionChange == NO) {
+    [self updateSelectedPlaylist];
+  }
 }
 
 @end

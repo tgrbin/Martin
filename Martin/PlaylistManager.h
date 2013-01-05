@@ -13,6 +13,9 @@
 @interface PlaylistManager : NSObject <NSTableViewDataSource, NSTableViewDelegate> {
   NSMutableArray *playlists;
   IBOutlet NSTableView *playlistsTable;
+
+  NSArray *dragRows;
+  BOOL ignoreSelectionChange;
 }
 
 + (PlaylistManager *)sharedManager;
