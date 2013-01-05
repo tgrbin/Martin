@@ -120,8 +120,6 @@ using namespace std;
 }
 
 - (void)addPlaylistItemsOrTreeNodes:(NSArray *)arr atPos:(int)pos {
-  [self resetCurrentItemIfStopped];
-  
   int oldSize = (int)playlistItems.size();
   for (id item in arr) {
     if ([item isKindOfClass:[PlaylistItem class]]) {
@@ -230,6 +228,14 @@ using namespace std;
 - (void)reverse {
   [self resetCurrentItemIfStopped];  
   reverse(playlist.begin(), playlist.end());
+}
+
+- (void)addItemsFromPlaylist:(Playlist *)p {
+  @autoreleasepool {
+    NSMutableArray *arr = [NSMutableArray new];
+    for (int i = 0; i < p.numberOfItems; ++i) [arr addObject:p[i]];
+    [self addPlaylistItems:arr];
+  }
 }
 
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes {

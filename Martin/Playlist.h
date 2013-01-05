@@ -26,6 +26,7 @@
 - (int)reorderSongs:(NSArray *)rows atPos:(int)pos;
 - (void)sortBy:(NSString *)str;
 - (void)reverse;
+- (void)addItemsFromPlaylist:(Playlist *)p;
 
 - (int)numberOfItems;
 - (PlaylistItem *)objectAtIndexedSubscript:(int)index;

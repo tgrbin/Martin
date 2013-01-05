@@ -150,7 +150,11 @@ static PlaylistManager *sharedManager = nil;
       [playlistsTable selectRowIndexes:destIndexSet byExtendingSelection:NO];
       ignoreSelectionChange = NO;
     } else {
-
+      Playlist *destPlaylist = playlists[row];
+      for (NSNumber *n in dragRows) {
+        [destPlaylist addItemsFromPlaylist:playlists[n.intValue]];
+      }
+      [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
     }
     return YES;
   } else if (fromLibrary || fromPlaylist) {
