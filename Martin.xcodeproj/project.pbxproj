@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7904597E168D7D0900FE0B68 /* TreeStateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7904597D168D7D0900FE0B68 /* TreeStateManager.m */; };
+		790705B61698791700477903 /* PlaylistsTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 790705B51698791700477903 /* PlaylistsTableView.m */; };
 		7909CEA1167DBDE90011E6A3 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7909CEA0167DBDE80011E6A3 /* IOKit.framework */; };
 		79242E1E16569A47006379D6 /* ID3Reader.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E1D16569A47006379D6 /* ID3Reader.m */; };
 		79242E2016569BA3006379D6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79242E1F16569BA3006379D6 /* AudioToolbox.framework */; };
@@ -48,6 +49,8 @@
 /* Begin PBXFileReference section */
 		7904597C168D7D0800FE0B68 /* TreeStateManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreeStateManager.h; sourceTree = "<group>"; };
 		7904597D168D7D0900FE0B68 /* TreeStateManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TreeStateManager.m; sourceTree = "<group>"; };
+		790705B41698791700477903 /* PlaylistsTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistsTableView.h; sourceTree = "<group>"; };
+		790705B51698791700477903 /* PlaylistsTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistsTableView.m; sourceTree = "<group>"; };
 		7909CEA0167DBDE80011E6A3 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		79242E1C16569A47006379D6 /* ID3Reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ID3Reader.h; sourceTree = "<group>"; };
 		79242E1D16569A47006379D6 /* ID3Reader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ID3Reader.m; sourceTree = "<group>"; };
@@ -191,6 +194,8 @@
 				79C38220165D5E2D00C4C627 /* PlaylistTableView.m */,
 				79C38223165D630300C4C627 /* LibraryOutlineView.h */,
 				79C38224165D630300C4C627 /* LibraryOutlineView.m */,
+				790705B41698791700477903 /* PlaylistsTableView.h */,
+				790705B51698791700477903 /* PlaylistsTableView.m */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -385,6 +390,7 @@
 				7904597E168D7D0900FE0B68 /* TreeStateManager.m in Sources */,
 				79D83065168EE0F50000C8EF /* PlaylistPersistence.m in Sources */,
 				79D83069168EE1530000C8EF /* ResourcePath.m in Sources */,
+				790705B61698791700477903 /* PlaylistsTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

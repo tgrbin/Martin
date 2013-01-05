@@ -29,4 +29,7 @@
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes;
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes andName:(NSString *)name;
 
+- (void)deleteSelectedPlaylists;
+- (void)startPlaylingSelectedPlaylist;
+
 @end

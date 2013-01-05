@@ -74,9 +74,9 @@ static PlaylistTableManager *sharedManager = nil;
   if (info.draggingSource == [LibraryOutlineViewManager sharedManager].outlineView || info.draggingSource == tableView) {
     [tableView setDropRow:row dropOperation:NSTableViewDropAbove];
     return NSDragOperationCopy;
-  } else {
-    return NSDragOperationNone;
   }
+
+  return NSDragOperationNone;
 }
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {

@@ -27,8 +27,8 @@ static PlaylistManager *sharedManager = nil;
 
 - (void)awakeFromNib {
   sharedManager = self;
-  playlistsTable.target = [Player sharedPlayer];
-  playlistsTable.doubleAction = @selector(playlistItemDoubleClicked);
+  playlistsTable.target = self;
+  playlistsTable.doubleAction = @selector(startPlaylingSelectedPlaylist);
   [playlistsTable registerForDraggedTypes:@[kMyDragType]];
   [self updateSelectedPlaylist];
 
@@ -89,14 +89,28 @@ static PlaylistManager *sharedManager = nil;
   [playlistsTable reloadData];
 }
 
+- (void)deleteSelectedPlaylists {
+  NSIndexSet *is = [playlistsTable selectedRowIndexes];
+  if (playlists.count - is.count < 1) return; // at least one playlist must remain
+
+  [playlists removeObjectsAtIndexes:is];
+  [playlistsTable reloadData];
+  [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:playlistsTable.selectedRow] byExtendingSelection:NO];
+  [self updateSelectedPlaylist];
+}
+
+- (void)startPlaylingSelectedPlaylist {
+  NSInteger row = playlistsTable.clickedRow;
+  if (row == -1) row = playlistsTable.selectedRow;
+
+  [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+  [[Player sharedPlayer] playItemWithIndex:0];
+}
+
 #pragma mark - buttons
 
 - (IBAction)deletePlaylistPressed:(id)sender {
-  if (playlists.count > 1) { // nemozes izbrisat sve playliste
-    [playlists removeObjectAtIndex:playlistsTable.selectedRow];
-    [playlistsTable reloadData];
-    [self updateSelectedPlaylist];
-  }
+  [self deleteSelectedPlaylists];
 }
 
 - (IBAction)addPlaylistPressed:(id)sender {
