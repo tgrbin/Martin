@@ -109,25 +109,32 @@ using namespace std;
 
 #pragma mark - manage playlist
 
-- (void)addPlaylistItems:(NSArray *)arr atPos:(int)pos {
-  [self resetCurrentItemIfStopped];
-  [self addPlaylistItemsOrTreeNodes:arr atPos:pos];
+- (int)addPlaylistItems:(NSArray *)arr {
+  return [self addPlaylistItems:arr atPos:self.numberOfItems];
 }
 
-- (void)addPlaylistItems:(NSArray *)arr {
-  [self resetCurrentItemIfStopped];
-  [self addPlaylistItemsOrTreeNodes:arr atPos:self.numberOfItems];
+- (int)addPlaylistItems:(NSArray *)arr atPos:(int)pos {
+  return [self addPlaylistItemsOrTreeNodes:arr atPos:pos];
 }
 
-- (void)addTreeNodes:(NSArray *)treeNodes atPos:(int)pos {
-  [self resetCurrentItemIfStopped];
-  [self addPlaylistItemsOrTreeNodes:treeNodes atPos:pos];
+- (int)addTreeNodes:(NSArray *)treeNodes {
+  return [self addTreeNodes:treeNodes atPos:self.numberOfItems];
 }
 
-- (void)addPlaylistItemsOrTreeNodes:(NSArray *)arr atPos:(int)pos {
+- (int)addTreeNodes:(NSArray *)treeNodes atPos:(int)pos {
+  return [self addPlaylistItemsOrTreeNodes:treeNodes atPos:pos];
+}
+
+- (int)addPlaylistItemsOrTreeNodes:(NSArray *)arr atPos:(int)pos {
+  [self resetCurrentItemIfStopped];
+
+  if (arr.count == 0) return 0;
+  
+  BOOL addingPlaylistItems = [arr[0] isKindOfClass:[PlaylistItem class]];
+  
   int oldSize = (int)playlistItems.size();
   for (id item in arr) {
-    if ([item isKindOfClass:[PlaylistItem class]]) {
+    if (addingPlaylistItems) {
       playlistItems.push_back(item);
     } else {
       [self traverseNodeAndAddItems:[item intValue]];
@@ -150,19 +157,21 @@ using namespace std;
   }
   
   random_shuffle(it, shuffled.end());
+  
+  return newSize - oldSize;
 }
 
-- (void)addItemsFromPlaylist:(Playlist *)p {
-  [self addItemsFromPlaylists:@[p] atPos:self.numberOfItems];
+- (int)addItemsFromPlaylist:(Playlist *)p {
+  return [self addItemsFromPlaylists:@[p] atPos:self.numberOfItems];
 }
 
-- (void)addItemsFromPlaylists:(NSArray *)arr atPos:(int)pos {
+- (int)addItemsFromPlaylists:(NSArray *)arr atPos:(int)pos {
   @autoreleasepool {
     NSMutableArray *allItems = [NSMutableArray new];
     for (Playlist *p in arr) {
       for (int i = 0; i < p.numberOfItems; ++i) [allItems addObject:p[i]];
     }
-    [self addPlaylistItemsOrTreeNodes:allItems atPos:pos];
+    return [self addPlaylistItemsOrTreeNodes:allItems atPos:pos];
   }
 }
 
@@ -180,7 +189,7 @@ using namespace std;
   }
 }
 
-- (int)reorderSongs:(NSArray *)rows atPos:(int)pos {
+- (int)reorderItemsAtRows:(NSArray *)rows toPos:(int)pos {
   [self resetCurrentItemIfStopped];
   
   vector<int> tmp;

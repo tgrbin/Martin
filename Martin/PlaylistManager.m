@@ -18,6 +18,7 @@
 #import "LibManager.h"
 #import "DragDataConverter.h"
 #import "NSObject+Observe.h"
+#import "MartinAppDelegate.h"
 
 @implementation PlaylistManager
 
@@ -99,7 +100,12 @@ static PlaylistManager *sharedManager = nil;
 
   [_playlists removeObjectsAtIndexes:is];
   [_playlistsTable reloadData];
-  [_playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:_playlistsTable.selectedRow] byExtendingSelection:NO];
+
+  // without this first item becomes selected after removing the last one, i don't like that
+  if (is.count == 1 && [is lastIndex] == _playlistsTable.numberOfRows) {
+    [_playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:_playlistsTable.numberOfRows - 1] byExtendingSelection:NO];
+  }
+
   [self updateSelectedPlaylist];
 }
 
@@ -133,20 +139,13 @@ static PlaylistManager *sharedManager = nil;
 }
 
 - (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
-  if (info.draggingSource == [LibraryOutlineViewManager sharedManager].outlineView
-   || info.draggingSource == [PlaylistTableManager sharedManager].playlistTable
-   || info.draggingSource == _playlistsTable)
-  {
-    [self resetDragHoverTimer];
-    if (dropOperation == NSTableViewDropOn) {
-      dragHoverRow = row;
-      [self setDragHoverTimer];
-    }
-
-    return NSDragOperationCopy;
+  [self resetDragHoverTimer];
+  if (dropOperation == NSTableViewDropOn) {
+    dragHoverRow = row;
+    [self setDragHoverTimer];
   }
 
-  return NSDragOperationNone;
+  return NSDragOperationCopy;
 }
 
 - (void)setDragHoverTimer {
@@ -209,6 +208,8 @@ static PlaylistManager *sharedManager = nil;
     [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
     [self updateSelectedPlaylist];
   }
+
+  [[MartinAppDelegate get].window makeFirstResponder:_playlistsTable];
 
   return YES;
 }

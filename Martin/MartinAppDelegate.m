@@ -15,6 +15,10 @@
 
 @implementation MartinAppDelegate
 
++ (MartinAppDelegate *)get {
+  return [[NSApplication sharedApplication] delegate];
+}
+
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
   if (flag == NO) [_window makeKeyAndOrderFront:nil];
   return YES;

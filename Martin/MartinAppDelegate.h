@@ -10,6 +10,8 @@
 
 @interface MartinAppDelegate : NSObject <NSApplicationDelegate>
 
++ (MartinAppDelegate *)get;
+
 @property (nonatomic, strong) IBOutlet NSWindow *window;
 @property (nonatomic, strong) IBOutlet NSWindowController *preferencesWindowController;
 

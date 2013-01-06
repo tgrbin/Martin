@@ -20,14 +20,18 @@
 - (id)initWithTreeNodes:(NSArray *)arr; // these two method suggest playlist name based on items
 - (id)initWithPlaylistItems:(NSArray *)arr;
 
-- (void)addPlaylistItems:(NSArray *)arr;
-- (void)addPlaylistItems:(NSArray *)arr atPos:(int)pos;
-- (void)addItemsFromPlaylist:(Playlist *)p;
-- (void)addItemsFromPlaylists:(NSArray *)arr atPos:(int)pos;
-- (void)addTreeNodes:(NSArray *)treeNodes atPos:(int)pos;
+// these methods return number of items added
+- (int)addPlaylistItems:(NSArray *)arr;
+- (int)addPlaylistItems:(NSArray *)arr atPos:(int)pos;
+- (int)addItemsFromPlaylist:(Playlist *)p;
+- (int)addItemsFromPlaylists:(NSArray *)arr atPos:(int)pos;
+- (int)addTreeNodes:(NSArray *)treeNodes;
+- (int)addTreeNodes:(NSArray *)treeNodes atPos:(int)pos;
+
+// returns actual position where the items landed
+- (int)reorderItemsAtRows:(NSArray *)rows toPos:(int)pos;
 
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes;
-- (int)reorderSongs:(NSArray *)rows atPos:(int)pos;
 - (void)sortBy:(NSString *)str;
 - (void)reverse;
 

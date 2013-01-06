@@ -18,6 +18,7 @@
 #import "TagsUtils.h"
 #import "DragDataConverter.h"
 #import "NSObject+Observe.h"
+#import "MartinAppDelegate.h"
 
 @implementation PlaylistTableManager {
   Playlist *dragSourcePlaylist;
@@ -78,32 +79,35 @@ static PlaylistTableManager *sharedManager = nil;
   NSString *draggingType = [info.draggingPasteboard.types lastObject];
   NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:draggingType]];
 
+  int endPosition = (int)row;
+  int itemsCount = (int)items.count;
+
   if ([draggingType isEqualToString:kDragTypeTreeNodes]) {
 
-    [_playlist addTreeNodes:items atPos:(int)row];
+    itemsCount = [_playlist addTreeNodes:items atPos:endPosition];
 
   } else if ([draggingType isEqualToString:kDragTypePlaylistsRows]) {
 
     NSMutableArray *arr = [NSMutableArray new];
     for (NSNumber *n in items) [arr addObject:[PlaylistManager sharedManager].playlists[n.intValue]];
-    [_playlist addItemsFromPlaylists:arr atPos:(int)row];
+    itemsCount = [_playlist addItemsFromPlaylists:arr atPos:endPosition];
 
   } else if ([draggingType isEqualToString:kDragTypePlaylistItemsRows]) {
 
-    int newPos = (int)row;
-
     if (dragSourcePlaylist == _playlist) {
-      newPos = [_playlist reorderSongs:items atPos:(int)row];
+      endPosition = [_playlist reorderItemsAtRows:items toPos:endPosition];
     } else {
       NSMutableArray *arr = [NSMutableArray new];
       for (NSNumber *n in items) [arr addObject:dragSourcePlaylist[n.intValue]];
-      [_playlist addPlaylistItems:arr atPos:(int)row];
+      itemsCount = [_playlist addPlaylistItems:arr atPos:endPosition];
     }
-
-    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(newPos, items.count)] byExtendingSelection:NO];
   }
 
   [self reloadTable];
+  [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(endPosition, itemsCount)] byExtendingSelection:NO];
+
+  [[MartinAppDelegate get].window makeFirstResponder:tableView];
+
   return YES;
 }
 
