@@ -47,6 +47,7 @@
   [self initTree];
 
   [ShortcutBinder bindControl:outlineView andKey:kMartinKeyEnter toTarget:self andAction:@selector(addSelectedItemsToPlaylist)];
+  [ShortcutBinder bindControl:outlineView andKey:kMartinKeyCmdEnter toTarget:self andAction:@selector(createPlaylistWithSelectedItems)];
 }
 
 - (void)saveState {
@@ -54,12 +55,20 @@
 }
 
 - (void)addSelectedItemsToPlaylist {
+  [[MartinAppDelegate get].playlistTableManager addTreeNodesToPlaylist:[self selectedItems]];
+}
+
+- (void)createPlaylistWithSelectedItems {
+  [[MartinAppDelegate get].playlistManager addNewPlaylistWithTreeNodes:[self selectedItems]];
+}
+
+- (NSArray *)selectedItems {
   NSIndexSet *selectedRows = outlineView.selectedRowIndexes;
   NSMutableArray *selectedItems = [NSMutableArray new];
   for (NSInteger row = selectedRows.firstIndex; row != NSNotFound; row = [selectedRows indexGreaterThanIndex:row]) {
     [selectedItems addObject:[outlineView itemAtRow:row]];
   }
-  [[MartinAppDelegate get].playlistTableManager addTreeNodesToPlaylist:selectedItems];
+  return selectedItems;
 }
 
 #pragma mark - init tree

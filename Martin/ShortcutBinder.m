@@ -49,7 +49,11 @@ static void hookClass(Class cls) {
       if (self != binding[0]) continue;
       if ([binding[1] intValue] != key) continue;
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
       [binding[2] performSelector:NSSelectorFromString(binding[3])];
+#pragma clang diagnostic pop
+
       return;
     }
   }
@@ -62,6 +66,7 @@ static MartinKey keyFromEvent(NSEvent *event) {
     NSString *pressedChars = event.characters;
     if (pressedChars.length == 1) {
       unichar pressedUnichar = [pressedChars characterAtIndex:0];
+      NSUInteger flags = (event.modifierFlags & NSDeviceIndependentModifierFlagsMask);
 
       switch (pressedUnichar) {
         case NSDeleteCharacter:
@@ -71,6 +76,7 @@ static MartinKey keyFromEvent(NSEvent *event) {
         case NSEnterCharacter:
         case NSNewlineCharacter:
         case NSCarriageReturnCharacter:
+          if ( (flags&NSCommandKeyMask) == NSCommandKeyMask ) return kMartinKeyCmdEnter;
           return kMartinKeyEnter;
       }
     }
