@@ -41,4 +41,9 @@
   if (!eventProcessed) [super keyDown:event];
 }
 
+- (void)draggingExited:(id<NSDraggingInfo>)sender {
+  [super draggingExited:sender];
+  [[PlaylistManager sharedManager] dragExited];
+}
+
 @end

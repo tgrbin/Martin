@@ -12,6 +12,8 @@
 
 @interface PlaylistManager : NSObject <NSTableViewDataSource, NSTableViewDelegate> {
   BOOL ignoreSelectionChange;
+  NSTimer *dragHoverTimer;
+  NSInteger dragHoverRow;
 }
 
 + (PlaylistManager *)sharedManager;
@@ -30,5 +32,7 @@
 
 - (void)deleteSelectedPlaylists;
 - (void)startPlaylingSelectedPlaylist;
+
+- (void)dragExited;
 
 @end

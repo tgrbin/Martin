@@ -147,7 +147,6 @@ using namespace std;
   random_shuffle(it, shuffled.end());
 }
 
-
 - (void)addItemsFromPlaylist:(Playlist *)p {
   [self addItemsFromPlaylists:@[p] atPos:self.numberOfItems];
 }

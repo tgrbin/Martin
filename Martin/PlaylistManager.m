@@ -19,6 +19,8 @@
 
 @implementation PlaylistManager
 
+static const double dragHoverTime = 1;
+
 static PlaylistManager *sharedManager = nil;
 
 + (PlaylistManager *)sharedManager {
@@ -133,10 +135,38 @@ static PlaylistManager *sharedManager = nil;
    || info.draggingSource == [PlaylistTableManager sharedManager].playlistTable
    || info.draggingSource == _playlistsTable)
   {
-      return NSDragOperationCopy;
+    [self resetDragHoverTimer];
+    if (dropOperation == NSTableViewDropOn) {
+      dragHoverRow = row;
+      [self setDragHoverTimer];
+    }
+
+    return NSDragOperationCopy;
   }
 
   return NSDragOperationNone;
+}
+
+- (void)setDragHoverTimer {
+  dragHoverTimer = [NSTimer scheduledTimerWithTimeInterval:dragHoverTime
+                                                    target:self
+                                                  selector:@selector(dragHovered)
+                                                  userInfo:nil
+                                                   repeats:NO];
+}
+
+- (void)dragHovered {
+  [self resetDragHoverTimer];
+  [_playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:dragHoverRow] byExtendingSelection:NO];
+}
+
+- (void)dragExited {
+  [self resetDragHoverTimer];
+}
+
+- (void)resetDragHoverTimer {
+  [dragHoverTimer invalidate];
+  dragHoverTimer = nil;
 }
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
