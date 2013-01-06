@@ -27,9 +27,9 @@ static PlaylistManager *sharedManager = nil;
 
 - (void)awakeFromNib {
   sharedManager = self;
-  playlistsTable.target = self;
-  playlistsTable.doubleAction = @selector(startPlaylingSelectedPlaylist);
-  [playlistsTable registerForDraggedTypes:@[kMyDragType]];
+  _playlistsTable.target = self;
+  _playlistsTable.doubleAction = @selector(startPlaylingSelectedPlaylist);
+  [_playlistsTable registerForDraggedTypes:@[kMyDragType]];
   [self updateSelectedPlaylist];
 
   [[NSNotificationCenter defaultCenter] addObserver:self
@@ -44,7 +44,7 @@ static PlaylistManager *sharedManager = nil;
 
     _shuffle = [[DefaultsManager objectForKey:kDefaultsKeyShuffle] boolValue];
     _repeat = [[DefaultsManager objectForKey:kDefaultsKeyRepeat] boolValue];
-    playlists = [PlaylistPersistence loadPlaylists];
+    _playlists = [PlaylistPersistence loadPlaylists];
   }
 
   return self;
@@ -53,7 +53,7 @@ static PlaylistManager *sharedManager = nil;
 - (void)setShuffle:(BOOL)shuffle {
   _shuffle = shuffle;
   [DefaultsManager setObject:@(_shuffle) forKey:kDefaultsKeyShuffle];
-  for (Playlist *pl in playlists) [pl shuffle];
+  for (Playlist *pl in _playlists) [pl shuffle];
 }
 
 - (void)setRepeat:(BOOL)repeat {
@@ -62,7 +62,7 @@ static PlaylistManager *sharedManager = nil;
 }
 
 - (void)savePlaylists {
-  [PlaylistPersistence savePlaylists:playlists];
+  [PlaylistPersistence savePlaylists:_playlists];
 }
 
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes andName:(NSString *)name {
@@ -74,36 +74,36 @@ static PlaylistManager *sharedManager = nil;
 }
 
 - (void)addPlaylist:(Playlist *)p {
-  [playlists addObject:p];
-  [playlistsTable reloadData];
-  [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:playlists.count-1] byExtendingSelection:NO];
+  [_playlists addObject:p];
+  [_playlistsTable reloadData];
+  [_playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:_playlists.count-1] byExtendingSelection:NO];
   [self updateSelectedPlaylist];
 }
 
 - (void)updateSelectedPlaylist {
-  _selectedPlaylist = playlists[playlistsTable.selectedRow];
+  _selectedPlaylist = _playlists[_playlistsTable.selectedRow];
   [PlaylistTableManager sharedManager].playlist = _selectedPlaylist;
 }
 
 - (void)handlePlayerEvent {
-  [playlistsTable reloadData];
+  [_playlistsTable reloadData];
 }
 
 - (void)deleteSelectedPlaylists {
-  NSIndexSet *is = [playlistsTable selectedRowIndexes];
-  if (playlists.count - is.count < 1) return; // at least one playlist must remain
+  NSIndexSet *is = [_playlistsTable selectedRowIndexes];
+  if (_playlists.count - is.count < 1) return; // at least one playlist must remain
 
-  [playlists removeObjectsAtIndexes:is];
-  [playlistsTable reloadData];
-  [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:playlistsTable.selectedRow] byExtendingSelection:NO];
+  [_playlists removeObjectsAtIndexes:is];
+  [_playlistsTable reloadData];
+  [_playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:_playlistsTable.selectedRow] byExtendingSelection:NO];
   [self updateSelectedPlaylist];
 }
 
 - (void)startPlaylingSelectedPlaylist {
-  NSInteger row = playlistsTable.clickedRow;
-  if (row == -1) row = playlistsTable.selectedRow;
+  NSInteger row = _playlistsTable.clickedRow;
+  if (row == -1) row = _playlistsTable.selectedRow;
 
-  [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+  [_playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
   [[Player sharedPlayer] playItemWithIndex:0];
 }
 
@@ -114,9 +114,9 @@ static PlaylistManager *sharedManager = nil;
 }
 
 - (IBAction)addPlaylistPressed:(id)sender {
-  [playlists addObject:[Playlist new]];
-  [playlistsTable reloadData];
-  [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:playlists.count-1] byExtendingSelection:NO];
+  [_playlists addObject:[Playlist new]];
+  [_playlistsTable reloadData];
+  [_playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:_playlists.count-1] byExtendingSelection:NO];
 }
 
 #pragma mark - drag and drop
@@ -124,14 +124,14 @@ static PlaylistManager *sharedManager = nil;
 - (BOOL)tableView:(NSTableView *)tableView writeRows:(NSArray *)rows toPasteboard:(NSPasteboard *)pboard {
   [pboard declareTypes:@[kMyDragType] owner:nil];
   [pboard setData:[NSData data] forType:kMyDragType];
-  dragRows = rows;
+  _dragRows = rows;
   return YES;
 }
 
 - (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
   if (info.draggingSource == [LibraryOutlineViewManager sharedManager].outlineView
    || info.draggingSource == [PlaylistTableManager sharedManager].playlistTable
-   || info.draggingSource == playlistsTable)
+   || info.draggingSource == _playlistsTable)
   {
       return NSDragOperationCopy;
   }
@@ -142,33 +142,33 @@ static PlaylistManager *sharedManager = nil;
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
   BOOL fromLibrary = info.draggingSource == [LibraryOutlineViewManager sharedManager].outlineView;
   BOOL fromPlaylist = info.draggingSource == [PlaylistTableManager sharedManager].playlistTable;
-  BOOL fromPlaylistsTable = info.draggingSource == playlistsTable;
+  BOOL fromPlaylistsTable = info.draggingSource == _playlistsTable;
 
   if (fromPlaylistsTable) {
     if (dropOperation == NSTableViewDropAbove) {
       NSMutableIndexSet *rowsToRelocate = [NSMutableIndexSet new];
       NSMutableArray *objectsToRelocate = [NSMutableArray new];
       __block NSInteger dest = row;
-      for (NSNumber *n in dragRows) {
+      for (NSNumber *n in _dragRows) {
         int i = n.intValue;
-        [objectsToRelocate addObject:playlists[i]];
+        [objectsToRelocate addObject:_playlists[i]];
         [rowsToRelocate addIndex:i];
         if (i < row) --dest;
       };
 
-      NSIndexSet *destIndexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(dest, dragRows.count)];
-      [playlists removeObjectsAtIndexes:rowsToRelocate];
-      [playlists insertObjects:objectsToRelocate atIndexes:destIndexSet];
-      [playlistsTable reloadData];
+      NSIndexSet *destIndexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(dest, _dragRows.count)];
+      [_playlists removeObjectsAtIndexes:rowsToRelocate];
+      [_playlists insertObjects:objectsToRelocate atIndexes:destIndexSet];
+      [_playlistsTable reloadData];
       ignoreSelectionChange = YES;
-      [playlistsTable selectRowIndexes:destIndexSet byExtendingSelection:NO];
+      [_playlistsTable selectRowIndexes:destIndexSet byExtendingSelection:NO];
       ignoreSelectionChange = NO;
     } else {
-      Playlist *destPlaylist = playlists[row];
-      for (NSNumber *n in dragRows) {
-        [destPlaylist addItemsFromPlaylist:playlists[n.intValue]];
+      Playlist *destPlaylist = _playlists[row];
+      for (NSNumber *n in _dragRows) {
+        [destPlaylist addItemsFromPlaylist:_playlists[n.intValue]];
       }
-      [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+      [_playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
     }
     return YES;
   } else if (fromLibrary || fromPlaylist) {
@@ -182,7 +182,7 @@ static PlaylistManager *sharedManager = nil;
     }
 
     if (dropOperation == NSTableViewDropOn) {
-      Playlist *p = playlists[row];
+      Playlist *p = _playlists[row];
       if (fromLibrary) [p addTreeNodes:items atPos:p.numberOfItems];
       else [p addPlaylistItems:items];
     } else if (dropOperation == NSTableViewDropAbove) {
@@ -190,7 +190,7 @@ static PlaylistManager *sharedManager = nil;
       if (fromLibrary) p = [[Playlist alloc] initWithTreeNodes:items];
       else p = [[Playlist alloc] initWithPlaylistItems:items];
 
-      [playlists insertObject:p atIndex:row];
+      [_playlists insertObject:p atIndex:row];
       [tableView reloadData];
     }
     [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
@@ -204,16 +204,16 @@ static PlaylistManager *sharedManager = nil;
 #pragma mark - table data source
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-  return playlists.count;
+  return _playlists.count;
 }
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-  return ((Playlist*)playlists[row]).name;
+  return ((Playlist*)_playlists[row]).name;
 }
 
 - (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   NSString *newName = (NSString *)object;
-  ((Playlist*)playlists[row]).name = [newName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+  ((Playlist*)_playlists[row]).name = [newName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 }
 
 #pragma mark - table delegate
@@ -221,7 +221,7 @@ static PlaylistManager *sharedManager = nil;
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)c forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   NSTextFieldCell *cell = (NSTextFieldCell*)c;
 
-  if (playlists[row] == [Player sharedPlayer].nowPlayingPlaylist) {
+  if (_playlists[row] == [Player sharedPlayer].nowPlayingPlaylist) {
     cell.font = [NSFont boldSystemFontOfSize:13];
   } else {
     cell.font = [NSFont systemFontOfSize:13];

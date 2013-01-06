@@ -21,12 +21,14 @@
 - (id)initWithPlaylistItems:(NSArray *)arr;
 
 - (void)addPlaylistItems:(NSArray *)arr;
+- (void)addItemsFromPlaylist:(Playlist *)p;
+- (void)addItemsFromPlaylists:(NSArray *)arr atPos:(int)pos;
 - (void)addTreeNodes:(NSArray *)treeNodes atPos:(int)pos;
+
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes;
 - (int)reorderSongs:(NSArray *)rows atPos:(int)pos;
 - (void)sortBy:(NSString *)str;
 - (void)reverse;
-- (void)addItemsFromPlaylist:(Playlist *)p;
 
 - (int)numberOfItems;
 - (PlaylistItem *)objectAtIndexedSubscript:(int)index;

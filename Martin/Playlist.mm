@@ -147,6 +147,21 @@ using namespace std;
   random_shuffle(it, shuffled.end());
 }
 
+
+- (void)addItemsFromPlaylist:(Playlist *)p {
+  [self addItemsFromPlaylists:@[p] atPos:self.numberOfItems];
+}
+
+- (void)addItemsFromPlaylists:(NSArray *)arr atPos:(int)pos {
+  @autoreleasepool {
+    NSMutableArray *allItems = [NSMutableArray new];
+    for (Playlist *p in arr) {
+      for (int i = 0; i < p.numberOfItems; ++i) [allItems addObject:p[i]];
+    }
+    [self addPlaylistItemsOrTreeNodes:allItems atPos:pos];
+  }
+}
+
 - (void)traverseNodeAndAddItems:(int)node {
   int song = [Tree songFromNode:node];
   
@@ -228,14 +243,6 @@ using namespace std;
 - (void)reverse {
   [self resetCurrentItemIfStopped];  
   reverse(playlist.begin(), playlist.end());
-}
-
-- (void)addItemsFromPlaylist:(Playlist *)p {
-  @autoreleasepool {
-    NSMutableArray *arr = [NSMutableArray new];
-    for (int i = 0; i < p.numberOfItems; ++i) [arr addObject:p[i]];
-    [self addPlaylistItems:arr];
-  }
 }
 
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes {

@@ -71,7 +71,10 @@ static PlaylistTableManager *sharedManager = nil;
 }
 
 - (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
-  if (info.draggingSource == [LibraryOutlineViewManager sharedManager].outlineView || info.draggingSource == tableView) {
+  if (info.draggingSource == [LibraryOutlineViewManager sharedManager].outlineView
+   || info.draggingSource == tableView
+   || info.draggingSource == [PlaylistManager sharedManager].playlistsTable)
+  {
     [tableView setDropRow:row dropOperation:NSTableViewDropAbove];
     return NSDragOperationCopy;
   }
@@ -85,6 +88,10 @@ static PlaylistTableManager *sharedManager = nil;
   } else if (info.draggingSource == tableView) {
     int newPos = [_playlist reorderSongs:_dragRows atPos:(int)row];
     [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(newPos, _dragRows.count)] byExtendingSelection:NO];
+  } else if (info.draggingSource == [PlaylistManager sharedManager].playlistsTable) {
+    NSMutableArray *arr = [NSMutableArray new];
+    for (NSNumber *n in [PlaylistManager sharedManager].dragRows) [arr addObject:[PlaylistManager sharedManager].playlists[n.intValue]];
+    [_playlist addItemsFromPlaylists:arr atPos:(int)row];
   } else {
     return NO;
   }
