@@ -10,7 +10,7 @@
 
 @interface TreeStateManager : NSObject
 
-+ (void)saveState;
-+ (void)restoreState;
++ (void)saveStateForOutlineView:(NSOutlineView *)outlineView;
++ (void)restoreStateToOutlineView:(NSOutlineView *)outlineView;
 
 @end

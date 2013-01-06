@@ -7,30 +7,33 @@
 //
 
 #import "LibraryOutlineViewManager.h"
+#import "MartinAppDelegate.h"
 #import "LibManager.h"
 #import "Tree.h"
-#import "PlaylistManager.h"
-#import "PlaylistTableManager.h"
 #import "RescanProxy.h"
 #import "RescanState.h"
 #import "TreeStateManager.h"
 #import "DragDataConverter.h"
 #import "NSObject+Observe.h"
+#import "ShortcutBinder.h"
+
+@interface LibraryOutlineViewManager()
+@end
 
 @implementation LibraryOutlineViewManager {
   BOOL userIsManipulatingTree;
   NSMutableSet *userExpandedItems;
-}
 
-static LibraryOutlineViewManager *sharedManager;
+  IBOutlet NSOutlineView *outlineView;
+  IBOutlet NSTextField *searchTextField;
 
-+ (LibraryOutlineViewManager *)sharedManager {
-  return sharedManager;
+  IBOutlet NSView *rescanStatusView;
+  IBOutlet NSProgressIndicator *rescanIndicator;
+  IBOutlet NSTextField *rescanMessage;
+  IBOutlet NSProgressIndicator *determinateRescanIndicator;
 }
 
 - (void)awakeFromNib {
-  sharedManager = self;
-
   [self observe:kLibraryRescanFinishedNotification withAction:@selector(libraryRescanned)];
   [self observe:kLibrarySearchFinishedNotification withAction:@selector(searchFinished)];
   [self observe:kLibraryRescanStateChangedNotification withAction:@selector(rescanStateChanged)];
@@ -38,28 +41,40 @@ static LibraryOutlineViewManager *sharedManager;
   [self observe:NSOutlineViewItemDidExpandNotification withAction:@selector(itemDidExpand:)];
   [self observe:NSOutlineViewItemDidCollapseNotification withAction:@selector(itemDidCollapse:)];
 
-  _outlineView.target = self;
-  _outlineView.doubleAction = @selector(itemDoubleClicked);
+  outlineView.target = self;
+  outlineView.doubleAction = @selector(itemDoubleClicked);
 
   [self initTree];
+
+  [ShortcutBinder bindControl:outlineView andKey:kMartinKeyEnter toTarget:self andAction:@selector(addSelectedItemsToPlaylist)];
 }
 
-- (void)dealloc {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
+- (void)saveState {
+  [TreeStateManager saveStateForOutlineView:outlineView];
+}
+
+- (void)addSelectedItemsToPlaylist {
+  NSIndexSet *selectedRows = outlineView.selectedRowIndexes;
+  NSMutableArray *selectedItems = [NSMutableArray new];
+  for (NSInteger row = selectedRows.firstIndex; row != NSNotFound; row = [selectedRows indexGreaterThanIndex:row]) {
+    [selectedItems addObject:[outlineView itemAtRow:row]];
+  }
+  [[MartinAppDelegate get].playlistTableManager addTreeNodesToPlaylist:selectedItems];
 }
 
 #pragma mark - init tree
 
 - (void)initTree {
   [LibManager initLibrary];
-  [_outlineView reloadData];
 
-  [TreeStateManager restoreState];
+  [outlineView reloadData];
+
+  [TreeStateManager restoreStateToOutlineView:outlineView];
 
   userExpandedItems = [NSMutableSet new];
-  for (int i = 0; i < _outlineView.numberOfRows; ++i) {
-    id item = [_outlineView itemAtRow:i];
-    if ([_outlineView isItemExpanded:item]) [userExpandedItems addObject:item];
+  for (int i = 0; i < outlineView.numberOfRows; ++i) {
+    id item = [outlineView itemAtRow:i];
+    if ([outlineView isItemExpanded:item]) [userExpandedItems addObject:item];
   }
   userIsManipulatingTree = YES;
 }
@@ -76,21 +91,21 @@ static LibraryOutlineViewManager *sharedManager;
 #pragma mark - mouse events
 
 - (void)itemDoubleClicked {
-  id item = [_outlineView itemAtRow:_outlineView.selectedRow];
+  id item = [outlineView itemAtRow:outlineView.selectedRow];
   if ([Tree isLeaf:[item intValue]]) {
-    [[PlaylistTableManager sharedManager] addTreeNodesToPlaylist:@[item]];
+    [[MartinAppDelegate get].playlistTableManager addTreeNodesToPlaylist:@[item]];
   } else {
-    if ([_outlineView isItemExpanded:item]) [_outlineView collapseItem:item];
-    else [_outlineView expandItem:item];
+    if ([outlineView isItemExpanded:item]) [outlineView collapseItem:item];
+    else [outlineView expandItem:item];
   }
 }
 
 - (IBAction)contextMenuAddToPlaylist:(id)sender {
-  [[PlaylistTableManager sharedManager] addTreeNodesToPlaylist:[self itemsToProcessFromContextMenu]];
+  [[MartinAppDelegate get].playlistTableManager addTreeNodesToPlaylist:[self itemsToProcessFromContextMenu]];
 }
 
 - (IBAction)contextMenuNewPlaylist:(id)sender {
-  [[PlaylistManager sharedManager] addNewPlaylistWithTreeNodes:[self itemsToProcessFromContextMenu]];
+  [[MartinAppDelegate get].playlistManager addNewPlaylistWithTreeNodes:[self itemsToProcessFromContextMenu]];
 }
 
 - (IBAction)contextMenuRescanFolder:(id)sender {
@@ -98,15 +113,15 @@ static LibraryOutlineViewManager *sharedManager;
 }
 
 - (NSArray *)itemsToProcessFromContextMenu {
-  NSIndexSet *selectedRows = _outlineView.selectedRowIndexes;
+  NSIndexSet *selectedRows = outlineView.selectedRowIndexes;
   NSMutableArray *items = [NSMutableArray new];
 
-  if ([selectedRows containsIndex:_outlineView.clickedRow]) {
+  if ([selectedRows containsIndex:outlineView.clickedRow]) {
     for (NSUInteger row = selectedRows.firstIndex; row != NSNotFound; row = [selectedRows indexGreaterThanIndex:row]) {
-      [items addObject:[_outlineView itemAtRow:row]];
+      [items addObject:[outlineView itemAtRow:row]];
     }
   } else {
-    [items addObject:[_outlineView itemAtRow:_outlineView.clickedRow]];
+    [items addObject:[outlineView itemAtRow:outlineView.clickedRow]];
   }
 
   return items;
@@ -166,16 +181,16 @@ static LibraryOutlineViewManager *sharedManager;
 #pragma mark - libmanager notifications
 
 - (void)searchFinished {
-  [_outlineView reloadData];
+  [outlineView reloadData];
   [self autoExpandSearchResults];
 }
 
 - (void)libraryRescanned {
-  [_outlineView reloadData];
+  [outlineView reloadData];
   [Tree restoreNodesForStoredInodesAndLevelsToSet:userExpandedItems];
-  if (_searchTextField.stringValue.length > 0) {
+  if (searchTextField.stringValue.length > 0) {
     [Tree resetSearchState];
-    [Tree performSearch:_searchTextField.stringValue];
+    [Tree performSearch:searchTextField.stringValue];
   } else {
     [self closeAllExceptWhatUserOpened];
   }
@@ -183,10 +198,10 @@ static LibraryOutlineViewManager *sharedManager;
 
 - (void)rescanStateChanged {
   if ([RescanState sharedState].state == kRescanStateReloadingLibrary) [Tree storeInodesAndLevelsForNodes:userExpandedItems];
-  [[RescanState sharedState] setupProgressIndicator:_determinateRescanIndicator
-                     indeterminateProgressIndicator:_rescanIndicator
-                                       andTextField:_rescanMessage];
-  _rescanStatusView.hidden = _rescanMessage.isHidden;
+  [[RescanState sharedState] setupProgressIndicator:determinateRescanIndicator
+                     indeterminateProgressIndicator:rescanIndicator
+                                       andTextField:rescanMessage];
+  rescanStatusView.hidden = rescanMessage.isHidden;
 }
 
 #pragma mark - auto expanding
@@ -194,18 +209,18 @@ static LibraryOutlineViewManager *sharedManager;
 - (void)autoExpandSearchResults {
   [self closeAllExceptWhatUserOpened];
 
-  if (_searchTextField.stringValue.length == 0) return;
+  if (searchTextField.stringValue.length == 0) return;
 
   userIsManipulatingTree = NO;
-  for (int visibleRows = (int) (_outlineView.frame.size.height/_outlineView.rowHeight) - 5;;) {
-    NSInteger n = _outlineView.numberOfRows;
+  for (int visibleRows = (int) (outlineView.frame.size.height/outlineView.rowHeight) - 5;;) {
+    NSInteger n = outlineView.numberOfRows;
     NSMutableArray *itemsToExpand = [NSMutableArray array];
     int k = -1;
 
     for (int j = 0; j < 2; ++j) {
       for (int i = 0; i < n; ++i) {
-        NSNumber *item = [_outlineView itemAtRow:i];
-        if ([_outlineView isItemExpanded:item] || [Tree isLeaf:item.intValue]) continue;
+        NSNumber *item = [outlineView itemAtRow:i];
+        if ([outlineView isItemExpanded:item] || [Tree isLeaf:item.intValue]) continue;
         int nChildren = [Tree numberOfChildrenForNode:item.intValue];
         if (nChildren == 0) continue;
 
@@ -218,14 +233,14 @@ static LibraryOutlineViewManager *sharedManager;
     }
 
     if (itemsToExpand.count == 0 || n + itemsToExpand.count*k > visibleRows) break;
-    for (id item in itemsToExpand) [_outlineView expandItem:item];
+    for (id item in itemsToExpand) [outlineView expandItem:item];
   }
   userIsManipulatingTree = YES;
 }
 
 - (void)closeAllExceptWhatUserOpened {
   userIsManipulatingTree = NO;
-  [_outlineView collapseItem:nil collapseChildren:YES];
+  [outlineView collapseItem:nil collapseChildren:YES];
   for (id item in userExpandedItems) [self expandWholePathForItem:item];
   userIsManipulatingTree = YES;
 }
@@ -234,12 +249,12 @@ static LibraryOutlineViewManager *sharedManager;
   NSMutableArray *arr = [NSMutableArray array];
   for (int node = [item intValue]; node != -1; node = [Tree parentOfNode:node]) [arr addObject:@(node)];
   for(; arr.count > 0; [arr removeLastObject]) {
-    [_outlineView expandItem:[arr lastObject]];
+    [outlineView expandItem:[arr lastObject]];
   }
 }
 
 - (void)itemDidExpand:(NSNotification *)notification {
-  if (notification.object != _outlineView || userIsManipulatingTree == NO) return;
+  if (notification.object != outlineView || userIsManipulatingTree == NO) return;
 
   id item = notification.userInfo[@"NSObject"];
 
@@ -248,13 +263,13 @@ static LibraryOutlineViewManager *sharedManager;
   for (int node = [item intValue]; [Tree numberOfChildrenForNode:node] == 1;) {
     node = [Tree childAtIndex:0 forNode:node];
     id child = @(node);
-    [_outlineView expandItem:child];
+    [outlineView expandItem:child];
     [userExpandedItems addObject:child];
   }
 }
 
 - (void)itemDidCollapse:(NSNotification *)notification {
-  if (notification.object != _outlineView || userIsManipulatingTree == NO) return;
+  if (notification.object != outlineView || userIsManipulatingTree == NO) return;
 
   id item = notification.userInfo[@"NSObject"];
   [userExpandedItems removeObject:item];
@@ -263,7 +278,7 @@ static LibraryOutlineViewManager *sharedManager;
 #pragma mark - search
 
 - (void)controlTextDidChange:(NSNotification *)obj {
-  [Tree performSearch:_searchTextField.stringValue];
+  [Tree performSearch:searchTextField.stringValue];
 }
 
 - (BOOL)isCommandEnterEvent:(NSEvent *)e {
@@ -274,13 +289,13 @@ static LibraryOutlineViewManager *sharedManager;
 }
 
 - (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
-  if (_searchTextField.stringValue.length == 0) return NO;
+  if (searchTextField.stringValue.length == 0) return NO;
 
   if (commandSelector == @selector(noop:) && [self isCommandEnterEvent:[NSApp currentEvent]]) {
-    [[PlaylistManager sharedManager] addNewPlaylistWithTreeNodes:@[ @0 ] andName:_searchTextField.stringValue];
+    [[MartinAppDelegate get].playlistManager addNewPlaylistWithTreeNodes:@[ @0 ] andName:searchTextField.stringValue];
     return YES;
   } else if (commandSelector == @selector(insertNewline:)) {
-    [[PlaylistTableManager sharedManager] addTreeNodesToPlaylist:@[ @0 ]];
+    [[MartinAppDelegate get].playlistTableManager addTreeNodesToPlaylist:@[ @0 ]];
     return YES;
   }
 

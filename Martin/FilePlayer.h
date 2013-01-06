@@ -15,12 +15,7 @@
 
 @class PlaylistItem;
 
-@interface FilePlayer : NSObject <NSSoundDelegate> {
-  NSSound *sound;
-  PlaylistItem *playlistItem;
-}
-
-+ (FilePlayer *)sharedPlayer;
+@interface FilePlayer : NSObject <NSSoundDelegate>
 
 @property (nonatomic, assign) BOOL playing;
 @property (nonatomic, assign) BOOL stopped;

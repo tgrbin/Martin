@@ -10,16 +10,12 @@
 #import "PlaylistItem.h"
 #import "DefaultsManager.h"
 
-@implementation FilePlayer
-
-static FilePlayer *sharedPlayer = nil;
-
-+ (FilePlayer *)sharedPlayer {
-  return sharedPlayer;
+@implementation FilePlayer {
+  NSSound *sound;
+  PlaylistItem *playlistItem;
 }
 
 - (void)awakeFromNib {
-  sharedPlayer = self;
   _stopped = YES;
   self.volume = [[DefaultsManager objectForKey:kDefaultsKeyVolume] doubleValue];
 }

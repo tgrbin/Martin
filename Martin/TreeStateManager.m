@@ -7,14 +7,11 @@
 //
 
 #import "TreeStateManager.h"
-#import "Tree.h"
 #import "DefaultsManager.h"
-#import "LibraryOutlineViewManager.h"
 
 @implementation TreeStateManager
 
-+ (void)saveState {
-  NSOutlineView *outlineView = [LibraryOutlineViewManager sharedManager].outlineView;
++ (void)saveStateForOutlineView:(NSOutlineView *)outlineView {
   NSMutableArray *arr = [NSMutableArray array];
   NSInteger n = outlineView.numberOfRows;
   for (int i = 0; i < n; ++i) {
@@ -25,8 +22,7 @@
   [DefaultsManager setObject:arr forKey:kDefaultsKeyTreeState];
 }
 
-+ (void)restoreState {
-  NSOutlineView *outlineView = [LibraryOutlineViewManager sharedManager].outlineView;
++ (void)restoreStateToOutlineView:(NSOutlineView *)outlineView {
   NSArray *arr = [DefaultsManager objectForKey:kDefaultsKeyTreeState];
 
   [outlineView collapseItem:nil collapseChildren:YES];

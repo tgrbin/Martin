@@ -10,16 +10,9 @@
 
 @class Playlist;
 
-@interface PlaylistTableManager : NSObject <NSTableViewDataSource, NSTableViewDelegate> {
-  BOOL sortAscending;
-  int highlightedRow;
-  NSTableColumn *sortedColumn;
-}
-
-+ (PlaylistTableManager *)sharedManager;
+@interface PlaylistTableManager : NSObject <NSTableViewDataSource, NSTableViewDelegate>
 
 @property (nonatomic, strong) Playlist *playlist;
-@property (nonatomic, strong) IBOutlet NSTableView *playlistTable;
 
 - (void)deleteSelectedItems;
 - (void)addTreeNodesToPlaylist:(NSArray *)treeNodes;

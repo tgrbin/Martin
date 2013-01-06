@@ -23,8 +23,6 @@
 		79AF97EB145305C200BE8391 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 79AF97EA145305C200BE8391 /* Player.m */; };
 		79B3706D149D21EA003372CB /* LastFM.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B3706C149D21EA003372CB /* LastFM.m */; };
 		79C2ACB5144AB39200C2699B /* PlaylistManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C2ACB4144AB39200C2699B /* PlaylistManager.m */; };
-		79C38221165D5E2D00C4C627 /* PlaylistTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C38220165D5E2D00C4C627 /* PlaylistTableView.m */; };
-		79C38225165D630300C4C627 /* LibraryOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C38224165D630300C4C627 /* LibraryOutlineView.m */; };
 		79D5760F1431074D00A2DA67 /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 79D5760E1431074D00A2DA67 /* icon.icns */; };
 		79D63C65168C438100A248F9 /* RescanState.m in Sources */ = {isa = PBXBuildFile; fileRef = 79D63C64168C438100A248F9 /* RescanState.m */; };
 		79D63C69168C88F900A248F9 /* DefaultsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79D63C68168C88F900A248F9 /* DefaultsManager.m */; };
@@ -39,6 +37,7 @@
 		79F5BC1014363BE10040DF35 /* LibraryOutlineViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F5BC0F14363BE10040DF35 /* LibraryOutlineViewManager.m */; };
 		79F69EAF169969B400693CE5 /* DragDataConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F69EAE169969B400693CE5 /* DragDataConverter.m */; };
 		79F69EB21699731200693CE5 /* NSObject+Observe.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F69EB11699731200693CE5 /* NSObject+Observe.m */; };
+		79F69EB9169999CD00693CE5 /* ShortcutBinder.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F69EB8169999CD00693CE5 /* ShortcutBinder.m */; };
 		79FF13FB142F18A500E27235 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79FF13FA142F18A500E27235 /* Cocoa.framework */; };
 		79FF1405142F18A500E27235 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 79FF1403142F18A500E27235 /* InfoPlist.strings */; };
 		79FF1407142F18A500E27235 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF1406142F18A500E27235 /* main.m */; };
@@ -79,10 +78,6 @@
 		79B3706C149D21EA003372CB /* LastFM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LastFM.m; sourceTree = "<group>"; };
 		79C2ACB3144AB39200C2699B /* PlaylistManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistManager.h; sourceTree = "<group>"; };
 		79C2ACB4144AB39200C2699B /* PlaylistManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistManager.m; sourceTree = "<group>"; };
-		79C3821F165D5E2D00C4C627 /* PlaylistTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistTableView.h; sourceTree = "<group>"; };
-		79C38220165D5E2D00C4C627 /* PlaylistTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistTableView.m; sourceTree = "<group>"; };
-		79C38223165D630300C4C627 /* LibraryOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryOutlineView.h; sourceTree = "<group>"; };
-		79C38224165D630300C4C627 /* LibraryOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryOutlineView.m; sourceTree = "<group>"; };
 		79D5760E1431074D00A2DA67 /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = icon.icns; path = ../icon.icns; sourceTree = "<group>"; };
 		79D63C63168C438100A248F9 /* RescanState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RescanState.h; sourceTree = "<group>"; };
 		79D63C64168C438100A248F9 /* RescanState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RescanState.m; sourceTree = "<group>"; };
@@ -109,6 +104,8 @@
 		79F69EAE169969B400693CE5 /* DragDataConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DragDataConverter.m; sourceTree = "<group>"; };
 		79F69EB01699731200693CE5 /* NSObject+Observe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Observe.h"; sourceTree = "<group>"; };
 		79F69EB11699731200693CE5 /* NSObject+Observe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Observe.m"; sourceTree = "<group>"; };
+		79F69EB7169999CD00693CE5 /* ShortcutBinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShortcutBinder.h; sourceTree = "<group>"; };
+		79F69EB8169999CD00693CE5 /* ShortcutBinder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShortcutBinder.m; sourceTree = "<group>"; };
 		79FF13F6142F18A500E27235 /* Martin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Martin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79FF13FA142F18A500E27235 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		79FF13FD142F18A500E27235 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -161,8 +158,6 @@
 				79FF140C142F18A500E27235 /* MartinAppDelegate.h */,
 				79FF140D142F18A500E27235 /* MartinAppDelegate.m */,
 				79F69EAB1699684400693CE5 /* Defines.h */,
-				79F69EB01699731200693CE5 /* NSObject+Observe.h */,
-				79F69EB11699731200693CE5 /* NSObject+Observe.m */,
 			);
 			name = App;
 			sourceTree = "<group>";
@@ -200,10 +195,6 @@
 				79C2ACB4144AB39200C2699B /* PlaylistManager.m */,
 				795C20CC14378D9600A61B21 /* PlaylistTableManager.h */,
 				795C20CD14378D9600A61B21 /* PlaylistTableManager.m */,
-				79C3821F165D5E2D00C4C627 /* PlaylistTableView.h */,
-				79C38220165D5E2D00C4C627 /* PlaylistTableView.m */,
-				79C38223165D630300C4C627 /* LibraryOutlineView.h */,
-				79C38224165D630300C4C627 /* LibraryOutlineView.m */,
 				790705B41698791700477903 /* PlaylistsTableView.h */,
 				790705B51698791700477903 /* PlaylistsTableView.m */,
 			);
@@ -221,6 +212,8 @@
 		79DAD732165BEC27004AA7B9 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				79F69EB01699731200693CE5 /* NSObject+Observe.h */,
+				79F69EB11699731200693CE5 /* NSObject+Observe.m */,
 				79B3706B149D21EA003372CB /* LastFM.h */,
 				79B3706C149D21EA003372CB /* LastFM.m */,
 				79D63C67168C88F900A248F9 /* DefaultsManager.h */,
@@ -235,6 +228,15 @@
 				79F69EAE169969B400693CE5 /* DragDataConverter.m */,
 			);
 			name = Misc;
+			sourceTree = "<group>";
+		};
+		79F69EB31699944800693CE5 /* Keyboard Shortcuts */ = {
+			isa = PBXGroup;
+			children = (
+				79F69EB7169999CD00693CE5 /* ShortcutBinder.h */,
+				79F69EB8169999CD00693CE5 /* ShortcutBinder.m */,
+			);
+			name = "Keyboard Shortcuts";
 			sourceTree = "<group>";
 		};
 		79FF13EB142F18A400E27235 = {
@@ -274,6 +276,7 @@
 			children = (
 				7904597F168D826700FE0B68 /* App */,
 				79C2ACB9144AB47D00C2699B /* UI */,
+				79F69EB31699944800693CE5 /* Keyboard Shortcuts */,
 				79242E241656AB21006379D6 /* Library */,
 				7904597B168D7CD000FE0B68 /* Player */,
 				79FF1417142F18BA00E27235 /* Model */,
@@ -390,8 +393,6 @@
 				79242E231656AB1C006379D6 /* LibraryFolder.m in Sources */,
 				79242E301656B0CF006379D6 /* PreferencesWindowController.m in Sources */,
 				79DEAD62165BD81C0017E4DD /* PlaylistItem.mm in Sources */,
-				79C38221165D5E2D00C4C627 /* PlaylistTableView.m in Sources */,
-				79C38225165D630300C4C627 /* LibraryOutlineView.m in Sources */,
 				79DCB7AA165FFB3B00077082 /* FilePlayer.m in Sources */,
 				792DC197166B5D390003E664 /* Tags.m in Sources */,
 				792DC19B166B6E5D0003E664 /* Tree.mm in Sources */,
@@ -405,6 +406,7 @@
 				790705B61698791700477903 /* PlaylistsTableView.m in Sources */,
 				79F69EAF169969B400693CE5 /* DragDataConverter.m in Sources */,
 				79F69EB21699731200693CE5 /* NSObject+Observe.m in Sources */,
+				79F69EB9169999CD00693CE5 /* ShortcutBinder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

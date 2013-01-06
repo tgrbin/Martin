@@ -10,27 +10,18 @@
 
 @class Playlist;
 
-@interface PlaylistManager : NSObject <NSTableViewDataSource, NSTableViewDelegate> {
-  BOOL ignoreSelectionChange;
-  NSTimer *dragHoverTimer;
-  NSInteger dragHoverRow;
-}
+@interface PlaylistManager : NSObject <NSTableViewDataSource, NSTableViewDelegate>
 
-+ (PlaylistManager *)sharedManager;
-
-@property (nonatomic, strong) IBOutlet NSTableView *playlistsTable;
 @property (nonatomic, strong) NSMutableArray *playlists;
 @property (nonatomic, strong) Playlist *selectedPlaylist;
 
 @property (nonatomic, assign) BOOL shuffle;
 @property (nonatomic, assign) BOOL repeat;
 
-- (void)savePlaylists;
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes;
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes andName:(NSString *)name;
 
-- (void)deleteSelectedPlaylists;
-- (void)startPlaylingSelectedPlaylist;
+- (void)savePlaylists;
 
 - (void)dragExited;
 

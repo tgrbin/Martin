@@ -7,12 +7,24 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "Player.h"
+#import "LibraryOutlineViewManager.h"
+#import "PlaylistTableManager.h"
+#import "PlaylistManager.h"
+#import "PreferencesWindowController.h"
+#import "FilePlayer.h"
 
 @interface MartinAppDelegate : NSObject <NSApplicationDelegate>
 
 + (MartinAppDelegate *)get;
 
 @property (nonatomic, strong) IBOutlet NSWindow *window;
-@property (nonatomic, strong) IBOutlet NSWindowController *preferencesWindowController;
+
+@property (nonatomic, strong) IBOutlet PreferencesWindowController *preferencesWindowController;
+@property (nonatomic, strong) IBOutlet Player *player;
+@property (nonatomic, strong) IBOutlet LibraryOutlineViewManager *libraryOutlineViewManager;
+@property (nonatomic, strong) IBOutlet PlaylistTableManager *playlistTableManager;
+@property (nonatomic, strong) IBOutlet PlaylistManager *playlistManager;
+@property (nonatomic, strong) IBOutlet FilePlayer *filePlayer;
 
 @end

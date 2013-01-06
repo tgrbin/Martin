@@ -10,14 +10,7 @@
 
 @class Playlist;
 
-@interface Player : NSObject {
-  NSTimer *seekTimer;
-  IBOutlet NSSlider *seekSlider;
-  IBOutlet NSButton *playOrPauseButton;
-  IBOutlet NSTextField *nowPlayingTextField;
-}
-
-+ (Player *)sharedPlayer;
+@interface Player : NSObject
 
 @property (nonatomic, strong) Playlist *nowPlayingPlaylist;
 

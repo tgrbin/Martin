@@ -7,40 +7,40 @@
 //
 
 #import "PlaylistManager.h"
+#import "MartinAppDelegate.h"
 #import "Playlist.h"
-#import "PlaylistTableManager.h"
 #import "PlaylistItem.h"
 #import "Player.h"
-#import "LibraryOutlineViewManager.h"
 #import "FilePlayer.h"
 #import "DefaultsManager.h"
 #import "PlaylistPersistence.h"
 #import "LibManager.h"
 #import "DragDataConverter.h"
 #import "NSObject+Observe.h"
-#import "MartinAppDelegate.h"
-
-@implementation PlaylistManager
+#import "ShortcutBinder.h"
 
 static const double dragHoverTime = 1;
 
-static PlaylistManager *sharedManager = nil;
+@implementation PlaylistManager {
+  BOOL ignoreSelectionChange;
+  NSTimer *dragHoverTimer;
+  NSInteger dragHoverRow;
 
-+ (PlaylistManager *)sharedManager {
-  return sharedManager;
+  IBOutlet NSTableView *playlistsTable;
 }
 
 - (void)awakeFromNib {
-  sharedManager = self;
+  playlistsTable.target = self;
+  playlistsTable.doubleAction = @selector(startPlaylingSelectedPlaylist);
 
-  _playlistsTable.target = self;
-  _playlistsTable.doubleAction = @selector(startPlaylingSelectedPlaylist);
-
-  [_playlistsTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistsRows, kDragTypePlaylistItemsRows]];
+  [playlistsTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistsRows, kDragTypePlaylistItemsRows]];
 
   [self updateSelectedPlaylist];
 
   [self observe:kFilePlayerEventNotification withAction:@selector(handlePlayerEvent)];
+
+  [ShortcutBinder bindControl:playlistsTable andKey:kMartinKeyDelete toTarget:self andAction:@selector(deleteSelectedPlaylists)];
+  [ShortcutBinder bindControl:playlistsTable andKey:kMartinKeyEnter toTarget:self andAction:@selector(startPlaylingSelectedPlaylist)];
 }
 
 - (id)init {
@@ -80,41 +80,41 @@ static PlaylistManager *sharedManager = nil;
 
 - (void)addPlaylist:(Playlist *)p {
   [_playlists addObject:p];
-  [_playlistsTable reloadData];
-  [_playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:_playlists.count-1] byExtendingSelection:NO];
+  [playlistsTable reloadData];
+  [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:_playlists.count-1] byExtendingSelection:NO];
   [self updateSelectedPlaylist];
 }
 
 - (void)updateSelectedPlaylist {
-  _selectedPlaylist = _playlists[_playlistsTable.selectedRow];
-  [PlaylistTableManager sharedManager].playlist = _selectedPlaylist;
+  _selectedPlaylist = _playlists[playlistsTable.selectedRow];
+  [MartinAppDelegate get].playlistTableManager.playlist = _selectedPlaylist;
 }
 
 - (void)handlePlayerEvent {
-  [_playlistsTable reloadData];
+  [playlistsTable reloadData];
 }
 
 - (void)deleteSelectedPlaylists {
-  NSIndexSet *is = [_playlistsTable selectedRowIndexes];
+  NSIndexSet *is = [playlistsTable selectedRowIndexes];
   if (_playlists.count - is.count < 1) return; // at least one playlist must remain
 
   [_playlists removeObjectsAtIndexes:is];
-  [_playlistsTable reloadData];
+  [playlistsTable reloadData];
 
   // without this first item becomes selected after removing the last one, i don't like that
-  if (is.count == 1 && [is lastIndex] == _playlistsTable.numberOfRows) {
-    [_playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:_playlistsTable.numberOfRows - 1] byExtendingSelection:NO];
+  if (is.count == 1 && [is lastIndex] == playlistsTable.numberOfRows) {
+    [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:playlistsTable.numberOfRows - 1] byExtendingSelection:NO];
   }
 
   [self updateSelectedPlaylist];
 }
 
 - (void)startPlaylingSelectedPlaylist {
-  NSInteger row = _playlistsTable.clickedRow;
-  if (row == -1) row = _playlistsTable.selectedRow;
+  NSInteger row = playlistsTable.clickedRow;
+  if (row == -1) row = playlistsTable.selectedRow;
 
-  [_playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
-  [[Player sharedPlayer] playItemWithIndex:0];
+  [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+  [[MartinAppDelegate get].player playItemWithIndex:0];
 }
 
 #pragma mark - buttons
@@ -125,8 +125,8 @@ static PlaylistManager *sharedManager = nil;
 
 - (IBAction)addPlaylistPressed:(id)sender {
   [_playlists addObject:[Playlist new]];
-  [_playlistsTable reloadData];
-  [_playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:_playlists.count-1] byExtendingSelection:NO];
+  [playlistsTable reloadData];
+  [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:_playlists.count-1] byExtendingSelection:NO];
 }
 
 #pragma mark - drag and drop
@@ -158,7 +158,7 @@ static PlaylistManager *sharedManager = nil;
 
 - (void)dragHovered {
   [self resetDragHoverTimer];
-  [_playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:dragHoverRow] byExtendingSelection:NO];
+  [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:dragHoverRow] byExtendingSelection:NO];
 }
 
 - (void)dragExited {
@@ -182,7 +182,7 @@ static PlaylistManager *sharedManager = nil;
       for (NSNumber *n in items) {
         [destPlaylist addItemsFromPlaylist:_playlists[n.intValue]];
       }
-      [_playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+      [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
     }
   } else {
     BOOL fromLibrary = [draggingType isEqualToString:kDragTypeTreeNodes];
@@ -209,7 +209,7 @@ static PlaylistManager *sharedManager = nil;
     [self updateSelectedPlaylist];
   }
 
-  [[MartinAppDelegate get].window makeFirstResponder:_playlistsTable];
+  [[MartinAppDelegate get].window makeFirstResponder:playlistsTable];
 
   return YES;
 }
@@ -228,9 +228,9 @@ static PlaylistManager *sharedManager = nil;
   NSIndexSet *destIndexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(dest, rows.count)];
   [_playlists removeObjectsAtIndexes:rowsToRelocate];
   [_playlists insertObjects:objectsToRelocate atIndexes:destIndexSet];
-  [_playlistsTable reloadData];
+  [playlistsTable reloadData];
   ignoreSelectionChange = YES;
-  [_playlistsTable selectRowIndexes:destIndexSet byExtendingSelection:NO];
+  [playlistsTable selectRowIndexes:destIndexSet byExtendingSelection:NO];
   ignoreSelectionChange = NO;
 }
 
@@ -254,7 +254,7 @@ static PlaylistManager *sharedManager = nil;
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)c forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   NSTextFieldCell *cell = (NSTextFieldCell*)c;
 
-  if (_playlists[row] == [Player sharedPlayer].nowPlayingPlaylist) {
+  if (_playlists[row] == [MartinAppDelegate get].player.nowPlayingPlaylist) {
     cell.font = [NSFont boldSystemFontOfSize:13];
   } else {
     cell.font = [NSFont systemFontOfSize:13];

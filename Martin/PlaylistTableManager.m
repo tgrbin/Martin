@@ -7,57 +7,52 @@
 //
 
 #import "PlaylistTableManager.h"
+#import "MartinAppDelegate.h"
 #import "LibManager.h"
 #import "Playlist.h"
 #import "PlaylistItem.h"
-#import "LibraryOutlineViewManager.h"
-#import "Player.h"
-#import "FilePlayer.h"
-#import "PlaylistManager.h"
 #import "Tags.h"
 #import "TagsUtils.h"
 #import "DragDataConverter.h"
 #import "NSObject+Observe.h"
-#import "MartinAppDelegate.h"
+#import "ShortcutBinder.h"
 
 @implementation PlaylistTableManager {
+  BOOL sortAscending;
+  int highlightedRow;
+  NSTableColumn *sortedColumn;
+
   Playlist *dragSourcePlaylist;
+
+  IBOutlet NSTableView *playlistTable;
 }
 
 #pragma mark - init
 
-static PlaylistTableManager *sharedManager = nil;
-
-+ (PlaylistTableManager *)sharedManager {
-  return sharedManager;
-}
-
 - (void)awakeFromNib {
-  sharedManager = self;
-  _playlistTable.target = self;
-  _playlistTable.doubleAction = @selector(itemDoubleClicked);
+  playlistTable.target = self;
+  playlistTable.doubleAction = @selector(itemDoubleClicked);
 
-  [_playlistTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistsRows, kDragTypePlaylistItemsRows]];
+  [playlistTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistsRows, kDragTypePlaylistItemsRows]];
 
   [self observe:kFilePlayerStartedPlayingNotification withAction:@selector(playingItemChanged)];
   [self observe:kFilePlayerStoppedPlayingNotification withAction:@selector(playingItemChanged)];
 
-  _playlist = [PlaylistManager sharedManager].selectedPlaylist;
-}
+  _playlist = [MartinAppDelegate get].playlistManager.selectedPlaylist;
 
-- (void)dealloc {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  [ShortcutBinder bindControl:playlistTable andKey:kMartinKeyDelete toTarget:self andAction:@selector(deleteSelectedItems)];
+  [ShortcutBinder bindControl:playlistTable andKey:kMartinKeyEnter toTarget:self andAction:@selector(playItemAtSelectedRow)];
 }
 
 - (void)itemDoubleClicked {
-  [[Player sharedPlayer] playItemWithIndex:(int)_playlistTable.clickedRow];
+  [[MartinAppDelegate get].player playItemWithIndex:(int)playlistTable.clickedRow];
 }
 
 - (void)setPlaylist:(Playlist *)playlist {
   _playlist = playlist;
   sortedColumn = nil;
   [self reloadTable];
-  [_playlistTable deselectAll:nil];
+  [playlistTable deselectAll:nil];
 }
 
 #pragma mark - drag and drop
@@ -89,7 +84,7 @@ static PlaylistTableManager *sharedManager = nil;
   } else if ([draggingType isEqualToString:kDragTypePlaylistsRows]) {
 
     NSMutableArray *arr = [NSMutableArray new];
-    for (NSNumber *n in items) [arr addObject:[PlaylistManager sharedManager].playlists[n.intValue]];
+    for (NSNumber *n in items) [arr addObject:[MartinAppDelegate get].playlistManager.playlists[n.intValue]];
     itemsCount = [_playlist addItemsFromPlaylists:arr atPos:endPosition];
 
   } else if ([draggingType isEqualToString:kDragTypePlaylistItemsRows]) {
@@ -169,33 +164,37 @@ static PlaylistTableManager *sharedManager = nil;
   return value;
 }
 
-#pragma mark - deleting songs
+#pragma mark - actions
+
+- (void)playItemAtSelectedRow {
+  [[MartinAppDelegate get].player playItemWithIndex:(int)playlistTable.selectedRow];
+}
 
 - (IBAction)deleteItemsPressed:(id)sender {
   [self deleteSelectedItems];
 }
 
 - (void)deleteSelectedItems {
-  NSIndexSet *selectedIndexes = _playlistTable.selectedRowIndexes;
-  int n = (int)_playlistTable.numberOfRows;
+  NSIndexSet *selectedIndexes = playlistTable.selectedRowIndexes;
+  int n = (int)playlistTable.numberOfRows;
   int m = (int)selectedIndexes.count;
   int selectRow = (int)selectedIndexes.lastIndex;
 
   if (m > 0) {
     [self.playlist removeSongsAtIndexes:selectedIndexes];
-    [_playlistTable deselectAll:nil];
+    [playlistTable deselectAll:nil];
     [self reloadTable];
 
     selectRow = (selectRow < n-1)? selectRow-m+1: n-m-1;
 
-    [_playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:selectRow] byExtendingSelection:NO];
-    [_playlistTable scrollRowToVisible:selectRow];
+    [playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:selectRow] byExtendingSelection:NO];
+    [playlistTable scrollRowToVisible:selectRow];
   }
 }
 
 - (void)reloadTable {
   highlightedRow = -1;
-  [_playlistTable reloadData];
+  [playlistTable reloadData];
 }
 
 #pragma mark - update now playing
@@ -205,7 +204,7 @@ static PlaylistTableManager *sharedManager = nil;
 }
 
 - (BOOL)showingNowPlayingPlaylist {
-  return _playlist == [Player sharedPlayer].nowPlayingPlaylist;
+  return _playlist == [MartinAppDelegate get].player.nowPlayingPlaylist;
 }
 
 @end

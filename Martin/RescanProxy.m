@@ -12,6 +12,7 @@
 #import "RescanState.h"
 #import "Tree.h"
 #import "FolderWatcher.h"
+#import "NSObject+Observe.h"
 
 static const double minQuietTime = 0.5;
 static const double maxTimeWithoutRescan = 3;
@@ -45,10 +46,7 @@ static id specialRescanAllObject;
     pathsToRescan = [NSMutableArray new];
     recursively = [NSMutableArray new];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(rescanFinished)
-                                                 name:kLibraryRescanFinishedNotification
-                                               object:nil];
+    [self observe:kLibraryRescanFinishedNotification withAction:@selector(rescanFinished)];
   }
   return self;
 }

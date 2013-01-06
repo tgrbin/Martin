@@ -12,26 +12,31 @@
 #import "FolderWatcher.h"
 #import "RescanProxy.h"
 #import "RescanState.h"
+#import "NSObject+Observe.h"
 
-@implementation PreferencesWindowController
+@implementation PreferencesWindowController {
+  // library
+  IBOutlet NSTableView *foldersTableView;
+  IBOutlet NSButton *rescanLibraryButton;
+  IBOutlet NSTextField *rescanStatusTextField;
+  IBOutlet NSProgressIndicator *rescanProgressIndicator;
+  IBOutlet NSProgressIndicator *rescanDeterminateIndicator;
+  int totalSongs;
+
+  // lastFM
+  IBOutlet NSProgressIndicator *lastfmProgressIndicator;
+}
 
 - (id)init {
   if (self = [super initWithWindowNibName:@"PreferencesWindowController"]) {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(rescanStateChanged)
-                                                 name:kLibraryRescanStateChangedNotification
-                                               object:nil];
-    _watchFoldersEnabled = [FolderWatcher sharedWatcher].enabled;
+    [self observe:kLibraryRescanStateChangedNotification withAction:@selector(rescanStateChanged)];
+     _watchFoldersEnabled = [FolderWatcher sharedWatcher].enabled;
   }
   return self;
 }
 
 - (void)awakeFromNib {
   rescanLibraryButton.hidden = _watchFoldersEnabled;
-}
-
-- (void)dealloc {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - watch folders checkbox

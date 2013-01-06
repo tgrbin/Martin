@@ -8,18 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface PreferencesWindowController : NSWindowController <NSTableViewDataSource, NSTableViewDelegate, NSWindowDelegate> {
-// library
-  IBOutlet NSTableView *foldersTableView;
-  IBOutlet NSButton *rescanLibraryButton;
-  IBOutlet NSTextField *rescanStatusTextField;
-  IBOutlet NSProgressIndicator *rescanProgressIndicator;
-  IBOutlet NSProgressIndicator *rescanDeterminateIndicator;
-  int totalSongs;
-
-// lastFM
-  IBOutlet NSProgressIndicator *lastfmProgressIndicator;
-}
+@interface PreferencesWindowController : NSWindowController <NSTableViewDataSource, NSTableViewDelegate, NSWindowDelegate>
 
 @property (nonatomic, assign) BOOL watchFoldersEnabled;
 

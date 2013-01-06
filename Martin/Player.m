@@ -7,42 +7,31 @@
 //
 
 #import <Carbon/Carbon.h>
+#import "MartinAppDelegate.h"
 #import "Player.h"
-#import "PlaylistTableManager.h"
-#import "PlaylistManager.h"
 #import "LastFM.h"
-#import "PlaylistItem.h"
-#import "FilePlayer.h"
 #import "Playlist.h"
+#import "PlaylistItem.h"
+#import "NSObject+Observe.h"
 
-@implementation Player
-
-static Player *sharedPlayer = nil;
-
-+ (Player *)sharedPlayer {
-  return sharedPlayer;
+@implementation Player {
+  NSTimer *seekTimer;
+  IBOutlet NSSlider *seekSlider;
+  IBOutlet NSButton *playOrPauseButton;
+  IBOutlet NSTextField *nowPlayingTextField;
 }
 
 - (void)awakeFromNib {
-  sharedPlayer = self;
   [self setupHotkeyEvents];
   seekSlider.enabled = NO;
-
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(trackFinished)
-                                               name:kFilePlayerPlayedItemNotification
-                                             object:nil];
-}
-
-- (void)dealloc {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  [self observe:kFilePlayerPlayedItemNotification withAction:@selector(trackFinished)];
 }
 
 - (void)startPlayingCurrentItem {
   if (_nowPlayingPlaylist.numberOfItems == 0) return;
   if (_nowPlayingPlaylist.currentItem == nil) [_nowPlayingPlaylist moveToFirstItem];
 
-  [[FilePlayer sharedPlayer] startPlayingItem:_nowPlayingPlaylist.currentItem];
+  [[MartinAppDelegate get].filePlayer startPlayingItem:_nowPlayingPlaylist.currentItem];
   [self startSeekTimer];
   [self setPlayOrPause:YES];
   [LastFM updateNowPlaying:_nowPlayingPlaylist.currentItem];
@@ -58,17 +47,17 @@ static Player *sharedPlayer = nil;
 - (void)stop {
   [self setPlayOrPause:YES];
   [self disableTimer];
-  [[FilePlayer sharedPlayer] stop];
+  [[MartinAppDelegate get].filePlayer stop];
   nowPlayingTextField.stringValue = @"";
   _nowPlayingPlaylist = nil;
 }
 
 - (void)playOrPause {
-  if ([[FilePlayer sharedPlayer] stopped]) {
+  if ([[MartinAppDelegate get].filePlayer stopped]) {
     [self startPlayingCurrentItem];
   } else {
-    [[FilePlayer sharedPlayer] togglePause];
-    [self setPlayOrPause:[[FilePlayer sharedPlayer] playing]];
+    [[MartinAppDelegate get].filePlayer togglePause];
+    [self setPlayOrPause:[[MartinAppDelegate get].filePlayer playing]];
   }
 }
 
@@ -101,10 +90,10 @@ static Player *sharedPlayer = nil;
 }
 
 - (void)updateSeekTime {
-  if ([[FilePlayer sharedPlayer] stopped]) {
+  if ([[MartinAppDelegate get].filePlayer stopped]) {
     [self disableTimer];
   } else {
-    seekSlider.doubleValue = [[FilePlayer sharedPlayer] seek];
+    seekSlider.doubleValue = [[MartinAppDelegate get].filePlayer seek];
   }
 }
 
@@ -122,11 +111,11 @@ static Player *sharedPlayer = nil;
 #pragma mark - actions
 
 - (IBAction)seekSliderChanged:(NSSlider *)sender {
-  [[FilePlayer sharedPlayer] setSeek:sender.doubleValue];
+  [[MartinAppDelegate get].filePlayer setSeek:sender.doubleValue];
 }
 
 - (IBAction)prevPressed:(id)sender {
-  if ([[FilePlayer sharedPlayer] stopped]) return;
+  if ([[MartinAppDelegate get].filePlayer stopped]) return;
   [self setNowPlayingPlaylistIfNecessary];
   [self prev];
 }
@@ -137,7 +126,7 @@ static Player *sharedPlayer = nil;
 }
 
 - (IBAction)nextPressed:(id)sender {
-  if ([[FilePlayer sharedPlayer] stopped]) return;
+  if ([[MartinAppDelegate get].filePlayer stopped]) return;
   [self setNowPlayingPlaylistIfNecessary];
   [self next];
 }
@@ -147,11 +136,11 @@ static Player *sharedPlayer = nil;
 }
 
 - (void)setNowPlayingPlaylistIfNecessary {
-  if (_nowPlayingPlaylist == nil) _nowPlayingPlaylist = [PlaylistManager sharedManager].selectedPlaylist;
+  if (_nowPlayingPlaylist == nil) _nowPlayingPlaylist = [MartinAppDelegate get].playlistManager.selectedPlaylist;
 }
 
 - (void)playItemWithIndex:(int)index {
-  _nowPlayingPlaylist = [[PlaylistManager sharedManager] selectedPlaylist];
+  _nowPlayingPlaylist = [[MartinAppDelegate get].playlistManager selectedPlaylist];
   [_nowPlayingPlaylist moveToItemWithIndex:index];
   [self startPlayingCurrentItem];
 }

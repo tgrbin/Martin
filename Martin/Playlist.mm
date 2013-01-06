@@ -7,10 +7,9 @@
 //
 
 #import "Playlist.h"
+#import "MartinAppDelegate.h"
 #import "LibManager.h"
 #import "PlaylistItem.h"
-#import "PlaylistManager.h"
-#import "FilePlayer.h"
 #import "Tree.h"
 #import "Tags.h"
 #import "TagsUtils.h"
@@ -310,7 +309,7 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 }
 
 - (void)resetCurrentItemIfStopped {
-  if ([[FilePlayer sharedPlayer] stopped]) currentItem = -1;
+  if ([[MartinAppDelegate get].filePlayer stopped]) currentItem = -1;
 }
 
 - (void)shuffle {
@@ -367,8 +366,8 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 - (PlaylistItem *)moveToItemWithDelta:(int)delta {
   if (currentItem == -1) return nil;
 
-  BOOL shuffle = [PlaylistManager sharedManager].shuffle;
-  BOOL repeat = [PlaylistManager sharedManager].repeat;
+  BOOL shuffle = [MartinAppDelegate get].playlistManager.shuffle;
+  BOOL repeat = [MartinAppDelegate get].playlistManager.repeat;
   
   vector<int> &order = shuffle? shuffled: playlist;
   
