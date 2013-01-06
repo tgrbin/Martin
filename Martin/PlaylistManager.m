@@ -16,6 +16,8 @@
 #import "DefaultsManager.h"
 #import "PlaylistPersistence.h"
 #import "LibManager.h"
+#import "DragDataConverter.h"
+#import "NSObject+Observe.h"
 
 @implementation PlaylistManager
 
@@ -29,15 +31,15 @@ static PlaylistManager *sharedManager = nil;
 
 - (void)awakeFromNib {
   sharedManager = self;
+
   _playlistsTable.target = self;
   _playlistsTable.doubleAction = @selector(startPlaylingSelectedPlaylist);
-  [_playlistsTable registerForDraggedTypes:@[kMyDragType]];
+
+  [_playlistsTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistsRows, kDragTypePlaylistItemsRows]];
+
   [self updateSelectedPlaylist];
 
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(handlePlayerEvent)
-                                               name:kFilePlayerEventNotification
-                                             object:nil];
+  [self observe:kFilePlayerEventNotification withAction:@selector(handlePlayerEvent)];
 }
 
 - (id)init {
@@ -124,9 +126,9 @@ static PlaylistManager *sharedManager = nil;
 #pragma mark - drag and drop
 
 - (BOOL)tableView:(NSTableView *)tableView writeRows:(NSArray *)rows toPasteboard:(NSPasteboard *)pboard {
-  [pboard declareTypes:@[kMyDragType] owner:nil];
-  [pboard setData:[NSData data] forType:kMyDragType];
-  _dragRows = rows;
+  [pboard declareTypes:@[kDragTypePlaylistsRows] owner:nil];
+  [pboard setData:[DragDataConverter dataFromArray:rows]
+          forType:kDragTypePlaylistsRows];
   return YES;
 }
 
@@ -170,44 +172,25 @@ static PlaylistManager *sharedManager = nil;
 }
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
-  BOOL fromLibrary = info.draggingSource == [LibraryOutlineViewManager sharedManager].outlineView;
-  BOOL fromPlaylist = info.draggingSource == [PlaylistTableManager sharedManager].playlistTable;
-  BOOL fromPlaylistsTable = info.draggingSource == _playlistsTable;
+  NSString *draggingType = [info.draggingPasteboard.types lastObject];
+  NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:draggingType]];
 
-  if (fromPlaylistsTable) {
+  if ([draggingType isEqualToString:kDragTypePlaylistsRows]) {
     if (dropOperation == NSTableViewDropAbove) {
-      NSMutableIndexSet *rowsToRelocate = [NSMutableIndexSet new];
-      NSMutableArray *objectsToRelocate = [NSMutableArray new];
-      __block NSInteger dest = row;
-      for (NSNumber *n in _dragRows) {
-        int i = n.intValue;
-        [objectsToRelocate addObject:_playlists[i]];
-        [rowsToRelocate addIndex:i];
-        if (i < row) --dest;
-      };
-
-      NSIndexSet *destIndexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(dest, _dragRows.count)];
-      [_playlists removeObjectsAtIndexes:rowsToRelocate];
-      [_playlists insertObjects:objectsToRelocate atIndexes:destIndexSet];
-      [_playlistsTable reloadData];
-      ignoreSelectionChange = YES;
-      [_playlistsTable selectRowIndexes:destIndexSet byExtendingSelection:NO];
-      ignoreSelectionChange = NO;
+      [self relocateRows:items toPos:row];
     } else {
       Playlist *destPlaylist = _playlists[row];
-      for (NSNumber *n in _dragRows) {
+      for (NSNumber *n in items) {
         [destPlaylist addItemsFromPlaylist:_playlists[n.intValue]];
       }
       [_playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
     }
-    return YES;
-  } else if (fromLibrary || fromPlaylist) {
-    NSArray *items;
+  } else {
+    BOOL fromLibrary = [draggingType isEqualToString:kDragTypeTreeNodes];
 
-    if (fromLibrary) items = [LibraryOutlineViewManager sharedManager].draggingItems;
-    else {
+    if (fromLibrary == NO) {
       NSMutableArray *arr = [NSMutableArray new];
-      for (NSNumber *row in [PlaylistTableManager sharedManager].dragRows) [arr addObject:_selectedPlaylist[row.intValue]];
+      for (NSNumber *row in items) [arr addObject:_selectedPlaylist[row.intValue]];
       items = arr;
     }
 
@@ -225,10 +208,29 @@ static PlaylistManager *sharedManager = nil;
     }
     [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
     [self updateSelectedPlaylist];
-    return YES;
   }
 
-  return NO;
+  return YES;
+}
+
+- (void)relocateRows:(NSArray *)rows toPos:(NSInteger)pos {
+  NSMutableIndexSet *rowsToRelocate = [NSMutableIndexSet new];
+  NSMutableArray *objectsToRelocate = [NSMutableArray new];
+  NSInteger dest = pos;
+  for (NSNumber *n in rows) {
+    int i = n.intValue;
+    [objectsToRelocate addObject:_playlists[i]];
+    [rowsToRelocate addIndex:i];
+    if (i < pos) --dest;
+  };
+
+  NSIndexSet *destIndexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(dest, rows.count)];
+  [_playlists removeObjectsAtIndexes:rowsToRelocate];
+  [_playlists insertObjects:objectsToRelocate atIndexes:destIndexSet];
+  [_playlistsTable reloadData];
+  ignoreSelectionChange = YES;
+  [_playlistsTable selectRowIndexes:destIndexSet byExtendingSelection:NO];
+  ignoreSelectionChange = NO;
 }
 
 #pragma mark - table data source

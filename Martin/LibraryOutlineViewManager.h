@@ -13,7 +13,6 @@
 + (LibraryOutlineViewManager *)sharedManager;
 
 @property (nonatomic, strong) IBOutlet NSOutlineView *outlineView;
-@property (nonatomic, strong) NSArray *draggingItems;
 
 @property (assign) IBOutlet NSView *rescanStatusView;
 @property (assign) IBOutlet NSProgressIndicator *rescanIndicator;

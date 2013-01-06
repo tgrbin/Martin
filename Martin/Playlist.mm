@@ -109,6 +109,11 @@ using namespace std;
 
 #pragma mark - manage playlist
 
+- (void)addPlaylistItems:(NSArray *)arr atPos:(int)pos {
+  [self resetCurrentItemIfStopped];
+  [self addPlaylistItemsOrTreeNodes:arr atPos:pos];
+}
+
 - (void)addPlaylistItems:(NSArray *)arr {
   [self resetCurrentItemIfStopped];
   [self addPlaylistItemsOrTreeNodes:arr atPos:self.numberOfItems];

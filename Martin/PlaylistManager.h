@@ -21,7 +21,6 @@
 @property (nonatomic, strong) IBOutlet NSTableView *playlistsTable;
 @property (nonatomic, strong) NSMutableArray *playlists;
 @property (nonatomic, strong) Playlist *selectedPlaylist;
-@property (nonatomic, strong) NSArray *dragRows;
 
 @property (nonatomic, assign) BOOL shuffle;
 @property (nonatomic, assign) BOOL repeat;

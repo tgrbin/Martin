@@ -16,8 +16,12 @@
 #import "PlaylistManager.h"
 #import "Tags.h"
 #import "TagsUtils.h"
+#import "DragDataConverter.h"
+#import "NSObject+Observe.h"
 
-@implementation PlaylistTableManager
+@implementation PlaylistTableManager {
+  Playlist *dragSourcePlaylist;
+}
 
 #pragma mark - init
 
@@ -31,17 +35,11 @@ static PlaylistTableManager *sharedManager = nil;
   sharedManager = self;
   _playlistTable.target = self;
   _playlistTable.doubleAction = @selector(itemDoubleClicked);
-  [_playlistTable registerForDraggedTypes:@[kMyDragType]];
 
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(playingItemChanged)
-                                               name:kFilePlayerStartedPlayingNotification
-                                             object:nil];
+  [_playlistTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistsRows, kDragTypePlaylistItemsRows]];
 
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(playingItemChanged)
-                                               name:kFilePlayerStoppedPlayingNotification
-                                             object:nil];
+  [self observe:kFilePlayerStartedPlayingNotification withAction:@selector(playingItemChanged)];
+  [self observe:kFilePlayerStoppedPlayingNotification withAction:@selector(playingItemChanged)];
 
   _playlist = [PlaylistManager sharedManager].selectedPlaylist;
 }
@@ -64,36 +62,45 @@ static PlaylistTableManager *sharedManager = nil;
 #pragma mark - drag and drop
 
 - (BOOL)tableView:(NSTableView *)tableView writeRows:(NSArray *)rows toPasteboard:(NSPasteboard *)pboard {
-  [pboard declareTypes:@[kMyDragType] owner:nil];
-  [pboard setData:[NSData data] forType:kMyDragType];
-  _dragRows = rows;
+  [pboard declareTypes:@[kDragTypePlaylistItemsRows] owner:nil];
+  [pboard setData:[DragDataConverter dataFromArray:rows]
+          forType:kDragTypePlaylistItemsRows];
+  dragSourcePlaylist = _playlist;
   return YES;
 }
 
 - (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
-  if (info.draggingSource == [LibraryOutlineViewManager sharedManager].outlineView
-   || info.draggingSource == tableView
-   || info.draggingSource == [PlaylistManager sharedManager].playlistsTable)
-  {
-    [tableView setDropRow:row dropOperation:NSTableViewDropAbove];
-    return NSDragOperationCopy;
-  }
-
-  return NSDragOperationNone;
+  [tableView setDropRow:row dropOperation:NSTableViewDropAbove];
+  return NSDragOperationCopy;
 }
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
-  if (info.draggingSource == [LibraryOutlineViewManager sharedManager].outlineView) {
-    [_playlist addTreeNodes:[LibraryOutlineViewManager sharedManager].draggingItems atPos:(int)row];
-  } else if (info.draggingSource == tableView) {
-    int newPos = [_playlist reorderSongs:_dragRows atPos:(int)row];
-    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(newPos, _dragRows.count)] byExtendingSelection:NO];
-  } else if (info.draggingSource == [PlaylistManager sharedManager].playlistsTable) {
+  NSString *draggingType = [info.draggingPasteboard.types lastObject];
+  NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:draggingType]];
+
+  if ([draggingType isEqualToString:kDragTypeTreeNodes]) {
+
+    [_playlist addTreeNodes:items atPos:(int)row];
+
+  } else if ([draggingType isEqualToString:kDragTypePlaylistsRows]) {
+
     NSMutableArray *arr = [NSMutableArray new];
-    for (NSNumber *n in [PlaylistManager sharedManager].dragRows) [arr addObject:[PlaylistManager sharedManager].playlists[n.intValue]];
+    for (NSNumber *n in items) [arr addObject:[PlaylistManager sharedManager].playlists[n.intValue]];
     [_playlist addItemsFromPlaylists:arr atPos:(int)row];
-  } else {
-    return NO;
+
+  } else if ([draggingType isEqualToString:kDragTypePlaylistItemsRows]) {
+
+    int newPos = (int)row;
+
+    if (dragSourcePlaylist == _playlist) {
+      newPos = [_playlist reorderSongs:items atPos:(int)row];
+    } else {
+      NSMutableArray *arr = [NSMutableArray new];
+      for (NSNumber *n in items) [arr addObject:dragSourcePlaylist[n.intValue]];
+      [_playlist addPlaylistItems:arr atPos:(int)row];
+    }
+
+    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(newPos, items.count)] byExtendingSelection:NO];
   }
 
   [self reloadTable];

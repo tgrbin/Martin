@@ -21,6 +21,7 @@
 - (id)initWithPlaylistItems:(NSArray *)arr;
 
 - (void)addPlaylistItems:(NSArray *)arr;
+- (void)addPlaylistItems:(NSArray *)arr atPos:(int)pos;
 - (void)addItemsFromPlaylist:(Playlist *)p;
 - (void)addItemsFromPlaylists:(NSArray *)arr atPos:(int)pos;
 - (void)addTreeNodes:(NSArray *)treeNodes atPos:(int)pos;

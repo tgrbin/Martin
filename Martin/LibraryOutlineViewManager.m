@@ -14,6 +14,8 @@
 #import "RescanProxy.h"
 #import "RescanState.h"
 #import "TreeStateManager.h"
+#import "DragDataConverter.h"
+#import "NSObject+Observe.h"
 
 @implementation LibraryOutlineViewManager {
   BOOL userIsManipulatingTree;
@@ -65,9 +67,9 @@ static LibraryOutlineViewManager *sharedManager;
 #pragma mark - drag and drop
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pboard {
-  [pboard declareTypes:@[kMyDragType] owner:nil];
-  [pboard setData:[NSData data] forType:kMyDragType];
-  _draggingItems = items;
+  [pboard declareTypes:@[kDragTypeTreeNodes] owner:nil];
+  [pboard setData:[DragDataConverter dataFromArray:items]
+          forType:kDragTypeTreeNodes];
   return YES;
 }
 
@@ -283,15 +285,6 @@ static LibraryOutlineViewManager *sharedManager;
   }
 
   return NO;
-}
-
-#pragma mark - util
-
-- (void)observe:(NSString *)name withAction:(SEL)action {
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:action
-                                               name:name
-                                             object:nil];
 }
 
 @end
