@@ -21,7 +21,7 @@
       UInt32 size = sizeof(dict);
       if (AudioFileGetProperty(fileID, kAudioFilePropertyInfoDictionary, &size, &dict) == noErr) {
         id3 = (NSDictionary *)CFBridgingRelease(dict);
-        lengthInSeconds = (int) [id3[@"approximate duration in seconds"] doubleValue];
+        lengthInSeconds = (int) [id3[@(kAFInfoDictionary_ApproximateDurationInSeconds)] doubleValue];
       }
     }
 

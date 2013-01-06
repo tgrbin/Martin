@@ -251,6 +251,12 @@ static const double dragHoverTime = 1;
 
 #pragma mark - table delegate
 
+- (BOOL)tableView:(NSTableView *)tableView shouldEditTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+  NSEvent *e = [NSApp currentEvent];
+  if (e.type == NSKeyDown && e.keyCode == 48) return NO;
+  return YES;
+}
+
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)c forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   NSTextFieldCell *cell = (NSTextFieldCell*)c;
 
