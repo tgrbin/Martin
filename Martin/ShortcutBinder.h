@@ -15,6 +15,7 @@ typedef enum {
   kMartinKeyEnter,
   kMartinKeyDelete,
   kMartinKeyCmdEnter,
+  kMartinKeyCmdDown
 } MartinKey;
 
 + (void)bindControl:(NSControl *)control andKey:(MartinKey)key toTarget:(id)target andAction:(SEL)action;

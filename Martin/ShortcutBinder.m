@@ -61,6 +61,10 @@ static void hookClass(Class cls) {
   [self __martin__keyDown:event];
 }
 
+static BOOL isModifier(NSUInteger f, NSUInteger m) {
+  return (f&m) == m;
+}
+
 static MartinKey keyFromEvent(NSEvent *event) {
   if (event.type == NSKeyDown) {
     NSString *pressedChars = event.characters;
@@ -76,13 +80,16 @@ static MartinKey keyFromEvent(NSEvent *event) {
         case NSEnterCharacter:
         case NSNewlineCharacter:
         case NSCarriageReturnCharacter:
-          if ( (flags&NSCommandKeyMask) == NSCommandKeyMask ) return kMartinKeyCmdEnter;
+          if (isModifier(flags, NSCommandKeyMask)) return kMartinKeyCmdEnter;
           return kMartinKeyEnter;
+        case NSDownArrowFunctionKey:
+          if (isModifier(flags, NSCommandKeyMask)) return kMartinKeyCmdDown;
       }
     }
   }
 
   return kMartinKeyNotRelevant;
 }
+
 
 @end

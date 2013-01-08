@@ -142,9 +142,7 @@
 }
 
 - (BOOL)tableView:(NSTableView *)tableView shouldEditTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-  NSEvent *e = [NSApp currentEvent];
-  if (e.type == NSKeyDown && e.keyCode == 48) return NO;
-  return YES;
+  return NO;
 }
 
 #pragma mark - data source

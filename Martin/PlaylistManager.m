@@ -40,7 +40,7 @@ static const double dragHoverTime = 1;
   [self observe:kFilePlayerEventNotification withAction:@selector(handlePlayerEvent)];
 
   [ShortcutBinder bindControl:playlistsTable andKey:kMartinKeyDelete toTarget:self andAction:@selector(deleteSelectedPlaylists)];
-  [ShortcutBinder bindControl:playlistsTable andKey:kMartinKeyEnter toTarget:self andAction:@selector(startPlaylingSelectedPlaylist)];
+  [ShortcutBinder bindControl:playlistsTable andKey:kMartinKeyCmdDown toTarget:self andAction:@selector(startPlaylingSelectedPlaylist)];
 }
 
 - (id)init {
