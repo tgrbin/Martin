@@ -33,7 +33,7 @@ static const double dragHoverTime = 1;
   playlistsTable.target = self;
   playlistsTable.doubleAction = @selector(startPlaylingSelectedPlaylist);
 
-  [playlistsTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistsRows, kDragTypePlaylistItemsRows]];
+  [playlistsTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistsRows, kDragTypePlaylistItemsRows, NSFilenamesPboardType]];
 
   [self updateSelectedPlaylist];
 
@@ -171,42 +171,49 @@ static const double dragHoverTime = 1;
 }
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
-  NSString *draggingType = [info.draggingPasteboard.types lastObject];
-  NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:draggingType]];
+  NSArray *draggingTypes = info.draggingPasteboard.types;
 
-  if ([draggingType isEqualToString:kDragTypePlaylistsRows]) {
-    if (dropOperation == NSTableViewDropAbove) {
-      [self relocateRows:items toPos:row];
-    } else {
-      Playlist *destPlaylist = _playlists[row];
-      for (NSNumber *n in items) {
-        [destPlaylist addItemsFromPlaylist:_playlists[n.intValue]];
-      }
-      [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
-    }
+  if ([draggingTypes containsObject:NSFilenamesPboardType]) {
+    NSArray *items = [info.draggingPasteboard propertyListForType:NSFilenamesPboardType];
+    NSLog(@"%@", items);
   } else {
-    BOOL fromLibrary = [draggingType isEqualToString:kDragTypeTreeNodes];
+    NSString *draggingType = [draggingTypes lastObject];
+    NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:draggingType]];
 
-    if (fromLibrary == NO) {
-      NSMutableArray *arr = [NSMutableArray new];
-      for (NSNumber *row in items) [arr addObject:_selectedPlaylist[row.intValue]];
-      items = arr;
+    if ([draggingType isEqualToString:kDragTypePlaylistsRows]) {
+      if (dropOperation == NSTableViewDropAbove) {
+        [self relocateRows:items toPos:row];
+      } else {
+        Playlist *destPlaylist = _playlists[row];
+        for (NSNumber *n in items) {
+          [destPlaylist addItemsFromPlaylist:_playlists[n.intValue]];
+        }
+        [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+      }
+    } else {
+      BOOL fromLibrary = [draggingType isEqualToString:kDragTypeTreeNodes];
+
+      if (fromLibrary == NO) {
+        NSMutableArray *arr = [NSMutableArray new];
+        for (NSNumber *row in items) [arr addObject:_selectedPlaylist[row.intValue]];
+        items = arr;
+      }
+
+      if (dropOperation == NSTableViewDropOn) {
+        Playlist *p = _playlists[row];
+        if (fromLibrary) [p addTreeNodes:items atPos:p.numberOfItems];
+        else [p addPlaylistItems:items];
+      } else if (dropOperation == NSTableViewDropAbove) {
+        Playlist *p;
+        if (fromLibrary) p = [[Playlist alloc] initWithTreeNodes:items];
+        else p = [[Playlist alloc] initWithPlaylistItems:items];
+
+        [_playlists insertObject:p atIndex:row];
+        [tableView reloadData];
+      }
+      [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+      [self updateSelectedPlaylist];
     }
-
-    if (dropOperation == NSTableViewDropOn) {
-      Playlist *p = _playlists[row];
-      if (fromLibrary) [p addTreeNodes:items atPos:p.numberOfItems];
-      else [p addPlaylistItems:items];
-    } else if (dropOperation == NSTableViewDropAbove) {
-      Playlist *p;
-      if (fromLibrary) p = [[Playlist alloc] initWithTreeNodes:items];
-      else p = [[Playlist alloc] initWithPlaylistItems:items];
-
-      [_playlists insertObject:p atIndex:row];
-      [tableView reloadData];
-    }
-    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
-    [self updateSelectedPlaylist];
   }
 
   [[MartinAppDelegate get].window makeFirstResponder:playlistsTable];

@@ -26,4 +26,14 @@
   return YES;
 }
 
+- (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename {
+  NSLog(@"%@", filename);
+  return NO;
+}
+
+- (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames {
+  NSLog(@"%@", filenames);
+  [[NSApplication sharedApplication] replyToOpenOrPrint:NSApplicationDelegateReplyCancel];
+}
+
 @end

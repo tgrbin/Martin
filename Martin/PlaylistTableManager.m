@@ -33,7 +33,7 @@
   playlistTable.target = self;
   playlistTable.doubleAction = @selector(itemDoubleClicked);
 
-  [playlistTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistsRows, kDragTypePlaylistItemsRows]];
+  [playlistTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistsRows, kDragTypePlaylistItemsRows, NSFilenamesPboardType]];
 
   [self observe:kFilePlayerStartedPlayingNotification withAction:@selector(playingItemChanged)];
   [self observe:kFilePlayerStoppedPlayingNotification withAction:@selector(playingItemChanged)];
@@ -71,36 +71,41 @@
 }
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
-  NSString *draggingType = [info.draggingPasteboard.types lastObject];
-  NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:draggingType]];
+  NSArray *draggingTypes = info.draggingPasteboard.types;
 
   int endPosition = (int)row;
-  int itemsCount = (int)items.count;
+  int itemsCount = 0;
 
-  if ([draggingType isEqualToString:kDragTypeTreeNodes]) {
+  if ([draggingTypes containsObject:NSFilenamesPboardType]) {
+    NSArray *items = [info.draggingPasteboard propertyListForType:NSFilenamesPboardType];
+    NSLog(@"%@", items);
+  } else {
+    NSString *draggingType = [draggingTypes lastObject];
+    NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:draggingType]];
+    if ([draggingType isEqualToString:kDragTypeTreeNodes]) {
 
-    itemsCount = [_playlist addTreeNodes:items atPos:endPosition];
+      itemsCount = [_playlist addTreeNodes:items atPos:endPosition];
 
-  } else if ([draggingType isEqualToString:kDragTypePlaylistsRows]) {
+    } else if ([draggingType isEqualToString:kDragTypePlaylistsRows]) {
 
-    NSMutableArray *arr = [NSMutableArray new];
-    for (NSNumber *n in items) [arr addObject:[MartinAppDelegate get].playlistManager.playlists[n.intValue]];
-    itemsCount = [_playlist addItemsFromPlaylists:arr atPos:endPosition];
-
-  } else if ([draggingType isEqualToString:kDragTypePlaylistItemsRows]) {
-
-    if (dragSourcePlaylist == _playlist) {
-      endPosition = [_playlist reorderItemsAtRows:items toPos:endPosition];
-    } else {
       NSMutableArray *arr = [NSMutableArray new];
-      for (NSNumber *n in items) [arr addObject:dragSourcePlaylist[n.intValue]];
-      itemsCount = [_playlist addPlaylistItems:arr atPos:endPosition];
+      for (NSNumber *n in items) [arr addObject:[MartinAppDelegate get].playlistManager.playlists[n.intValue]];
+      itemsCount = [_playlist addItemsFromPlaylists:arr atPos:endPosition];
+
+    } else if ([draggingType isEqualToString:kDragTypePlaylistItemsRows]) {
+
+      if (dragSourcePlaylist == _playlist) {
+        endPosition = [_playlist reorderItemsAtRows:items toPos:endPosition];
+      } else {
+        NSMutableArray *arr = [NSMutableArray new];
+        for (NSNumber *n in items) [arr addObject:dragSourcePlaylist[n.intValue]];
+        itemsCount = [_playlist addPlaylistItems:arr atPos:endPosition];
+      }
     }
   }
 
   [self reloadTable];
   [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(endPosition, itemsCount)] byExtendingSelection:NO];
-
   [[MartinAppDelegate get].window makeFirstResponder:tableView];
 
   return YES;
