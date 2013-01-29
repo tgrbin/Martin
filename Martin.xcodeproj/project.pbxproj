@@ -32,6 +32,7 @@
 		79DCB7AA165FFB3B00077082 /* FilePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DCB7A9165FFB3B00077082 /* FilePlayer.m */; };
 		79DEAD62165BD81C0017E4DD /* PlaylistItem.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79DEAD61165BD81C0017E4DD /* PlaylistItem.mm */; };
 		79E98E1A1679A65B00559F14 /* TagsUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79E98E191679A65B00559F14 /* TagsUtils.mm */; };
+		79EBAA9116B834240038BC0F /* GlobalShortcuts.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EBAA9016B834240038BC0F /* GlobalShortcuts.m */; };
 		79EDE63A1678EB6A0060F9F9 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79EDE6391678EB6A0060F9F9 /* CoreServices.framework */; };
 		79EDE63E1678EB9A0060F9F9 /* FolderWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EDE63D1678EB9A0060F9F9 /* FolderWatcher.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		79F5BC1014363BE10040DF35 /* LibraryOutlineViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F5BC0F14363BE10040DF35 /* LibraryOutlineViewManager.m */; };
@@ -94,6 +95,8 @@
 		79DEAD61165BD81C0017E4DD /* PlaylistItem.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlaylistItem.mm; sourceTree = "<group>"; };
 		79E98E181679A65B00559F14 /* TagsUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagsUtils.h; sourceTree = "<group>"; };
 		79E98E191679A65B00559F14 /* TagsUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TagsUtils.mm; sourceTree = "<group>"; };
+		79EBAA8F16B834240038BC0F /* GlobalShortcuts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalShortcuts.h; sourceTree = "<group>"; };
+		79EBAA9016B834240038BC0F /* GlobalShortcuts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GlobalShortcuts.m; sourceTree = "<group>"; };
 		79EDE6391678EB6A0060F9F9 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		79EDE63C1678EB9A0060F9F9 /* FolderWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderWatcher.h; sourceTree = "<group>"; };
 		79EDE63D1678EB9A0060F9F9 /* FolderWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FolderWatcher.m; sourceTree = "<group>"; };
@@ -235,6 +238,8 @@
 			children = (
 				79F69EB7169999CD00693CE5 /* ShortcutBinder.h */,
 				79F69EB8169999CD00693CE5 /* ShortcutBinder.m */,
+				79EBAA8F16B834240038BC0F /* GlobalShortcuts.h */,
+				79EBAA9016B834240038BC0F /* GlobalShortcuts.m */,
 			);
 			name = "Keyboard Shortcuts";
 			sourceTree = "<group>";
@@ -407,6 +412,7 @@
 				79F69EAF169969B400693CE5 /* DragDataConverter.m in Sources */,
 				79F69EB21699731200693CE5 /* NSObject+Observe.m in Sources */,
 				79F69EB9169999CD00693CE5 /* ShortcutBinder.m in Sources */,
+				79EBAA9116B834240038BC0F /* GlobalShortcuts.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

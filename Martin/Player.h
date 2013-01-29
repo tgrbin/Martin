@@ -16,4 +16,9 @@
 
 - (void)playItemWithIndex:(int)index;
 
+// used only by GlobalShortcuts class
+- (void)playOrPause;
+- (void)next;
+- (void)prev;
+
 @end
