@@ -13,6 +13,11 @@
 #import "PlaylistItem.h"
 #import "NSObject+Observe.h"
 
+typedef enum {
+  kPlayButtonStylePlay,
+  kPlayButtonStylePause
+} PlayButtonStyle;
+
 @implementation Player {
   NSTimer *seekTimer;
   IBOutlet NSSlider *seekSlider;
@@ -31,7 +36,7 @@
 
   [[MartinAppDelegate get].filePlayer startPlayingItem:_nowPlayingPlaylist.currentItem];
   [self startSeekTimer];
-  [self setPlayOrPause:YES];
+  [self setPlayButtonStyle:kPlayButtonStylePause];
   [LastFM updateNowPlaying:_nowPlayingPlaylist.currentItem];
 
   nowPlayingTextField.stringValue = _nowPlayingPlaylist.currentItem.prettyName;
@@ -43,7 +48,7 @@
 }
 
 - (void)stop {
-  [self setPlayOrPause:YES];
+  [self setPlayButtonStyle:kPlayButtonStylePlay];
   [self disableTimer];
   [[MartinAppDelegate get].filePlayer stop];
   nowPlayingTextField.stringValue = @"";
@@ -55,7 +60,7 @@
     [self startPlayingCurrentItem];
   } else {
     [[MartinAppDelegate get].filePlayer togglePause];
-    [self setPlayOrPause:[[MartinAppDelegate get].filePlayer playing]];
+    [self setPlayButtonStyle:[[MartinAppDelegate get].filePlayer playing]? kPlayButtonStylePause: kPlayButtonStylePlay];
   }
 }
 
@@ -102,8 +107,8 @@
   seekSlider.doubleValue = 0;
 }
 
-- (void)setPlayOrPause:(BOOL)play {
-  playOrPauseButton.title = play? @">": @"II";
+- (void)setPlayButtonStyle:(PlayButtonStyle)style {
+  playOrPauseButton.title = (style == kPlayButtonStylePlay)? @">": @"II";
 }
 
 #pragma mark - actions
