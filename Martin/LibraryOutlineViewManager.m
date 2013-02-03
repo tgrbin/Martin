@@ -55,7 +55,7 @@
 }
 
 - (void)addSelectedItemsToPlaylist {
-  [[MartinAppDelegate get].playlistTableManager addTreeNodesToPlaylist:[self selectedItems]];
+  [[MartinAppDelegate get].playlistTableManager addTreeNodes:[self selectedItems]];
 }
 
 - (void)createPlaylistWithSelectedItems {
@@ -102,7 +102,7 @@
 - (void)itemDoubleClicked {
   id item = [outlineView itemAtRow:outlineView.selectedRow];
   if ([Tree isLeaf:[item intValue]]) {
-    [[MartinAppDelegate get].playlistTableManager addTreeNodesToPlaylist:@[item]];
+    [[MartinAppDelegate get].playlistTableManager addTreeNodes:@[item]];
   } else {
     if ([outlineView isItemExpanded:item]) [outlineView collapseItem:item];
     else [outlineView expandItem:item];
@@ -110,7 +110,7 @@
 }
 
 - (IBAction)contextMenuAddToPlaylist:(id)sender {
-  [[MartinAppDelegate get].playlistTableManager addTreeNodesToPlaylist:[self itemsToProcessFromContextMenu]];
+  [[MartinAppDelegate get].playlistTableManager addTreeNodes:[self itemsToProcessFromContextMenu]];
 }
 
 - (IBAction)contextMenuNewPlaylist:(id)sender {
@@ -304,7 +304,7 @@
     [[MartinAppDelegate get].playlistManager addNewPlaylistWithTreeNodes:@[ @0 ] andName:searchTextField.stringValue];
     return YES;
   } else if (commandSelector == @selector(insertNewline:)) {
-    [[MartinAppDelegate get].playlistTableManager addTreeNodesToPlaylist:@[ @0 ]];
+    [[MartinAppDelegate get].playlistTableManager addTreeNodes:@[ @0 ]];
     return YES;
   }
 

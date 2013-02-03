@@ -24,6 +24,11 @@
   [self stop];
 
   sound = [[NSSound alloc] initWithContentsOfFile:item.filename byReference:YES];
+  if (sound == nil) {
+    NSLog(@"playing failed: %@", item.filename);
+    return;
+  }
+
   sound.delegate = self;
   sound.volume = _volume;
   [sound play];

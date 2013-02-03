@@ -12,6 +12,7 @@
 
 - (id)initWithLibrarySong:(int)p_song;
 - (id)initWithFileStream:(FILE *)f;
+- (id)initWithPath:(NSString *)path andInode:(ino_t)inode;
 
 @property (nonatomic, strong, readonly) NSString *filename;
 @property (nonatomic, readonly) ino_t inode;

@@ -8,6 +8,7 @@
 
 #import "MartinAppDelegate.h"
 #import "GlobalShortcuts.h"
+#import "SongsFinder.h"
 
 @implementation MartinAppDelegate
 
@@ -56,13 +57,21 @@
 }
 
 - (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename {
-  NSLog(@"%@", filename);
+  [self addPlaylistItems:[SongsFinder playlistItemsFromFolders:@[filename]]];
   return NO;
 }
 
 - (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames {
-  NSLog(@"%@", filenames);
+  [self addPlaylistItems:[SongsFinder playlistItemsFromFolders:filenames]];
   [[NSApplication sharedApplication] replyToOpenOrPrint:NSApplicationDelegateReplyCancel];
+}
+
+- (void)addPlaylistItems:(NSArray *)items {
+  if (_player.nowPlayingPlaylist) {
+    [_playlistTableManager addPlaylistItems:items];
+  } else {
+    [_playlistManager addNewPlaylistWithPlaylistItems:items];
+  }
 }
 
 @end

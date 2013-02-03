@@ -18,6 +18,7 @@
 #import "DragDataConverter.h"
 #import "NSObject+Observe.h"
 #import "ShortcutBinder.h"
+#import "SongsFinder.h"
 
 static const double dragHoverTime = 1;
 
@@ -76,6 +77,10 @@ static const double dragHoverTime = 1;
 
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes {
   [self addPlaylist:[[Playlist alloc] initWithTreeNodes:nodes]];
+}
+
+- (void)addNewPlaylistWithPlaylistItems:(NSArray *)items {
+  [self addPlaylist:[[Playlist alloc] initWithPlaylistItems:items]];
 }
 
 - (void)addPlaylist:(Playlist *)p {
@@ -175,7 +180,18 @@ static const double dragHoverTime = 1;
 
   if ([draggingTypes containsObject:NSFilenamesPboardType]) {
     NSArray *items = [info.draggingPasteboard propertyListForType:NSFilenamesPboardType];
-    NSLog(@"%@", items);
+    NSArray *playlistItems = [SongsFinder playlistItemsFromFolders:items];
+
+    if (dropOperation == NSTableViewDropAbove) {
+      Playlist *p = [[Playlist alloc] initWithPlaylistItems:playlistItems];
+      [_playlists insertObject:p atIndex:row];
+      [tableView reloadData];
+    } else {
+      Playlist *p = _playlists[row];
+      [p addPlaylistItems:playlistItems];
+    }
+    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+    [self updateSelectedPlaylist];
   } else {
     NSString *draggingType = [draggingTypes lastObject];
     NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:draggingType]];
@@ -199,17 +215,17 @@ static const double dragHoverTime = 1;
         items = arr;
       }
 
-      if (dropOperation == NSTableViewDropOn) {
-        Playlist *p = _playlists[row];
-        if (fromLibrary) [p addTreeNodes:items atPos:p.numberOfItems];
-        else [p addPlaylistItems:items];
-      } else if (dropOperation == NSTableViewDropAbove) {
+      if (dropOperation == NSTableViewDropAbove) {
         Playlist *p;
         if (fromLibrary) p = [[Playlist alloc] initWithTreeNodes:items];
         else p = [[Playlist alloc] initWithPlaylistItems:items];
 
         [_playlists insertObject:p atIndex:row];
         [tableView reloadData];
+      } else {
+        Playlist *p = _playlists[row];
+        if (fromLibrary) [p addTreeNodes:items atPos:p.numberOfItems];
+        else [p addPlaylistItems:items];
       }
       [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
       [self updateSelectedPlaylist];

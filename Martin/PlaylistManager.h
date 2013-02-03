@@ -20,6 +20,7 @@
 
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes;
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes andName:(NSString *)name;
+- (void)addNewPlaylistWithPlaylistItems:(NSArray *)items;
 
 - (void)savePlaylists;
 

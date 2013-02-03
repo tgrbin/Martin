@@ -10,6 +10,7 @@
 #import "LibManager.h"
 #import "Tree.h"
 #import "Tags.h"
+#import "ID3Reader.h"
 
 @implementation PlaylistItem {
   Tags *tags;
@@ -57,6 +58,26 @@
   return self;
 }
 
+- (id)initWithPath:(NSString *)path andInode:(ino_t)inode {
+  if (self = [super init]) {
+    _p_librarySong = -1;
+    _filename = path;
+    
+    ID3Reader *id3 = [[ID3Reader alloc] initWithFile:path];
+    if (id3 != nil) {
+      _lengthInSeconds = id3.lengthInSeconds;
+      NSMutableArray *tagsArray = [NSMutableArray new];
+      for (int i = 0; i < kNumberOfTags; ++i) {
+        NSString *val = [id3 tag:[Tags tagNameForIndex:i]];
+        [tagsArray addObject:val == nil? @"": val];
+      }
+      tags = [Tags createTagsFromArray:tagsArray];
+    }
+  }
+  
+  return self;
+}
+
 - (NSString *)filename {
   [self checkLibrarySong];
   if (_p_librarySong != -1) return [Tree pathForSong:_p_librarySong];
@@ -83,11 +104,6 @@
   return [NSString stringWithFormat:@"%@ - %@ - %@", [self tagValueForIndex:2], [self tagValueForIndex:1], [self tagValueForIndex:3]];
 }
 
-- (void)checkLibrarySong {
-  if (_p_librarySong == -1) return;
-  if ([Tree inodeForSong:_p_librarySong] != _inode) _p_librarySong = [Tree songByInode:_inode];
-}
-
 - (void)outputToFileStream:(FILE *)f {
   [self checkLibrarySong];
   
@@ -106,6 +122,11 @@
   }
   
   fprintf(f, "}\n");
+}
+
+- (void)checkLibrarySong {
+  if (_p_librarySong == -1) return;
+  if ([Tree inodeForSong:_p_librarySong] != _inode) _p_librarySong = [Tree songByInode:_inode];
 }
 
 @end

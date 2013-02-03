@@ -15,6 +15,7 @@
 #import "FolderWatcher.h"
 #import "RescanState.h"
 #import "ResourcePath.h"
+#import "FileExtensionChecker.h"
 
 #import <algorithm>
 #import <cstdio>
@@ -128,13 +129,6 @@ static void endWalk() {
   pathsToRescan[0].clear();
   pathsToRescan[1].clear();
   pathBuff[0] = 0;
-}
-
-static BOOL isExtensionAcceptable(const char *str) {
-  int len = (int)strlen(str);
-  if (strcasecmp(str + len - 4, ".mp3") == 0) return YES;
-  if (strcasecmp(str + len - 4, ".m4a") == 0) return YES;
-  return NO;
 }
 
 #pragma mark - load library
@@ -307,7 +301,7 @@ static int ftw_callback(const char *filename, const struct stat *stat_struct, in
     walkPrint("%d", inode);
     if (currentLevel > 0) folderIsEmpty = NO;
   } else {
-    if (isExtensionAcceptable(filename)) walkSong(basename, [Tree songByInode:inode], stat_struct);
+    if ([FileExtensionChecker isExtensionAcceptable:filename]) walkSong(basename, [Tree songByInode:inode], stat_struct);
     folderIsEmpty = NO;
   }
   
@@ -357,7 +351,7 @@ static void walkFolderNonRecursively(BOOL _onRootLevel) {
         pathBuff[pathLen] = 0;
         walkTreeNode(node, NO);
       }
-    } else if (entry->d_type == DT_REG && isExtensionAcceptable(entry->d_name)) {
+    } else if (entry->d_type == DT_REG && [FileExtensionChecker isExtensionAcceptable:entry->d_name]) {
       stat(pathBuff, &statBuff);
       
       int p_song = (node == -1)? -1: [Tree treeNodeDataForP:node]->p_song;

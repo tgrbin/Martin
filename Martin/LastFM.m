@@ -109,12 +109,12 @@ static NSString *currentToken = nil;
 #pragma mark - update now playing
 
 static void updateNowPlayingCallback(WSMethodInvocationRef ref, void *info, CFDictionaryRef dict) {
-  NSLog(@"updateNowPlaying callback: %@", dict);
   CFRelease(ref);
   CFRelease(dict);
 }
 
 + (void)updateNowPlaying:(PlaylistItem *)item {
+#ifndef DEBUG
   NSString *sessionKey = [self sessionKey];
   if (sessionKey == nil) return;
 
@@ -135,17 +135,18 @@ static void updateNowPlayingCallback(WSMethodInvocationRef ref, void *info, CFDi
 
   WSMethodInvocationSetCallBack(myRef, &updateNowPlayingCallback, NULL);
   WSMethodInvocationScheduleWithRunLoop(myRef, [[NSRunLoop currentRunLoop] getCFRunLoop], (CFStringRef)NSDefaultRunLoopMode);
+#endif
 }
 
 #pragma mark - scrobble
 
 static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionaryRef dict) {
-  NSLog(@"scrobble callback :%@", dict);
   CFRelease(ref);
   CFRelease(dict);
 }
 
 + (void)scrobble:(PlaylistItem *)item {
+#ifndef DEBUG
   NSString *sessionKey = [self sessionKey];
   if (sessionKey == nil) return;
 
@@ -168,6 +169,7 @@ static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionary
 
   WSMethodInvocationSetCallBack(myRef, &scrobbleCallback, NULL);
   WSMethodInvocationScheduleWithRunLoop(myRef, [[NSRunLoop currentRunLoop] getCFRunLoop], (CFStringRef)NSDefaultRunLoopMode);
+#endif
 }
 
 + (void)addItemTags:(PlaylistItem *)item toDictionary:(NSMutableDictionary *)dict {

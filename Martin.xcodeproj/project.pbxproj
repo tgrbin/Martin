@@ -23,6 +23,8 @@
 		79AF97EB145305C200BE8391 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 79AF97EA145305C200BE8391 /* Player.m */; };
 		79B3706D149D21EA003372CB /* LastFM.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B3706C149D21EA003372CB /* LastFM.m */; };
 		79C2ACB5144AB39200C2699B /* PlaylistManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C2ACB4144AB39200C2699B /* PlaylistManager.m */; };
+		79CF466B16BE714B00A6E13A /* FileExtensionChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CF466A16BE714B00A6E13A /* FileExtensionChecker.m */; };
+		79CF466E16BE73F900A6E13A /* SongsFinder.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CF466D16BE73F900A6E13A /* SongsFinder.m */; };
 		79D5760F1431074D00A2DA67 /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 79D5760E1431074D00A2DA67 /* icon.icns */; };
 		79D63C65168C438100A248F9 /* RescanState.m in Sources */ = {isa = PBXBuildFile; fileRef = 79D63C64168C438100A248F9 /* RescanState.m */; };
 		79D63C69168C88F900A248F9 /* DefaultsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79D63C68168C88F900A248F9 /* DefaultsManager.m */; };
@@ -79,6 +81,10 @@
 		79B3706C149D21EA003372CB /* LastFM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LastFM.m; sourceTree = "<group>"; };
 		79C2ACB3144AB39200C2699B /* PlaylistManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistManager.h; sourceTree = "<group>"; };
 		79C2ACB4144AB39200C2699B /* PlaylistManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistManager.m; sourceTree = "<group>"; };
+		79CF466916BE714B00A6E13A /* FileExtensionChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileExtensionChecker.h; sourceTree = "<group>"; };
+		79CF466A16BE714B00A6E13A /* FileExtensionChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileExtensionChecker.m; sourceTree = "<group>"; };
+		79CF466C16BE73F900A6E13A /* SongsFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SongsFinder.h; sourceTree = "<group>"; };
+		79CF466D16BE73F900A6E13A /* SongsFinder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SongsFinder.m; sourceTree = "<group>"; };
 		79D5760E1431074D00A2DA67 /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = icon.icns; path = ../icon.icns; sourceTree = "<group>"; };
 		79D63C63168C438100A248F9 /* RescanState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RescanState.h; sourceTree = "<group>"; };
 		79D63C64168C438100A248F9 /* RescanState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RescanState.m; sourceTree = "<group>"; };
@@ -183,6 +189,10 @@
 				799EF5EC16884D7000AD3A67 /* RescanProxy.m */,
 				79D63C63168C438100A248F9 /* RescanState.h */,
 				79D63C64168C438100A248F9 /* RescanState.m */,
+				79CF466916BE714B00A6E13A /* FileExtensionChecker.h */,
+				79CF466A16BE714B00A6E13A /* FileExtensionChecker.m */,
+				79CF466C16BE73F900A6E13A /* SongsFinder.h */,
+				79CF466D16BE73F900A6E13A /* SongsFinder.m */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -413,6 +423,8 @@
 				79F69EB21699731200693CE5 /* NSObject+Observe.m in Sources */,
 				79F69EB9169999CD00693CE5 /* ShortcutBinder.m in Sources */,
 				79EBAA9116B834240038BC0F /* GlobalShortcuts.m in Sources */,
+				79CF466B16BE714B00A6E13A /* FileExtensionChecker.m in Sources */,
+				79CF466E16BE73F900A6E13A /* SongsFinder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
