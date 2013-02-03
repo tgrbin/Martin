@@ -34,6 +34,7 @@ static char pathBuff[kBuffSize];
 static vector<int> needsRescan;
 
 static int lastFolderLevel;
+static BOOL folderIsEmpty;
 static BOOL wasLastItemFolder;
 static BOOL onRootLevel;
 static int lineNumber;
@@ -304,8 +305,10 @@ static int ftw_callback(const char *filename, const struct stat *stat_struct, in
   if (isFolder) {
     walkPrint("+ %s", (currentLevel == 0 && onRootLevel)? filename: basename);
     walkPrint("%d", inode);
-  } else if (isExtensionAcceptable(filename)) {
-    walkSong(basename, [Tree songByInode:inode], stat_struct);
+    if (currentLevel > 0) folderIsEmpty = NO;
+  } else {
+    if (isExtensionAcceptable(filename)) walkSong(basename, [Tree songByInode:inode], stat_struct);
+    folderIsEmpty = NO;
   }
   
   lastFolderLevel = currentLevel;
@@ -318,10 +321,11 @@ static void walkFolder(const char *folder, BOOL _onRootLevel) {
   lastFolderLevel = 0;
   wasLastItemFolder = NO;
   onRootLevel = _onRootLevel;
+  folderIsEmpty = YES;
   
   nftw(folder, ftw_callback, 512, 0);
   
-  for (int i = 0; i < lastFolderLevel; ++i) walkPrint("-");
+  for (int i = 0; i < lastFolderLevel + folderIsEmpty; ++i) walkPrint("-");
 }
 
 static void walkTreeNode(int, BOOL);
