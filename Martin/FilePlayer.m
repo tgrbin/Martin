@@ -71,6 +71,10 @@
   return sound.currentTime / sound.duration;
 }
 
+- (double)timeElapsed {
+  return sound.currentTime;
+}
+
 #pragma mark - nssound delegate
 
 - (void)sound:(NSSound *)s didFinishPlaying:(BOOL)success {

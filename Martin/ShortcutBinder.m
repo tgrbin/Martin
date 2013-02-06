@@ -73,6 +73,8 @@ static MartinKey keyFromEvent(NSEvent *event) {
       NSUInteger flags = (event.modifierFlags & NSDeviceIndependentModifierFlagsMask);
 
       switch (pressedUnichar) {
+        case 'q':
+          return kMartinKeyQueueItems;
         case NSDeleteCharacter:
         case NSDeleteFunctionKey:
         case NSDeleteCharFunctionKey:

@@ -28,14 +28,16 @@
 - (int)addTreeNodes:(NSArray *)treeNodes;
 - (int)addTreeNodes:(NSArray *)treeNodes atPos:(int)pos;
 
-// returns actual position where the items landed
+// returns the actual position where items landed
 - (int)reorderItemsAtRows:(NSArray *)rows toPos:(int)pos;
 
+- (void)removeFirstItem;
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes;
 - (void)sortBy:(NSString *)str;
 - (void)reverse;
 
 - (int)numberOfItems;
+- (BOOL)isEmpty;
 - (PlaylistItem *)objectAtIndexedSubscript:(int)index;
 
 - (PlaylistItem *)currentItem;
@@ -45,5 +47,7 @@
 - (PlaylistItem *)moveToItemWithIndex:(int)index;
 
 - (void)shuffle;
+
+- (int)currentItemIndex;
 
 @end

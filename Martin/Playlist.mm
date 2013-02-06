@@ -257,6 +257,11 @@ using namespace std;
   reverse(playlist.begin(), playlist.end());
 }
 
+- (void)removeFirstItem {
+  if ([self isEmpty]) return;
+  [self removeSongsAtIndexes:[NSIndexSet indexSetWithIndex:0]];
+}
+
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes {
   [self resetCurrentItemIfStopped];
   
@@ -327,6 +332,10 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 
 #pragma mark - playing songs
 
+- (BOOL)isEmpty {
+  return self.numberOfItems == 0;
+}
+
 - (int)numberOfItems {
   return (int)playlistItems.size();
 }
@@ -382,6 +391,15 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
   }
 
   return playlistItems[currentItem = order[pos]];
+}
+
+#pragma mark - util
+
+- (int)currentItemIndex {
+  for (int i = 0; i < playlist.size(); ++i)
+    if (playlist[i] == currentItem) return i;
+  
+  return -1;
 }
 
 - (void)myIota:(vector<int>&) v start:(int)s {

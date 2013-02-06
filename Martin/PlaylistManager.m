@@ -56,6 +56,14 @@ static const double dragHoverTime = 1;
   return self;
 }
 
+- (QueuePlaylist *)queue {
+  return _playlists[0];
+}
+
+- (void)reload {
+  [playlistsTable reloadData];
+}
+
 - (void)setShuffle:(BOOL)shuffle {
   _shuffle = shuffle;
   [DefaultsManager setObject:@(_shuffle) forKey:kDefaultsKeyShuffle];
@@ -100,13 +108,16 @@ static const double dragHoverTime = 1;
 }
 
 - (void)deleteSelectedPlaylists {
-  NSIndexSet *is = [playlistsTable selectedRowIndexes];
-  if (_playlists.count - is.count < 1) return; // at least one playlist must remain
+  NSMutableIndexSet *is = [[NSMutableIndexSet alloc] initWithIndexSet:[playlistsTable selectedRowIndexes]];
+  [is removeIndex:0]; // queue can't be deleted
+  [playlistsTable deselectRow:0];
+
+  if (is.count == 0) return;
 
   [_playlists removeObjectsAtIndexes:is];
   [playlistsTable reloadData];
 
-  // without this first item becomes selected after removing the last one, i don't like that
+  // without this first item becomes selected after removing the last one, last item should be selected instead
   if (is.count == 1 && [is lastIndex] == playlistsTable.numberOfRows) {
     [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:playlistsTable.numberOfRows - 1] byExtendingSelection:NO];
   }
@@ -149,6 +160,9 @@ static const double dragHoverTime = 1;
     dragHoverRow = row;
     [self setDragHoverTimer];
   }
+
+  // can't drop anything above the queue
+  if (dropOperation == NSTableViewDropAbove && row == 0) return NSDragOperationNone;
 
   return NSDragOperationCopy;
 }
@@ -243,12 +257,14 @@ static const double dragHoverTime = 1;
   NSInteger dest = pos;
   for (NSNumber *n in rows) {
     int i = n.intValue;
-    [objectsToRelocate addObject:_playlists[i]];
-    [rowsToRelocate addIndex:i];
-    if (i < pos) --dest;
+    if (i > 0) {
+      [objectsToRelocate addObject:_playlists[i]];
+      [rowsToRelocate addIndex:i];
+      if (i < pos) --dest;
+    }
   };
 
-  NSIndexSet *destIndexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(dest, rows.count)];
+  NSIndexSet *destIndexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(dest, rowsToRelocate.count)];
   [_playlists removeObjectsAtIndexes:rowsToRelocate];
   [_playlists insertObjects:objectsToRelocate atIndexes:destIndexSet];
   [playlistsTable reloadData];
@@ -264,7 +280,9 @@ static const double dragHoverTime = 1;
 }
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-  return ((Playlist*)_playlists[row]).name;
+  Playlist *p = (Playlist *)_playlists[row];
+  if (row == 0) return [NSString stringWithFormat:@"%@ (%d)", p.name, p.numberOfItems];
+  else return p.name;
 }
 
 - (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
@@ -275,6 +293,8 @@ static const double dragHoverTime = 1;
 #pragma mark - table delegate
 
 - (BOOL)tableView:(NSTableView *)tableView shouldEditTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+  if (row == 0) return NO;
+
   NSEvent *e = [NSApp currentEvent];
   if (e.type == NSKeyDown && e.keyCode == 48) return NO;
   return YES;

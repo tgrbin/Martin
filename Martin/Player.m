@@ -23,6 +23,9 @@ typedef enum {
   IBOutlet NSSlider *seekSlider;
   IBOutlet NSButton *playOrPauseButton;
   IBOutlet NSTextField *nowPlayingTextField;
+
+  BOOL playingQueuedItem;
+  Playlist *playlistToReturnToAfterQueuedItem;
 }
 
 - (void)awakeFromNib {
@@ -57,7 +60,9 @@ typedef enum {
 
 - (void)playOrPause {
   if ([[MartinAppDelegate get].filePlayer stopped]) {
-    [self startPlayingCurrentItem];
+    if ([self willPlayQueuedItem] == NO) {
+      [self startPlayingCurrentItem];
+    }
   } else {
     [[MartinAppDelegate get].filePlayer togglePause];
     [self setPlayButtonStyle:[[MartinAppDelegate get].filePlayer playing]? kPlayButtonStylePause: kPlayButtonStylePlay];
@@ -65,18 +70,35 @@ typedef enum {
 }
 
 - (void)next {
-  if ([_nowPlayingPlaylist moveToNextItem] == nil) {
-    [self stop];
-  } else {
-    [self startPlayingCurrentItem];
+  if ([self willPlayQueuedItem] == NO) {
+    if ([_nowPlayingPlaylist moveToNextItem] == nil) {
+      [self stop];
+    } else {
+      [self startPlayingCurrentItem];
+    }
   }
 }
 
 - (void)prev {
-  if ([_nowPlayingPlaylist moveToPrevItem] == nil) {
-    [self stop];
-  } else {
+  FilePlayer *filePlayer = [MartinAppDelegate get].filePlayer;
+  if (filePlayer.stopped == NO && filePlayer.timeElapsed > 3) {
     [self startPlayingCurrentItem];
+    return;
+  }
+
+  if (playingQueuedItem) {
+    [self returnFromQueue];
+    if (_nowPlayingPlaylist == nil) {
+      [self stop];
+    } else {
+      [self startPlayingCurrentItem];
+    }
+  } else {
+    if ([_nowPlayingPlaylist moveToPrevItem] == nil) {
+      [self stop];
+    } else {
+      [self startPlayingCurrentItem];
+    }
   }
 }
 
@@ -109,6 +131,36 @@ typedef enum {
 
 - (void)setPlayButtonStyle:(PlayButtonStyle)style {
   playOrPauseButton.title = (style == kPlayButtonStylePlay)? @">": @"II";
+}
+
+#pragma mark - queue management
+
+- (BOOL)willPlayQueuedItem {
+  Playlist *queue = [MartinAppDelegate get].playlistManager.queue;
+
+  if (playingQueuedItem) {
+    [queue removeFirstItem];
+    [[MartinAppDelegate get].playlistTableManager queueChanged];
+    [[MartinAppDelegate get].playlistManager reload];
+    [self returnFromQueue];
+  }
+
+  if ([queue isEmpty]) {
+    return NO;
+  } else {
+    playlistToReturnToAfterQueuedItem = _nowPlayingPlaylist;
+    _nowPlayingPlaylist = queue;
+    playingQueuedItem = YES;
+    [queue moveToFirstItem];
+    [self startPlayingCurrentItem];
+    return YES;
+  }
+}
+
+- (void)returnFromQueue {
+  playingQueuedItem = NO;
+  _nowPlayingPlaylist = playlistToReturnToAfterQueuedItem;
+  playlistToReturnToAfterQueuedItem = nil;
 }
 
 #pragma mark - actions
@@ -144,7 +196,17 @@ typedef enum {
 
 - (void)playItemWithIndex:(int)index {
   _nowPlayingPlaylist = [[MartinAppDelegate get].playlistManager selectedPlaylist];
-  [_nowPlayingPlaylist moveToItemWithIndex:index];
+
+  if (_nowPlayingPlaylist == (Playlist *)[MartinAppDelegate get].playlistManager.queue) {
+    playingQueuedItem = YES;
+    playlistToReturnToAfterQueuedItem = nil;
+    [_nowPlayingPlaylist reorderItemsAtRows:@[@(index)] toPos:0];
+    [_nowPlayingPlaylist moveToFirstItem];
+    [[MartinAppDelegate get].playlistTableManager selectFirstItem];
+  } else {
+    [_nowPlayingPlaylist moveToItemWithIndex:index];
+  }
+
   [self startPlayingCurrentItem];
 }
 

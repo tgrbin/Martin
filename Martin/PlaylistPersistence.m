@@ -41,7 +41,7 @@
 
   FILE *f = fopen([ResourcePath playlistsPath], "r");
   if (f == NULL) {
-    [playlists addObject:[[Playlist alloc] initWithName:@"Default" andPlaylistItems:@[]]];
+    [playlists addObject:[[Playlist alloc] initWithName:@"Queue" andPlaylistItems:@[]]];
   } else {
     for (; fgets(buff, kBuffSize, f) != NULL;) {
       buff[strlen(buff)-1] = 0; // remove newline

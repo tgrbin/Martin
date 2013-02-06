@@ -18,4 +18,7 @@
 - (void)addTreeNodes:(NSArray *)treeNodes;
 - (void)addPlaylistItems:(NSArray *)items;
 
+- (void)queueChanged;
+- (void)selectFirstItem;
+
 @end

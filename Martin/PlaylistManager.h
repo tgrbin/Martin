@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class Playlist;
+@class QueuePlaylist;
 
 @interface PlaylistManager : NSObject <NSTableViewDataSource, NSTableViewDelegate>
 
@@ -17,6 +18,10 @@
 
 @property (nonatomic, assign) BOOL shuffle;
 @property (nonatomic, assign) BOOL repeat;
+
+- (void)reload;
+
+- (Playlist *)queue;
 
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes;
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes andName:(NSString *)name;

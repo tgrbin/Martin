@@ -43,7 +43,10 @@
 
   [ShortcutBinder bindControl:playlistTable andKey:kMartinKeyDelete toTarget:self andAction:@selector(deleteSelectedItems)];
   [ShortcutBinder bindControl:playlistTable andKey:kMartinKeyEnter toTarget:self andAction:@selector(playItemAtSelectedRow)];
+  [ShortcutBinder bindControl:playlistTable andKey:kMartinKeyQueueItems toTarget:self andAction:@selector(queueSelectedItems)];
 }
+
+#pragma mark - public
 
 - (void)itemDoubleClicked {
   [[MartinAppDelegate get].player playItemWithIndex:(int)playlistTable.clickedRow];
@@ -52,8 +55,13 @@
 - (void)setPlaylist:(Playlist *)playlist {
   _playlist = playlist;
   sortedColumn = nil;
-  [self reloadTable];
+  [self tableChanged];
   [playlistTable deselectAll:nil];
+}
+
+- (void)selectFirstItem {
+  [playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:0]
+             byExtendingSelection:NO];
 }
 
 #pragma mark - drag and drop
@@ -106,7 +114,7 @@
     }
   }
 
-  [self reloadTable];
+  [self tableChanged];
   [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(endPosition, itemsCount)] byExtendingSelection:NO];
   [[MartinAppDelegate get].window makeFirstResponder:tableView];
 
@@ -115,12 +123,12 @@
 
 - (void)addTreeNodes:(NSArray *)treeNodes {
   [_playlist addTreeNodes:treeNodes];
-  [self reloadTable];
+  [self tableChanged];
 }
 
 - (void)addPlaylistItems:(NSArray *)items {
   [_playlist addPlaylistItems:items];
-  [self reloadTable];
+  [self tableChanged];
 }
 
 #pragma mark - delegate
@@ -140,7 +148,7 @@
   }
 
   [tableView setIndicatorImage:[NSImage imageNamed: sortAscending? @"NSAscendingSortIndicator": @"NSDescendingSortIndicator"] inTableColumn:tableColumn];
-  [self reloadTable];
+  [self tableChanged];
 }
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)c forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
@@ -168,7 +176,7 @@
   int tagIndex = [Tags indexFromTagName:tableColumn.identifier];
   NSString *value = [item tagValueForIndex:tagIndex];
 
-  if (item == _playlist.currentItem) {
+  if (self.showingNowPlayingPlaylist && row == _playlist.currentItemIndex) {
     highlightedRow = (int)row;
   }
 
@@ -199,7 +207,7 @@
   if (m > 0) {
     [self.playlist removeSongsAtIndexes:selectedIndexes];
     [playlistTable deselectAll:nil];
-    [self reloadTable];
+    [self tableChanged];
 
     selectRow = (selectRow < n-1)? selectRow-m+1: n-m-1;
 
@@ -208,15 +216,39 @@
   }
 }
 
-- (void)reloadTable {
+- (void)queueSelectedItems {
+  NSIndexSet *selectedIndexes = playlistTable.selectedRowIndexes;
+  NSMutableArray *selectedPlaylistItems = [NSMutableArray new];
+
+  for (NSInteger index = selectedIndexes.firstIndex; index != NSNotFound; index = [selectedIndexes indexGreaterThanIndex:index]) {
+    [selectedPlaylistItems addObject:_playlist[(int)index]];
+  }
+
+  [[MartinAppDelegate get].playlistManager.queue addPlaylistItems:selectedPlaylistItems];
+  [[MartinAppDelegate get].playlistManager reload];
+  [self queueChanged];
+}
+
+- (void)queueChanged {
+  if ([self showingQueuePlaylist]) [self tableChanged];
+}
+
+- (void)tableChanged {
   highlightedRow = -1;
   [playlistTable reloadData];
+  if ([self showingQueuePlaylist]) {
+    [[MartinAppDelegate get].playlistManager reload];
+  }
+}
+
+- (BOOL)showingQueuePlaylist {
+  return _playlist == (Playlist *)[MartinAppDelegate get].playlistManager.queue;
 }
 
 #pragma mark - update now playing
 
 - (void)playingItemChanged {
-  if (self.showingNowPlayingPlaylist) [self reloadTable];
+  [self tableChanged];
 }
 
 - (BOOL)showingNowPlayingPlaylist {

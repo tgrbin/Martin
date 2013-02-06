@@ -26,6 +26,8 @@
 - (void)setSeek:(double)seek;
 - (double)seek;
 
+- (double)timeElapsed;
+
 - (void)startPlayingItem:(PlaylistItem *)item;
 - (void)togglePause;
 - (void)stop;
