@@ -23,6 +23,8 @@
 - (void)reload;
 
 - (Playlist *)queue;
+- (void)queueWillAppear;
+- (void)queueWillDisappear;
 
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes;
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes andName:(NSString *)name;

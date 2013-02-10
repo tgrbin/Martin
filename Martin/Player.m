@@ -197,7 +197,7 @@ typedef enum {
 - (void)playItemWithIndex:(int)index {
   _nowPlayingPlaylist = [[MartinAppDelegate get].playlistManager selectedPlaylist];
 
-  if (_nowPlayingPlaylist == (Playlist *)[MartinAppDelegate get].playlistManager.queue) {
+  if (_nowPlayingPlaylist == [MartinAppDelegate get].playlistManager.queue) {
     playingQueuedItem = YES;
     playlistToReturnToAfterQueuedItem = nil;
     [_nowPlayingPlaylist reorderItemsAtRows:@[@(index)] toPos:0];

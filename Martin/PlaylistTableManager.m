@@ -167,7 +167,7 @@
 #pragma mark - data source
 
 - (NSInteger) numberOfRowsInTableView:(NSTableView *)tableView {
-  return _playlist.numberOfItems;
+  return _playlist == nil? 0: _playlist.numberOfItems;
 }
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
@@ -223,9 +223,11 @@
     [selectedPlaylistItems addObject:_playlist[(int)index]];
   }
 
+  BOOL queueWasEmpty = [MartinAppDelegate get].playlistManager.queue.isEmpty;
   [[MartinAppDelegate get].playlistManager.queue addPlaylistItems:selectedPlaylistItems];
   [[MartinAppDelegate get].playlistManager reload];
   [self queueChanged];
+  if (queueWasEmpty) [[MartinAppDelegate get].playlistManager queueWillAppear];
 }
 
 - (void)queueChanged {
@@ -237,11 +239,14 @@
   [playlistTable reloadData];
   if ([self showingQueuePlaylist]) {
     [[MartinAppDelegate get].playlistManager reload];
+    if (_playlist.isEmpty) {
+      [[MartinAppDelegate get].playlistManager queueWillDisappear];
+    }
   }
 }
 
 - (BOOL)showingQueuePlaylist {
-  return _playlist == (Playlist *)[MartinAppDelegate get].playlistManager.queue;
+  return _playlist == [MartinAppDelegate get].playlistManager.queue;
 }
 
 #pragma mark - update now playing

@@ -68,6 +68,29 @@ static const double dragHoverTime = 1;
   return playlists[0];
 }
 
+- (void)queueWillAppear {
+  ignoreSelectionChange = YES;
+  [playlistsTable selectRowIndexes:[self offsetSelectedRowsBy:1]
+              byExtendingSelection:NO];
+  ignoreSelectionChange = NO;
+}
+
+- (void)queueWillDisappear {
+  ignoreSelectionChange = YES;
+  [playlistsTable selectRowIndexes:[self offsetSelectedRowsBy:-1]
+              byExtendingSelection:NO];
+  ignoreSelectionChange = NO;
+  [self updateSelectedPlaylist];
+}
+
+- (NSIndexSet *)offsetSelectedRowsBy:(int)offset {
+  NSIndexSet *is = [playlistsTable selectedRowIndexes];
+  NSMutableIndexSet *offsetIs = [NSMutableIndexSet new];
+  for (NSInteger i = is.firstIndex; i != NSNotFound; i = [is indexGreaterThanIndex:i])
+    if (i+offset >= 0) [offsetIs addIndex:i+offset];
+  return offsetIs;
+}
+
 - (void)reload {
   [playlistsTable reloadData];
 }
@@ -111,7 +134,11 @@ static const double dragHoverTime = 1;
 }
 
 - (void)updateSelectedPlaylist {
-  _selectedPlaylist = [self playlistAtRow:playlistsTable.selectedRow];
+  if ([self numberOfRows] == 0) {
+    _selectedPlaylist = nil;
+  } else {
+    _selectedPlaylist = [self playlistAtRow:playlistsTable.selectedRow];
+  }
   [MartinAppDelegate get].playlistTableManager.playlist = _selectedPlaylist;
 }
 
