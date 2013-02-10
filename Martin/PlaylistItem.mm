@@ -101,7 +101,16 @@
 }
 
 - (NSString *)prettyName {
-  return [NSString stringWithFormat:@"%@ - %@ - %@", [self tagValueForIndex:2], [self tagValueForIndex:1], [self tagValueForIndex:3]];
+  NSString *artist = [self tagValueForIndex:1];
+  NSString *album = [self tagValueForIndex:2];
+  NSString *title = [self tagValueForIndex:3];
+  
+  if (title.length == 0) {
+    NSArray *arr = [self.filename pathComponents];
+    return [NSString stringWithFormat:@"%@/%@", arr[arr.count-2], arr.lastObject];
+  } else {
+    return [NSString stringWithFormat:@"%@ - %@ - %@", artist, album, title];
+  }
 }
 
 - (void)outputToFileStream:(FILE *)f {

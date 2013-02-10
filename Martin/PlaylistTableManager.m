@@ -179,6 +179,10 @@
     highlightedRow = (int)row;
   }
 
+  if ([tableColumn.identifier isEqualToString:@"title"] && value.length == 0) {
+    value = [item.filename lastPathComponent];
+  }
+
   if ([tableColumn.identifier isEqualToString:@"length"]) {
     int sec = item.lengthInSeconds;
     value = [NSString stringWithFormat:@"%d:%02d", sec/60, sec%60];
