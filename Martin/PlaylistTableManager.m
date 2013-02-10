@@ -34,7 +34,7 @@
   playlistTable.target = self;
   playlistTable.doubleAction = @selector(itemDoubleClicked);
 
-  [playlistTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistsRows, kDragTypePlaylistItemsRows, NSFilenamesPboardType]];
+  [playlistTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistsIndexes, kDragTypePlaylistItemsRows, NSFilenamesPboardType]];
 
   [self observe:kFilePlayerStartedPlayingNotification withAction:@selector(playingItemChanged)];
   [self observe:kFilePlayerStoppedPlayingNotification withAction:@selector(playingItemChanged)];
@@ -96,11 +96,10 @@
 
       itemsCount = [_playlist addTreeNodes:items atPos:endPosition];
 
-    } else if ([draggingType isEqualToString:kDragTypePlaylistsRows]) {
+    } else if ([draggingType isEqualToString:kDragTypePlaylistsIndexes]) {
 
-      NSMutableArray *arr = [NSMutableArray new];
-      for (NSNumber *n in items) [arr addObject:[MartinAppDelegate get].playlistManager.playlists[n.intValue]];
-      itemsCount = [_playlist addItemsFromPlaylists:arr atPos:endPosition];
+      itemsCount = [_playlist addItemsFromPlaylists:[[MartinAppDelegate get].playlistManager playlistsAtIndexes:items]
+                                              atPos:endPosition];
 
     } else if ([draggingType isEqualToString:kDragTypePlaylistItemsRows]) {
 
