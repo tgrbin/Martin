@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
 		<string key="IBDocument.SystemVersion">11G63</string>
-		<string key="IBDocument.InterfaceBuilderVersion">2840</string>
+		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
 		<string key="IBDocument.AppKitVersion">1138.51</string>
 		<string key="IBDocument.HIToolboxVersion">569.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">2840</string>
+			<string key="NS.object.0">3084</string>
 		</object>
 		<object class="NSArray" key="IBDocument.IntegratedClassDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -160,6 +160,12 @@
 						<reference key="NSOnImage" ref="35465992"/>
 						<reference key="NSMixedImage" ref="502551668"/>
 					</object>
+				</object>
+			</object>
+			<object class="NSMenu" id="858859210">
+				<string key="NSTitle"/>
+				<object class="NSMutableArray" key="NSMenuItems">
+					<bool key="EncodedWithXMLCoder">YES</bool>
 				</object>
 			</object>
 			<object class="NSWindowTemplate" id="972006081">
@@ -1133,9 +1139,10 @@
 															<reference key="NSBackgroundColor" ref="1029494082"/>
 															<reference key="NSGridColor" ref="496849735"/>
 															<double key="NSRowHeight">17</double>
-															<int key="NSTvFlags">-624951296</int>
+															<int key="NSTvFlags">-608174080</int>
 															<reference key="NSDelegate"/>
 															<reference key="NSDataSource"/>
+															<string key="NSAutosaveName">playlistsTableAutosave</string>
 															<int key="NSColumnAutoresizingStyle">4</int>
 															<int key="NSDraggingSourceMaskForLocal">15</int>
 															<int key="NSDraggingSourceMaskForNonLocal">0</int>
@@ -1448,6 +1455,14 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
+						<string key="label">menu</string>
+						<reference key="source" ref="911911819"/>
+						<reference key="destination" ref="858859210"/>
+					</object>
+					<int key="connectionID">823</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
 						<string key="label">dataSource</string>
 						<reference key="source" ref="774204854"/>
 						<reference key="destination" ref="574093962"/>
@@ -1645,6 +1660,14 @@
 						<reference key="destination" ref="698072505"/>
 					</object>
 					<int key="connectionID">788</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="858859210"/>
+						<reference key="destination" ref="574093962"/>
+					</object>
+					<int key="connectionID">824</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -2216,6 +2239,7 @@
 							<reference ref="463354651"/>
 						</object>
 						<reference key="parent" ref="0"/>
+						<string key="objectName">Tree Menu</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">782</int>
@@ -2294,6 +2318,15 @@
 						<int key="objectID">810</int>
 						<reference key="object" ref="463354651"/>
 						<reference key="parent" ref="545614366"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">819</int>
+						<reference key="object" ref="858859210"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+						</object>
+						<reference key="parent" ref="0"/>
+						<string key="objectName">Table Header Menu</string>
 					</object>
 				</object>
 			</object>
@@ -2393,6 +2426,7 @@
 					<string>803.IBPluginDependency</string>
 					<string>807.IBPluginDependency</string>
 					<string>810.IBPluginDependency</string>
+					<string>819.IBPluginDependency</string>
 				</object>
 				<object class="NSArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2488,6 +2522,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="unlocalizedProperties">
@@ -2502,7 +2537,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">818</int>
+			<int key="maxID">824</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2617,6 +2652,28 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">PlaylistTableManager</string>
 					<string key="superclassName">NSObject</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">deleteItemsPressed:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">deleteItemsPressed:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">deleteItemsPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">playlistTable</string>
+						<string key="NS.object.0">NSTableView</string>
+					</object>
+					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<string key="NS.key.0">playlistTable</string>
+						<object class="IBToOneOutletInfo" key="NS.object.0">
+							<string key="name">playlistTable</string>
+							<string key="candidateClassName">NSTableView</string>
+						</object>
+					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/PlaylistTableManager.h</string>

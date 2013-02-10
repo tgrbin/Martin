@@ -10,7 +10,7 @@
 
 @class Playlist;
 
-@interface PlaylistTableManager : NSObject <NSTableViewDataSource, NSTableViewDelegate>
+@interface PlaylistTableManager : NSObject <NSTableViewDataSource, NSTableViewDelegate, NSMenuDelegate>
 
 @property (nonatomic, strong) Playlist *playlist;
 
@@ -20,5 +20,7 @@
 
 - (void)queueChanged;
 - (void)selectFirstItem;
+
+//- (void)storeVisibleColumns;
 
 @end

@@ -44,6 +44,8 @@
   [ShortcutBinder bindControl:playlistTable andKey:kMartinKeyDelete toTarget:self andAction:@selector(deleteSelectedItems)];
   [ShortcutBinder bindControl:playlistTable andKey:kMartinKeyEnter toTarget:self andAction:@selector(playItemAtSelectedRow)];
   [ShortcutBinder bindControl:playlistTable andKey:kMartinKeyQueueItems toTarget:self andAction:@selector(queueSelectedItems)];
+
+  [self initTableHeaderViewMenu];
 }
 
 #pragma mark - public
@@ -62,6 +64,37 @@
 - (void)selectFirstItem {
   [playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:0]
              byExtendingSelection:NO];
+}
+
+#pragma mark - show and hide columns
+
+- (void)initTableHeaderViewMenu {
+  NSMenu *menu = playlistTable.headerView.menu;
+
+  for (NSTableColumn *col in playlistTable.tableColumns) {
+    if ([col.identifier isEqualToString:@"title"]) {
+      continue;
+    }
+
+    NSMenuItem *mi = [[NSMenuItem alloc] initWithTitle:[col.headerCell stringValue]
+                                                action:@selector(toggleColumn:)
+                                         keyEquivalent:@""];
+    mi.target = self;
+    mi.representedObject = col;
+    [menu addItem:mi];
+  }
+}
+
+- (void)toggleColumn:(id)sender {
+  NSTableColumn *col = [sender representedObject];
+  [col setHidden:![col isHidden]];
+}
+
+- (void)menuWillOpen:(NSMenu *)menu {
+  for (NSMenuItem *mi in menu.itemArray) {
+    NSTableColumn *col = [mi representedObject];
+    [mi setState:col.isHidden? NSOffState: NSOnState];
+  }
 }
 
 #pragma mark - drag and drop
