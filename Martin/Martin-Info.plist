@@ -7,30 +7,30 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>icon.icns</string>
 			<key>CFBundleTypeName</key>
 			<string>Audio files</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
 			<key>LSHandlerRank</key>
 			<string>Default</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>public.audio</string>
 			</array>
-			<key>CFBundleTypeIconFile</key>
-			<string>icon.icns</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeIconFile</key>
 			<string>icon.icns</string>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
 			<key>CFBundleTypeName</key>
 			<string>Folders</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>fold</string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
 			<key>LSHandlerRank</key>
 			<string>Default</string>
 		</dict>
@@ -55,6 +55,8 @@
 	<array/>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.music</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>${MACOSX_DEPLOYMENT_TARGET}</string>
 	<key>NSHumanReadableCopyright</key>

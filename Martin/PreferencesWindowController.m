@@ -15,6 +15,9 @@
 #import "NSObject+Observe.h"
 
 @implementation PreferencesWindowController {
+  IBOutlet NSTabView *tabView;
+  IBOutlet NSToolbar *toolbar;
+
   // library
   IBOutlet NSTableView *foldersTableView;
   IBOutlet NSButton *rescanLibraryButton;
@@ -37,6 +40,11 @@
 
 - (void)awakeFromNib {
   rescanLibraryButton.hidden = _watchFoldersEnabled;
+  toolbar.selectedItemIdentifier = @"initial";
+}
+
+- (IBAction)toolbarItemPressed:(NSToolbarItem *)sender {
+  [tabView selectTabViewItemAtIndex:sender.tag];
 }
 
 #pragma mark - watch folders checkbox
