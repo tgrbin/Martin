@@ -10,48 +10,123 @@
 #import "GlobalShortcuts.h"
 #import <Carbon/Carbon.h>
 #import "Player.h"
+#import "DefaultsManager.h"
 
 @implementation GlobalShortcuts
 
-+ (void)initShortcuts {
-  EventHotKeyRef hkRef;
-  EventHotKeyID hkID;
+static OSType signatures[] = { 'show', 'play', 'prev', 'next' };
+
++ (void)initialize {
   EventTypeSpec eventType;
   eventType.eventClass = kEventClassKeyboard;
   eventType.eventKind = kEventHotKeyPressed;
-
   InstallApplicationEventHandler(&hotkeyHandler, 1, &eventType, NULL, NULL);
 
-  hkID.signature = 'play';
-  hkID.id = 1;
-  RegisterEventHotKey(7, shiftKey+cmdKey, hkID, GetApplicationEventTarget(), 0, &hkRef);
-
-  hkID.signature = 'prev';
-  hkID.id = 2;
-  RegisterEventHotKey(13, shiftKey+cmdKey, hkID, GetApplicationEventTarget(), 0, &hkRef);
-
-  hkID.signature = 'next';
-  hkID.id = 3;
-  RegisterEventHotKey(14, shiftKey+cmdKey, hkID, GetApplicationEventTarget(), 0, &hkRef);
-
-  hkID.signature = 'show';
-  hkID.id = 4;
-  RegisterEventHotKey(46, shiftKey+cmdKey, hkID, GetApplicationEventTarget(), 0, &hkRef);
+  hotKeyRefsDictionary = [NSMutableDictionary new];
 }
+
++ (void)setupShortcuts {
+  for (int i = 0; i < kNumberOfGlobalShortcuts; ++i) {
+    EventHotKeyID hkID;
+    hkID.signature = signatures[i];
+    hkID.id = i+1;
+
+    KeyCombo keyCombo = [self shortcutForAction:i];
+
+    if (keyCombo.code != -1) {
+      EventHotKeyRef hkRef = refForAction(i);
+      if (hkRef) UnregisterEventHotKey(hkRef);
+
+      RegisterEventHotKey((int)keyCombo.code, (int)SRCocoaToCarbonFlags(keyCombo.flags), hkID, GetApplicationEventTarget(), 0, &hkRef);
+      setRefForAction(i, hkRef);
+    }
+  }
+}
+
+#pragma mark - get and set shortcuts
+
++ (KeyCombo)defaultShortcutForAction:(GlobalShortcutAction)action {
+  switch (action) {
+    case kGlobalShortcutActionShowOrHide:
+      return SRMakeKeyCombo(46, NSCommandKeyMask | NSShiftKeyMask); // m
+    case kGlobalShortcutActionPlayOrPause:
+      return SRMakeKeyCombo(7, NSCommandKeyMask | NSShiftKeyMask);  // x
+    case kGlobalShrotcutActionPrev:
+      return SRMakeKeyCombo(13, NSCommandKeyMask | NSShiftKeyMask); // w
+    case kGlobalShortcutActionNext:
+      return SRMakeKeyCombo(14, NSCommandKeyMask | NSShiftKeyMask); // e
+  }
+}
+
++ (KeyCombo)shortcutForAction:(GlobalShortcutAction)action {
+  NSDictionary *shortcuts = [DefaultsManager objectForKey:kDefaultsKeyGlobalShortcuts];
+  NSString *shortcutString = [shortcuts objectForKey:stringForAction(action)];
+  if (shortcutString == nil) return [self defaultShortcutForAction:action];
+
+  NSArray *twoNumbers = [shortcutString componentsSeparatedByString:@" "];
+  return SRMakeKeyCombo([twoNumbers[0] intValue], [twoNumbers[1] intValue]);
+}
+
++ (void)setShortcut:(KeyCombo)shortcut forAction:(GlobalShortcutAction)action {
+  NSString *shortcutString = [NSString stringWithFormat:@"%ld %ld", (long)shortcut.code, (unsigned long)shortcut.flags];
+
+  NSMutableDictionary *dict = [[DefaultsManager objectForKey:kDefaultsKeyGlobalShortcuts] mutableCopy];
+  dict[stringForAction(action)] = shortcutString;
+  [DefaultsManager setObject:dict forKey:kDefaultsKeyGlobalShortcuts];
+
+  [self setupShortcuts];
+}
+
++ (void)resetToDefaults {
+  for (int i = 0; i < kNumberOfGlobalShortcuts; ++i) {
+    [self setShortcut:[self defaultShortcutForAction:i] forAction:i];
+  }
+}
+
+#pragma mark - event handler
 
 static OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void *userData) {
   EventHotKeyID hkCom;
   GetEventParameter(theEvent, kEventParamDirectObject, typeEventHotKeyID, NULL, sizeof(hkCom), NULL, &hkCom);
 
   Player *player = [MartinAppDelegate get].player;
-  int _id = hkCom.id;
+  GlobalShortcutAction action = hkCom.id - 1;
 
-  if (_id == 1 ) [player playOrPause];
-  else if (_id == 2) [player prev];
-  else if (_id == 3) [player next];
-  else if (_id == 4) [[MartinAppDelegate get] toggleMartinVisible];
+  switch (action) {
+    case kGlobalShortcutActionShowOrHide:
+      [[MartinAppDelegate get] toggleMartinVisible];
+      break;
+    case kGlobalShortcutActionPlayOrPause:
+      [player playOrPause];
+      break;
+    case kGlobalShrotcutActionPrev:
+      [player prev];
+      break;
+    case kGlobalShortcutActionNext:
+      [player next];
+      break;
+  }
 
   return noErr;
+}
+
+#pragma mark - util
+
+static NSString *stringForAction(GlobalShortcutAction action) {
+  return [NSString stringWithFormat:@"%d", action];
+}
+
+static NSMutableDictionary *hotKeyRefsDictionary;
+
+static EventHotKeyRef refForAction(GlobalShortcutAction action) {
+  NSValue *val = hotKeyRefsDictionary[@(action)];
+  if (val == nil) return NULL;
+  return [val pointerValue];
+}
+
+static void setRefForAction(GlobalShortcutAction action, EventHotKeyRef hkRef) {
+  NSValue *val = [NSValue valueWithPointer:hkRef];
+  hotKeyRefsDictionary[@(action)] = val;
 }
 
 @end

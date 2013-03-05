@@ -13,6 +13,8 @@
 #import "RescanProxy.h"
 #import "RescanState.h"
 #import "NSObject+Observe.h"
+#import "ShortcutRecorder.h"
+#import "GlobalShortcuts.h"
 
 @implementation PreferencesWindowController {
   IBOutlet NSTabView *tabView;
@@ -28,6 +30,9 @@
 
   // lastFM
   IBOutlet NSProgressIndicator *lastfmProgressIndicator;
+
+  // shortcuts
+  IBOutlet NSView *shortcutRecordersHolderView;
 }
 
 - (id)init {
@@ -41,6 +46,7 @@
 - (void)awakeFromNib {
   rescanLibraryButton.hidden = _watchFoldersEnabled;
   toolbar.selectedItemIdentifier = @"initial";
+  [self updateShortcutControls];
 }
 
 - (IBAction)toolbarItemPressed:(NSToolbarItem *)sender {
@@ -185,6 +191,26 @@
                     modalDelegate:nil
                     didEndSelector:nil
                        contextInfo:nil];
+}
+
+#pragma mark - global shortcuts
+
+- (void)updateShortcutControls {
+  for (int i = 0; i < kNumberOfGlobalShortcuts; ++i) {
+    SRRecorderControl *sr = (SRRecorderControl *) shortcutRecordersHolderView.subviews[i];
+    sr.tag = i;
+    [sr setKeyCombo:[GlobalShortcuts shortcutForAction:i]];
+  }
+}
+
+- (void)shortcutRecorder:(SRRecorderControl *)aRecorder keyComboDidChange:(KeyCombo)newKeyCombo {
+  [GlobalShortcuts setShortcut:newKeyCombo forAction:(GlobalShortcutAction)aRecorder.tag];
+}
+
+- (IBAction)resetShortcutsToDefaultsPressed:(id)sender {
+  // are you sure?
+  [GlobalShortcuts resetToDefaults];
+  [self updateShortcutControls];
 }
 
 @end

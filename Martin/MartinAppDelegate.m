@@ -13,7 +13,7 @@
 @implementation MartinAppDelegate
 
 + (void)initialize {
-  [GlobalShortcuts initShortcuts];
+  [GlobalShortcuts setupShortcuts];
 }
 
 + (MartinAppDelegate *)get {

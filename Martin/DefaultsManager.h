@@ -18,7 +18,8 @@ typedef enum {
   kDefaultsKeyLastFMSession,
   kDefaultsKeyLibraryFolders,
   kDefaultsKeyTreeState,
-  kDefaultsKeyVolume
+  kDefaultsKeyVolume,
+  kDefaultsKeyGlobalShortcuts
 } DefaultsKey;
 
 + (id)objectForKey:(DefaultsKey)key;

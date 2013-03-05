@@ -7,9 +7,24 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "SRCommon.h"
+
+#define kNumberOfGlobalShortcuts 4
+
+typedef enum {
+  kGlobalShortcutActionShowOrHide,
+  kGlobalShortcutActionPlayOrPause,
+  kGlobalShrotcutActionPrev,
+  kGlobalShortcutActionNext
+} GlobalShortcutAction;
 
 @interface GlobalShortcuts : NSObject
 
-+ (void)initShortcuts;
++ (void)setupShortcuts;
+
++ (KeyCombo)shortcutForAction:(GlobalShortcutAction)action;
++ (void)setShortcut:(KeyCombo)shortcut forAction:(GlobalShortcutAction)action;
+
++ (void)resetToDefaults;
 
 @end

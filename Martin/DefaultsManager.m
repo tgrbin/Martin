@@ -20,7 +20,8 @@ static NSDictionary *defaultValues;
     @(kDefaultsKeyRepeat): @NO,
     @(kDefaultsKeyLibraryFolders): @[],
     @(kDefaultsKeyTreeState): @[],
-  @(kDefaultsKeyVolume): @0.5
+    @(kDefaultsKeyVolume): @0.5,
+    @(kDefaultsKeyGlobalShortcuts): @{}
   };
 }
 
