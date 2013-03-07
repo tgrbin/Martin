@@ -22,12 +22,18 @@
 using namespace std;
 
 @implementation Playlist {
+@protected
   vector<PlaylistItem *> playlistItems;
-    
+  
   // these variables hold indexes within playlistItems vector
   int currentItem;
   vector<int> playlist;
   vector<int> shuffled;
+
+  BOOL isQueue;
+  // only queue uses this, to track where to continue playing after queue is exhausted
+  // this vector is in 1:1 relation with playlistItems
+  vector<Playlist *> itemOrigin;
 }
 
 #pragma mark - init
@@ -125,8 +131,16 @@ using namespace std;
 }
 
 - (int)addPlaylistItemsOrTreeNodes:(NSArray *)arr atPos:(int)pos {
-  [self resetCurrentItemIfStopped];
+  return [self addPlaylistItems:arr atPos:pos fromPlaylist:nil];
+}
 
+- (int)addPlaylistItems:(NSArray *)arr fromPlaylist:(Playlist *)_playlist {
+  return [self addPlaylistItems:arr atPos:self.numberOfItems fromPlaylist:_playlist];
+}
+
+- (int)addPlaylistItems:(NSArray *)arr atPos:(int)pos fromPlaylist:(Playlist *)_playlist {
+  [self resetCurrentItemIfStopped];
+  
   if (arr.count == 0) return 0;
   
   BOOL addingPlaylistItems = [arr[0] isKindOfClass:[PlaylistItem class]];
@@ -135,6 +149,7 @@ using namespace std;
   for (id item in arr) {
     if (addingPlaylistItems) {
       playlistItems.push_back(item);
+      if (isQueue) itemOrigin.push_back(_playlist);
     } else {
       [self traverseNodeAndAddItems:[item intValue]];
     }
@@ -157,7 +172,7 @@ using namespace std;
   
   random_shuffle(it, shuffled.end());
   
-  return newSize - oldSize;
+  return newSize - oldSize;  
 }
 
 - (int)addItemsFromPlaylist:(Playlist *)p {
@@ -185,6 +200,7 @@ using namespace std;
   } else {
     PlaylistItem *pi = [[PlaylistItem alloc] initWithLibrarySong:song];
     playlistItems.push_back(pi);
+    if (isQueue) itemOrigin.push_back(nil);
   }
 }
 
@@ -286,6 +302,7 @@ using namespace std;
   }
   
   removeIndexesFromVector(itemIndexesToRemove, playlistItems);
+  if (isQueue) removeIndexesFromVector(itemIndexesToRemove, itemOrigin);
   removeIndexesFromVector(indexesToRemove, playlist);
   removeIndexesFromVector(shuffledIndexesToRemove, shuffled);
   
@@ -393,6 +410,15 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
   return playlistItems[currentItem = order[pos]];
 }
 
+- (void)findAndSetCurrentItemTo:(PlaylistItem *)item {
+  for (int i = 0; i < playlistItems.size(); ++i) {
+    if (playlistItems[i].inode == item.inode) {
+      currentItem = i;
+      return;
+    }
+  }
+}
+
 #pragma mark - util
 
 - (int)currentItemIndex {
@@ -405,6 +431,23 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 - (void)myIota:(vector<int>&) v start:(int)s {
   size_t n = v.size();
   for (int i = 0; i < n; ++i) v[i] = s+i;
+}
+
+@end
+
+@implementation QueuePlaylist
+
+- (id)initWithName:(NSString *)n andPlaylistItems:(NSArray *)arr {
+  if (self = [super initWithName:n andPlaylistItems:arr]) {
+    for (int i = 0; i < playlistItems.size(); ++i) itemOrigin.push_back(nil);
+    isQueue = YES;
+  }
+  return self;
+}
+
+- (Playlist *)currentItemPlaylist {
+  if (playlistItems.size() == 0) return nil;
+  return itemOrigin[playlist[0]];
 }
 
 @end

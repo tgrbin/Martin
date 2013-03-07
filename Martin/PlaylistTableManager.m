@@ -141,7 +141,7 @@
       } else {
         NSMutableArray *arr = [NSMutableArray new];
         for (NSNumber *n in items) [arr addObject:dragSourcePlaylist[n.intValue]];
-        itemsCount = [_playlist addPlaylistItems:arr atPos:endPosition];
+        itemsCount = [_playlist addPlaylistItems:arr atPos:endPosition fromPlaylist:dragSourcePlaylist];
       }
     }
   }
@@ -261,7 +261,7 @@
   }
 
   BOOL queueWasEmpty = [MartinAppDelegate get].playlistManager.queue.isEmpty;
-  [[MartinAppDelegate get].playlistManager.queue addPlaylistItems:selectedPlaylistItems];
+  [[MartinAppDelegate get].playlistManager.queue addPlaylistItems:selectedPlaylistItems fromPlaylist:_playlist];
   [[MartinAppDelegate get].playlistManager reload];
   [self queueChanged];
   if (queueWasEmpty) [[MartinAppDelegate get].playlistManager queueWillAppear];

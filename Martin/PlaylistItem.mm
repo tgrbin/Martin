@@ -62,6 +62,7 @@
   if (self = [super init]) {
     _p_librarySong = -1;
     _filename = path;
+    _inode = inode;
     
     ID3Reader *id3 = [[ID3Reader alloc] initWithFile:path];
     if (id3 != nil) {

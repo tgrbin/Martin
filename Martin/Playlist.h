@@ -17,12 +17,15 @@
 - (id)initWithName:(NSString *)n andPlaylistItems:(NSArray *)arr;
 - (id)initWithName:(NSString *)n andTreeNodes:(NSArray *)arr;
 
-- (id)initWithTreeNodes:(NSArray *)arr; // these two method suggest playlist name based on items
+// these two method suggest playlist name based on items
+- (id)initWithTreeNodes:(NSArray *)arr;
 - (id)initWithPlaylistItems:(NSArray *)arr;
 
 // these methods return number of items added
 - (int)addPlaylistItems:(NSArray *)arr;
 - (int)addPlaylistItems:(NSArray *)arr atPos:(int)pos;
+- (int)addPlaylistItems:(NSArray *)arr fromPlaylist:(Playlist *)playlist;
+- (int)addPlaylistItems:(NSArray *)arr atPos:(int)pos fromPlaylist:(Playlist *)playlist;
 - (int)addItemsFromPlaylist:(Playlist *)p;
 - (int)addItemsFromPlaylists:(NSArray *)arr atPos:(int)pos;
 - (int)addTreeNodes:(NSArray *)treeNodes;
@@ -49,5 +52,14 @@
 - (void)shuffle;
 
 - (int)currentItemIndex;
+
+// used when item from playlist is played from queue
+- (void)findAndSetCurrentItemTo:(PlaylistItem *)item;
+
+@end
+
+@interface QueuePlaylist : Playlist
+
+- (Playlist *)currentItemPlaylist;
 
 @end

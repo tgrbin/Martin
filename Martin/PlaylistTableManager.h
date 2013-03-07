@@ -21,6 +21,4 @@
 - (void)queueChanged;
 - (void)selectFirstItem;
 
-//- (void)storeVisibleColumns;
-
 @end

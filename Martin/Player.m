@@ -25,7 +25,6 @@ typedef enum {
   IBOutlet NSTextField *nowPlayingTextField;
 
   BOOL playingQueuedItem;
-  Playlist *playlistToReturnToAfterQueuedItem;
 }
 
 - (void)awakeFromNib {
@@ -36,6 +35,11 @@ typedef enum {
 - (void)startPlayingCurrentItem {
   if (_nowPlayingPlaylist.numberOfItems == 0) return;
   if (_nowPlayingPlaylist.currentItem == nil) [_nowPlayingPlaylist moveToFirstItem];
+
+  if (playingQueuedItem) {
+    Playlist *p = [(QueuePlaylist *)_nowPlayingPlaylist currentItemPlaylist];
+    if (p) [p findAndSetCurrentItemTo:_nowPlayingPlaylist.currentItem];
+  }
 
   [[MartinAppDelegate get].filePlayer startPlayingItem:_nowPlayingPlaylist.currentItem];
   [self startSeekTimer];
@@ -87,7 +91,8 @@ typedef enum {
   }
 
   if (playingQueuedItem) {
-    [self returnFromQueue];
+    _nowPlayingPlaylist = [[MartinAppDelegate get].playlistManager.queue currentItemPlaylist];
+    playingQueuedItem = NO;
     if (_nowPlayingPlaylist == nil) {
       [self stop];
     } else {
@@ -136,31 +141,25 @@ typedef enum {
 #pragma mark - queue management
 
 - (BOOL)willPlayQueuedItem {
-  Playlist *queue = [MartinAppDelegate get].playlistManager.queue;
+  QueuePlaylist *queue = [MartinAppDelegate get].playlistManager.queue;
 
   if (playingQueuedItem) {
+    _nowPlayingPlaylist = [queue currentItemPlaylist];
+    playingQueuedItem = NO;
     [queue removeFirstItem];
     [[MartinAppDelegate get].playlistTableManager queueChanged];
     [[MartinAppDelegate get].playlistManager reload];
-    [self returnFromQueue];
   }
 
   if ([queue isEmpty]) {
     return NO;
   } else {
-    playlistToReturnToAfterQueuedItem = _nowPlayingPlaylist;
     _nowPlayingPlaylist = queue;
     playingQueuedItem = YES;
     [queue moveToFirstItem];
     [self startPlayingCurrentItem];
     return YES;
   }
-}
-
-- (void)returnFromQueue {
-  playingQueuedItem = NO;
-  _nowPlayingPlaylist = playlistToReturnToAfterQueuedItem;
-  playlistToReturnToAfterQueuedItem = nil;
 }
 
 #pragma mark - actions
@@ -199,11 +198,11 @@ typedef enum {
 
   if (_nowPlayingPlaylist == [MartinAppDelegate get].playlistManager.queue) {
     playingQueuedItem = YES;
-    playlistToReturnToAfterQueuedItem = nil;
     [_nowPlayingPlaylist reorderItemsAtRows:@[@(index)] toPos:0];
     [_nowPlayingPlaylist moveToFirstItem];
     [[MartinAppDelegate get].playlistTableManager selectFirstItem];
   } else {
+    playingQueuedItem = NO;
     [_nowPlayingPlaylist moveToItemWithIndex:index];
   }
 

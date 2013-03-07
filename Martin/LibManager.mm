@@ -251,8 +251,8 @@ static void rescanID3s() {
     unlink([ResourcePath libPath]);
     rename([ResourcePath rescanHelperPath], [ResourcePath libPath]);
 
-//    unlink([ResourcePath rescanHelperPath]);
-//    unlink([ResourcePath rescanPath]);
+    unlink([ResourcePath rescanHelperPath]);
+    unlink([ResourcePath rescanPath]);
     
     [RescanState sharedState].state = kRescanStateReloadingLibrary;
     loadLibrary();

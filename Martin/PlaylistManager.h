@@ -22,7 +22,7 @@
 
 - (void)reload;
 
-- (Playlist *)queue;
+- (QueuePlaylist *)queue;
 - (void)queueWillAppear;
 - (void)queueWillDisappear;
 

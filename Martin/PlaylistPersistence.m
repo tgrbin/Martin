@@ -40,16 +40,18 @@
   NSString *playlistName = nil;
 
   FILE *f = fopen([ResourcePath playlistsPath], "r");
+  Class playlistClass = [QueuePlaylist class];
   if (f == NULL) {
-    [playlists addObject:[[Playlist alloc] initWithName:@"Queue" andPlaylistItems:@[]]];
+    [playlists addObject:[[QueuePlaylist alloc] initWithName:@"Queue" andPlaylistItems:@[]]];
   } else {
     for (; fgets(buff, kBuffSize, f) != NULL;) {
       buff[strlen(buff)-1] = 0; // remove newline
 
       if (buff[0] == ' ') {
         if (playlistName != nil) {
-          [playlists addObject:[[Playlist alloc] initWithName:playlistName andPlaylistItems:items]];
+          [playlists addObject:[[playlistClass alloc] initWithName:playlistName andPlaylistItems:items]];
           [items removeAllObjects];
+          playlistClass = [Playlist class]; // only first playlist is a queue
         }
         playlistName = @(buff+1);
       } else {
