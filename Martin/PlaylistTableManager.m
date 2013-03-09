@@ -44,6 +44,7 @@
   [ShortcutBinder bindControl:playlistTable andKey:kMartinKeyDelete toTarget:self andAction:@selector(deleteSelectedItems)];
   [ShortcutBinder bindControl:playlistTable andKey:kMartinKeyEnter toTarget:self andAction:@selector(playItemAtSelectedRow)];
   [ShortcutBinder bindControl:playlistTable andKey:kMartinKeyQueueItems toTarget:self andAction:@selector(queueSelectedItems)];
+  [ShortcutBinder bindControl:playlistTable andKey:kMartinKeyCmdEnter toTarget:self andAction:@selector(createNewPlaylistWithSelectedItems)];
 
   [self initTableHeaderViewMenu];
 }
@@ -226,6 +227,10 @@
 
 #pragma mark - actions
 
+- (void)createNewPlaylistWithSelectedItems {
+  [[MartinAppDelegate get].playlistManager addNewPlaylistWithPlaylistItems:[self selectedPlaylistItems]];
+}
+
 - (void)playItemAtSelectedRow {
   [[MartinAppDelegate get].player playItemWithIndex:(int)playlistTable.selectedRow];
 }
@@ -253,15 +258,9 @@
 }
 
 - (void)queueSelectedItems {
-  NSIndexSet *selectedIndexes = playlistTable.selectedRowIndexes;
-  NSMutableArray *selectedPlaylistItems = [NSMutableArray new];
-
-  for (NSInteger index = selectedIndexes.firstIndex; index != NSNotFound; index = [selectedIndexes indexGreaterThanIndex:index]) {
-    [selectedPlaylistItems addObject:_playlist[(int)index]];
-  }
-
   BOOL queueWasEmpty = [MartinAppDelegate get].playlistManager.queue.isEmpty;
-  [[MartinAppDelegate get].playlistManager.queue addPlaylistItems:selectedPlaylistItems fromPlaylist:_playlist];
+  [[MartinAppDelegate get].playlistManager.queue addPlaylistItems:[self selectedPlaylistItems]
+                                                     fromPlaylist:_playlist];
   [[MartinAppDelegate get].playlistManager reload];
   [self queueChanged];
   if (queueWasEmpty) [[MartinAppDelegate get].playlistManager queueWillAppear];
@@ -284,6 +283,15 @@
 
 - (BOOL)showingQueuePlaylist {
   return _playlist == [MartinAppDelegate get].playlistManager.queue;
+}
+
+- (NSArray *)selectedPlaylistItems {
+  NSIndexSet *selectedIndexes = playlistTable.selectedRowIndexes;
+  NSMutableArray *items = [NSMutableArray new];
+  for (NSInteger index = selectedIndexes.firstIndex; index != NSNotFound; index = [selectedIndexes indexGreaterThanIndex:index]) {
+    [items addObject:_playlist[(int)index]];
+  }
+  return items;
 }
 
 #pragma mark - update now playing
