@@ -41,12 +41,28 @@
 
   _playlist = [MartinAppDelegate get].playlistManager.selectedPlaylist;
 
-  [ShortcutBinder bindControl:playlistTable andKey:kMartinKeyDelete toTarget:self andAction:@selector(deleteSelectedItems)];
-  [ShortcutBinder bindControl:playlistTable andKey:kMartinKeyEnter toTarget:self andAction:@selector(playItemAtSelectedRow)];
-  [ShortcutBinder bindControl:playlistTable andKey:kMartinKeyQueueItems toTarget:self andAction:@selector(queueSelectedItems)];
-  [ShortcutBinder bindControl:playlistTable andKey:kMartinKeyCmdEnter toTarget:self andAction:@selector(createNewPlaylistWithSelectedItems)];
-
+  [self bindShortcuts];
   [self initTableHeaderViewMenu];
+}
+
+- (void)bindShortcuts {
+  NSDictionary *bindings =
+  @{
+    @(kMartinKeyDelete): @"deleteSelectedItems",
+    @(kMartinKeyEnter): @"playItemAtSelectedRow",
+    @(kMartinKeyQueueItems): @"queueSelectedItems",
+    @(kMartinKeyCmdEnter): @"createNewPlaylistWithSelectedItems",
+    @(kMartinKeySelectAll): @"selectAllItems",
+    @(kMartinKeySelectAlbum): @"selectAlbum",
+    @(kMartinKeySelectArtist): @"selectArtist"
+  };
+
+  [bindings enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    [ShortcutBinder bindControl:playlistTable
+                         andKey:[key intValue]
+                       toTarget:self
+                      andAction:NSSelectorFromString(obj)];
+  }];
 }
 
 #pragma mark - public
@@ -223,6 +239,45 @@
   }
 
   return value;
+}
+
+#pragma mark - select items actions
+
+- (void)selectAllItems {
+  [playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, _playlist.numberOfItems)]
+             byExtendingSelection:NO];
+}
+
+- (void)selectAlbum {
+  [self selectItemsWithTagIndex:2];
+}
+
+- (void)selectArtist {
+  [self selectItemsWithTagIndex:1];
+}
+
+- (void)selectItemsWithTagIndex:(int)tagIndex {
+  NSSet *values = [self valuesForTagWithIndex:tagIndex fromItems:[self selectedPlaylistItems]];
+  NSMutableIndexSet *itemsToSelect = [NSMutableIndexSet new];
+  for (int i = 0; i < _playlist.numberOfItems; ++i) {
+    PlaylistItem *item = _playlist[i];
+    NSString *val = [[item tagValueForIndex:tagIndex] lowercaseString];
+    if ([values containsObject:val]) {
+      [itemsToSelect addIndex:i];
+    }
+  }
+
+  [playlistTable selectRowIndexes:itemsToSelect
+             byExtendingSelection:NO];
+}
+
+- (NSSet *)valuesForTagWithIndex:(int)tagIndex fromItems:(NSArray *)items {
+  NSMutableSet *s = [NSMutableSet new];
+  for (PlaylistItem *item in items) {
+    NSString *val = [[item tagValueForIndex:tagIndex] lowercaseString];
+    [s addObject:val];
+  }
+  return s;
 }
 
 #pragma mark - actions

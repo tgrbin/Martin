@@ -73,6 +73,11 @@ static MartinKey keyFromEvent(NSEvent *event) {
       NSUInteger flags = (event.modifierFlags & NSDeviceIndependentModifierFlagsMask);
 
       switch (pressedUnichar) {
+        case 'a':
+          if (isModifier(flags, NSCommandKeyMask)) return kMartinKeySelectAll;
+          return kMartinKeySelectArtist;
+        case 'm':
+          return kMartinKeySelectAlbum;
         case 'q':
           return kMartinKeyQueueItems;
         case NSDeleteCharacter:
