@@ -11,6 +11,7 @@
 #define kLibraryRescanStartedNotification @"LibraryRescanStartedNotification"
 #define kLibraryRescanFinishedNotification @"LibraryRescanFinishedNotification"
 #define kLibraryRescanStateChangedNotification @"LibraryRescanStateChangedNotification"
+#define kLibraryRescanTreeReadyNotification @"LibraryRescanTreeReadyNotification"
 
 typedef enum {
   kRescanStateIdle = 0,

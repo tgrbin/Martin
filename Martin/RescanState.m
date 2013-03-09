@@ -34,6 +34,10 @@ static RescanState *sharedState;
 - (void)setState:(RescanStateEnum)state {
   if (_state == state) return;
 
+  if (state == kRescanStateReadingID3s && _state == kRescanStateReloadingLibrary) {
+    [self post:kLibraryRescanTreeReadyNotification];
+  }
+
   _state = state;
   [self post:kLibraryRescanStateChangedNotification];
 

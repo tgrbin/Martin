@@ -144,7 +144,12 @@
     NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:draggingType]];
     if ([draggingType isEqualToString:kDragTypeTreeNodes]) {
 
-      itemsCount = [_playlist addTreeNodes:items atPos:endPosition];
+      if (_playlist == nil) {
+        [[MartinAppDelegate get].playlistManager addNewPlaylistWithTreeNodes:items];
+        itemsCount = _playlist.numberOfItems;
+      } else {
+        itemsCount = [_playlist addTreeNodes:items atPos:endPosition];
+      }
 
     } else if ([draggingType isEqualToString:kDragTypePlaylistsIndexes]) {
 

@@ -200,8 +200,16 @@ static BOOL rescanSong(FILE *f) {
 
 static void rescanID3s() {
   @autoreleasepool {
-    [RescanState sharedState].state = kRescanStateReadingID3s;
-
+    if ([RescanState sharedState].songsToRescan > 0) {
+      rename([ResourcePath libPath], [ResourcePath rescanHelperPath]);
+      rename([ResourcePath rescanPath], [ResourcePath libPath]);
+      [RescanState sharedState].state = kRescanStateReloadingLibrary;
+      loadLibrary();
+      [RescanState sharedState].state = kRescanStateReadingID3s;
+      rename([ResourcePath libPath], [ResourcePath rescanPath]);
+      rename([ResourcePath rescanHelperPath], [ResourcePath libPath]);
+    }
+    
     FILE *f = fopen([ResourcePath rescanPath], "r");
     FILE *g = fopen([ResourcePath rescanHelperPath], "w");
     
@@ -274,7 +282,8 @@ static void walkSong(const char *name, int p_song, const struct stat *statBuff) 
   if (p_song == -1 || song->lastModified != lastModified) {
     needsRescan.push_back(lineNumber - 3);
     ++[RescanState sharedState].songsToRescan;
-    for (int i = 0; i <= kNumberOfTags; ++i) walkPrint("");
+    walkPrint("0");
+    for (int i = 0; i < kNumberOfTags; ++i) walkPrint("");
   } else {
     walkPrint("%d", song->lengthInSeconds);
     for (int i = 0; i < kNumberOfTags; ++i) walkPrint("%s", song->tags[i]);

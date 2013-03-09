@@ -35,6 +35,7 @@
 
 - (void)awakeFromNib {
   [self observe:kLibraryRescanFinishedNotification withAction:@selector(libraryRescanned)];
+  [self observe:kLibraryRescanTreeReadyNotification withAction:@selector(libraryRescanned)];
   [self observe:kLibrarySearchFinishedNotification withAction:@selector(searchFinished)];
   [self observe:kLibraryRescanStateChangedNotification withAction:@selector(rescanStateChanged)];
 
@@ -206,7 +207,9 @@
 }
 
 - (void)rescanStateChanged {
-  if ([RescanState sharedState].state == kRescanStateReloadingLibrary) [Tree storeInodesAndLevelsForNodes:userExpandedItems];
+  if ([RescanState sharedState].state == kRescanStateReloadingLibrary) {
+    [Tree storeInodesAndLevelsForNodes:userExpandedItems];
+  }
   [[RescanState sharedState] setupProgressIndicator:determinateRescanIndicator
                      indeterminateProgressIndicator:rescanIndicator
                                        andTextField:rescanMessage];
