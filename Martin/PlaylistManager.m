@@ -162,8 +162,9 @@ static const double dragHoverTime = 1;
   [playlists removeObjectsAtIndexes:is];
   [playlistsTable reloadData];
 
-  // without this first item becomes selected after removing the last one, last item should be selected instead
-  if (is.count == 1 && [is lastIndex] == playlists.count) {
+  // without this first item becomes selected after removing a couple of last ones,
+  // last item should be selected instead
+  if ([is containsIndexesInRange:NSMakeRange(playlists.count, is.count)]) {
     [self selectLastRow];
   }
 
