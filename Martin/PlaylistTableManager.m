@@ -17,6 +17,7 @@
 #import "NSObject+Observe.h"
 #import "ShortcutBinder.h"
 #import "SongsFinder.h"
+#import "RescanState.h"
 
 @implementation PlaylistTableManager {
   BOOL sortAscending;
@@ -38,6 +39,7 @@
 
   [self observe:kFilePlayerStartedPlayingNotification withAction:@selector(playingItemChanged)];
   [self observe:kFilePlayerStoppedPlayingNotification withAction:@selector(playingItemChanged)];
+  [self observe:kLibraryRescanFinishedNotification withAction:@selector(rescanFinished)];
 
   _playlist = [MartinAppDelegate get].playlistManager.selectedPlaylist;
 
@@ -63,6 +65,10 @@
                        toTarget:self
                       andAction:NSSelectorFromString(obj)];
   }];
+}
+
+- (void)rescanFinished {
+  [playlistTable reloadData];
 }
 
 #pragma mark - public
