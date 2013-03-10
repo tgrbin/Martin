@@ -17,19 +17,17 @@
 
 static NSMutableArray *playlistItems;
 
-+ (NSArray *)playlistItemsFromFolders:(NSArray *)folders {
++ (NSArray *)playlistItemsFromFolder:(NSString *)folder {
   static struct stat statBuff;
   playlistItems = [NSMutableArray new];
 
-  for (NSString *path in folders) {
-    stat([path UTF8String], &statBuff);
+  const char *cpath = [folder UTF8String];
+  stat(cpath, &statBuff);
 
-    if (statBuff.st_mode&S_IFDIR) {
-      nftw([path UTF8String], ftw_callback, 512, 0);
-    } else if (statBuff.st_mode&S_IFREG) {
-      PlaylistItem *item = [[PlaylistItem alloc] initWithPath:path andInode:statBuff.st_ino];
-      if (item) [playlistItems addObject:item];
-    }
+  if (statBuff.st_mode&S_IFDIR) {
+    nftw(cpath, ftw_callback, 512, 0);
+  } else if (statBuff.st_mode&S_IFREG) {
+    checkAndAdd(cpath, statBuff.st_ino);
   }
 
   return playlistItems;
@@ -39,13 +37,17 @@ static int ftw_callback(const char *filename, const struct stat *stat_struct, in
   BOOL isFolder = (flags == FTW_D);
 
   if (isFolder == NO) {
-    if ([FileExtensionChecker isExtensionAcceptable:filename]) {
-      PlaylistItem *item = [[PlaylistItem alloc] initWithPath:@(filename) andInode:stat_struct->st_ino];
-      if (item) [playlistItems addObject:item];
-    }
+    checkAndAdd(filename, stat_struct->st_ino);
   }
 
   return 0;
+}
+
+static void checkAndAdd(const char *filename, ino_t inode) {
+  if ([FileExtensionChecker isExtensionAcceptable:filename]) {
+    PlaylistItem *item = [[PlaylistItem alloc] initWithPath:@(filename) andInode:inode];
+    if (item) [playlistItems addObject:item];
+  }
 }
 
 @end

@@ -13,6 +13,7 @@
 #import "Tree.h"
 #import "Tags.h"
 #import "TagsUtils.h"
+#import "PlaylistNameGuesser.h"
 
 #import <algorithm>
 #import <numeric>
@@ -54,7 +55,7 @@ using namespace std;
 
 - (id)initWithName:(NSString *)n andTreeNodes:(NSArray *)arr {
   if (self = [self init]) {
-    [self guessNameAndAddItems:arr];
+    [PlaylistNameGuesser guessNameAndAddItems:arr toPlaylist:self];
     _name = n;
   }
   return self;
@@ -62,57 +63,20 @@ using namespace std;
 
 - (id)initWithTreeNodes:(NSArray *)arr {
   if (self = [self init]) {
-    [self guessNameAndAddItems:arr];
+    [PlaylistNameGuesser guessNameAndAddItems:arr toPlaylist:self];
   }
   return self;
 }
 
 - (id)initWithPlaylistItems:(NSArray *)arr {
   if (self = [self initWithName:@"" andPlaylistItems:arr]) {
-    [self guessNameAndAddItems:arr];
+    [PlaylistNameGuesser guessNameAndAddItems:arr toPlaylist:self];
   }
   return self;
 }
 
 - (id)init {
   return [self initWithName:@"new playlist" andPlaylistItems:@[]];
-}
-
-- (void)guessNameAndAddItems:(NSArray *)arr { // arr contains treenodes or playlistitems
-  NSMutableDictionary *counts = [NSMutableDictionary new];
-  
-  for (id item in arr) {
-    if ([item isKindOfClass:[PlaylistItem class]]) {
-      
-      
-      folderName = [[((PlaylistItem *)item).filename stringByDeletingLastPathComponent] lastPathComponent];
-    } else {
-      int node = [item intValue];
-      int song = [Tree songFromNode:node];
-      if (song != -1) node = [Tree parentOfNode:node];
-        
-      int currCount = self.numberOfItems;
-      [self addTreeNodes:@[item]];
-      [self addInt:self.numberOfItems-currCount toKey:[Tree nameForNode:node] inDictionary:counts];
-    }
-  }
-  
-  NSMutableArray *ordered = [NSMutableArray new];
-  [counts enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-    [ordered addObject:@[key, obj]];
-  }];
-  [ordered sortUsingComparator:^NSComparisonResult(NSArray *a, NSArray *b) {return [a[1] compare:b[1]];}];
-  
-  NSMutableString *suggestedName = [NSMutableString stringWithFormat:@"%@", ordered[0][0]];
-  if (ordered.count > 1) [suggestedName appendFormat:@", %@", ordered[1][0]];
-  if (ordered.count > 2) [suggestedName appendString:@", ..."];
-
-  _name = suggestedName;
-}
-
-- (void)addInt:(int)x toKey:(NSString *)key inDictionary:(NSMutableDictionary *)dictionary {
-  int val = [dictionary[key] intValue];
-  dictionary[key] = @(val + x);
 }
 
 #pragma mark - manage playlist

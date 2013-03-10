@@ -10,6 +10,6 @@
 
 @interface SongsFinder : NSObject
 
-+ (NSArray *)playlistItemsFromFolders:(NSArray *)folders;
++ (NSArray *)playlistItemsFromFolder:(NSString *)folder;
 
 @end

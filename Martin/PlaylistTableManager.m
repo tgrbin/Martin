@@ -16,8 +16,8 @@
 #import "DragDataConverter.h"
 #import "NSObject+Observe.h"
 #import "ShortcutBinder.h"
-#import "SongsFinder.h"
 #import "RescanState.h"
+#import "PlaylistNameGuesser.h"
 
 @implementation PlaylistTableManager {
   BOOL sortAscending;
@@ -143,8 +143,8 @@
 
   if ([draggingTypes containsObject:NSFilenamesPboardType]) {
     NSArray *items = [info.draggingPasteboard propertyListForType:NSFilenamesPboardType];
-    NSArray *playlistItems = [SongsFinder playlistItemsFromFolders:items];
-    itemsCount = [_playlist addPlaylistItems:playlistItems atPos:endPosition];
+    ItemsAndName *itemsAndName = [PlaylistNameGuesser itemsAndNameFromFolders:items];
+    itemsCount = [_playlist addPlaylistItems:itemsAndName.items atPos:endPosition];
   } else {
     NSString *draggingType = [draggingTypes lastObject];
     NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:draggingType]];

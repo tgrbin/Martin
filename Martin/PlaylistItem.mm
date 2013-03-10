@@ -71,7 +71,7 @@
         _lengthInSeconds = id3.lengthInSeconds;
         NSMutableArray *tagsArray = [NSMutableArray new];
         for (int i = 0; i < kNumberOfTags; ++i) {
-          NSString *val = [id3 tag:[Tags tagNameForIndex:i]];
+          NSString *val = [id3 tag:[Tags tagNameForIndex:(TagIndex)i]];
           [tagsArray addObject:val == nil? @"": val];
         }
         tags = [Tags createTagsFromArray:tagsArray];

@@ -18,7 +18,7 @@
 #import "DragDataConverter.h"
 #import "NSObject+Observe.h"
 #import "ShortcutBinder.h"
-#import "SongsFinder.h"
+#import "PlaylistNameGuesser.h"
 
 static const double dragHoverTime = 1;
 
@@ -120,6 +120,10 @@ static const double dragHoverTime = 1;
 
 - (void)addNewPlaylistWithPlaylistItems:(NSArray *)items {
   [self addPlaylist:[[Playlist alloc] initWithPlaylistItems:items]];
+}
+
+- (void)addNewPlaylistWithPlaylistItems:(NSArray *)items andName:(NSString *)name {
+  [self addPlaylist:[[Playlist alloc] initWithName:name andPlaylistItems:items]];
 }
 
 - (void)addPlaylist:(Playlist *)p {
@@ -256,18 +260,20 @@ static const double dragHoverTime = 1;
 
   if ([draggingTypes containsObject:NSFilenamesPboardType]) {
     NSArray *items = [info.draggingPasteboard propertyListForType:NSFilenamesPboardType];
-    NSArray *playlistItems = [SongsFinder playlistItemsFromFolders:items];
+    ItemsAndName *itemsAndName = [PlaylistNameGuesser itemsAndNameFromFolders:items];
 
-    if (dropOperation == NSTableViewDropAbove) {
-      Playlist *p = [[Playlist alloc] initWithPlaylistItems:playlistItems];
-      [playlists insertObject:p atIndex:row];
-      [tableView reloadData];
-    } else {
-      Playlist *p = playlists[row];
-      [p addPlaylistItems:playlistItems];
+    if (itemsAndName.items.count > 0) {
+      if (dropOperation == NSTableViewDropAbove) {
+        Playlist *p = [[Playlist alloc] initWithName:itemsAndName.name andPlaylistItems:itemsAndName.items];
+        [playlists insertObject:p atIndex:row];
+        [tableView reloadData];
+      } else {
+        Playlist *p = playlists[row];
+        [p addPlaylistItems:itemsAndName.items];
+      }
+      [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:actualRow] byExtendingSelection:NO];
+      [self updateSelectedPlaylist];
     }
-    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:actualRow] byExtendingSelection:NO];
-    [self updateSelectedPlaylist];
   } else {
     NSString *draggingType = [draggingTypes lastObject];
     NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:draggingType]];

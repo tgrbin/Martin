@@ -8,7 +8,7 @@
 
 #import "MartinAppDelegate.h"
 #import "GlobalShortcuts.h"
-#import "SongsFinder.h"
+#import "PlaylistNameGuesser.h"
 
 @implementation MartinAppDelegate
 
@@ -57,20 +57,23 @@
 }
 
 - (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename {
-  [self addPlaylistItems:[SongsFinder playlistItemsFromFolders:@[filename]]];
+  [self addFoldersToPlaylist:@[filename]];
   return NO;
 }
 
 - (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames {
-  [self addPlaylistItems:[SongsFinder playlistItemsFromFolders:filenames]];
+  [self addFoldersToPlaylist:filenames];
   [[NSApplication sharedApplication] replyToOpenOrPrint:NSApplicationDelegateReplyCancel];
 }
 
-- (void)addPlaylistItems:(NSArray *)items {
-  if (_player.nowPlayingPlaylist) {
-    [_playlistTableManager addPlaylistItems:items];
-  } else {
-    [_playlistManager addNewPlaylistWithPlaylistItems:items];
+- (void)addFoldersToPlaylist:(NSArray *)folders {
+  ItemsAndName *itemsAndName = [PlaylistNameGuesser itemsAndNameFromFolders:folders];
+  if (itemsAndName.items.count > 0) {
+    if (_player.nowPlayingPlaylist) {
+      [_playlistTableManager addPlaylistItems:itemsAndName.items];
+    } else {
+      [_playlistManager addNewPlaylistWithPlaylistItems:itemsAndName.items andName:itemsAndName.name];
+    }
   }
 }
 

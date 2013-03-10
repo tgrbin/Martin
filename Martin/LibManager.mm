@@ -185,7 +185,7 @@ static BOOL rescanSong(FILE *f) {
   if (success) {
     fprintf(f, "%d\n", id3.lengthInSeconds);
     for (int i = 0; i < kNumberOfTags; ++i) {
-      NSString *val = [id3 tag:[Tags tagNameForIndex:i]];
+      NSString *val = [id3 tag:[Tags tagNameForIndex:(TagIndex)i]];
       fprintf(f, "%s\n", val? [val UTF8String]: "");
     }
     [id3 release];
