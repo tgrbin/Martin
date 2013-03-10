@@ -43,6 +43,7 @@
 		79EDE63A1678EB6A0060F9F9 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79EDE6391678EB6A0060F9F9 /* CoreServices.framework */; };
 		79EDE63E1678EB9A0060F9F9 /* FolderWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EDE63D1678EB9A0060F9F9 /* FolderWatcher.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		79F55D6916EC6C66004510B0 /* PlaylistNameGuesser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F55D6816EC6C66004510B0 /* PlaylistNameGuesser.m */; };
+		79F55D6C16EC7A88004510B0 /* ID3ReadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F55D6B16EC7A88004510B0 /* ID3ReadOperation.m */; };
 		79F5BC1014363BE10040DF35 /* LibraryOutlineViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F5BC0F14363BE10040DF35 /* LibraryOutlineViewManager.m */; };
 		79F69EAF169969B400693CE5 /* DragDataConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F69EAE169969B400693CE5 /* DragDataConverter.m */; };
 		79F69EB21699731200693CE5 /* NSObject+Observe.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F69EB11699731200693CE5 /* NSObject+Observe.m */; };
@@ -125,6 +126,8 @@
 		79EDE63D1678EB9A0060F9F9 /* FolderWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FolderWatcher.m; sourceTree = "<group>"; };
 		79F55D6716EC6C66004510B0 /* PlaylistNameGuesser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistNameGuesser.h; sourceTree = "<group>"; };
 		79F55D6816EC6C66004510B0 /* PlaylistNameGuesser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistNameGuesser.m; sourceTree = "<group>"; };
+		79F55D6A16EC7A88004510B0 /* ID3ReadOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ID3ReadOperation.h; sourceTree = "<group>"; };
+		79F55D6B16EC7A88004510B0 /* ID3ReadOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ID3ReadOperation.m; sourceTree = "<group>"; };
 		79F5BC0E14363BE10040DF35 /* LibraryOutlineViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryOutlineViewManager.h; sourceTree = "<group>"; };
 		79F5BC0F14363BE10040DF35 /* LibraryOutlineViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryOutlineViewManager.m; sourceTree = "<group>"; };
 		79F69EAB1699684400693CE5 /* Defines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Defines.h; sourceTree = "<group>"; };
@@ -286,6 +289,8 @@
 				79F69EAE169969B400693CE5 /* DragDataConverter.m */,
 				79F55D6716EC6C66004510B0 /* PlaylistNameGuesser.h */,
 				79F55D6816EC6C66004510B0 /* PlaylistNameGuesser.m */,
+				79F55D6A16EC7A88004510B0 /* ID3ReadOperation.h */,
+				79F55D6B16EC7A88004510B0 /* ID3ReadOperation.m */,
 			);
 			name = Misc;
 			sourceTree = "<group>";
@@ -479,6 +484,7 @@
 				795A6CC316E6582500215458 /* SRRecorderControl.m in Sources */,
 				795A6CC416E6582500215458 /* SRValidator.m in Sources */,
 				79F55D6916EC6C66004510B0 /* PlaylistNameGuesser.m in Sources */,
+				79F55D6C16EC7A88004510B0 /* ID3ReadOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,14 +10,9 @@
 
 @class Playlist;
 
-@interface ItemsAndName : NSObject
-@property (nonatomic, strong) NSArray *items;
-@property (nonatomic, strong) NSString *name;
-@end
-
 @interface PlaylistNameGuesser : NSObject
 
 + (void)guessNameAndAddItems:(NSArray *)items toPlaylist:(Playlist *)playlist;
-+ (ItemsAndName *)itemsAndNameFromFolders:(NSArray *)folders;
++ (void)itemsAndNameFromFolders:(NSArray *)folders withBlock:(void (^)(NSArray *items, NSString *name))block;
 
 @end

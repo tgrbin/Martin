@@ -56,6 +56,8 @@
 // used when item from playlist is played from queue
 - (void)findAndSetCurrentItemTo:(PlaylistItem *)item;
 
+- (void)cancelID3Reads;
+
 @end
 
 @interface QueuePlaylist : Playlist

@@ -21,4 +21,6 @@
 - (void)queueChanged;
 - (void)selectFirstItem;
 
+- (void)reloadTableData;
+
 @end

@@ -29,4 +29,6 @@
 @property (nonatomic, strong) IBOutlet PlaylistManager *playlistManager;
 @property (nonatomic, strong) IBOutlet FilePlayer *filePlayer;
 
+@property (atomic, assign) int martinBusy;
+
 @end

@@ -268,6 +268,8 @@ using namespace std;
     if (itemIndexesToRemoveMask[i]) itemIndexesToRemove.push_back(i);
   }
   
+  for (auto it = itemIndexesToRemove.begin(); it != itemIndexesToRemove.end(); ++it) [playlistItems[*it] cancelID3Read];
+
   removeIndexesFromVector(itemIndexesToRemove, playlistItems);
   if (isQueue) removeIndexesFromVector(itemIndexesToRemove, itemOrigin);
   removeIndexesFromVector(indexesToRemove, playlist);
@@ -383,6 +385,12 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
       currentItem = i;
       return;
     }
+  }
+}
+
+- (void)cancelID3Reads {
+  for (int i = 0; i < playlistItems.size(); ++i) {
+    [playlistItems[i] cancelID3Read];
   }
 }
 

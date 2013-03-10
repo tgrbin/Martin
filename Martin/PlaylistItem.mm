@@ -11,14 +11,28 @@
 #import "Tree.h"
 #import "Tags.h"
 #import "ID3Reader.h"
+#import "ID3ReadOperation.h"
+#import "MartinAppDelegate.h"
+
+static NSOperationQueue *operationQueue;
 
 @implementation PlaylistItem {
   Tags *tags;
+  ID3ReadOperation *id3ReadOperation;
 }
 
 @synthesize inode = _inode;
 @synthesize filename = _filename;
 @synthesize lengthInSeconds = _lengthInSeconds;
+
++ (void)initialize {
+  operationQueue = [NSOperationQueue new];
+  operationQueue.name = @"playlist item id3 read queue";
+  [operationQueue addObserver:[MartinAppDelegate get]
+                   forKeyPath:@"operationCount"
+                      options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
+                      context:NULL];
+}
 
 - (id)initWithLibrarySong:(int)p_song {
   if (self = [super init]) {
@@ -66,20 +80,27 @@
     
     _p_librarySong = [Tree songByInode:inode];
     if (_p_librarySong == -1) {
-      ID3Reader *id3 = [[ID3Reader alloc] initWithFile:path];
-      if (id3 != nil) {
-        _lengthInSeconds = id3.lengthInSeconds;
-        NSMutableArray *tagsArray = [NSMutableArray new];
-        for (int i = 0; i < kNumberOfTags; ++i) {
-          NSString *val = [id3 tag:[Tags tagNameForIndex:(TagIndex)i]];
-          [tagsArray addObject:val == nil? @"": val];
-        }
-        tags = [Tags createTagsFromArray:tagsArray];
-      }
+      id3ReadOperation = [[ID3ReadOperation alloc] initWithPlaylistItem:self];
+      [operationQueue addOperation:id3ReadOperation];
     }
   }
   
   return self;
+}
+
+- (void)dealloc {
+  [self cancelID3Read];
+}
+
+- (void)cancelID3Read {
+  if (id3ReadOperation) {
+    [id3ReadOperation cancel];
+    id3ReadOperation = nil;
+  }
+}
+
+- (void)createTagsFromArray:(NSArray *)array {
+  tags = [Tags createTagsFromArray:array];
 }
 
 - (NSString *)filename {

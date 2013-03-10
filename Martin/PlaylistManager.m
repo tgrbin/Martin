@@ -163,6 +163,10 @@ static const double dragHoverTime = 1;
 
   if (is.count == 0) return;
 
+  for (NSInteger index = [is firstIndex]; index != NSNotFound; index = [is indexGreaterThanIndex:index]) {
+    [playlists[index] cancelID3Reads];
+  }
+
   [playlists removeObjectsAtIndexes:is];
   [playlistsTable reloadData];
 
@@ -260,20 +264,21 @@ static const double dragHoverTime = 1;
 
   if ([draggingTypes containsObject:NSFilenamesPboardType]) {
     NSArray *items = [info.draggingPasteboard propertyListForType:NSFilenamesPboardType];
-    ItemsAndName *itemsAndName = [PlaylistNameGuesser itemsAndNameFromFolders:items];
-
-    if (itemsAndName.items.count > 0) {
-      if (dropOperation == NSTableViewDropAbove) {
-        Playlist *p = [[Playlist alloc] initWithName:itemsAndName.name andPlaylistItems:itemsAndName.items];
-        [playlists insertObject:p atIndex:row];
-        [tableView reloadData];
-      } else {
-        Playlist *p = playlists[row];
-        [p addPlaylistItems:itemsAndName.items];
+    [PlaylistNameGuesser itemsAndNameFromFolders:items withBlock:^(NSArray *items, NSString *name) {
+      if (items.count > 0) {
+        if (dropOperation == NSTableViewDropAbove) {
+          Playlist *p = [[Playlist alloc] initWithName:name andPlaylistItems:items];
+          [playlists insertObject:p atIndex:row];
+          [tableView reloadData];
+        } else {
+          Playlist *p = playlists[row];
+          [p addPlaylistItems:items];
+        }
+        [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:actualRow] byExtendingSelection:NO];
+        [self updateSelectedPlaylist];
+        [[MartinAppDelegate get].window makeFirstResponder:playlistsTable];
       }
-      [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:actualRow] byExtendingSelection:NO];
-      [self updateSelectedPlaylist];
-    }
+    }];
   } else {
     NSString *draggingType = [draggingTypes lastObject];
     NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:draggingType]];
@@ -312,9 +317,8 @@ static const double dragHoverTime = 1;
       [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:actualRow] byExtendingSelection:NO];
       [self updateSelectedPlaylist];
     }
+    [[MartinAppDelegate get].window makeFirstResponder:playlistsTable];
   }
-
-  [[MartinAppDelegate get].window makeFirstResponder:playlistsTable];
 
   return YES;
 }

@@ -39,7 +39,7 @@
 
   [self observe:kFilePlayerStartedPlayingNotification withAction:@selector(playingItemChanged)];
   [self observe:kFilePlayerStoppedPlayingNotification withAction:@selector(playingItemChanged)];
-  [self observe:kLibraryRescanFinishedNotification withAction:@selector(rescanFinished)];
+  [self observe:kLibraryRescanFinishedNotification withAction:@selector(reloadTableData)];
 
   _playlist = [MartinAppDelegate get].playlistManager.selectedPlaylist;
 
@@ -67,7 +67,7 @@
   }];
 }
 
-- (void)rescanFinished {
+- (void)reloadTableData {
   [playlistTable reloadData];
 }
 
@@ -139,13 +139,18 @@
   NSArray *draggingTypes = info.draggingPasteboard.types;
 
   int endPosition = (int)row;
-  int itemsCount = 0;
 
   if ([draggingTypes containsObject:NSFilenamesPboardType]) {
     NSArray *items = [info.draggingPasteboard propertyListForType:NSFilenamesPboardType];
-    ItemsAndName *itemsAndName = [PlaylistNameGuesser itemsAndNameFromFolders:items];
-    itemsCount = [_playlist addPlaylistItems:itemsAndName.items atPos:endPosition];
+    [PlaylistNameGuesser itemsAndNameFromFolders:items withBlock:^(NSArray *items, NSString *name) {
+      int c = [_playlist addPlaylistItems:items atPos:endPosition];
+      [self tableChanged];
+      [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(endPosition, c)] byExtendingSelection:NO];
+      [[MartinAppDelegate get].window makeFirstResponder:tableView];
+    }];
   } else {
+    int itemsCount = 0;
+
     NSString *draggingType = [draggingTypes lastObject];
     NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:draggingType]];
     if ([draggingType isEqualToString:kDragTypeTreeNodes]) {
@@ -172,11 +177,11 @@
         itemsCount = [_playlist addPlaylistItems:arr atPos:endPosition fromPlaylist:dragSourcePlaylist];
       }
     }
-  }
 
-  [self tableChanged];
-  [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(endPosition, itemsCount)] byExtendingSelection:NO];
-  [[MartinAppDelegate get].window makeFirstResponder:tableView];
+    [self tableChanged];
+    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(endPosition, itemsCount)] byExtendingSelection:NO];
+    [[MartinAppDelegate get].window makeFirstResponder:tableView];
+  }
 
   return YES;
 }

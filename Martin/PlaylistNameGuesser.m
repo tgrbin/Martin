@@ -11,6 +11,7 @@
 #import "PlaylistItem.h"
 #import "Tree.h"
 #import "SongsFinder.h"
+#import "MartinAppDelegate.h"
 
 @implementation PlaylistNameGuesser
 
@@ -60,22 +61,27 @@
   playlist.name = suggestedName;
 }
 
-+ (ItemsAndName *)itemsAndNameFromFolders:(NSArray *)folders {
-  NSMutableArray *items = [NSMutableArray new];
-  NSMutableDictionary *counts = [NSMutableDictionary new];
-  for (NSString *folder in folders) {
-    int oldCount = (int)items.count;
-    [items addObjectsFromArray:[SongsFinder playlistItemsFromFolder:folder]];
++ (void)itemsAndNameFromFolders:(NSArray *)folders withBlock:(void (^)(NSArray *, NSString *))block {
+  ++[MartinAppDelegate get].martinBusy;
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    NSMutableArray *items = [NSMutableArray new];
+    NSMutableDictionary *counts = [NSMutableDictionary new];
+    for (NSString *folder in folders) {
+      int oldCount = (int)items.count;
+      [items addObjectsFromArray:[SongsFinder playlistItemsFromFolder:folder]];
 
-    [self addInt:(int)items.count-oldCount
-           toKey:[folder lastPathComponent]
-    inDictionary:counts];
-  }
+      [self addInt:(int)items.count-oldCount
+             toKey:[folder lastPathComponent]
+      inDictionary:counts];
+    }
 
-  ItemsAndName *itemsAndName = [ItemsAndName new];
-  itemsAndName.items = items;
-  itemsAndName.name = [self nameFromOrdered:[self orderedCounts:counts]];
-  return itemsAndName;
+    NSString *name = [self nameFromOrdered:[self orderedCounts:counts]];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+      block(items, name);
+      --[MartinAppDelegate get].martinBusy;
+    });
+  });
 }
 
 + (void)addInt:(int)x toKey:(NSString *)key inDictionary:(NSMutableDictionary *)dictionary {
@@ -97,7 +103,4 @@
   return name;
 }
 
-@end
-
-@implementation ItemsAndName
 @end

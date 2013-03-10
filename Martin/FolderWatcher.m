@@ -91,7 +91,6 @@ static void handleEvent(
   NSMutableArray *recursively = [NSMutableArray new];
 
   for (int i = 0; i < numEvents; i++) {
-    NSLog(@"Change %llu in %s, flags %d\n", eventIds[i], paths[i], eventFlags[i]&kFSEventStreamEventFlagMustScanSubDirs);
     [folders addObject:@(paths[i])];
     [recursively addObject:@(eventFlags[i]&kFSEventStreamEventFlagMustScanSubDirs)];
   }

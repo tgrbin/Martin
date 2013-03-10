@@ -17,12 +17,16 @@
 
 @property (nonatomic, strong, readonly) NSString *filename;
 @property (nonatomic, readonly) ino_t inode;
-@property (nonatomic, readonly) int lengthInSeconds;
+@property (nonatomic, assign) int lengthInSeconds;
 @property (nonatomic, readonly) int p_librarySong;
+
+- (void)createTagsFromArray:(NSArray *)array;
 
 - (NSString *)tagValueForIndex:(TagIndex)i;
 - (NSString *)prettyName;
 
 - (void)outputToFileStream:(FILE *)f;
+
+- (void)cancelID3Read;
 
 @end

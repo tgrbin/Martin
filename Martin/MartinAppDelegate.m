@@ -10,7 +10,13 @@
 #import "GlobalShortcuts.h"
 #import "PlaylistNameGuesser.h"
 
+@interface MartinAppDelegate()
+@property (strong) IBOutlet NSProgressIndicator *martinBusyIndicator;
+@end
+
 @implementation MartinAppDelegate
+
+@synthesize martinBusy = _martinBusy;
 
 + (void)initialize {
   [GlobalShortcuts setupShortcuts];
@@ -67,13 +73,52 @@
 }
 
 - (void)addFoldersToPlaylist:(NSArray *)folders {
-  ItemsAndName *itemsAndName = [PlaylistNameGuesser itemsAndNameFromFolders:folders];
-  if (itemsAndName.items.count > 0) {
-    if (_player.nowPlayingPlaylist) {
-      [_playlistTableManager addPlaylistItems:itemsAndName.items];
-    } else {
-      [_playlistManager addNewPlaylistWithPlaylistItems:itemsAndName.items andName:itemsAndName.name];
+  [PlaylistNameGuesser itemsAndNameFromFolders:folders withBlock:^(NSArray *items, NSString *name) {
+    if (items.count > 0) {
+      if (_player.nowPlayingPlaylist) {
+        [_playlistTableManager addPlaylistItems:items];
+      } else {
+        [_playlistManager addNewPlaylistWithPlaylistItems:items andName:name];
+      }
     }
+  }];
+}
+
+#pragma mark - martin busy
+
+- (int)martinBusy {
+  @synchronized (self) {
+    return _martinBusy;
+  }
+}
+
+- (void)setMartinBusy:(int)martinBusy {
+  @synchronized (self) {
+    _martinBusy = martinBusy;
+
+    [_martinBusyIndicator setHidden:martinBusy == 0];
+
+    if (martinBusy > 0) {
+      [_martinBusyIndicator startAnimation:nil];
+    } else {
+      [_martinBusyIndicator stopAnimation:nil];
+    }
+  }
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+  if ([keyPath isEqualToString:@"operationCount"]) {
+    int oldVal = [[change objectForKey:NSKeyValueChangeOldKey] intValue];
+    int newVal = [[change objectForKey:NSKeyValueChangeNewKey] intValue];
+
+    if (newVal%100 == 0) {
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [_playlistTableManager reloadTableData];
+      });
+    }
+
+    if (oldVal == 0 && newVal > 0) ++self.martinBusy;
+    if (oldVal > 0 && newVal == 0) --self.martinBusy;
   }
 }
 
