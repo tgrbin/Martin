@@ -20,9 +20,8 @@
 #import "PlaylistNameGuesser.h"
 
 @implementation PlaylistTableManager {
-  BOOL sortAscending;
+  BOOL justReverseOnNextSort;
   int highlightedRow;
-  NSTableColumn *sortedColumn;
 
   Playlist *dragSourcePlaylist;
 
@@ -79,8 +78,8 @@
 
 - (void)setPlaylist:(Playlist *)playlist {
   _playlist = playlist;
-  sortedColumn = nil;
   [self tableChanged];
+  [self updateSortIndicator];
   [playlistTable deselectAll:nil];
 }
 
@@ -199,21 +198,25 @@
 #pragma mark - delegate
 
 - (void)tableView:(NSTableView *)tableView didClickTableColumn:(NSTableColumn *)tableColumn {
-  if (sortedColumn == tableColumn) {
-    sortAscending = !sortAscending;
-    [_playlist reverse];
-  } else {
-    sortAscending = YES;
-
-    if (sortedColumn) [tableView setIndicatorImage:nil inTableColumn:sortedColumn];
-    sortedColumn = tableColumn;
-
-    [tableView setHighlightedTableColumn:tableColumn];
-    [_playlist sortBy:tableColumn.identifier];
-  }
-
-  [tableView setIndicatorImage:[NSImage imageNamed: sortAscending? @"NSAscendingSortIndicator": @"NSDescendingSortIndicator"] inTableColumn:tableColumn];
+  [_playlist sortBy:tableColumn.identifier];
+  playlistTable.highlightedTableColumn = tableColumn;
   [self tableChanged];
+}
+
+
+- (void)updateSortIndicator {
+  for (NSTableColumn *col in playlistTable.tableColumns) {
+    [playlistTable setIndicatorImage:nil inTableColumn:col];
+  }
+  playlistTable.highlightedTableColumn = nil;
+
+  if (_playlist == nil || _playlist.sortedBy == nil) return;
+
+  NSImage *indicatorImage = [NSImage imageNamed:_playlist.sortedAscending? @"NSAscendingSortIndicator": @"NSDescendingSortIndicator"];
+  NSTableColumn *tableColumn = [playlistTable tableColumnWithIdentifier:_playlist.sortedBy];
+  [playlistTable setIndicatorImage:indicatorImage
+                     inTableColumn:tableColumn];
+  playlistTable.highlightedTableColumn = tableColumn;
 }
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)c forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
@@ -350,6 +353,8 @@
       [[MartinAppDelegate get].playlistManager queueWillDisappear];
     }
   }
+
+  [self updateSortIndicator];
 }
 
 - (BOOL)showingQueuePlaylist {

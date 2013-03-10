@@ -14,6 +14,9 @@
 
 @property (nonatomic, strong) NSString *name;
 
+@property (nonatomic, strong) NSString *sortedBy;
+@property (nonatomic, assign) BOOL sortedAscending;
+
 - (id)initWithName:(NSString *)n andPlaylistItems:(NSArray *)arr;
 - (id)initWithName:(NSString *)n andTreeNodes:(NSArray *)arr;
 
@@ -37,7 +40,6 @@
 - (void)removeFirstItem;
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes;
 - (void)sortBy:(NSString *)str;
-- (void)reverse;
 
 - (int)numberOfItems;
 - (BOOL)isEmpty;

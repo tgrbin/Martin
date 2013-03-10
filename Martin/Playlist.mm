@@ -107,6 +107,7 @@ using namespace std;
 
 - (int)addPlaylistItems:(NSArray *)arr atPos:(int)pos fromPlaylist:(Playlist *)_playlist {
   [self resetCurrentItemIfStopped];
+  [self resetSortState];
   
   if (arr.count == 0) return 0;
   
@@ -173,6 +174,7 @@ using namespace std;
 
 - (int)reorderItemsAtRows:(NSArray *)rows toPos:(int)pos {
   [self resetCurrentItemIfStopped];
+  [self resetSortState];
   
   vector<int> tmp;
   
@@ -201,43 +203,46 @@ using namespace std;
 - (void)sortBy:(NSString *)str {
   [self resetCurrentItemIfStopped];
   
-  BOOL isLength = [str isEqualToString:@"length"];
-  BOOL isTrackNumber = [str isEqualToString:@"track number"];
-  TagIndex tagIndex = [Tags indexFromTagName:str];
-  
-  @autoreleasepool {
-    sort(playlist.begin(), playlist.end(), [&, tagIndex, isLength, isTrackNumber](int a, int b) -> bool {
-      PlaylistItem *p1 = playlistItems[a];
-      PlaylistItem *p2 = playlistItems[b];
-      
-      if (isLength) return p1.lengthInSeconds < p2.lengthInSeconds;
+  if ([_sortedBy isEqualToString:str]) {
+    _sortedAscending = !_sortedAscending;
+    reverse(playlist.begin(), playlist.end());
+  } else {
+    _sortedBy = str;
+    _sortedAscending = YES;
     
-      if (p1.p_librarySong != -1 && p2.p_librarySong != -1) {
-        struct LibrarySong *s1 = [Tree songDataForP:p1.p_librarySong];
-        struct LibrarySong *s2 = [Tree songDataForP:p2.p_librarySong];
+    BOOL isLength = [str isEqualToString:@"length"];
+    BOOL isTrackNumber = [str isEqualToString:@"track number"];
+    TagIndex tagIndex = [Tags indexFromTagName:str];
+    
+    @autoreleasepool {
+      sort(playlist.begin(), playlist.end(), [&, tagIndex, isLength, isTrackNumber](int a, int b) -> bool {
+        PlaylistItem *p1 = playlistItems[a];
+        PlaylistItem *p2 = playlistItems[b];
         
-        if (isTrackNumber) {
-          int t1, t2;
-          if (sscanf(s1->tags[tagIndex], "%d", &t1) == 1 && sscanf(s2->tags[tagIndex], "%d", &t2) == 1) {
-            return t1 < t2;
-          } else return strcasecmp(s1->tags[tagIndex], s2->tags[tagIndex]) < 0;
+        if (isLength) return p1.lengthInSeconds < p2.lengthInSeconds;
+      
+        if (p1.p_librarySong != -1 && p2.p_librarySong != -1) {
+          struct LibrarySong *s1 = [Tree songDataForP:p1.p_librarySong];
+          struct LibrarySong *s2 = [Tree songDataForP:p2.p_librarySong];
+          
+          if (isTrackNumber) {
+            int t1, t2;
+            if (sscanf(s1->tags[tagIndex], "%d", &t1) == 1 && sscanf(s2->tags[tagIndex], "%d", &t2) == 1) {
+              return t1 < t2;
+            } else return strcasecmp(s1->tags[tagIndex], s2->tags[tagIndex]) < 0;
+          } else {
+            return strcasecmp(s1->tags[tagIndex], s2->tags[tagIndex]) < 0;
+          }
         } else {
-          return strcasecmp(s1->tags[tagIndex], s2->tags[tagIndex]) < 0;
+          NSString *val1 = [p1 tagValueForIndex:tagIndex];
+          NSString *val2 = [p2 tagValueForIndex:tagIndex];
+          
+          if (isTrackNumber) return val1.intValue < val2.intValue;
+          return [val1 caseInsensitiveCompare:val2] == NSOrderedAscending;
         }
-      } else {
-        NSString *val1 = [p1 tagValueForIndex:tagIndex];
-        NSString *val2 = [p2 tagValueForIndex:tagIndex];
-        
-        if (isTrackNumber) return val1.intValue < val2.intValue;
-        return [val1 caseInsensitiveCompare:val2] == NSOrderedAscending;
-      }
-    });
+      });
+    }
   }
-}
-
-- (void)reverse {
-  [self resetCurrentItemIfStopped];  
-  reverse(playlist.begin(), playlist.end());
 }
 
 - (void)removeFirstItem {
@@ -301,6 +306,10 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 
 - (void)resetCurrentItemIfStopped {
   if ([[MartinAppDelegate get].filePlayer stopped]) currentItem = -1;
+}
+
+- (void)resetSortState {
+  _sortedBy = nil;
 }
 
 - (void)shuffle {
