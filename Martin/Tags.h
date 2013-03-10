@@ -9,14 +9,24 @@
 #import <Foundation/Foundation.h>
 #import "TagsUtils.h"
 
+// "track number", "artist", "album", "title", "genre"
+
+typedef enum {
+  kTagIndexTrackNumber,
+  kTagIndexArtist,
+  kTagIndexAlbum,
+  kTagIndexTitle,
+  kTagIndexGenre
+} TagIndex;
+
 @interface Tags : NSObject
 
-+ (NSString *)tagNameForIndex:(int)i;
-+ (int)indexFromTagName:(NSString *)str;
++ (NSString *)tagNameForIndex:(TagIndex)i;
++ (TagIndex)indexFromTagName:(NSString *)str;
 
 + (Tags *)createTagsFromCTags:(char **)tags;
 + (Tags *)createTagsFromArray:(NSArray *)tags;
 
-- (NSString *)tagValueForIndex:(int)i;
+- (NSString *)tagValueForIndex:(TagIndex)i;
 
 @end

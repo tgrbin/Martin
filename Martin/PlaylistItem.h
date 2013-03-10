@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Tags.h"
 
 @interface PlaylistItem : NSObject
 
@@ -19,7 +20,7 @@
 @property (nonatomic, readonly) int lengthInSeconds;
 @property (nonatomic, readonly) int p_librarySong;
 
-- (NSString *)tagValueForIndex:(int)i;
+- (NSString *)tagValueForIndex:(TagIndex)i;
 - (NSString *)prettyName;
 
 - (void)outputToFileStream:(FILE *)f;

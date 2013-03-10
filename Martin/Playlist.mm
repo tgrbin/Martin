@@ -79,37 +79,40 @@ using namespace std;
 }
 
 - (void)guessNameAndAddItems:(NSArray *)arr { // arr contains treenodes or playlistitems
-  NSMutableDictionary *foldersAndCounts = [NSMutableDictionary new];
-  int currCount = 0;
+  NSMutableDictionary *counts = [NSMutableDictionary new];
   
   for (id item in arr) {
-    NSString *folderName;
     if ([item isKindOfClass:[PlaylistItem class]]) {
+      
+      
       folderName = [[((PlaylistItem *)item).filename stringByDeletingLastPathComponent] lastPathComponent];
     } else {
       int node = [item intValue];
       int song = [Tree songFromNode:node];
       if (song != -1) node = [Tree parentOfNode:node];
         
-      folderName = [Tree nameForNode:node];
-      [self addTreeNodes:@[item] atPos:currCount];
+      int currCount = self.numberOfItems;
+      [self addTreeNodes:@[item]];
+      [self addInt:self.numberOfItems-currCount toKey:[Tree nameForNode:node] inDictionary:counts];
     }
-    
-    int oldVal = [foldersAndCounts[folderName] intValue];
-    foldersAndCounts[folderName] = @(oldVal + self.numberOfItems - currCount);
-    currCount = self.numberOfItems;
   }
   
   NSMutableArray *ordered = [NSMutableArray new];
-  for (id item in foldersAndCounts) [ordered addObject:@[item, foldersAndCounts[item]]];
+  [counts enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    [ordered addObject:@[key, obj]];
+  }];
   [ordered sortUsingComparator:^NSComparisonResult(NSArray *a, NSArray *b) {return [a[1] compare:b[1]];}];
   
   NSMutableString *suggestedName = [NSMutableString stringWithFormat:@"%@", ordered[0][0]];
-  for (int i = 1; i < 3; ++i) {
-    if (i == ordered.count) break;
-    [suggestedName appendFormat:@", %@", ordered[i][0]];
-  }
+  if (ordered.count > 1) [suggestedName appendFormat:@", %@", ordered[1][0]];
+  if (ordered.count > 2) [suggestedName appendString:@", ..."];
+
   _name = suggestedName;
+}
+
+- (void)addInt:(int)x toKey:(NSString *)key inDictionary:(NSMutableDictionary *)dictionary {
+  int val = [dictionary[key] intValue];
+  dictionary[key] = @(val + x);
 }
 
 #pragma mark - manage playlist
@@ -236,7 +239,7 @@ using namespace std;
   
   BOOL isLength = [str isEqualToString:@"length"];
   BOOL isTrackNumber = [str isEqualToString:@"track number"];
-  int tagIndex = [Tags indexFromTagName:str];
+  TagIndex tagIndex = [Tags indexFromTagName:str];
   
   @autoreleasepool {
     sort(playlist.begin(), playlist.end(), [&, tagIndex, isLength, isTrackNumber](int a, int b) -> bool {

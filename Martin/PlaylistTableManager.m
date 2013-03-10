@@ -260,14 +260,14 @@
 }
 
 - (void)selectAlbum {
-  [self selectItemsWithTagIndex:2];
+  [self selectItemsWithTagIndex:kTagIndexAlbum];
 }
 
 - (void)selectArtist {
-  [self selectItemsWithTagIndex:1];
+  [self selectItemsWithTagIndex:kTagIndexArtist];
 }
 
-- (void)selectItemsWithTagIndex:(int)tagIndex {
+- (void)selectItemsWithTagIndex:(TagIndex)tagIndex {
   NSSet *values = [self valuesForTagWithIndex:tagIndex fromItems:[self selectedPlaylistItems]];
   NSMutableIndexSet *itemsToSelect = [NSMutableIndexSet new];
   for (int i = 0; i < _playlist.numberOfItems; ++i) {
@@ -282,7 +282,7 @@
              byExtendingSelection:NO];
 }
 
-- (NSSet *)valuesForTagWithIndex:(int)tagIndex fromItems:(NSArray *)items {
+- (NSSet *)valuesForTagWithIndex:(TagIndex)tagIndex fromItems:(NSArray *)items {
   NSMutableSet *s = [NSMutableSet new];
   for (PlaylistItem *item in items) {
     NSString *val = [[item tagValueForIndex:tagIndex] lowercaseString];

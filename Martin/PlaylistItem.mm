@@ -64,15 +64,18 @@
     _filename = path;
     _inode = inode;
     
-    ID3Reader *id3 = [[ID3Reader alloc] initWithFile:path];
-    if (id3 != nil) {
-      _lengthInSeconds = id3.lengthInSeconds;
-      NSMutableArray *tagsArray = [NSMutableArray new];
-      for (int i = 0; i < kNumberOfTags; ++i) {
-        NSString *val = [id3 tag:[Tags tagNameForIndex:i]];
-        [tagsArray addObject:val == nil? @"": val];
+    _p_librarySong = [Tree songByInode:inode];
+    if (_p_librarySong == -1) {
+      ID3Reader *id3 = [[ID3Reader alloc] initWithFile:path];
+      if (id3 != nil) {
+        _lengthInSeconds = id3.lengthInSeconds;
+        NSMutableArray *tagsArray = [NSMutableArray new];
+        for (int i = 0; i < kNumberOfTags; ++i) {
+          NSString *val = [id3 tag:[Tags tagNameForIndex:i]];
+          [tagsArray addObject:val == nil? @"": val];
+        }
+        tags = [Tags createTagsFromArray:tagsArray];
       }
-      tags = [Tags createTagsFromArray:tagsArray];
     }
   }
   
@@ -91,7 +94,7 @@
   return _lengthInSeconds;
 }
 
-- (NSString *)tagValueForIndex:(int)i {
+- (NSString *)tagValueForIndex:(TagIndex)i {
   [self checkLibrarySong];
   if (_p_librarySong != -1) {
     char **t = [Tree songDataForP:_p_librarySong]->tags;
@@ -102,9 +105,9 @@
 }
 
 - (NSString *)prettyName {
-  NSString *artist = [self tagValueForIndex:1];
-  NSString *album = [self tagValueForIndex:2];
-  NSString *title = [self tagValueForIndex:3];
+  NSString *artist = [self tagValueForIndex:kTagIndexArtist];
+  NSString *album = [self tagValueForIndex:kTagIndexAlbum];
+  NSString *title = [self tagValueForIndex:kTagIndexTitle];
   
   if (title.length == 0) {
     NSArray *arr = [self.filename pathComponents];
@@ -123,7 +126,7 @@
   if (_p_librarySong == -1) {
     fprintf(f, "%d\n", _lengthInSeconds);
     fprintf(f, "%s\n", _filename == nil? "": [_filename UTF8String]);
-    for (int i = 0; i < kNumberOfTags; ++i) fprintf(f, "%s\n", [[tags tagValueForIndex:i] UTF8String]);
+    for (int i = 0; i < kNumberOfTags; ++i) fprintf(f, "%s\n", [[tags tagValueForIndex:(TagIndex)i] UTF8String]);
   } else {
     struct LibrarySong *song = [Tree songDataForP:_p_librarySong];
     fprintf(f, "%d\n", song->lengthInSeconds);

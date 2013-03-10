@@ -16,7 +16,7 @@ static const char *tagNames[] = { "track number", "artist", "album", "title", "g
 
 @implementation Tags
 
-+ (NSString *)tagNameForIndex:(int)i {
++ (NSString *)tagNameForIndex:(TagIndex)i {
   static NSString *arr[kNumberOfTags];
   if (arr[0] == nil) {
     for (int i = 0; i < kNumberOfTags; ++i) arr[i] = [[NSString alloc] initWithCString:tagNames[i] encoding:NSUTF8StringEncoding];
@@ -24,7 +24,7 @@ static const char *tagNames[] = { "track number", "artist", "album", "title", "g
   return arr[i];
 }
 
-+ (int)indexFromTagName:(NSString *)str {
++ (TagIndex)indexFromTagName:(NSString *)str {
   static NSMutableDictionary *dict = nil;
   if (dict == nil) {
     dict = [NSMutableDictionary new];
@@ -53,7 +53,7 @@ static const char *tagNames[] = { "track number", "artist", "album", "title", "g
   return t;
 }
 
-- (NSString *)tagValueForIndex:(int)i {
+- (NSString *)tagValueForIndex:(TagIndex)i {
   return self.values[i];
 }
 
