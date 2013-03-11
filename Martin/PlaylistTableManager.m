@@ -73,7 +73,9 @@
 #pragma mark - public
 
 - (void)itemDoubleClicked {
-  [[MartinAppDelegate get].player playItemWithIndex:(int)playlistTable.clickedRow];
+  int clickedRow = (int)playlistTable.clickedRow;
+  if (clickedRow == -1) return;
+  [[MartinAppDelegate get].player playItemWithIndex:clickedRow];
 }
 
 - (void)setPlaylist:(Playlist *)playlist {
