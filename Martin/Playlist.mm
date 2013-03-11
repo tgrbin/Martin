@@ -304,6 +304,10 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
   v.resize(vs - rs);
 }
 
+- (void)clear {
+  [self removeSongsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.numberOfItems)]];
+}
+
 - (void)resetCurrentItemIfStopped {
   if ([[MartinAppDelegate get].filePlayer stopped]) currentItem = -1;
 }

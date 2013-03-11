@@ -129,12 +129,12 @@ static const double dragHoverTime = 1;
 - (void)addPlaylist:(Playlist *)p {
   [playlists addObject:p];
   [playlistsTable reloadData];
-  [self selectLastRow];
+  [self selectRow:[self numberOfRows]-1];
   [self updateSelectedPlaylist];
 }
 
-- (void)selectLastRow {
-  [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:[self numberOfRows]-1] byExtendingSelection:NO];
+- (void)selectRow:(NSInteger)row {
+  [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
 }
 
 - (void)updateSelectedPlaylist {
@@ -152,30 +152,30 @@ static const double dragHoverTime = 1;
 
 - (void)deleteSelectedPlaylists {
   NSMutableIndexSet *is = [[NSMutableIndexSet alloc] initWithIndexSet:[playlistsTable selectedRowIndexes]];
-  if (self.queue.isEmpty) {
+  if (is.count == 0) return;
+
+  NSInteger rowToSelect = playlistsTable.selectedRow;
+  rowToSelect -= [is countOfIndexesInRange:NSMakeRange(0, rowToSelect)];
+
+  if (self.queue.isEmpty) { // if queue is not visible indexes need to be adjusted
     NSMutableIndexSet *increased = [NSMutableIndexSet new];
     for (NSInteger index = [is firstIndex]; index != NSNotFound; index = [is indexGreaterThanIndex:index]) [increased addIndex:index+1];
     is = increased;
-  } else {
-    [is removeIndex:0]; // queue can't be deleted
-    [playlistsTable deselectRow:0];
   }
-
-  if (is.count == 0) return;
 
   for (NSInteger index = [is firstIndex]; index != NSNotFound; index = [is indexGreaterThanIndex:index]) {
     [playlists[index] cancelID3Reads];
   }
 
+  if (self.queue.isEmpty == NO && [is containsIndex:0]) {
+    [self.queue clear];
+    [is removeIndex:0];
+  }
+
   [playlists removeObjectsAtIndexes:is];
   [playlistsTable reloadData];
 
-  // without this first item becomes selected after removing a couple of last ones,
-  // last item should be selected instead
-  if ([is containsIndexesInRange:NSMakeRange(playlists.count, is.count)]) {
-    [self selectLastRow];
-  }
-
+  [self selectRow:MAX(0, MIN(rowToSelect, [self numberOfRows]-1))];
   [self updateSelectedPlaylist];
 }
 
@@ -183,7 +183,7 @@ static const double dragHoverTime = 1;
   NSInteger row = playlistsTable.clickedRow;
   if (row == -1) row = playlistsTable.selectedRow;
 
-  [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+  [self selectRow:row];
   [[MartinAppDelegate get].player playItemWithIndex:0];
 }
 
@@ -244,7 +244,7 @@ static const double dragHoverTime = 1;
 
 - (void)dragHovered {
   [self resetDragHoverTimer];
-  [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:dragHoverRow] byExtendingSelection:NO];
+  [self selectRow:dragHoverRow];
 }
 
 - (void)dragExited {
@@ -274,7 +274,7 @@ static const double dragHoverTime = 1;
           Playlist *p = playlists[row];
           [p addPlaylistItems:items];
         }
-        [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:actualRow] byExtendingSelection:NO];
+        [self selectRow:actualRow];
         [self updateSelectedPlaylist];
         [[MartinAppDelegate get].window makeFirstResponder:playlistsTable];
       }
@@ -291,7 +291,7 @@ static const double dragHoverTime = 1;
         for (NSNumber *n in items) {
           [destPlaylist addItemsFromPlaylist:playlists[n.intValue]];
         }
-        [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:actualRow] byExtendingSelection:NO];
+        [self selectRow:actualRow];
       }
     } else {
       BOOL fromLibrary = [draggingType isEqualToString:kDragTypeTreeNodes];
@@ -314,7 +314,7 @@ static const double dragHoverTime = 1;
         if (fromLibrary) [p addTreeNodes:items atPos:p.numberOfItems];
         else [p addPlaylistItems:items];
       }
-      [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:actualRow] byExtendingSelection:NO];
+      [self selectRow:actualRow];
       [self updateSelectedPlaylist];
     }
     [[MartinAppDelegate get].window makeFirstResponder:playlistsTable];
