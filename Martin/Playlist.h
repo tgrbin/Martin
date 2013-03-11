@@ -53,13 +53,16 @@
 - (PlaylistItem *)moveToFirstItem;
 - (PlaylistItem *)moveToItemWithIndex:(int)index;
 
-
 - (int)currentItemIndex;
 
 // used when item from playlist is played from queue
 - (void)findAndSetCurrentItemTo:(PlaylistItem *)item;
 
 - (void)cancelID3Reads;
+
+// used to preserve selected items before and after sorting
+- (void)storeIndexes:(NSIndexSet *)indexSet;
+- (NSIndexSet *)indexesAfterSorting;
 
 @end
 

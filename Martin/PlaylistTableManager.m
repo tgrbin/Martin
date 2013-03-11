@@ -200,25 +200,11 @@
 #pragma mark - delegate
 
 - (void)tableView:(NSTableView *)tableView didClickTableColumn:(NSTableColumn *)tableColumn {
+  [_playlist storeIndexes:[playlistTable selectedRowIndexes]];
   [_playlist sortBy:tableColumn.identifier];
   playlistTable.highlightedTableColumn = tableColumn;
+  [playlistTable selectRowIndexes:[_playlist indexesAfterSorting] byExtendingSelection:NO];
   [self tableChanged];
-}
-
-
-- (void)updateSortIndicator {
-  for (NSTableColumn *col in playlistTable.tableColumns) {
-    [playlistTable setIndicatorImage:nil inTableColumn:col];
-  }
-  playlistTable.highlightedTableColumn = nil;
-
-  if (_playlist == nil || _playlist.sortedBy == nil) return;
-
-  NSImage *indicatorImage = [NSImage imageNamed:_playlist.sortedAscending? @"NSAscendingSortIndicator": @"NSDescendingSortIndicator"];
-  NSTableColumn *tableColumn = [playlistTable tableColumnWithIdentifier:_playlist.sortedBy];
-  [playlistTable setIndicatorImage:indicatorImage
-                     inTableColumn:tableColumn];
-  playlistTable.highlightedTableColumn = tableColumn;
 }
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)c forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
@@ -342,6 +328,8 @@
   if (queueWasEmpty) [[MartinAppDelegate get].playlistManager queueWillAppear];
 }
 
+#pragma mark - other
+
 - (void)queueChanged {
   if ([self showingQueuePlaylist]) [self tableChanged];
 }
@@ -357,6 +345,21 @@
   }
 
   [self updateSortIndicator];
+}
+
+- (void)updateSortIndicator {
+  for (NSTableColumn *col in playlistTable.tableColumns) {
+    [playlistTable setIndicatorImage:nil inTableColumn:col];
+  }
+  playlistTable.highlightedTableColumn = nil;
+
+  if (_playlist == nil || _playlist.sortedBy == nil) return;
+
+  NSImage *indicatorImage = [NSImage imageNamed:_playlist.sortedAscending? @"NSAscendingSortIndicator": @"NSDescendingSortIndicator"];
+  NSTableColumn *tableColumn = [playlistTable tableColumnWithIdentifier:_playlist.sortedBy];
+  [playlistTable setIndicatorImage:indicatorImage
+                     inTableColumn:tableColumn];
+  playlistTable.highlightedTableColumn = tableColumn;
 }
 
 - (BOOL)showingQueuePlaylist {

@@ -35,6 +35,9 @@ using namespace std;
   // only queue uses this, to track where to continue playing after queue is exhausted
   // this vector is in 1:1 relation with playlistItems
   vector<Playlist *> itemOrigin;
+  
+  // stored indexes for keeping selected items between sorts
+  vector<BOOL> storedIndexes;
 }
 
 #pragma mark - init
@@ -401,10 +404,34 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
   }
 }
 
+#pragma mark - other
+
 - (void)cancelID3Reads {
   for (int i = 0; i < playlistItems.size(); ++i) {
     [playlistItems[i] cancelID3Read];
   }
+}
+
+- (void)storeIndexes:(NSIndexSet *)indexSet {
+  storedIndexes.resize(self.numberOfItems);
+  fill(storedIndexes.begin(), storedIndexes.end(), NO);
+  for (NSInteger i = [indexSet firstIndex]; i != NSNotFound; i = [indexSet indexGreaterThanIndex:i]) {
+    storedIndexes[playlist[i]] = YES;
+  }
+}
+
+- (NSIndexSet *)indexesAfterSorting {
+  NSMutableIndexSet *is = [NSMutableIndexSet new];
+  int first = -1, n = self.numberOfItems;
+  for (int i = 0; i <= n; ++i) {
+    if (i < n && storedIndexes[playlist[i]] == YES) {
+      if (first == -1) first = i;
+    } else if (first != -1) {
+      [is addIndexesInRange:NSMakeRange(first, i-first)];
+      first = -1;
+    }
+  }
+  return is;
 }
 
 #pragma mark - util
