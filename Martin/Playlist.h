@@ -41,7 +41,6 @@
 // returns the actual position where items landed
 - (int)reorderItemsAtRows:(NSArray *)rows toPos:(int)pos;
 - (void)sortBy:(NSString *)str;
-- (void)shuffle;
 
 - (int)numberOfItems;
 - (BOOL)isEmpty;
@@ -63,6 +62,8 @@
 // used to preserve selected items before and after sorting
 - (void)storeIndexes:(NSIndexSet *)indexSet;
 - (NSIndexSet *)indexesAfterSorting;
+
+- (void)addCurrentItemToAlreadyPlayedItems;
 
 @end
 

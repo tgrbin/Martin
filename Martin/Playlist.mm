@@ -29,11 +29,11 @@ using namespace std;
   // these variables hold indexes within playlistItems vector
   int currentItem;
   vector<int> playlist;
-  vector<int> shuffled;
-
+  vector<int> playedItems;
+  
   BOOL isQueue;
   // only queue uses this, to track where to continue playing after queue is exhausted
-  // this vector is in 1:1 relation with playlistItems
+  // every item playlistItems has corresponding element here pointing to originating playlist
   vector<Playlist *> itemOrigin;
   
   // stored indexes for keeping selected items between sorts
@@ -51,7 +51,6 @@ using namespace std;
     
     playlist.resize(s.count);
     [self myIota:playlist start:0];
-    [self shuffle];
   }
   return self;
 }
@@ -131,17 +130,6 @@ using namespace std;
   [self myIota:newIndexes start:oldSize];
   
   playlist.insert(playlist.begin()+pos, newIndexes.begin(), newIndexes.end());
-  
-  shuffled.insert(shuffled.end(), newIndexes.begin(), newIndexes.end());
-  
-  vector<int>::iterator it;
-  if (currentItem == -1) {
-    it = shuffled.begin();
-  } else {
-    it = find(shuffled.begin(), shuffled.end(), currentItem) + 1;
-  }
-  
-  random_shuffle(it, shuffled.end());
   
   return newSize - oldSize;  
 }
@@ -262,33 +250,32 @@ using namespace std;
     if (playlist[curr] == currentItem) currentItem = -1;
   }
   
-  int n = (int)indexesToRemove.size();
   int m = self.numberOfItems;
   
   vector<int> itemIndexesToRemoveMask(m, 0);
-  for (auto it = indexesToRemove.begin(); it != indexesToRemove.end(); ++it)
+  for (auto it = indexesToRemove.begin(); it != indexesToRemove.end(); ++it) {
     itemIndexesToRemoveMask[playlist[*it]] = 1;
+  }
   
   vector<int> itemIndexesToRemove;
-  vector<int> shuffledIndexesToRemove;
+  vector<int> playedItemsIndexesToRemove;
   for (int i = 0; i < m; ++i) {
-    if (itemIndexesToRemoveMask[shuffled[i]]) shuffledIndexesToRemove.push_back(i);
     if (itemIndexesToRemoveMask[i]) itemIndexesToRemove.push_back(i);
+    if (i < playedItems.size() && itemIndexesToRemove[playedItems[i]]) playedItemsIndexesToRemove.push_back(i);
   }
   
   for (auto it = itemIndexesToRemove.begin(); it != itemIndexesToRemove.end(); ++it) [playlistItems[*it] cancelID3Read];
 
+  removeIndexesFromVector(playedItemsIndexesToRemove, playedItems);
   removeIndexesFromVector(itemIndexesToRemove, playlistItems);
-  if (isQueue) removeIndexesFromVector(itemIndexesToRemove, itemOrigin);
   removeIndexesFromVector(indexesToRemove, playlist);
-  removeIndexesFromVector(shuffledIndexesToRemove, shuffled);
+  if (isQueue) removeIndexesFromVector(itemIndexesToRemove, itemOrigin);
   
+  // adjust indexes because some playlistItems are now gone
   for (int i = 1; i < m; ++i) itemIndexesToRemoveMask[i] += itemIndexesToRemoveMask[i-1];
   if (currentItem != -1) currentItem -= itemIndexesToRemoveMask[currentItem];
-  for (int i = 0; i < m-n; ++i) {
-    playlist[i] -= itemIndexesToRemoveMask[playlist[i]];
-    shuffled[i] -= itemIndexesToRemoveMask[shuffled[i]];
-  }
+  for (int i = 0; i < playlist.size(); ++i) playlist[i] -= itemIndexesToRemoveMask[playlist[i]];
+  for (int i = 0; i < playedItems.size(); ++i) playedItems[i] -= itemIndexesToRemoveMask[playedItems[i]];
 }
 
 template <typename T>
@@ -319,19 +306,6 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
   _sortedBy = nil;
 }
 
-- (void)shuffle {
-  shuffled = playlist;
-  srand((unsigned int) time(0));
-  random_shuffle(shuffled.begin(), shuffled.end());
-  
-  if (currentItem != -1) {
-    int pos = (int) (find(shuffled.begin(), shuffled.end(), currentItem) - shuffled.begin());
-    int t = shuffled[pos];
-    shuffled[pos] = shuffled[0];
-    shuffled[0] = t;
-  }
-}
-
 #pragma mark - playing songs
 
 - (BOOL)isEmpty {
@@ -344,7 +318,6 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 
 - (PlaylistItem *)moveToItemWithIndex:(int)index {
   currentItem = playlist[index];
-  [self shuffle];
   return [self currentItem];
 }
 
@@ -379,20 +352,44 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 
   BOOL shuffle = [MartinAppDelegate get].playlistManager.shuffle;
   BOOL repeat = [MartinAppDelegate get].playlistManager.repeat;
+  int nextItem = -1;
   
-  vector<int> &order = shuffle? shuffled: playlist;
-  
-  int n = (int)order.size();
-  int pos = (int) (find(order.begin(), order.end(), currentItem) - order.begin()) + delta;
-  if (pos == -1 || pos == n) {
-    if (repeat) pos = (pos+n)%n;
+  if (shuffle) {
+    if (delta == 1) nextItem = [self chooseNextShuffledItem];
     else {
-      currentItem = -1;
-      return nil;
+      playedItems.pop_back();
+      if (playedItems.size() > 0) {
+        nextItem = playedItems.back();
+        playedItems.pop_back();
+      } else {
+        nextItem = repeat? [self chooseNextShuffledItem]: -1;
+      }
     }
+  } else {
+    int pos = (int) (find(playlist.begin(), playlist.end(), currentItem) - playlist.begin()) + delta;
+    int n = (int)playlist.size();
+    if (pos == -1 || pos == n) pos = repeat? (pos+n)%n: -1;
+    nextItem = pos == -1? -1: playlist[pos];
   }
+  
+  currentItem = nextItem;
+  return currentItem == -1? nil: playlistItems[currentItem];
+}
 
-  return playlistItems[currentItem = order[pos]];
+// randomly choose item not in playedItems
+- (int)chooseNextShuffledItem {
+  if (playedItems.size() == playlistItems.size()) return -1;
+  
+  vector<BOOL> playedItemsMask(playlistItems.size(), NO);
+  for (int i = 0; i < playedItems.size(); playedItemsMask[playedItems[i++]] = YES);
+  
+  int j = arc4random()%(playlistItems.size() - playedItems.size());
+  for (int i = 0; i < playlistItems.size(); ++i) {
+    if (playedItemsMask[i] == NO)
+      if (j-- == 0) return i;
+  }
+  
+  return -1;
 }
 
 - (void)findAndSetCurrentItemTo:(PlaylistItem *)item {
@@ -402,6 +399,18 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
       return;
     }
   }
+}
+
+- (void)addCurrentItemToAlreadyPlayedItems {
+  if (currentItem == -1) return;
+  
+  int count = 0;
+  for (int i = 0; i < playedItems.size(); ++i) {
+    if (playedItems[i] == currentItem) ++count;
+    else playedItems[i-count] = playedItems[i];
+  }
+  playedItems.resize(playedItems.size() - count);
+  playedItems.push_back(currentItem);
 }
 
 #pragma mark - other

@@ -41,6 +41,7 @@ typedef enum {
     if (p) [p findAndSetCurrentItemTo:_nowPlayingPlaylist.currentItem];
   }
 
+  [_nowPlayingPlaylist addCurrentItemToAlreadyPlayedItems];
   [[MartinAppDelegate get].filePlayer startPlayingItem:_nowPlayingPlaylist.currentItem];
   [self startSeekTimer];
   [self setPlayButtonStyle:kPlayButtonStylePause];

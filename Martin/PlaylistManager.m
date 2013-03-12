@@ -98,7 +98,6 @@ static const double dragHoverTime = 1;
 - (void)setShuffle:(BOOL)shuffle {
   _shuffle = shuffle;
   [DefaultsManager setObject:@(_shuffle) forKey:kDefaultsKeyShuffle];
-  for (Playlist *pl in playlists) [pl shuffle];
 }
 
 - (void)setRepeat:(BOOL)repeat {
