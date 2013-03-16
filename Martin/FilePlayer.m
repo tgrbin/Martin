@@ -37,7 +37,7 @@
   _stopped = NO;
 
   playlistItem = item;
-  [self postNotification:kFilePlayerStartedPlayingNotification];
+  [self postNotification:kFilePlayerEventNotification];
 }
 
 - (void)togglePause {
@@ -49,7 +49,7 @@
 - (void)stop {
   if (sound) {
     [sound stop];
-    [self postNotification:kFilePlayerStoppedPlayingNotification];
+    [self postNotification:kFilePlayerEventNotification];
   }
   sound = nil;
   playlistItem = nil;
@@ -86,7 +86,6 @@
 
 - (void)postNotification:(NSString *)notification {
   [[NSNotificationCenter defaultCenter] postNotificationName:notification object:playlistItem];
-  [[NSNotificationCenter defaultCenter] postNotificationName:kFilePlayerEventNotification object:nil];
 }
 
 #pragma mark - saving state

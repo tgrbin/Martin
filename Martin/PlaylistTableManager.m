@@ -20,9 +20,6 @@
 #import "PlaylistNameGuesser.h"
 
 @implementation PlaylistTableManager {
-  BOOL justReverseOnNextSort;
-  int highlightedRow;
-
   Playlist *dragSourcePlaylist;
 
   IBOutlet NSTableView *playlistTable;
@@ -36,8 +33,8 @@
 
   [playlistTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistsIndexes, kDragTypePlaylistItemsRows, NSFilenamesPboardType]];
 
-  [self observe:kFilePlayerStartedPlayingNotification withAction:@selector(playingItemChanged)];
-  [self observe:kFilePlayerStoppedPlayingNotification withAction:@selector(playingItemChanged)];
+  [self observe:kFilePlayerEventNotification withAction:@selector(playlistChanged)];
+  [self observe:kPlaylistCurrentItemChanged withAction:@selector(playlistChanged)];
   [self observe:kLibraryRescanFinishedNotification withAction:@selector(reloadTableData)];
 
   _playlist = [MartinAppDelegate get].playlistManager.selectedPlaylist;
@@ -80,7 +77,7 @@
 
 - (void)setPlaylist:(Playlist *)playlist {
   _playlist = playlist;
-  [self tableChanged];
+  [self playlistChanged];
   [self updateSortIndicator];
   [playlistTable deselectAll:nil];
 }
@@ -145,7 +142,7 @@
     NSArray *items = [info.draggingPasteboard propertyListForType:NSFilenamesPboardType];
     [PlaylistNameGuesser itemsAndNameFromFolders:items withBlock:^(NSArray *items, NSString *name) {
       int c = [_playlist addPlaylistItems:items atPos:endPosition];
-      [self tableChanged];
+      [self playlistChanged];
       [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(endPosition, c)] byExtendingSelection:NO];
       [[MartinAppDelegate get].window makeFirstResponder:tableView];
     }];
@@ -179,7 +176,7 @@
       }
     }
 
-    [self tableChanged];
+    [self playlistChanged];
     [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(endPosition, itemsCount)] byExtendingSelection:NO];
     [[MartinAppDelegate get].window makeFirstResponder:tableView];
   }
@@ -189,12 +186,12 @@
 
 - (void)addTreeNodes:(NSArray *)treeNodes {
   [_playlist addTreeNodes:treeNodes];
-  [self tableChanged];
+  [self playlistChanged];
 }
 
 - (void)addPlaylistItems:(NSArray *)items {
   [_playlist addPlaylistItems:items];
-  [self tableChanged];
+  [self playlistChanged];
 }
 
 #pragma mark - delegate
@@ -204,17 +201,27 @@
   [_playlist sortBy:tableColumn.identifier];
   playlistTable.highlightedTableColumn = tableColumn;
   [playlistTable selectRowIndexes:[_playlist indexesAfterSorting] byExtendingSelection:NO];
-  [self tableChanged];
+  [self playlistChanged];
 }
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)c forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   NSTextFieldCell *cell = (NSTextFieldCell*)c;
 
-  if (self.showingNowPlayingPlaylist && row == highlightedRow) {
-    cell.font = [NSFont boldSystemFontOfSize:13];
-  } else {
-    cell.font = [NSFont systemFontOfSize:13];
+  BOOL isCurrentItem = (row == _playlist.currentItemIndex);
+  BOOL isNowPlaying = (isCurrentItem && self.showingNowPlayingPlaylist == YES && [MartinAppDelegate get].filePlayer.stopped == NO);
+
+  BOOL altBkg = NO;
+  NSFont *font = [NSFont systemFontOfSize:13];
+  if (isCurrentItem == YES) {
+    altBkg = YES;
+    if (isNowPlaying == YES) {
+      font = [NSFont boldSystemFontOfSize:13];
+    }
   }
+
+  cell.font = font;
+  cell.backgroundColor = altBkg? [NSColor colorWithCalibratedWhite:0.7 alpha:1]: [NSColor clearColor];
+  cell.drawsBackground = altBkg;
 }
 
 - (BOOL)tableView:(NSTableView *)tableView shouldEditTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
@@ -231,10 +238,6 @@
   PlaylistItem *item = _playlist[(int)row];
   int tagIndex = [Tags indexFromTagName:tableColumn.identifier];
   NSString *value = [item tagValueForIndex:tagIndex];
-
-  if (self.showingNowPlayingPlaylist && row == _playlist.currentItemIndex) {
-    highlightedRow = (int)row;
-  }
 
   if ([tableColumn.identifier isEqualToString:@"title"] && value.length == 0) {
     value = [item.filename lastPathComponent];
@@ -310,7 +313,7 @@
   if (m > 0) {
     [self.playlist removeSongsAtIndexes:selectedIndexes];
     [playlistTable deselectAll:nil];
-    [self tableChanged];
+    [self playlistChanged];
 
     selectRow = (selectRow < n-1)? selectRow-m+1: n-m-1;
 
@@ -331,11 +334,10 @@
 #pragma mark - other
 
 - (void)queueChanged {
-  if ([self showingQueuePlaylist]) [self tableChanged];
+  if ([self showingQueuePlaylist]) [self playlistChanged];
 }
 
-- (void)tableChanged {
-  highlightedRow = -1;
+- (void)playlistChanged {
   [playlistTable reloadData];
   if ([self showingQueuePlaylist]) {
     [[MartinAppDelegate get].playlistManager reload];
@@ -375,11 +377,7 @@
   return items;
 }
 
-#pragma mark - update now playing
-
-- (void)playingItemChanged {
-  [self tableChanged];
-}
+#pragma mark - other
 
 - (BOOL)showingNowPlayingPlaylist {
   return _playlist == [MartinAppDelegate get].player.nowPlayingPlaylist;

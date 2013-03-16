@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#define kFilePlayerStartedPlayingNotification @"FilePlayerStartedPlayingNotification"
-#define kFilePlayerStoppedPlayingNotification @"FilePlayerStoppedPlayingNotification"
 #define kFilePlayerPlayedItemNotification @"FilePlayerPlayedItemNotification"
 #define kFilePlayerEventNotification @"FilePlayerEventNotification"
 

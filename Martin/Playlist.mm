@@ -22,12 +22,15 @@
 
 using namespace std;
 
+@interface Playlist()
+@property (nonatomic, assign) int currentIndexInPlaylistItems;
+@end
+
 @implementation Playlist {
 @protected
   vector<PlaylistItem *> playlistItems;
   
   // these variables hold indexes within playlistItems vector
-  int currentItem;
   vector<int> playlist;
   vector<int> playedItems;
   
@@ -45,7 +48,7 @@ using namespace std;
 - (id)initWithName:(NSString *)n andPlaylistItems:(NSArray *)s {
   if (self = [super init]) {
     _name = n;
-    currentItem = -1;
+    self.currentIndexInPlaylistItems = -1;
     
     for (id item in s) playlistItems.push_back(item);
     
@@ -81,7 +84,7 @@ using namespace std;
   return [self initWithName:@"new playlist" andPlaylistItems:@[]];
 }
 
-#pragma mark - manage playlist
+#pragma mark - adding and removing items
 
 - (int)addPlaylistItems:(NSArray *)arr {
   return [self addPlaylistItems:arr atPos:self.numberOfItems];
@@ -108,10 +111,9 @@ using namespace std;
 }
 
 - (int)addPlaylistItems:(NSArray *)arr atPos:(int)pos fromPlaylist:(Playlist *)_playlist {
-  [self resetCurrentItemIfStopped];
-  [self resetSortState];
-  
   if (arr.count == 0) return 0;
+  
+  [self resetSortState];
   
   BOOL addingPlaylistItems = [arr[0] isKindOfClass:[PlaylistItem class]];
   
@@ -131,6 +133,7 @@ using namespace std;
   
   playlist.insert(playlist.begin()+pos, newIndexes.begin(), newIndexes.end());
   
+  [self playlistChanged];
   return newSize - oldSize;  
 }
 
@@ -164,7 +167,6 @@ using namespace std;
 }
 
 - (int)reorderItemsAtRows:(NSArray *)rows toPos:(int)pos {
-  [self resetCurrentItemIfStopped];
   [self resetSortState];
   
   vector<int> tmp;
@@ -188,52 +190,9 @@ using namespace std;
   for(; k < len; ++k ) playlist.pop_back();
   pos -= posDelta;
   playlist.insert(playlist.begin()+pos, tmp.begin(), tmp.end());
-  return pos;
-}
-
-- (void)sortBy:(NSString *)str {
-  [self resetCurrentItemIfStopped];
   
-  if ([_sortedBy isEqualToString:str]) {
-    _sortedAscending = !_sortedAscending;
-    reverse(playlist.begin(), playlist.end());
-  } else {
-    _sortedBy = str;
-    _sortedAscending = YES;
-    
-    BOOL isLength = [str isEqualToString:@"length"];
-    BOOL isTrackNumber = [str isEqualToString:@"track number"];
-    TagIndex tagIndex = [Tags indexFromTagName:str];
-    
-    @autoreleasepool {
-      sort(playlist.begin(), playlist.end(), [&, tagIndex, isLength, isTrackNumber](int a, int b) -> bool {
-        PlaylistItem *p1 = playlistItems[a];
-        PlaylistItem *p2 = playlistItems[b];
-        
-        if (isLength) return p1.lengthInSeconds < p2.lengthInSeconds;
-      
-        if (p1.p_librarySong != -1 && p2.p_librarySong != -1) {
-          struct LibrarySong *s1 = [Tree songDataForP:p1.p_librarySong];
-          struct LibrarySong *s2 = [Tree songDataForP:p2.p_librarySong];
-          
-          if (isTrackNumber) {
-            int t1, t2;
-            if (sscanf(s1->tags[tagIndex], "%d", &t1) == 1 && sscanf(s2->tags[tagIndex], "%d", &t2) == 1) {
-              return t1 < t2;
-            } else return strcasecmp(s1->tags[tagIndex], s2->tags[tagIndex]) < 0;
-          } else {
-            return strcasecmp(s1->tags[tagIndex], s2->tags[tagIndex]) < 0;
-          }
-        } else {
-          NSString *val1 = [p1 tagValueForIndex:tagIndex];
-          NSString *val2 = [p2 tagValueForIndex:tagIndex];
-          
-          if (isTrackNumber) return val1.intValue < val2.intValue;
-          return [val1 caseInsensitiveCompare:val2] == NSOrderedAscending;
-        }
-      });
-    }
-  }
+  [self playlistChanged];
+  return pos;
 }
 
 - (void)removeFirstItem {
@@ -242,12 +201,10 @@ using namespace std;
 }
 
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes {
-  [self resetCurrentItemIfStopped];
-  
   vector<int> indexesToRemove;
   for (NSInteger curr = indexes.firstIndex; curr != NSNotFound; curr = [indexes indexGreaterThanIndex:curr]) {
     indexesToRemove.push_back((int)curr);
-    if (playlist[curr] == currentItem) currentItem = -1;
+    if (curr == _currentItemIndex) self.currentIndexInPlaylistItems = -1;
   }
   
   int m = self.numberOfItems;
@@ -259,10 +216,10 @@ using namespace std;
   
   vector<int> itemIndexesToRemove;
   vector<int> playedItemsIndexesToRemove;
-  for (int i = 0; i < m; ++i) {
+  for (int i = 0; i < m; ++i)
     if (itemIndexesToRemoveMask[i]) itemIndexesToRemove.push_back(i);
+  for (int i = 0; i < m; ++i)
     if (i < playedItems.size() && itemIndexesToRemove[playedItems[i]]) playedItemsIndexesToRemove.push_back(i);
-  }
   
   for (auto it = itemIndexesToRemove.begin(); it != itemIndexesToRemove.end(); ++it) [playlistItems[*it] cancelID3Read];
 
@@ -273,9 +230,11 @@ using namespace std;
   
   // adjust indexes because some playlistItems are now gone
   for (int i = 1; i < m; ++i) itemIndexesToRemoveMask[i] += itemIndexesToRemoveMask[i-1];
-  if (currentItem != -1) currentItem -= itemIndexesToRemoveMask[currentItem];
+  if (_currentIndexInPlaylistItems != -1) self.currentIndexInPlaylistItems -= itemIndexesToRemoveMask[_currentIndexInPlaylistItems];
   for (int i = 0; i < playlist.size(); ++i) playlist[i] -= itemIndexesToRemoveMask[playlist[i]];
   for (int i = 0; i < playedItems.size(); ++i) playedItems[i] -= itemIndexesToRemoveMask[playedItems[i]];
+  
+  [self playlistChanged];
 }
 
 template <typename T>
@@ -298,27 +257,16 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
   [self removeSongsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.numberOfItems)]];
 }
 
-- (void)resetCurrentItemIfStopped {
-  if ([[MartinAppDelegate get].filePlayer stopped]) currentItem = -1;
+- (void)playlistChanged {
+  // trigger recalculation of currentItemIndex
+  self.currentIndexInPlaylistItems = _currentIndexInPlaylistItems;
 }
 
-- (void)resetSortState {
-  _sortedBy = nil;
-}
-
-#pragma mark - playing songs
-
-- (BOOL)isEmpty {
-  return self.numberOfItems == 0;
-}
-
-- (int)numberOfItems {
-  return (int)playlistItems.size();
-}
+#pragma mark - current item manipulation
 
 - (PlaylistItem *)moveToItemWithIndex:(int)index {
-  currentItem = playlist[index];
-  return [self currentItem];
+  self.currentIndexInPlaylistItems = playlist[index];
+  return self.currentItem;
 }
 
 - (PlaylistItem *)objectAtIndexedSubscript:(int)index {
@@ -326,8 +274,8 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 }
 
 - (PlaylistItem *)currentItem {
-  if (currentItem == -1) return nil;
-  return playlistItems[currentItem];
+  if (_currentIndexInPlaylistItems == -1) return nil;
+  return playlistItems[_currentIndexInPlaylistItems];
 }
 
 - (PlaylistItem *)moveToNextItem {
@@ -340,46 +288,56 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 
 - (PlaylistItem *)moveToFirstItem {
   if (self.numberOfItems == 0) return nil;
-  return playlistItems[currentItem = playlist[0]];
+  self.currentIndexInPlaylistItems = playlist[0];
+  return playlistItems[_currentIndexInPlaylistItems];
 }
 
-- (void)forgetCurrentItem {
-  currentItem = -1;
+- (PlaylistItem *)moveToLastItem {
+  if (self.numberOfItems == 0) return nil;
+  self.currentIndexInPlaylistItems = playlist.back();
+  return playlistItems[_currentIndexInPlaylistItems];
 }
 
 - (PlaylistItem *)moveToItemWithDelta:(int)delta {
-  if (currentItem == -1) return nil;
+  if (_currentIndexInPlaylistItems == -1) {
+    if (delta == 1) return [self moveToFirstItem];
+    else return [self moveToLastItem];
+  }
 
   BOOL shuffle = [MartinAppDelegate get].playlistManager.shuffle;
   BOOL repeat = [MartinAppDelegate get].playlistManager.repeat;
   int nextItem = -1;
   
   if (shuffle) {
-    if (delta == 1) nextItem = [self chooseNextShuffledItem];
-    else {
+    if (delta == 1) {
+      if (playedItems.size() == playlistItems.size()) { // aready played everything
+        playedItems.clear();
+        if (repeat) nextItem = arc4random()%playlistItems.size();
+      } else {
+        nextItem = [self chooseNextShuffledItem];
+      }
+    } else {
       playedItems.pop_back();
       if (playedItems.size() > 0) {
         nextItem = playedItems.back();
         playedItems.pop_back();
       } else {
-        nextItem = repeat? [self chooseNextShuffledItem]: -1;
+        if (repeat) nextItem = arc4random()%playlistItems.size();
       }
     }
   } else {
-    int pos = (int) (find(playlist.begin(), playlist.end(), currentItem) - playlist.begin()) + delta;
+    int pos = _currentItemIndex + delta;
     int n = (int)playlist.size();
     if (pos == -1 || pos == n) pos = repeat? (pos+n)%n: -1;
     nextItem = pos == -1? -1: playlist[pos];
   }
   
-  currentItem = nextItem;
-  return currentItem == -1? nil: playlistItems[currentItem];
+  self.currentIndexInPlaylistItems = nextItem;
+  return self.currentItem;
 }
 
 // randomly choose item not in playedItems
 - (int)chooseNextShuffledItem {
-  if (playedItems.size() == playlistItems.size()) return -1;
-  
   vector<BOOL> playedItemsMask(playlistItems.size(), NO);
   for (int i = 0; i < playedItems.size(); playedItemsMask[playedItems[i++]] = YES);
   
@@ -394,30 +352,80 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 
 - (void)findAndSetCurrentItemTo:(PlaylistItem *)item {
   for (int i = 0; i < playlistItems.size(); ++i) {
-    if (playlistItems[i].inode == item.inode) {
-      currentItem = i;
+    if (playlistItems[i] == item) {
+      self.currentIndexInPlaylistItems = i;
       return;
     }
   }
 }
 
 - (void)addCurrentItemToAlreadyPlayedItems {
-  if (currentItem == -1) return;
+  if (_currentIndexInPlaylistItems == -1) return;
   
   int count = 0;
   for (int i = 0; i < playedItems.size(); ++i) {
-    if (playedItems[i] == currentItem) ++count;
+    if (playedItems[i] == _currentIndexInPlaylistItems) ++count;
     else playedItems[i-count] = playedItems[i];
   }
   playedItems.resize(playedItems.size() - count);
-  playedItems.push_back(currentItem);
+  playedItems.push_back(_currentIndexInPlaylistItems);
 }
 
-#pragma mark - other
+- (void)setCurrentIndexInPlaylistItems:(int)currentIndexInPlaylistItems {
+  _currentIndexInPlaylistItems = currentIndexInPlaylistItems;
+  
+  if (_currentIndexInPlaylistItems == -1) {
+    _currentItemIndex = -1;
+  } else {
+    for (int i = 0; i < playlist.size(); ++i)
+      if (playlist[i] == _currentIndexInPlaylistItems) _currentItemIndex = i;
+  }
+  
+  [[NSNotificationCenter defaultCenter] postNotificationName:kPlaylistCurrentItemChanged object:nil];
+}
 
-- (void)cancelID3Reads {
-  for (int i = 0; i < playlistItems.size(); ++i) {
-    [playlistItems[i] cancelID3Read];
+#pragma mark - sorting
+
+- (void)sortBy:(NSString *)str {
+  if ([_sortedBy isEqualToString:str]) {
+    _sortedAscending = !_sortedAscending;
+    reverse(playlist.begin(), playlist.end());
+  } else {
+    _sortedBy = str;
+    _sortedAscending = YES;
+    
+    BOOL isLength = [str isEqualToString:@"length"];
+    BOOL isTrackNumber = [str isEqualToString:@"track number"];
+    TagIndex tagIndex = [Tags indexFromTagName:str];
+    
+    @autoreleasepool {
+      sort(playlist.begin(), playlist.end(), [&, tagIndex, isLength, isTrackNumber](int a, int b) -> bool {
+        PlaylistItem *p1 = playlistItems[a];
+        PlaylistItem *p2 = playlistItems[b];
+        
+        if (isLength) return p1.lengthInSeconds < p2.lengthInSeconds;
+        
+        if (p1.p_librarySong != -1 && p2.p_librarySong != -1) {
+          struct LibrarySong *s1 = [Tree songDataForP:p1.p_librarySong];
+          struct LibrarySong *s2 = [Tree songDataForP:p2.p_librarySong];
+          
+          if (isTrackNumber) {
+            int t1, t2;
+            if (sscanf(s1->tags[tagIndex], "%d", &t1) == 1 && sscanf(s2->tags[tagIndex], "%d", &t2) == 1) {
+              return t1 < t2;
+            } else return strcasecmp(s1->tags[tagIndex], s2->tags[tagIndex]) < 0;
+          } else {
+            return strcasecmp(s1->tags[tagIndex], s2->tags[tagIndex]) < 0;
+          }
+        } else {
+          NSString *val1 = [p1 tagValueForIndex:tagIndex];
+          NSString *val2 = [p2 tagValueForIndex:tagIndex];
+          
+          if (isTrackNumber) return val1.intValue < val2.intValue;
+          return [val1 caseInsensitiveCompare:val2] == NSOrderedAscending;
+        }
+      });
+    }
   }
 }
 
@@ -443,13 +451,24 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
   return is;
 }
 
-#pragma mark - util
+- (void)resetSortState {
+  _sortedBy = nil;
+}
 
-- (int)currentItemIndex {
-  for (int i = 0; i < playlist.size(); ++i)
-    if (playlist[i] == currentItem) return i;
-  
-  return -1;
+#pragma mark - other
+
+- (void)cancelID3Reads {
+  for (int i = 0; i < playlistItems.size(); ++i) {
+    [playlistItems[i] cancelID3Read];
+  }
+}
+
+- (BOOL)isEmpty {
+  return self.numberOfItems == 0;
+}
+
+- (int)numberOfItems {
+  return (int)playlistItems.size();
 }
 
 - (void)myIota:(vector<int>&) v start:(int)s {

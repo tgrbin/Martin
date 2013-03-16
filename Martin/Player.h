@@ -14,6 +14,7 @@
 
 @property (nonatomic, strong) Playlist *nowPlayingPlaylist;
 
+- (void)startPlayingCurrentItem;
 - (void)playItemWithIndex:(int)index;
 
 // used only by GlobalShortcuts class

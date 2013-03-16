@@ -183,7 +183,7 @@ static const double dragHoverTime = 1;
   if (row == -1) row = playlistsTable.selectedRow;
 
   [self selectRow:row];
-  [[MartinAppDelegate get].player playItemWithIndex:0];
+  [[MartinAppDelegate get].player startPlayingCurrentItem];
 }
 
 #pragma mark - buttons
@@ -377,7 +377,7 @@ static const double dragHoverTime = 1;
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)c forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   NSTextFieldCell *cell = (NSTextFieldCell*)c;
 
-  if ([self playlistAtRow:row] == [MartinAppDelegate get].player.nowPlayingPlaylist) {
+  if ([self playlistAtRow:row] == [MartinAppDelegate get].player.nowPlayingPlaylist && [MartinAppDelegate get].filePlayer.stopped == NO) {
     cell.font = [NSFont boldSystemFontOfSize:13];
   } else {
     cell.font = [NSFont systemFontOfSize:13];

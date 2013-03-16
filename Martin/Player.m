@@ -76,35 +76,33 @@ typedef enum {
 
 - (void)next {
   if ([self willPlayQueuedItem] == NO) {
-    if ([_nowPlayingPlaylist moveToNextItem] == nil) {
-      [self stop];
-    } else {
-      [self startPlayingCurrentItem];
-    }
+    [self stopOrPlayWithTestObject:[_nowPlayingPlaylist moveToNextItem]];
   }
 }
 
 - (void)prev {
-  FilePlayer *filePlayer = [MartinAppDelegate get].filePlayer;
-  if (filePlayer.stopped == NO && filePlayer.timeElapsed > 3) {
+  if ([MartinAppDelegate get].filePlayer.playing == YES && [MartinAppDelegate get].filePlayer.timeElapsed > 3) {
     [self startPlayingCurrentItem];
-    return;
-  }
-
-  if (playingQueuedItem) {
-    _nowPlayingPlaylist = [[MartinAppDelegate get].playlistManager.queue currentItemPlaylist];
-    playingQueuedItem = NO;
-    if (_nowPlayingPlaylist == nil) {
-      [self stop];
+  } else {
+    if (playingQueuedItem) {
+      _nowPlayingPlaylist = [[MartinAppDelegate get].playlistManager.queue currentItemPlaylist];
+      playingQueuedItem = NO;
+      [self stopOrPlayWithTestObject:_nowPlayingPlaylist];
     } else {
+      [self stopOrPlayWithTestObject:[_nowPlayingPlaylist moveToPrevItem]];
+    }
+  }
+}
+
+- (void)stopOrPlayWithTestObject:(id)o {
+  if (o != nil) {
+    if ([MartinAppDelegate get].filePlayer.playing) {
       [self startPlayingCurrentItem];
+    } else {
+      [self stop];
     }
   } else {
-    if ([_nowPlayingPlaylist moveToPrevItem] == nil) {
-      [self stop];
-    } else {
-      [self startPlayingCurrentItem];
-    }
+    [self stop];
   }
 }
 
@@ -170,7 +168,6 @@ typedef enum {
 }
 
 - (IBAction)prevPressed:(id)sender {
-  if ([[MartinAppDelegate get].filePlayer stopped]) return;
   [self setNowPlayingPlaylistIfNecessary];
   [self prev];
 }
@@ -181,7 +178,6 @@ typedef enum {
 }
 
 - (IBAction)nextPressed:(id)sender {
-  if ([[MartinAppDelegate get].filePlayer stopped]) return;
   [self setNowPlayingPlaylistIfNecessary];
   [self next];
 }

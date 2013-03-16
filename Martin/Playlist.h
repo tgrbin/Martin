@@ -8,14 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
+#define kPlaylistCurrentItemChanged @"PlaylistCurrentItemChanged"
+
 @class PlaylistItem;
 
 @interface Playlist : NSObject
 
 @property (nonatomic, strong) NSString *name;
-
-@property (nonatomic, strong) NSString *sortedBy;
-@property (nonatomic, assign) BOOL sortedAscending;
 
 - (id)initWithName:(NSString *)n andPlaylistItems:(NSArray *)arr;
 - (id)initWithName:(NSString *)n andTreeNodes:(NSArray *)arr;
@@ -46,24 +45,25 @@
 - (BOOL)isEmpty;
 - (PlaylistItem *)objectAtIndexedSubscript:(int)index;
 
+@property (nonatomic, readonly) int currentItemIndex;
 - (PlaylistItem *)currentItem;
 - (PlaylistItem *)moveToNextItem;
 - (PlaylistItem *)moveToPrevItem;
 - (PlaylistItem *)moveToFirstItem;
 - (PlaylistItem *)moveToItemWithIndex:(int)index;
-
-- (int)currentItemIndex;
+- (void)addCurrentItemToAlreadyPlayedItems;
 
 // used when item from playlist is played from queue
 - (void)findAndSetCurrentItemTo:(PlaylistItem *)item;
 
 - (void)cancelID3Reads;
 
+// sorting
+@property (nonatomic, strong) NSString *sortedBy;
+@property (nonatomic, assign) BOOL sortedAscending;
 // used to preserve selected items before and after sorting
 - (void)storeIndexes:(NSIndexSet *)indexSet;
 - (NSIndexSet *)indexesAfterSorting;
-
-- (void)addCurrentItemToAlreadyPlayedItems;
 
 @end
 
