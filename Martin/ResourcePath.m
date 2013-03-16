@@ -11,37 +11,27 @@
 @implementation ResourcePath
 
 + (const char *)playlistsPath {
-  static NSString *path = nil;
-  if (path == nil) path = resourcePath(@"playlists.pl");
-  return [path UTF8String];
+  return resourcePath(@"playlists.pl");
 }
 
 + (const char *)playlistsHelperPath {
-  static NSString *path = nil;
-  if (path == nil) path = resourcePath(@"playlists_helper.pl");
-  return [path UTF8String];
+  return resourcePath(@"playlists_helper.pl");
 }
 
 + (const char *)libPath {
-  static NSString *path = nil;
-  if (path == nil) path = resourcePath(@"martin.lib");
-  return [path UTF8String];
+  return resourcePath(@"martin.lib");
 }
 
 + (const char *)rescanPath {
-  static NSString *path = nil;
-  if (path == nil) path = resourcePath(@"martin_rescan.lib");
-  return [path UTF8String];
+  return resourcePath(@"martin_rescan.lib");
 }
 
 + (const char *)rescanHelperPath {
-  static NSString *path = nil;
-  if (path == nil) path = resourcePath(@"martin_rescan_helper.lib");
-  return [path UTF8String];
+  return resourcePath(@"martin_rescan_helper.lib");
 }
 
-static NSString *resourcePath(NSString *name) {
-  return [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:name];
+static const char *resourcePath(NSString *name) {
+  return [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:name] UTF8String];
 }
 
 @end
