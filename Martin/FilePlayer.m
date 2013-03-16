@@ -30,7 +30,7 @@
   }
 
   sound.delegate = self;
-  sound.volume = _volume;
+  self.volume = _volume;
   [sound play];
 
   _playing = YES;
@@ -59,7 +59,11 @@
 
 - (void)setVolume:(double)volume {
   _volume = volume;
-  if (sound) sound.volume = _volume;
+  if (sound) {
+    // logarithmic scale for volume, read in Cog player source that it should be done this way
+    double x = _volume * _volume * _volume;
+    sound.volume = (_volume == 0)? 0: MAX(x, 0.001);
+  }
 }
 
 - (void)setSeek:(double)seek {
