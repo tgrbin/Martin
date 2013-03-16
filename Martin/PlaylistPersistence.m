@@ -17,50 +17,31 @@
 + (void)savePlaylists:(NSArray *)playlists {
   FILE *f = fopen([ResourcePath playlistsHelperPath], "w");
 
-  for (Playlist *p in playlists) {
-    fprintf(f, " %s\n", [p.name UTF8String]);
-    for (int i = 0; i < p.numberOfItems; ++i) {
-      [p[i] outputToFileStream:f];
-    }
-  }
-
-  fprintf(f, " x\n");
+  fprintf(f, "%ld\n", playlists.count);
+  for (Playlist *p in playlists) [p outputToFileStream:f];
   fclose(f);
 
   unlink([ResourcePath playlistsPath]);
   rename([ResourcePath playlistsHelperPath], [ResourcePath playlistsPath]);
 }
 
-+ (NSMutableArray *)loadPlaylists {
-  static const int kBuffSize = 1<<16;
-  static char buff[kBuffSize];
-
++ (NSArray *)loadPlaylists {
   NSMutableArray *playlists = [NSMutableArray new];
-  NSMutableArray *items = [NSMutableArray new];
-  NSString *playlistName = nil;
 
   FILE *f = fopen([ResourcePath playlistsPath], "r");
-  Class playlistClass = [QueuePlaylist class];
+
   if (f == NULL) {
     [playlists addObject:[[QueuePlaylist alloc] initWithName:@"Queue" andPlaylistItems:@[]]];
   } else {
-    for (; fgets(buff, kBuffSize, f) != NULL;) {
-      buff[strlen(buff)-1] = 0; // remove newline
-
-      if (buff[0] == ' ') {
-        if (playlistName != nil) {
-          [playlists addObject:[[playlistClass alloc] initWithName:playlistName andPlaylistItems:items]];
-          [items removeAllObjects];
-          playlistClass = [Playlist class]; // only first playlist is a queue
-        }
-        playlistName = @(buff+1);
-      } else {
-        [items addObject:[[PlaylistItem alloc] initWithFileStream:f]];
-        fgets(buff, kBuffSize, f); // skip }
-      }
+    int nPlaylists;
+    fscanf(f, "%d\n", &nPlaylists);
+    for (int i = 0; i < nPlaylists; ++i) {
+      Class playlistClass = (i == 0)? [QueuePlaylist class]: [Playlist class];
+      [playlists addObject:[[playlistClass alloc] initWithFileStream:f]];
     }
   }
 
+  fclose(f);
   return playlists;
 }
 

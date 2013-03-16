@@ -11,6 +11,6 @@
 @interface PlaylistPersistence : NSObject
 
 + (void)savePlaylists:(NSArray *)playlists;
-+ (NSMutableArray *)loadPlaylists;
++ (NSArray *)loadPlaylists;
 
 @end

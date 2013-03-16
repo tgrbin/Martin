@@ -47,7 +47,7 @@ static NSOperationQueue *operationQueue;
   static char buff[kBuffSize];
   static char **ctags;
   if (ctags == NULL) tagsInit(&ctags);
-  
+    
   if (self = [super init]) {
     fgets(buff, kBuffSize, f);
     sscanf(buff, "%lld", &_inode);
@@ -141,7 +141,6 @@ static NSOperationQueue *operationQueue;
 - (void)outputToFileStream:(FILE *)f {
   [self checkLibrarySong];
   
-  fprintf(f, "{\n");
   fprintf(f, "%lld\n", _inode);
   
   if (_p_librarySong == -1) {
@@ -154,8 +153,6 @@ static NSOperationQueue *operationQueue;
     fprintf(f, "%s\n", [Tree cStringPathForSong:_p_librarySong]);
     for (int i = 0; i < kNumberOfTags; ++i) fprintf(f, "%s\n", song->tags[i]);
   }
-  
-  fprintf(f, "}\n");
 }
 
 - (void)checkLibrarySong {

@@ -16,6 +16,9 @@
 
 @property (nonatomic, strong) NSString *name;
 
+- (id)initWithFileStream:(FILE *)f;
+- (void)outputToFileStream:(FILE *)f;
+
 - (id)initWithName:(NSString *)n andPlaylistItems:(NSArray *)arr;
 - (id)initWithName:(NSString *)n andTreeNodes:(NSArray *)arr;
 

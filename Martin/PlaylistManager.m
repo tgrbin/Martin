@@ -52,7 +52,7 @@ static const double dragHoverTime = 1;
 
     _shuffle = [[DefaultsManager objectForKey:kDefaultsKeyShuffle] boolValue];
     _repeat = [[DefaultsManager objectForKey:kDefaultsKeyRepeat] boolValue];
-    playlists = [PlaylistPersistence loadPlaylists];
+    playlists = [NSMutableArray arrayWithArray:[PlaylistPersistence loadPlaylists]];
   }
 
   return self;

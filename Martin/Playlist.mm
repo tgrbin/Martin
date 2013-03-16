@@ -43,6 +43,58 @@ using namespace std;
   vector<BOOL> storedIndexes;
 }
 
+#pragma mark - file stream init and output
+
+- (id)initWithFileStream:(FILE *)f {
+  
+  if (self = [super init]) {
+    char buff[1024];
+    fgets(buff, 1024, f);
+    buff[strlen(buff)-1] = 0;
+    _name = @(buff);
+    
+    int nItems;
+    fscanf(f, "%d%d%d\n", &nItems, &_currentIndexInPlaylistItems, &_currentItemIndex);
+    for (int i = 0; i < nItems; ++i) {
+      playlistItems.push_back([[PlaylistItem alloc] initWithFileStream:f]);
+    }
+    [self readVector:playlist fromFileStream:f];
+    [self readVector:playedItems fromFileStream:f];
+  }
+  
+  return self;
+}
+
+- (void)outputToFileStream:(FILE *)f {
+  fprintf(f, "%s\n", [_name UTF8String]);
+  fprintf(f, "%d %d %d\n", self.numberOfItems, _currentIndexInPlaylistItems, _currentItemIndex);
+  for (int i = 0; i < self.numberOfItems; ++i) {
+    [playlistItems[i] outputToFileStream:f];
+  }
+  [self outputVector:playlist toFileStream:f];
+  [self outputVector:playedItems toFileStream:f];
+}
+
+- (void)outputVector:(vector<int>&)v toFileStream:(FILE *)f {
+  int n = (int)v.size();
+  fprintf(f, "%d\n", n);
+  for (int i = 0; i < n; ++i) {
+    fprintf(f, "%d", v[i]);
+    fprintf(f, i == n-1? "\n": " ");
+  }
+}
+
+- (void)readVector:(vector<int>&)v fromFileStream:(FILE *)f {
+  int n;
+  fscanf(f, "%d\n", &n);
+  for (int i = 0; i < n; ++i) {
+    int x;
+    fscanf(f, "%d", &x);
+    v.push_back(x);
+    if (i == n-1) fscanf(f, "\n");
+  }
+}
+
 #pragma mark - init
 
 - (id)initWithName:(NSString *)n andPlaylistItems:(NSArray *)s {
