@@ -32,6 +32,16 @@ typedef enum {
   [self observe:kFilePlayerPlayedItemNotification withAction:@selector(trackFinished)];
 }
 
+- (BOOL)playingFromPlaylist:(Playlist *)playlist {
+  if ([MartinAppDelegate get].filePlayer.stopped == NO) {
+    if (_nowPlayingPlaylist == playlist) return YES;
+
+    QueuePlaylist *queue = [MartinAppDelegate get].playlistManager.queue;
+    if (_nowPlayingPlaylist == queue && [queue currentItemPlaylist] == playlist) return YES;
+  }
+  return NO;
+}
+
 - (void)startPlayingCurrentItem {
   if (_nowPlayingPlaylist.numberOfItems == 0) return;
   if (_nowPlayingPlaylist.currentItem == nil) [_nowPlayingPlaylist moveToFirstItem];

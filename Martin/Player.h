@@ -14,6 +14,9 @@
 
 @property (nonatomic, strong) Playlist *nowPlayingPlaylist;
 
+// to return YES martin must not be stopped, playlist can be equal to nowPlayingPlaylist, or to currentPlaylistItem from queue
+- (BOOL)playingFromPlaylist:(Playlist *)playlist;
+
 - (void)startPlayingCurrentItem;
 - (void)playItemWithIndex:(int)index;
 

@@ -376,12 +376,8 @@ static const double dragHoverTime = 1;
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)c forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   NSTextFieldCell *cell = (NSTextFieldCell*)c;
-
-  if ([self playlistAtRow:row] == [MartinAppDelegate get].player.nowPlayingPlaylist && [MartinAppDelegate get].filePlayer.stopped == NO) {
-    cell.font = [NSFont boldSystemFontOfSize:13];
-  } else {
-    cell.font = [NSFont systemFontOfSize:13];
-  }
+  BOOL playingThisPlaylist = [[MartinAppDelegate get].player playingFromPlaylist:[self playlistAtRow:row]];
+  cell.font = playingThisPlaylist? [NSFont boldSystemFontOfSize:13]: [NSFont systemFontOfSize:13];
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)notification {

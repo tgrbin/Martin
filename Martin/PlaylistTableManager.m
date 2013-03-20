@@ -207,19 +207,12 @@
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)c forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   NSTextFieldCell *cell = (NSTextFieldCell*)c;
 
-  BOOL isCurrentItem = (row == _playlist.currentItemIndex);
-  BOOL isNowPlaying = (isCurrentItem && self.showingNowPlayingPlaylist == YES && [MartinAppDelegate get].filePlayer.stopped == NO);
+  BOOL atCurrentItem = (row == _playlist.currentItemIndex);
+  BOOL nowPlaying = [[MartinAppDelegate get].player playingFromPlaylist:_playlist];
 
-  BOOL altBkg = NO;
-  NSFont *font = [NSFont systemFontOfSize:13];
-  if (isCurrentItem == YES) {
-    altBkg = YES;
-    if (isNowPlaying == YES) {
-      font = [NSFont boldSystemFontOfSize:13];
-    }
-  }
-
-  cell.font = font;
+  BOOL altBkg = atCurrentItem;
+  BOOL bold = atCurrentItem && nowPlaying;
+  cell.font = bold? [NSFont boldSystemFontOfSize:13]: [NSFont systemFontOfSize:13];
   cell.backgroundColor = altBkg? [NSColor colorWithCalibratedWhite:0.7 alpha:1]: [NSColor clearColor];
   cell.drawsBackground = altBkg;
 }
@@ -375,12 +368,6 @@
     [items addObject:_playlist[(int)index]];
   }
   return items;
-}
-
-#pragma mark - other
-
-- (BOOL)showingNowPlayingPlaylist {
-  return _playlist == [MartinAppDelegate get].player.nowPlayingPlaylist;
 }
 
 @end
