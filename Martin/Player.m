@@ -38,7 +38,10 @@ typedef enum {
 
   if (playingQueuedItem) {
     Playlist *p = [(QueuePlaylist *)_nowPlayingPlaylist currentItemPlaylist];
-    if (p) [p findAndSetCurrentItemTo:_nowPlayingPlaylist.currentItem];
+    if (p) {
+      [p findAndSetCurrentItemTo:_nowPlayingPlaylist.currentItem];
+      [p addCurrentItemToAlreadyPlayedItems];
+    }
   }
 
   [_nowPlayingPlaylist addCurrentItemToAlreadyPlayedItems];
@@ -96,11 +99,7 @@ typedef enum {
 
 - (void)stopOrPlayWithTestObject:(id)o {
   if (o != nil) {
-    if ([MartinAppDelegate get].filePlayer.playing) {
-      [self startPlayingCurrentItem];
-    } else {
-      [self stop];
-    }
+    [self startPlayingCurrentItem];
   } else {
     [self stop];
   }

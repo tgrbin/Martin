@@ -271,13 +271,14 @@ using namespace std;
   for (int i = 0; i < m; ++i)
     if (itemIndexesToRemoveMask[i]) itemIndexesToRemove.push_back(i);
   for (int i = 0; i < m; ++i)
-    if (i < playedItems.size() && itemIndexesToRemove[playedItems[i]]) playedItemsIndexesToRemove.push_back(i);
+    if (i < playedItems.size() && itemIndexesToRemoveMask[playedItems[i]]) playedItemsIndexesToRemove.push_back(i);
   
   for (auto it = itemIndexesToRemove.begin(); it != itemIndexesToRemove.end(); ++it) [playlistItems[*it] cancelID3Read];
 
   removeIndexesFromVector(playedItemsIndexesToRemove, playedItems);
   removeIndexesFromVector(itemIndexesToRemove, playlistItems);
   removeIndexesFromVector(indexesToRemove, playlist);
+  
   if (isQueue) removeIndexesFromVector(itemIndexesToRemove, itemOrigin);
   
   // adjust indexes because some playlistItems are now gone
@@ -534,6 +535,13 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 
 - (id)initWithName:(NSString *)n andPlaylistItems:(NSArray *)arr {
   if (self = [super initWithName:n andPlaylistItems:arr]) {
+    isQueue = YES;
+  }
+  return self;
+}
+
+- (id)initWithFileStream:(FILE *)f {
+  if (self = [super initWithFileStream:f]) {
     for (int i = 0; i < playlistItems.size(); ++i) itemOrigin.push_back(nil);
     isQueue = YES;
   }
