@@ -77,6 +77,8 @@ typedef enum {
 }
 
 - (void)playOrPause {
+  [self setNowPlayingPlaylistIfNecessary];
+
   if ([[MartinAppDelegate get].filePlayer stopped]) {
     if ([self willPlayQueuedItem] == NO) {
       [self startPlayingCurrentItem];
@@ -88,12 +90,16 @@ typedef enum {
 }
 
 - (void)next {
+  [self setNowPlayingPlaylistIfNecessary];
+
   if ([self willPlayQueuedItem] == NO) {
     [self stopOrPlayWithTestObject:[_nowPlayingPlaylist moveToNextItem]];
   }
 }
 
 - (void)prev {
+  [self setNowPlayingPlaylistIfNecessary];
+
   if ([MartinAppDelegate get].filePlayer.playing == YES && [MartinAppDelegate get].filePlayer.timeElapsed > 3) {
     [self startPlayingCurrentItem];
   } else {
@@ -177,17 +183,14 @@ typedef enum {
 }
 
 - (IBAction)prevPressed:(id)sender {
-  [self setNowPlayingPlaylistIfNecessary];
   [self prev];
 }
 
 - (IBAction)playOrPausePressed:(id)sender {
-  [self setNowPlayingPlaylistIfNecessary];
   [self playOrPause];
 }
 
 - (IBAction)nextPressed:(id)sender {
-  [self setNowPlayingPlaylistIfNecessary];
   [self next];
 }
 
