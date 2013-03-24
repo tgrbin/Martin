@@ -339,39 +339,41 @@ static void walkFolderNonRecursively(BOOL _onRootLevel) {
   DIR *dir = opendir(pathBuff);
   size_t pathLen = strlen(pathBuff);
   
-  for (struct dirent *entry; (entry = readdir(dir)) != NULL;) {
-    if (entry->d_name[0] == '.') {
-      if (entry->d_name[1] == 0) {
-        walkPrint("+ %s", _onRootLevel? pathBuff: strrchr(pathBuff, '/') + 1);
-        walkPrint("%lld", entry->d_ino);
+  if (dir) {
+    for (struct dirent *entry; (entry = readdir(dir)) != NULL;) {
+      if (entry->d_name[0] == '.') {
+        if (entry->d_name[1] == 0) {
+          walkPrint("+ %s", _onRootLevel? pathBuff: strrchr(pathBuff, '/') + 1);
+          walkPrint("%lld", entry->d_ino);
+        }
+        continue;
       }
-      continue;
-    }
-    
-    int node = [Tree nodeByInode:entry->d_ino];
-    strcat(pathBuff, "/");
-    strcat(pathBuff, entry->d_name);
-    
-    if (entry->d_type == DT_DIR) {
-      if (node == -1) {
-        walkFolder(pathBuff, NO);
-      } else {
-        [Tree setName:entry->d_name forNode:node];
-        pathBuff[pathLen] = 0;
-        walkTreeNode(node, NO);
-      }
-    } else if (entry->d_type == DT_REG && [FileExtensionChecker isExtensionAcceptable:entry->d_name]) {
-      stat(pathBuff, &statBuff);
       
-      int p_song = (node == -1)? -1: [Tree treeNodeDataForP:node]->p_song;
-      walkSong(entry->d_name, p_song, &statBuff);
+      int node = [Tree nodeByInode:entry->d_ino];
+      strcat(pathBuff, "/");
+      strcat(pathBuff, entry->d_name);
+      
+      if (entry->d_type == DT_DIR) {
+        if (node == -1) {
+          walkFolder(pathBuff, NO);
+        } else {
+          [Tree setName:entry->d_name forNode:node];
+          pathBuff[pathLen] = 0;
+          walkTreeNode(node, NO);
+        }
+      } else if (entry->d_type == DT_REG && [FileExtensionChecker isExtensionAcceptable:entry->d_name]) {
+        stat(pathBuff, &statBuff);
+        
+        int p_song = (node == -1)? -1: [Tree treeNodeDataForP:node]->p_song;
+        walkSong(entry->d_name, p_song, &statBuff);
+      }
+      
+      pathBuff[pathLen] = 0;
     }
     
-    pathBuff[pathLen] = 0;
+    closedir(dir);
+    walkPrint("-");
   }
-  
-  closedir(dir);
-  walkPrint("-");
 }
 
 static void dumpSong(struct TreeNode *node) {

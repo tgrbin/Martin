@@ -480,6 +480,8 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
       });
     }
   }
+  
+  [self playlistChanged];
 }
 
 - (void)storeIndexes:(NSIndexSet *)indexSet {
@@ -529,6 +531,19 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
   for (int i = 0; i < n; ++i) v[i] = s+i;
 }
 
+- (int)indexOfPlaylistItem:(PlaylistItem *)pi {
+  // this is called only when saving playlists to file on exiting application,
+  // so it's safe to initialize data structure only once
+  
+  for (int i = 0; i < playlistItems.size(); ++i)
+    if (playlistItems[i] == pi) return i;
+  return -1;
+}
+
+- (PlaylistItem *)playlistItemAtIndex:(int)i {
+  return playlistItems[i];
+}
+
 @end
 
 @implementation QueuePlaylist
@@ -551,6 +566,39 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 - (Playlist *)currentItemPlaylist {
   if (playlistItems.size() == 0) return nil;
   return itemOrigin[playlist[0]];
+}
+
+- (void)dumpItemsOriginWithPlaylists:(NSArray *)playlists toFileStream:(FILE *)f {
+  fprintf(f, "%ld\n", itemOrigin.size());
+  for (int i = 0; i < itemOrigin.size(); ++i) {
+    Playlist *p = itemOrigin[i];
+    if (p == nil) {
+      fprintf(f, "-1 -1 ");
+    } else {
+      int index = (int)[playlists indexOfObject:p];
+      fprintf(f, "%d %d ", index, [p indexOfPlaylistItem:playlistItems[i]]);
+    }
+  }
+  fprintf(f, "\n");
+}
+
+- (void)willRemovePlaylist:(Playlist *)p {
+  for (auto it = itemOrigin.begin(); it != itemOrigin.end(); ++it)
+    if (*it == p) *it = nil;
+}
+
+- (void)initItemOriginWithIndexArray:(NSArray *)indexArray andPlaylists:(NSArray *)playlists {
+  for (int i = 0; i < itemOrigin.size(); ++i) {
+    int x = [indexArray[i+i] intValue];
+    int y = [indexArray[i+i+1] intValue];
+
+    if (x == -1) itemOrigin[i] = nil;
+    else {
+      Playlist *p = playlists[x];
+      itemOrigin[i] = p;
+      playlistItems[i] = [p playlistItemAtIndex:y];
+    }
+  }
 }
 
 @end

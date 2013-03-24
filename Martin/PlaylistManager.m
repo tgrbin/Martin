@@ -164,6 +164,7 @@ static const double dragHoverTime = 1;
 
   for (NSInteger index = [is firstIndex]; index != NSNotFound; index = [is indexGreaterThanIndex:index]) {
     [playlists[index] cancelID3Reads];
+    [self.queue willRemovePlaylist:playlists[index]];
   }
 
   if (self.queue.isEmpty == NO && [is containsIndex:0]) {

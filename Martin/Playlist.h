@@ -72,6 +72,17 @@
 
 @interface QueuePlaylist : Playlist
 
+- (id)initWithName:(NSString *)n andPlaylistItems:(NSArray *)arr;
+- (id)initWithFileStream:(FILE *)f;
+
 - (Playlist *)currentItemPlaylist;
+
+// need playlists array to figure out indexes of pointers it has in items origin
+- (void)dumpItemsOriginWithPlaylists:(NSArray *)playlists toFileStream:(FILE *)f;
+
+// set itemsOrigin from this playlist to nil
+- (void)willRemovePlaylist:(Playlist *)playlist;
+
+- (void)initItemOriginWithIndexArray:(NSArray *)indexArray andPlaylists:(NSArray *)playlists;
 
 @end
