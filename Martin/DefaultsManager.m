@@ -21,7 +21,9 @@ static NSDictionary *defaultValues;
     @(kDefaultsKeyLibraryFolders): @[],
     @(kDefaultsKeyTreeState): @[],
     @(kDefaultsKeyVolume): @0.5,
-    @(kDefaultsKeyGlobalShortcuts): @{}
+    @(kDefaultsKeyGlobalShortcuts): @{},
+    @(kDefaultsKeySelectedPlaylistIndex): @0,
+    @(kDefaultsKeySearchQuery): @""
   };
 }
 

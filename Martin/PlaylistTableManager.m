@@ -215,6 +215,12 @@
   cell.font = bold? [NSFont boldSystemFontOfSize:13]: [NSFont systemFontOfSize:13];
   cell.backgroundColor = altBkg? [NSColor colorWithCalibratedWhite:0.7 alpha:1]: [NSColor clearColor];
   cell.drawsBackground = altBkg;
+
+  static BOOL selectedCurrentItemOnRun = NO;
+  if (selectedCurrentItemOnRun == NO && atCurrentItem) {
+    [playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+    selectedCurrentItemOnRun = YES;
+  }
 }
 
 - (BOOL)tableView:(NSTableView *)tableView shouldEditTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {

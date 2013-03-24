@@ -38,6 +38,7 @@ static const double dragHoverTime = 1;
 
   [playlistsTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistsIndexes, kDragTypePlaylistItemsRows, NSFilenamesPboardType]];
 
+  [self selectRow:[[DefaultsManager objectForKey:kDefaultsKeySelectedPlaylistIndex] intValue]];
   [self updateSelectedPlaylist];
 
   [self observe:kFilePlayerEventNotification withAction:@selector(handlePlayerEvent)];
@@ -107,6 +108,7 @@ static const double dragHoverTime = 1;
 
 - (void)savePlaylists {
   [PlaylistPersistence savePlaylists:playlists];
+  [DefaultsManager setObject:@(playlistsTable.selectedRow) forKey:kDefaultsKeySelectedPlaylistIndex];
 }
 
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes andName:(NSString *)name {

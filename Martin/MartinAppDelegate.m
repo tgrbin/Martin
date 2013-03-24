@@ -84,7 +84,7 @@
   }];
 }
 
-#pragma mark - martin busy
+#pragma mark - martin busy indicator
 
 - (int)martinBusy {
   @synchronized (self) {

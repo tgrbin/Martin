@@ -19,7 +19,9 @@ typedef enum {
   kDefaultsKeyLibraryFolders,
   kDefaultsKeyTreeState,
   kDefaultsKeyVolume,
-  kDefaultsKeyGlobalShortcuts
+  kDefaultsKeyGlobalShortcuts,
+  kDefaultsKeySelectedPlaylistIndex,
+  kDefaultsKeySearchQuery
 } DefaultsKey;
 
 + (id)objectForKey:(DefaultsKey)key;

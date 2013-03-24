@@ -16,6 +16,7 @@
 #import "DragDataConverter.h"
 #import "NSObject+Observe.h"
 #import "ShortcutBinder.h"
+#import "DefaultsManager.h"
 
 @interface LibraryOutlineViewManager()
 @end
@@ -53,6 +54,7 @@
 
 - (void)saveState {
   [TreeStateManager saveStateForOutlineView:outlineView];
+  [DefaultsManager setObject:searchTextField.stringValue forKey:kDefaultsKeySearchQuery];
 }
 
 - (void)addSelectedItemsToPlaylist {
@@ -86,7 +88,14 @@
     id item = [outlineView itemAtRow:i];
     if ([outlineView isItemExpanded:item]) [userExpandedItems addObject:item];
   }
+
   userIsManipulatingTree = YES;
+  NSString *searchQuery = [DefaultsManager objectForKey:kDefaultsKeySearchQuery];
+  if (searchQuery.length > 0) {
+    searchTextField.stringValue = searchQuery;
+    [searchTextField resignFirstResponder];
+    [Tree performSearch:searchQuery];
+  }
 }
 
 #pragma mark - drag and drop
