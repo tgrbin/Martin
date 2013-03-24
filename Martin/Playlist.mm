@@ -19,6 +19,7 @@
 #import <numeric>
 #import <vector>
 #import <set>
+#import <map>
 
 using namespace std;
 
@@ -34,11 +35,17 @@ using namespace std;
   vector<int> playlist;
   vector<int> playedItems;
   
+  // variables used only by queue
   BOOL isQueue;
-  // only queue uses this, to track where to continue playing after queue is exhausted
+  // used to track where to continue playing after queue is exhausted
   // every item playlistItems has corresponding element here pointing to originating playlist
   vector<Playlist *> itemOrigin;
-  
+  // used when storing queue state to playlists file
+  // this is used only when exiting application and saving playlists to a file,
+  // so it's safe to initialize data structure only once
+  BOOL playlistItemsIndexInitialized;
+  map<PlaylistItem *, int> playlistItemsIndex;
+
   // stored indexes for keeping selected items between sorts
   vector<BOOL> storedIndexes;
 }
@@ -532,12 +539,16 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 }
 
 - (int)indexOfPlaylistItem:(PlaylistItem *)pi {
-  // this is called only when saving playlists to file on exiting application,
-  // so it's safe to initialize data structure only once
-  
-  for (int i = 0; i < playlistItems.size(); ++i)
-    if (playlistItems[i] == pi) return i;
-  return -1;
+  if (playlistItemsIndexInitialized == NO) {
+    for (int i = 0; i < playlistItems.size(); ++i) {
+      playlistItemsIndex.insert(make_pair(playlistItems[i], i));
+    }
+    playlistItemsIndexInitialized = YES;
+  }
+
+  map<PlaylistItem *, int>::iterator it = playlistItemsIndex.find(pi);
+  if (it == playlistItemsIndex.end()) return -1;
+  return it->second;
 }
 
 - (PlaylistItem *)playlistItemAtIndex:(int)i {
