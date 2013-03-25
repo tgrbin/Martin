@@ -37,6 +37,13 @@
   }
 }
 
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
+  [_playlistManager savePlaylists];
+  [_libraryOutlineViewManager saveState];
+  [_filePlayer storeVolume];
+  return YES;
+}
+
 - (void)toggleMartinVisible {
   BOOL inForeground = [NSApp isActive];
   BOOL isVisible = _window.isVisible;
@@ -55,12 +62,7 @@
   }
 }
 
-- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
-  [_playlistManager savePlaylists];
-  [_libraryOutlineViewManager saveState];
-  [_filePlayer storeVolume];
-  return YES;
-}
+#pragma mark - opening external files
 
 - (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename {
   [self addFoldersToPlaylist:@[filename]];

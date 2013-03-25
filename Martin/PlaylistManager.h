@@ -11,7 +11,7 @@
 @class Playlist;
 @class QueuePlaylist;
 
-@interface PlaylistManager : NSObject <NSTableViewDataSource, NSTableViewDelegate>
+@interface PlaylistManager : NSObject <NSTableViewDataSource, NSTableViewDelegate, NSMenuDelegate>
 
 @property (nonatomic, strong) Playlist *selectedPlaylist;
 

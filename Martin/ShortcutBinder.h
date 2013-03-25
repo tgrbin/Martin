@@ -19,7 +19,8 @@ typedef enum {
   kMartinKeySelectAll,
   kMartinKeyQueueItems,
   kMartinKeySelectArtist,
-  kMartinKeySelectAlbum
+  kMartinKeySelectAlbum,
+  kMartinKeySearch
 } MartinKey;
 
 + (void)bindControl:(NSControl *)control andKey:(MartinKey)key toTarget:(id)target andAction:(SEL)action;

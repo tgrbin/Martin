@@ -31,10 +31,10 @@
 - (int)addPlaylistItems:(NSArray *)arr atPos:(int)pos;
 - (int)addPlaylistItems:(NSArray *)arr fromPlaylist:(Playlist *)playlist;
 - (int)addPlaylistItems:(NSArray *)arr atPos:(int)pos fromPlaylist:(Playlist *)playlist;
-- (int)addItemsFromPlaylist:(Playlist *)p;
-- (int)addItemsFromPlaylists:(NSArray *)arr atPos:(int)pos;
 - (int)addTreeNodes:(NSArray *)treeNodes;
 - (int)addTreeNodes:(NSArray *)treeNodes atPos:(int)pos;
+- (int)addItemsFromPlaylist:(Playlist *)p;
+- (int)addItemsFromPlaylists:(NSArray *)arr atPos:(int)pos;
 
 - (void)removeFirstItem;
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes;

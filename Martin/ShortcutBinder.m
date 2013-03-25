@@ -78,8 +78,10 @@ static MartinKey keyFromEvent(NSEvent *event) {
           return kMartinKeySelectArtist;
         case 'm':
           return kMartinKeySelectAlbum;
-        case 'q':
+        case L'œ':
           return kMartinKeyQueueItems;
+        case '/':
+          return kMartinKeySearch;
         case NSDeleteCharacter:
         case NSDeleteFunctionKey:
         case NSDeleteCharFunctionKey:

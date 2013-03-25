@@ -17,6 +17,7 @@
 #import "NSObject+Observe.h"
 #import "ShortcutBinder.h"
 #import "DefaultsManager.h"
+#import "Playlist.h"
 
 @interface LibraryOutlineViewManager()
 @end
@@ -50,28 +51,13 @@
 
   [ShortcutBinder bindControl:outlineView andKey:kMartinKeyEnter toTarget:self andAction:@selector(addSelectedItemsToPlaylist)];
   [ShortcutBinder bindControl:outlineView andKey:kMartinKeyCmdEnter toTarget:self andAction:@selector(createPlaylistWithSelectedItems)];
+  [ShortcutBinder bindControl:outlineView andKey:kMartinKeyQueueItems toTarget:self andAction:@selector(queueItems)];
+  [ShortcutBinder bindControl:outlineView andKey:kMartinKeySearch toTarget:searchTextField andAction:@selector(becomeFirstResponder)];
 }
 
 - (void)saveState {
   [TreeStateManager saveStateForOutlineView:outlineView];
   [DefaultsManager setObject:searchTextField.stringValue forKey:kDefaultsKeySearchQuery];
-}
-
-- (void)addSelectedItemsToPlaylist {
-  [[MartinAppDelegate get].playlistTableManager addTreeNodes:[self selectedItems]];
-}
-
-- (void)createPlaylistWithSelectedItems {
-  [[MartinAppDelegate get].playlistManager addNewPlaylistWithTreeNodes:[self selectedItems]];
-}
-
-- (NSArray *)selectedItems {
-  NSIndexSet *selectedRows = outlineView.selectedRowIndexes;
-  NSMutableArray *selectedItems = [NSMutableArray new];
-  for (NSInteger row = selectedRows.firstIndex; row != NSNotFound; row = [selectedRows indexGreaterThanIndex:row]) {
-    [selectedItems addObject:[outlineView itemAtRow:row]];
-  }
-  return selectedItems;
 }
 
 #pragma mark - init tree
@@ -119,16 +105,47 @@
   }
 }
 
+#pragma mark - context menu actions
+
+- (void)addSelectedItemsToPlaylist {
+  [self contextMenuAddToPlaylist:nil];
+}
+
+- (void)createPlaylistWithSelectedItems {
+  [self contextMenuNewPlaylist:nil];
+}
+
+- (void)queueItems {
+  [self contextMenuQueueItems:nil];
+}
+
 - (IBAction)contextMenuAddToPlaylist:(id)sender {
-  [[MartinAppDelegate get].playlistTableManager addTreeNodes:[self itemsToProcessFromContextMenu]];
+  [[MartinAppDelegate get].playlistTableManager addTreeNodes:[self itemsForSender:sender]];
 }
 
 - (IBAction)contextMenuNewPlaylist:(id)sender {
-  [[MartinAppDelegate get].playlistManager addNewPlaylistWithTreeNodes:[self itemsToProcessFromContextMenu]];
+  [[MartinAppDelegate get].playlistManager addNewPlaylistWithTreeNodes:[self itemsForSender:sender]];
 }
 
 - (IBAction)contextMenuRescanFolder:(id)sender {
-  [[RescanProxy sharedProxy] rescanRecursivelyTreeNodes:[self itemsToProcessFromContextMenu]];
+  [[RescanProxy sharedProxy] rescanRecursivelyTreeNodes:[self itemsForSender:sender]];
+}
+
+- (IBAction)contextMenuQueueItems:(id)sender {
+  [[MartinAppDelegate get].playlistManager.queue addTreeNodes:[self itemsForSender:sender]];
+}
+
+- (NSArray *)itemsForSender:(id)sender {
+  return sender? [self itemsToProcessFromContextMenu]: [self selectedItems];
+}
+
+- (NSArray *)selectedItems {
+  NSIndexSet *selectedRows = outlineView.selectedRowIndexes;
+  NSMutableArray *selectedItems = [NSMutableArray new];
+  for (NSInteger row = selectedRows.firstIndex; row != NSNotFound; row = [selectedRows indexGreaterThanIndex:row]) {
+    [selectedItems addObject:[outlineView itemAtRow:row]];
+  }
+  return selectedItems;
 }
 
 - (NSArray *)itemsToProcessFromContextMenu {
@@ -150,27 +167,15 @@
 
 - (void)menuNeedsUpdate:(NSMenu *)menu {
   NSArray *items = [self itemsToProcessFromContextMenu];
-  BOOL onlyFolders = YES;
+  BOOL onlyItems = YES;
   for (id item in items) {
-    if ([Tree isLeaf:[item intValue]]) {
-      onlyFolders = NO;
+    if ([Tree isLeaf:[item intValue]] == NO) {
+      onlyItems = NO;
       break;
     }
   }
 
-  if (onlyFolders) {
-    if (menu.numberOfItems == 2) {
-      NSMenuItem *item = [NSMenuItem new];
-      item.target = self;
-      item.action = @selector(contextMenuRescanFolder:);
-      [menu addItem:item];
-    }
-
-    NSMenuItem *item = [menu itemAtIndex:2];
-    item.title = [NSString stringWithFormat:@"Rescan folder%@", items.count > 1? @"s": @""];
-  } else {
-    if (menu.numberOfItems == 3) [menu removeItemAtIndex:2];
-  }
+  [[menu itemWithTitle:@"Rescan"] setEnabled:(onlyItems == NO)];
 }
 
 #pragma mark - data source

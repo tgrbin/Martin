@@ -299,10 +299,6 @@
   [[MartinAppDelegate get].player playItemWithIndex:(int)playlistTable.selectedRow];
 }
 
-- (IBAction)deleteItemsPressed:(id)sender {
-  [self deleteSelectedItems];
-}
-
 - (void)deleteSelectedItems {
   NSIndexSet *selectedIndexes = playlistTable.selectedRowIndexes;
   int n = (int)playlistTable.numberOfRows;
@@ -322,12 +318,8 @@
 }
 
 - (void)queueSelectedItems {
-  BOOL queueWasEmpty = [MartinAppDelegate get].playlistManager.queue.isEmpty;
   [[MartinAppDelegate get].playlistManager.queue addPlaylistItems:[self selectedPlaylistItems]
                                                      fromPlaylist:_playlist];
-  [[MartinAppDelegate get].playlistManager reload];
-  [self queueChanged];
-  if (queueWasEmpty) [[MartinAppDelegate get].playlistManager queueWillAppear];
 }
 
 #pragma mark - other
