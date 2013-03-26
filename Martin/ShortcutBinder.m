@@ -42,7 +42,7 @@ static void hookClass(Class cls) {
 
 // in this method, self is nscontrol that received the event
 - (void)keyDown:(NSEvent *)event {
-  MartinKey key = keyFromEvent(event);
+  MartinKey key = [ShortcutBinder martinKeyForEvent:event];
 
   if (key != kMartinKeyNotRelevant) {
     for (NSArray *binding in bindings) {
@@ -61,11 +61,7 @@ static void hookClass(Class cls) {
   [self __martin__keyDown:event];
 }
 
-static BOOL isModifier(NSUInteger f, NSUInteger m) {
-  return (f&m) == m;
-}
-
-static MartinKey keyFromEvent(NSEvent *event) {
++ (MartinKey)martinKeyForEvent:(NSEvent *)event {
   if (event.type == NSKeyDown) {
     NSString *pressedChars = event.characters;
     if (pressedChars.length == 1) {
@@ -100,5 +96,8 @@ static MartinKey keyFromEvent(NSEvent *event) {
   return kMartinKeyNotRelevant;
 }
 
+static BOOL isModifier(NSUInteger f, NSUInteger m) {
+  return (f&m) == m;
+}
 
 @end

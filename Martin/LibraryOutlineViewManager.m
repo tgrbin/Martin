@@ -51,8 +51,14 @@
 
   [ShortcutBinder bindControl:outlineView andKey:kMartinKeyEnter toTarget:self andAction:@selector(addSelectedItemsToPlaylist)];
   [ShortcutBinder bindControl:outlineView andKey:kMartinKeyCmdEnter toTarget:self andAction:@selector(createPlaylistWithSelectedItems)];
-  [ShortcutBinder bindControl:outlineView andKey:kMartinKeyQueueItems toTarget:self andAction:@selector(queueItems)];
+  [ShortcutBinder bindControl:outlineView andKey:kMartinKeyQueueItems toTarget:self andAction:@selector(queueSelectedItems)];
   [ShortcutBinder bindControl:outlineView andKey:kMartinKeySearch toTarget:searchTextField andAction:@selector(becomeFirstResponder)];
+
+  [ShortcutBinder bindControl:searchTextField andKey:kMartinKeyCmdEnter toTarget:self andAction:@selector(bla)];
+}
+
+- (void)bla {
+  NSLog(@"click!");
 }
 
 - (void)saveState {
@@ -115,7 +121,7 @@
   [self contextMenuNewPlaylist:nil];
 }
 
-- (void)queueItems {
+- (void)queueSelectedItems {
   [self contextMenuQueueItems:nil];
 }
 
@@ -304,20 +310,19 @@
 #pragma mark - search
 
 - (void)controlTextDidChange:(NSNotification *)obj {
-  [Tree performSearch:searchTextField.stringValue];
-}
-
-- (BOOL)isCommandEnterEvent:(NSEvent *)e {
-  NSUInteger flags = (e.modifierFlags & NSDeviceIndependentModifierFlagsMask);
-  BOOL isCommand = (flags & NSCommandKeyMask) == NSCommandKeyMask;
-  BOOL isEnter = (e.type == NSEnterCharacter || e.type == NSNewlineCharacter || e.type == NSCarriageReturnCharacter);
-  return (isCommand && isEnter);
+  NSString *val = searchTextField.stringValue;
+  if ([val characterAtIndex:val.length-1] == L'œ') {
+    searchTextField.stringValue = [val substringToIndex:val.length-1];
+    [[MartinAppDelegate get].playlistManager.queue addTreeNodes:@[ @0 ]];
+  } else {
+    [Tree performSearch:val];
+  }
 }
 
 - (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
   if (searchTextField.stringValue.length == 0) return NO;
 
-  if (commandSelector == @selector(noop:) && [self isCommandEnterEvent:[NSApp currentEvent]]) {
+  if (commandSelector == @selector(noop:) && [ShortcutBinder martinKeyForEvent:[NSApp currentEvent]] == kMartinKeyCmdEnter) {
     [[MartinAppDelegate get].playlistManager addNewPlaylistWithTreeNodes:@[ @0 ] andName:searchTextField.stringValue];
     return YES;
   } else if (commandSelector == @selector(insertNewline:)) {

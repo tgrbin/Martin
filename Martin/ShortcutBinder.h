@@ -25,4 +25,6 @@ typedef enum {
 
 + (void)bindControl:(NSControl *)control andKey:(MartinKey)key toTarget:(id)target andAction:(SEL)action;
 
++ (MartinKey) martinKeyForEvent:(NSEvent *)event;
+
 @end
