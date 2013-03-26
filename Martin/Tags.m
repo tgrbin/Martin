@@ -8,7 +8,7 @@
 
 #import "Tags.h"
 
-static const char *tagNames[] = { "track number", "artist", "album", "title", "genre" };
+static const char *tagNames[] = { "track number", "artist", "album", "title", "genre", "year" };
 
 @interface Tags()
 @property (nonatomic, unsafe_unretained) NSString **values;

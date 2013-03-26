@@ -34,7 +34,12 @@
 }
 
 - (NSString *)tag:(NSString *)tag {
-  return id3[tag];
+  NSString *val = id3[tag];
+
+  // year may have full timestamp format, we don't care about that
+  if ([tag isEqualToString:@"year"]) return [val substringToIndex:4];
+
+  return val;
 }
 
 - (int)lengthInSeconds {

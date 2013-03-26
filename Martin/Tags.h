@@ -9,14 +9,15 @@
 #import <Foundation/Foundation.h>
 #import "TagsUtils.h"
 
-// "track number", "artist", "album", "title", "genre"
+// "track number", "artist", "album", "title", "genre", "year"
 
 typedef enum {
   kTagIndexTrackNumber,
   kTagIndexArtist,
   kTagIndexAlbum,
   kTagIndexTitle,
-  kTagIndexGenre
+  kTagIndexGenre,
+  kTagIndexYear
 } TagIndex;
 
 @interface Tags : NSObject

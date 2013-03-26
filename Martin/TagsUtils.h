@@ -6,7 +6,7 @@
 //
 //
 
-#define kNumberOfTags 5
+#define kNumberOfTags 6
 
 void tagsInit(char ***tags);
 void tagsSet(char **tags, int i, char *val);

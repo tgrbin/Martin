@@ -87,7 +87,7 @@
              byExtendingSelection:NO];
 }
 
-#pragma mark - show and hide columns
+#pragma mark - menu delegate
 
 - (void)initTableHeaderViewMenu {
   NSMenu *menu = playlistTable.headerView.menu;
@@ -194,7 +194,7 @@
   [self playlistChanged];
 }
 
-#pragma mark - delegate
+#pragma mark - table delegate and data source
 
 - (void)tableView:(NSTableView *)tableView didClickTableColumn:(NSTableColumn *)tableColumn {
   [_playlist storeIndexes:[playlistTable selectedRowIndexes]];
@@ -226,8 +226,6 @@
 - (BOOL)tableView:(NSTableView *)tableView shouldEditTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   return NO;
 }
-
-#pragma mark - data source
 
 - (NSInteger) numberOfRowsInTableView:(NSTableView *)tableView {
   return _playlist == nil? 0: _playlist.numberOfItems;
