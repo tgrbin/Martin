@@ -230,23 +230,6 @@ static const double dragHoverTime = 1;
                       select:YES];
 }
 
-- (IBAction)duplicatePlaylist:(id)sender {
-  Playlist *original = [self playlistAtRow:playlistsTable.clickedRow];
-  Playlist *dup = [Playlist new];
-  [dup addItemsFromPlaylist:original];
-  dup.name = original.name;
-
-  NSInteger row = [playlists indexOfObject:original];
-  [playlists insertObject:dup atIndex:row];
-  [self reload];
-  [self selectRow:row];
-
-  [playlistsTable editColumn:0
-                         row:row
-                   withEvent:nil
-                      select:YES];
-}
-
 - (IBAction)queuePlaylists:(id)sender {
   [self queueSelectedPlaylists];
 }

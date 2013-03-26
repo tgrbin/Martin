@@ -125,6 +125,14 @@
   [self contextMenuQueueItems:nil];
 }
 
+- (IBAction)contextMenuShowInFinder:(id)sender {
+  NSArray *treeNodes = [self itemsToProcessFromContextMenu];
+  NSArray *paths = [Tree pathsForNodes:treeNodes];
+  NSMutableArray *urls = [NSMutableArray new];
+  for (NSString *path in paths) [urls addObject:[NSURL fileURLWithPath:path]];
+  [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:urls];
+}
+
 - (IBAction)contextMenuAddToPlaylist:(id)sender {
   [[MartinAppDelegate get].playlistTableManager addTreeNodes:[self itemsForSender:sender]];
 }
