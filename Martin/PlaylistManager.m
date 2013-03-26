@@ -187,7 +187,7 @@ static const double dragHoverTime = 1;
   if (row == -1) row = playlistsTable.selectedRow;
 
   [self selectRow:row];
-  [[MartinAppDelegate get].player startPlayingCurrentItem];
+  [[MartinAppDelegate get].player play];
 }
 
 - (void)queueSelectedPlaylists {
@@ -232,6 +232,10 @@ static const double dragHoverTime = 1;
 
 - (IBAction)queuePlaylists:(id)sender {
   [self queueSelectedPlaylists];
+}
+
+- (IBAction)playPlaylist:(id)sender {
+  [self startPlaylingSelectedPlaylist];
 }
 
 - (NSArray *)selectedPlaylists {

@@ -42,6 +42,11 @@ typedef enum {
   return NO;
 }
 
+- (void)play {
+  [self setNowPlayingPlaylistIfNecessary];
+  [self startPlayingCurrentItem];
+}
+
 - (void)startPlayingCurrentItem {
   if (_nowPlayingPlaylist.numberOfItems == 0) return;
   if (_nowPlayingPlaylist.currentItem == nil) [_nowPlayingPlaylist moveToFirstItem];
@@ -192,10 +197,6 @@ typedef enum {
 
 - (IBAction)nextPressed:(id)sender {
   [self next];
-}
-
-- (IBAction)stopPressed:(id)sender {
-  [self stop];
 }
 
 - (void)setNowPlayingPlaylistIfNecessary {
