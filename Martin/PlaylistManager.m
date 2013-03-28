@@ -43,9 +43,7 @@ static const double dragHoverTime = 1;
 
   [self observe:kFilePlayerEventNotification withAction:@selector(handlePlayerEvent)];
 
-  [ShortcutBinder bindControl:playlistsTable andKey:kMartinKeyDelete toTarget:self andAction:@selector(deleteSelectedPlaylists)];
-  [ShortcutBinder bindControl:playlistsTable andKey:kMartinKeyCmdDown toTarget:self andAction:@selector(startPlaylingSelectedPlaylist)];
-  [ShortcutBinder bindControl:playlistsTable andKey:kMartinKeyQueueItems toTarget:self andAction:@selector(queueSelectedPlaylists)];
+  [self bindShortcuts];
 }
 
 - (id)init {
@@ -58,6 +56,17 @@ static const double dragHoverTime = 1;
   }
 
   return self;
+}
+
+- (void)bindShortcuts {
+  NSDictionary *bindings = @{
+                             @(kMartinKeyDelete): @"deleteSelectedPlaylists",
+                             @(kMartinKeyCmdDown): @"startPlayingSelectedPlaylist",
+                             @(kMartinKeyQueueItems): @"queueSelectedPlaylists",
+                             @(kMartinKeyRight): @"focusPlaylist"
+  };
+
+  [ShortcutBinder bindControl:playlistsTable toTarget:self withBindings:bindings];
 }
 
 - (NSArray *)playlistsAtIndexes:(NSArray *)indexes {
@@ -193,6 +202,14 @@ static const double dragHoverTime = 1;
 - (void)queueSelectedPlaylists {
   [self.queue addItemsFromPlaylists:[self selectedPlaylists]
                               atPos:self.queue.numberOfItems];
+}
+
+- (void)takeFocus {
+  [[MartinAppDelegate get].window makeFirstResponder:playlistsTable];
+}
+
+- (void)focusPlaylist {
+  [[MartinAppDelegate get].playlistTableManager takeFocus];
 }
 
 #pragma mark - context menu actions

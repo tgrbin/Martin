@@ -52,15 +52,11 @@
     @(kMartinKeyCmdEnter): @"createNewPlaylistWithSelectedItems",
     @(kMartinKeySelectAll): @"selectAllItems",
     @(kMartinKeySelectAlbum): @"selectAlbum",
-    @(kMartinKeySelectArtist): @"selectArtist"
+    @(kMartinKeySelectArtist): @"selectArtist",
+    @(kMartinKeyLeft): @"focusPlaylists"
   };
 
-  [bindings enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-    [ShortcutBinder bindControl:playlistTable
-                         andKey:[key intValue]
-                       toTarget:self
-                      andAction:NSSelectorFromString(obj)];
-  }];
+  [ShortcutBinder bindControl:playlistTable toTarget:self withBindings:bindings];
 }
 
 - (void)reloadTableData {
@@ -318,6 +314,14 @@
 - (void)queueSelectedItems {
   [[MartinAppDelegate get].playlistManager.queue addPlaylistItems:[self selectedPlaylistItems]
                                                      fromPlaylist:_playlist];
+}
+
+- (void)focusPlaylists {
+  [[MartinAppDelegate get].playlistManager takeFocus];
+}
+
+- (void)takeFocus {
+  [[MartinAppDelegate get].window makeFirstResponder:playlistTable];
 }
 
 #pragma mark - other

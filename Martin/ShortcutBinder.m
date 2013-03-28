@@ -13,6 +13,15 @@
 
 static NSMutableArray *bindings;
 
++ (void)bindControl:(NSControl *)control toTarget:(id)target withBindings:(NSDictionary *)bindings {
+  [bindings enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    [ShortcutBinder bindControl:control
+                         andKey:[key intValue]
+                       toTarget:target
+                      andAction:NSSelectorFromString(obj)];
+  }];
+}
+
 + (void)bindControl:(NSControl *)control andKey:(MartinKey)key toTarget:(id)target andAction:(SEL)action {
   [bindings addObject:@[control, @(key), target, NSStringFromSelector(action)]];
 }
@@ -87,6 +96,10 @@ static void hookClass(Class cls) {
         case NSCarriageReturnCharacter:
           if (isModifier(flags, NSCommandKeyMask)) return kMartinKeyCmdEnter;
           return kMartinKeyEnter;
+        case NSLeftArrowFunctionKey:
+          return kMartinKeyLeft;
+        case NSRightArrowFunctionKey:
+          return kMartinKeyRight;
         case NSDownArrowFunctionKey:
           if (isModifier(flags, NSCommandKeyMask)) return kMartinKeyCmdDown;
       }

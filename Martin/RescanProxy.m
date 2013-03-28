@@ -14,7 +14,7 @@
 #import "FolderWatcher.h"
 #import "NSObject+Observe.h"
 
-static const double minQuietTime = 0.5;
+static const double minQuietTime = 1;
 static const double maxTimeWithoutRescan = 3;
 
 @implementation RescanProxy {

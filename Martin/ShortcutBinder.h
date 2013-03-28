@@ -20,11 +20,14 @@ typedef enum {
   kMartinKeyQueueItems,
   kMartinKeySelectArtist,
   kMartinKeySelectAlbum,
-  kMartinKeySearch
+  kMartinKeySearch,
+  kMartinKeyLeft,
+  kMartinKeyRight
 } MartinKey;
 
++ (void)bindControl:(NSControl *)control toTarget:(id)target withBindings:(NSDictionary *)bindings;
 + (void)bindControl:(NSControl *)control andKey:(MartinKey)key toTarget:(id)target andAction:(SEL)action;
 
-+ (MartinKey) martinKeyForEvent:(NSEvent *)event;
++ (MartinKey)martinKeyForEvent:(NSEvent *)event;
 
 @end
