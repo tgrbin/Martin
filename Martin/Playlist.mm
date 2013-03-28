@@ -325,6 +325,7 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 #pragma mark - current item manipulation
 
 - (PlaylistItem *)moveToItemWithIndex:(int)index {
+  if (index < 0 || index >= self.numberOfItems) return nil;
   self.currentIndexInPlaylistItems = playlist[index];
   return self.currentItem;
 }
@@ -347,25 +348,26 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 }
 
 - (PlaylistItem *)moveToFirstItem {
-  if (self.numberOfItems == 0) return nil;
-  self.currentIndexInPlaylistItems = playlist[0];
-  return playlistItems[_currentIndexInPlaylistItems];
+  return [self moveToItemWithIndex:0];
 }
 
 - (PlaylistItem *)moveToLastItem {
-  if (self.numberOfItems == 0) return nil;
-  self.currentIndexInPlaylistItems = playlist.back();
-  return playlistItems[_currentIndexInPlaylistItems];
+  return [self moveToItemWithIndex:self.numberOfItems-1];
 }
 
 - (PlaylistItem *)moveToItemWithDelta:(int)delta {
-  if (_currentIndexInPlaylistItems == -1) {
-    if (delta == 1) return [self moveToFirstItem];
-    else return [self moveToLastItem];
-  }
-
   BOOL shuffle = [MartinAppDelegate get].playlistManager.shuffle;
   BOOL repeat = [MartinAppDelegate get].playlistManager.repeat;
+
+  if (_currentIndexInPlaylistItems == -1) {
+    if (shuffle) {
+      return [self moveToItemWithIndex:arc4random()%self.numberOfItems];
+    } else {
+      if (delta == 1) return [self moveToFirstItem];
+      else return [self moveToLastItem];
+    }
+  }
+
   int nextItem = -1;
   
   if (shuffle) {

@@ -17,7 +17,7 @@
 // to return YES martin must not be stopped, playlist can be equal to nowPlayingPlaylist, or to currentPlaylistItem from queue
 - (BOOL)playingFromPlaylist:(Playlist *)playlist;
 
-- (void)play;
+- (void)playSelectedPlaylist;
 - (void)playItemWithIndex:(int)index;
 
 // used only by GlobalShortcuts class

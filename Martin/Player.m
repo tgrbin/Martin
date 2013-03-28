@@ -42,14 +42,15 @@ typedef enum {
   return NO;
 }
 
-- (void)play {
+- (void)playSelectedPlaylist {
+  self.nowPlayingPlaylist = nil;
   [self setNowPlayingPlaylistIfNecessary];
   [self startPlayingCurrentItem];
 }
 
 - (void)startPlayingCurrentItem {
   if (_nowPlayingPlaylist.numberOfItems == 0) return;
-  if (_nowPlayingPlaylist.currentItem == nil) [_nowPlayingPlaylist moveToFirstItem];
+  if (_nowPlayingPlaylist.currentItem == nil) [_nowPlayingPlaylist moveToNextItem];
 
   if (playingQueuedItem) {
     Playlist *p = [(QueuePlaylist *)_nowPlayingPlaylist currentItemPlaylist];

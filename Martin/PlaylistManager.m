@@ -34,7 +34,7 @@ static const double dragHoverTime = 1;
 
 - (void)awakeFromNib {
   playlistsTable.target = self;
-  playlistsTable.doubleAction = @selector(startPlaylingSelectedPlaylist);
+  playlistsTable.doubleAction = @selector(startPlayingSelectedPlaylist);
 
   [playlistsTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistsIndexes, kDragTypePlaylistItemsRows, NSFilenamesPboardType]];
 
@@ -191,12 +191,12 @@ static const double dragHoverTime = 1;
   [self updateSelectedPlaylist];
 }
 
-- (void)startPlaylingSelectedPlaylist {
+- (void)startPlayingSelectedPlaylist {
   NSInteger row = playlistsTable.clickedRow;
   if (row == -1) row = playlistsTable.selectedRow;
 
   [self selectRow:row];
-  [[MartinAppDelegate get].player play];
+  [[MartinAppDelegate get].player playSelectedPlaylist];
 }
 
 - (void)queueSelectedPlaylists {
@@ -252,7 +252,7 @@ static const double dragHoverTime = 1;
 }
 
 - (IBAction)playPlaylist:(id)sender {
-  [self startPlaylingSelectedPlaylist];
+  [self startPlayingSelectedPlaylist];
 }
 
 - (NSArray *)selectedPlaylists {
