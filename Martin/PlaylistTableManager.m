@@ -327,16 +327,16 @@
 #pragma mark - other
 
 - (void)queueChanged {
-  if ([self showingQueuePlaylist]) [self playlistChanged];
+  [[MartinAppDelegate get].playlistManager reload];
+  if ([MartinAppDelegate get].playlistManager.queue.isEmpty) {
+    [[MartinAppDelegate get].playlistManager queueWillDisappear];
+  }
 }
 
 - (void)playlistChanged {
   [playlistTable reloadData];
   if ([self showingQueuePlaylist]) {
-    [[MartinAppDelegate get].playlistManager reload];
-    if (_playlist.isEmpty) {
-      [[MartinAppDelegate get].playlistManager queueWillDisappear];
-    }
+    [self queueChanged];
   }
 
   [self updateSortIndicator];
