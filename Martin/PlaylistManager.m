@@ -442,7 +442,7 @@ static const double dragHoverTime = 1;
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)c forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   NSTextFieldCell *cell = (NSTextFieldCell*)c;
-  BOOL playingThisPlaylist = [[MartinAppDelegate get].player playingFromPlaylist:[self playlistAtRow:row]];
+  BOOL playingThisPlaylist = [[MartinAppDelegate get].player nowPlayingItemFromPlaylist:[self playlistAtRow:row]];
   cell.font = playingThisPlaylist? [NSFont boldSystemFontOfSize:13]: [NSFont systemFontOfSize:13];
 }
 

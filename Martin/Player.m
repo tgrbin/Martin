@@ -32,12 +32,15 @@ typedef enum {
   [self observe:kFilePlayerPlayedItemNotification withAction:@selector(trackFinished)];
 }
 
-- (BOOL)playingFromPlaylist:(Playlist *)playlist {
+- (BOOL)nowPlayingItemFromPlaylist:(Playlist *)playlist {
   if ([MartinAppDelegate get].filePlayer.stopped == NO) {
     if (_nowPlayingPlaylist == playlist) return YES;
 
     QueuePlaylist *queue = [MartinAppDelegate get].playlistManager.queue;
-    if (_nowPlayingPlaylist == queue && [queue currentItemPlaylist] == playlist) return YES;
+    if (_nowPlayingPlaylist == queue && [queue currentItemPlaylist] == playlist) {
+      for (int i = 0; i < playlist.numberOfItems; ++i)
+        if (playlist[i] == queue.currentItem) return YES;
+    }
   }
   return NO;
 }

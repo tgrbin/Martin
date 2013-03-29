@@ -626,4 +626,12 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
   return returnVal;
 }
 
+- (int)addTreeNodes:(NSArray *)treeNodes {
+  int added = [super addTreeNodes:treeNodes];
+  for (int i = (int)itemOrigin.size() - added; i < itemOrigin.size(); ++i) {
+    itemOrigin[i] = [MartinAppDelegate get].player.nowPlayingPlaylist;
+  }
+  return added;
+}
+
 @end

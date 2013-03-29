@@ -73,7 +73,7 @@
 
 - (void)setPlaylist:(Playlist *)playlist {
   _playlist = playlist;
-  [self playlistChanged];
+  [playlistTable reloadData];
   [self updateSortIndicator];
   [playlistTable deselectAll:nil];
 }
@@ -204,7 +204,7 @@
   NSTextFieldCell *cell = (NSTextFieldCell*)c;
 
   BOOL atCurrentItem = (row == _playlist.currentItemIndex);
-  BOOL nowPlaying = [[MartinAppDelegate get].player playingFromPlaylist:_playlist];
+  BOOL nowPlaying = [[MartinAppDelegate get].player nowPlayingItemFromPlaylist:_playlist];
 
   BOOL altBkg = atCurrentItem;
   BOOL bold = atCurrentItem && nowPlaying;
@@ -338,7 +338,6 @@
   if ([self showingQueuePlaylist]) {
     [self queueChanged];
   }
-
   [self updateSortIndicator];
 }
 
