@@ -110,10 +110,10 @@
 														</object>
 													</object>
 												</object>
-												<object class="NSButtonCell" key="NSDataCell" id="45405498">
-													<int key="NSCellFlags">67108864</int>
-													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">/music</string>
+												<object class="NSTextFieldCell" key="NSDataCell" id="61318754">
+													<int key="NSCellFlags">337641537</int>
+													<int key="NSCellFlags2">272631808</int>
+													<string key="NSContents">Text</string>
 													<object class="NSFont" key="NSSupport" id="3786193">
 														<string key="NSName">LucidaGrande</string>
 														<double key="NSSize">13</double>
@@ -121,13 +121,21 @@
 													</object>
 													<string key="NSCellIdentifier">_NS:9</string>
 													<reference key="NSControlView" ref="572649442"/>
-													<int key="NSButtonFlags">-2034876416</int>
-													<int key="NSButtonFlags2">6</int>
-													<reference key="NSAlternateImage" ref="3786193"/>
-													<string key="NSAlternateContents"/>
-													<string key="NSKeyEquivalent"/>
-													<int key="NSPeriodicDelay">200</int>
-													<int key="NSPeriodicInterval">25</int>
+													<object class="NSColor" key="NSBackgroundColor" id="45064936">
+														<int key="NSColorSpace">6</int>
+														<string key="NSCatalogName">System</string>
+														<string key="NSColorName">controlColor</string>
+														<object class="NSColor" key="NSColor" id="686191888">
+															<int key="NSColorSpace">3</int>
+															<bytes key="NSWhite">MC42NjY2NjY2NjY3AA</bytes>
+														</object>
+													</object>
+													<object class="NSColor" key="NSTextColor" id="595066336">
+														<int key="NSColorSpace">6</int>
+														<string key="NSCatalogName">System</string>
+														<string key="NSColorName">controlTextColor</string>
+														<reference key="NSColor" ref="204562117"/>
+													</object>
 												</object>
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
@@ -137,8 +145,8 @@
 											<object class="NSTableColumn" id="982857661">
 												<string key="NSIdentifier">remove</string>
 												<double key="NSWidth">64</double>
-												<double key="NSMinWidth">10</double>
-												<double key="NSMaxWidth">3.4028234663852886e+38</double>
+												<double key="NSMinWidth">64</double>
+												<double key="NSMaxWidth">64</double>
 												<object class="NSTableHeaderCell" key="NSHeaderCell">
 													<int key="NSCellFlags">75628096</int>
 													<int key="NSCellFlags2">134219776</int>
@@ -189,14 +197,13 @@
 											</object>
 										</object>
 										<double key="NSRowHeight">17</double>
-										<int key="NSTvFlags">1379926016</int>
+										<int key="NSTvFlags">-1832878080</int>
 										<reference key="NSDelegate"/>
 										<reference key="NSDataSource"/>
-										<int key="NSColumnAutoresizingStyle">4</int>
+										<int key="NSColumnAutoresizingStyle">1</int>
 										<int key="NSDraggingSourceMaskForLocal">15</int>
 										<int key="NSDraggingSourceMaskForNonLocal">0</int>
-										<bool key="NSAllowsTypeSelect">NO</bool>
-										<int key="NSTableViewSelectionHighlightStyle">-1</int>
+										<bool key="NSAllowsTypeSelect">YES</bool>
 										<int key="NSTableViewDraggingDestinationStyle">0</int>
 										<int key="NSTableViewGroupRowStyle">1</int>
 									</object>
@@ -211,10 +218,7 @@
 									<int key="NSColorSpace">6</int>
 									<string key="NSCatalogName">System</string>
 									<string key="NSColorName">controlBackgroundColor</string>
-									<object class="NSColor" key="NSColor" id="686191888">
-										<int key="NSColorSpace">3</int>
-										<bytes key="NSWhite">MC42NjY2NjY2NjY3AA</bytes>
-									</object>
+									<reference key="NSColor" ref="686191888"/>
 								</object>
 								<int key="NScvFlags">4</int>
 							</object>
@@ -313,18 +317,8 @@
 							<reference key="NSSupport" ref="3786193"/>
 							<string key="NSCellIdentifier">_NS:1535</string>
 							<reference key="NSControlView" ref="97524457"/>
-							<object class="NSColor" key="NSBackgroundColor">
-								<int key="NSColorSpace">6</int>
-								<string key="NSCatalogName">System</string>
-								<string key="NSColorName">controlColor</string>
-								<reference key="NSColor" ref="686191888"/>
-							</object>
-							<object class="NSColor" key="NSTextColor">
-								<int key="NSColorSpace">6</int>
-								<string key="NSCatalogName">System</string>
-								<string key="NSColorName">controlTextColor</string>
-								<reference key="NSColor" ref="204562117"/>
-							</object>
+							<reference key="NSBackgroundColor" ref="45064936"/>
+							<reference key="NSTextColor" ref="595066336"/>
 						</object>
 					</object>
 					<object class="NSButton" id="742349438">
@@ -497,14 +491,6 @@
 					<int key="connectionID">33</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">changeFolder:</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="45405498"/>
-					</object>
-					<int key="connectionID">34</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: watchFoldersEnabled</string>
 						<reference key="source" ref="1009427637"/>
@@ -673,7 +659,7 @@
 						<int key="objectID">17</int>
 						<reference key="object" ref="1040604420"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="45405498"/>
+							<reference ref="61318754"/>
 						</array>
 						<reference key="parent" ref="572649442"/>
 					</object>
@@ -691,14 +677,14 @@
 						<reference key="parent" ref="982857661"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">20</int>
-						<reference key="object" ref="45405498"/>
-						<reference key="parent" ref="1040604420"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">21</int>
 						<reference key="object" ref="8888157"/>
 						<reference key="parent" ref="700713029"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">37</int>
+						<reference key="object" ref="61318754"/>
+						<reference key="parent" ref="1040604420"/>
 					</object>
 				</array>
 			</object>
@@ -718,9 +704,9 @@
 				<string key="17.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="18.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="19.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="20.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="21.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="3.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="37.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="4.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="5.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="6.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -732,37 +718,13 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">36</int>
+			<int key="maxID">37</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<object class="IBPartialClassDescription">
 					<string key="className">LibraryPreferencesViewController</string>
 					<string key="superclassName">PreferencesViewController</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="addNewPressed:">id</string>
-						<string key="changeFolder:">id</string>
-						<string key="removeFolder:">id</string>
-						<string key="rescanPressed:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="addNewPressed:">
-							<string key="name">addNewPressed:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="changeFolder:">
-							<string key="name">changeFolder:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="removeFolder:">
-							<string key="name">removeFolder:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="rescanPressed:">
-							<string key="name">rescanPressed:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="foldersTableView">NSTableView</string>
 						<string key="rescanDeterminateIndicator">NSProgressIndicator</string>

@@ -12,6 +12,7 @@
 #import "LibraryFolder.h"
 #import "RescanProxy.h"
 #import "RescanState.h"
+#import "DragDataConverter.h"
 
 @interface LibraryPreferencesViewController ()
 @property (nonatomic, assign) BOOL watchFoldersEnabled;
@@ -37,15 +38,22 @@
 
 - (void)awakeFromNib {
   _rescanLibraryButton.hidden = _watchFoldersEnabled;
+  _foldersTableView.target = self;
+  _foldersTableView.doubleAction = @selector(changeFolder);
+
+  [_foldersTableView registerForDraggedTypes:@[kDragTypeLibraryFolderRow]];
 }
 
 #pragma mark - actions
 
 - (IBAction)addNewPressed:(id)sender {
   NSOpenPanel *panel = [self configurePanel];
+  panel.allowsMultipleSelection = YES;
 
   if ([panel runModal] == NSFileHandlingPanelOKButton) {
-    [[LibraryFolder libraryFolders] addObject:[panel.directoryURL path]];
+    for (NSURL *url in panel.URLs) {
+      [[LibraryFolder libraryFolders] addObject:[url path]];
+    }
     [self folderListChanged];
   }
 }
@@ -61,7 +69,7 @@
   if (_watchFoldersEnabled) [[RescanProxy sharedProxy] rescanAll];
 }
 
-- (IBAction)changeFolder:(id)sender {
+- (void)changeFolder {
   NSInteger row = _foldersTableView.clickedRow;
   if (row == -1) return;
 
@@ -123,6 +131,36 @@
   if ([tableColumn.identifier isEqualToString:@"folderPath"]) {
     ((NSButtonCell *)cell).title = [LibraryFolder libraryFolders][row];
   }
+}
+
+#pragma mark - reordering
+
+- (BOOL)tableView:(NSTableView *)tableView writeRows:(NSArray *)rows toPasteboard:(NSPasteboard *)pboard {
+  [pboard declareTypes:@[kDragTypeLibraryFolderRow] owner:nil];
+  [pboard setData:[DragDataConverter dataFromArray:rows]
+          forType:kDragTypeLibraryFolderRow];
+  return YES;
+}
+
+- (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
+  [tableView setDropRow:row dropOperation:NSTableViewDropAbove];
+  return NSDragOperationCopy;
+}
+
+- (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
+  NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:kDragTypeLibraryFolderRow]];
+  int srcRow = [items[0] intValue];
+
+  NSMutableArray *arr = [LibraryFolder libraryFolders];
+  id tmp = arr[srcRow];
+  [arr removeObjectAtIndex:srcRow];
+  if (srcRow < row) --row;
+  [arr insertObject:tmp atIndex:row];
+
+  [_foldersTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+  [self folderListChanged];
+
+  return YES;
 }
 
 @end
