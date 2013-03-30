@@ -37,14 +37,15 @@
 			</object>
 			<object class="NSCustomView" id="1005">
 				<reference key="NSNextResponder"/>
-				<int key="NSvFlags">268</int>
+				<int key="NSvFlags">12</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSButton" id="1022983384">
 						<reference key="NSNextResponder" ref="1005"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{308, 97}, {251, 32}}</string>
+						<string key="NSFrame">{{303, 12}, {251, 32}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSButtonCell" key="NSCell" id="107669372">
@@ -68,7 +69,7 @@
 					</object>
 					<object class="NSCustomView" id="670421907">
 						<reference key="NSNextResponder" ref="1005"/>
-						<int key="NSvFlags">292</int>
+						<int key="NSvFlags">268</int>
 						<array class="NSMutableArray" key="NSSubviews">
 							<object class="NSCustomView" id="224480250">
 								<reference key="NSNextResponder" ref="670421907"/>
@@ -111,7 +112,7 @@
 								<string key="NSClassName">SRRecorderControl</string>
 							</object>
 						</array>
-						<string key="NSFrame">{{417, 199}, {170, 152}}</string>
+						<string key="NSFrame">{{417, 60}, {170, 152}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="635844055"/>
@@ -121,7 +122,7 @@
 					<object class="NSTextField" id="70990491">
 						<reference key="NSNextResponder" ref="1005"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{297, 249}, {130, 22}}</string>
+						<string key="NSFrame">{{297, 110}, {130, 22}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="207139960"/>
@@ -157,7 +158,7 @@
 					<object class="NSTextField" id="207139960">
 						<reference key="NSNextResponder" ref="1005"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{297, 219}, {130, 22}}</string>
+						<string key="NSFrame">{{297, 80}, {130, 22}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="670421907"/>
@@ -177,7 +178,7 @@
 					<object class="NSTextField" id="557032115">
 						<reference key="NSNextResponder" ref="1005"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{297, 279}, {130, 22}}</string>
+						<string key="NSFrame">{{297, 140}, {130, 22}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="70990491"/>
@@ -197,7 +198,7 @@
 					<object class="NSTextField" id="965586848">
 						<reference key="NSNextResponder" ref="1005"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{266, 309}, {161, 22}}</string>
+						<string key="NSFrame">{{266, 170}, {161, 22}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="557032115"/>
@@ -215,9 +216,10 @@
 						</object>
 					</object>
 				</array>
-				<string key="NSFrameSize">{857, 456}</string>
+				<string key="NSFrameSize">{857, 232}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
+				<reference key="NSNextKeyView" ref="965586848"/>
 				<string key="NSClassName">NSView</string>
 			</object>
 		</array>
@@ -281,9 +283,9 @@
 							<reference ref="965586848"/>
 							<reference ref="557032115"/>
 							<reference ref="207139960"/>
+							<reference ref="70990491"/>
 							<reference ref="670421907"/>
 							<reference ref="1022983384"/>
-							<reference ref="70990491"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -444,17 +446,6 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">ShortcutsPreferencesViewController</string>
 					<string key="superclassName">PreferencesViewController</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">resetShortcutsToDefaultsPressed:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">resetShortcutsToDefaultsPressed:</string>
-						<object class="IBActionInfo" key="NS.object.0">
-							<string key="name">resetShortcutsToDefaultsPressed:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</object>
 					<object class="NSMutableDictionary" key="outlets">
 						<string key="NS.key.0">recorderControlsHolderView</string>
 						<string key="NS.object.0">NSView</string>

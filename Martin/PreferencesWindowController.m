@@ -47,6 +47,7 @@
     }
 
     _toolbar.selectedItemIdentifier = titles[0];
+    self.window.title = titles[0];
   }
 }
 
@@ -66,7 +67,28 @@
 }
 
 - (void)toolbarItemPressed:(NSToolbarItem *)sender {
-  [_tabView selectTabViewItemAtIndex:sender.tag];
+  NSInteger oldIndex = [titles indexOfObject:[_tabView selectedTabViewItem].identifier];
+  NSInteger newIndex = sender.tag;
+
+  self.window.title = titles[newIndex];
+
+  NSInteger oldH = [controllers[oldIndex] height];
+  NSInteger newH = [controllers[newIndex] height];
+
+  float deltaH = newH - oldH;
+
+  NSRect windowFrame = self.window.frame;
+  windowFrame.size.height += deltaH;
+  windowFrame.origin.y -= deltaH;
+
+  [_tabView selectTabViewItemAtIndex:newIndex];
+  NSView *view = ((NSViewController *)controllers[newIndex]).view;
+  view.frame = CGRectMake(view.frame.origin.x,
+                          view.frame.origin.y,
+                          view.frame.size.width,
+                          newH);
+
+  [self.window setFrame:windowFrame display:YES animate:YES];
 }
 
 @end
