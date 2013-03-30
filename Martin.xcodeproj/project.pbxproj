@@ -9,6 +9,13 @@
 /* Begin PBXBuildFile section */
 		7904597E168D7D0900FE0B68 /* TreeStateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7904597D168D7D0900FE0B68 /* TreeStateManager.m */; };
 		790705B61698791700477903 /* PlaylistsTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 790705B51698791700477903 /* PlaylistsTableView.m */; };
+		7909921E1706B427007BE3C4 /* LibraryPreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7909921C1706B427007BE3C4 /* LibraryPreferencesViewController.m */; };
+		7909921F1706B427007BE3C4 /* LibraryPreferencesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7909921D1706B427007BE3C4 /* LibraryPreferencesViewController.xib */; };
+		790992231706B4A3007BE3C4 /* LastFMPreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 790992211706B4A3007BE3C4 /* LastFMPreferencesViewController.m */; };
+		790992241706B4A3007BE3C4 /* LastFMPreferencesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 790992221706B4A3007BE3C4 /* LastFMPreferencesViewController.xib */; };
+		790992281706B501007BE3C4 /* ShortcutsPreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 790992261706B501007BE3C4 /* ShortcutsPreferencesViewController.m */; };
+		790992291706B501007BE3C4 /* ShortcutsPreferencesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 790992271706B501007BE3C4 /* ShortcutsPreferencesViewController.xib */; };
+		7909922C1706B5AF007BE3C4 /* PreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7909922B1706B5AF007BE3C4 /* PreferencesViewController.m */; };
 		7909CEA1167DBDE90011E6A3 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7909CEA0167DBDE80011E6A3 /* IOKit.framework */; };
 		79242E1E16569A47006379D6 /* ID3Reader.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E1D16569A47006379D6 /* ID3Reader.m */; };
 		79242E2016569BA3006379D6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79242E1F16569BA3006379D6 /* AudioToolbox.framework */; };
@@ -62,6 +69,17 @@
 		7904597D168D7D0900FE0B68 /* TreeStateManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TreeStateManager.m; sourceTree = "<group>"; };
 		790705B41698791700477903 /* PlaylistsTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistsTableView.h; sourceTree = "<group>"; };
 		790705B51698791700477903 /* PlaylistsTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistsTableView.m; sourceTree = "<group>"; };
+		7909921B1706B427007BE3C4 /* LibraryPreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryPreferencesViewController.h; sourceTree = "<group>"; };
+		7909921C1706B427007BE3C4 /* LibraryPreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryPreferencesViewController.m; sourceTree = "<group>"; };
+		7909921D1706B427007BE3C4 /* LibraryPreferencesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryPreferencesViewController.xib; sourceTree = "<group>"; };
+		790992201706B4A3007BE3C4 /* LastFMPreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFMPreferencesViewController.h; sourceTree = "<group>"; };
+		790992211706B4A3007BE3C4 /* LastFMPreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LastFMPreferencesViewController.m; sourceTree = "<group>"; };
+		790992221706B4A3007BE3C4 /* LastFMPreferencesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LastFMPreferencesViewController.xib; sourceTree = "<group>"; };
+		790992251706B501007BE3C4 /* ShortcutsPreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShortcutsPreferencesViewController.h; sourceTree = "<group>"; };
+		790992261706B501007BE3C4 /* ShortcutsPreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShortcutsPreferencesViewController.m; sourceTree = "<group>"; };
+		790992271706B501007BE3C4 /* ShortcutsPreferencesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShortcutsPreferencesViewController.xib; sourceTree = "<group>"; };
+		7909922A1706B5AF007BE3C4 /* PreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesViewController.h; sourceTree = "<group>"; };
+		7909922B1706B5AF007BE3C4 /* PreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesViewController.m; sourceTree = "<group>"; };
 		7909CEA0167DBDE80011E6A3 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		79242E1C16569A47006379D6 /* ID3Reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ID3Reader.h; sourceTree = "<group>"; };
 		79242E1D16569A47006379D6 /* ID3Reader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ID3Reader.m; sourceTree = "<group>"; };
@@ -185,12 +203,56 @@
 			isa = PBXGroup;
 			children = (
 				79FF140F142F18A500E27235 /* MainMenu.xib */,
-				79242E2F1656B0CF006379D6 /* PreferencesWindowController.xib */,
 				79FF140C142F18A500E27235 /* MartinAppDelegate.h */,
 				79FF140D142F18A500E27235 /* MartinAppDelegate.m */,
 				79F69EAB1699684400693CE5 /* Defines.h */,
 			);
 			name = App;
+			sourceTree = "<group>";
+		};
+		790992111706B1A8007BE3C4 /* Preferences */ = {
+			isa = PBXGroup;
+			children = (
+				79242E2F1656B0CF006379D6 /* PreferencesWindowController.xib */,
+				79242E2D1656B0CF006379D6 /* PreferencesWindowController.h */,
+				79242E2E1656B0CF006379D6 /* PreferencesWindowController.m */,
+				7909922A1706B5AF007BE3C4 /* PreferencesViewController.h */,
+				7909922B1706B5AF007BE3C4 /* PreferencesViewController.m */,
+				790992121706B2DB007BE3C4 /* Library */,
+				790992131706B2E1007BE3C4 /* LastFM */,
+				790992141706B2E6007BE3C4 /* Shortcuts */,
+			);
+			name = Preferences;
+			sourceTree = "<group>";
+		};
+		790992121706B2DB007BE3C4 /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				7909921B1706B427007BE3C4 /* LibraryPreferencesViewController.h */,
+				7909921C1706B427007BE3C4 /* LibraryPreferencesViewController.m */,
+				7909921D1706B427007BE3C4 /* LibraryPreferencesViewController.xib */,
+			);
+			name = Library;
+			sourceTree = "<group>";
+		};
+		790992131706B2E1007BE3C4 /* LastFM */ = {
+			isa = PBXGroup;
+			children = (
+				790992201706B4A3007BE3C4 /* LastFMPreferencesViewController.h */,
+				790992211706B4A3007BE3C4 /* LastFMPreferencesViewController.m */,
+				790992221706B4A3007BE3C4 /* LastFMPreferencesViewController.xib */,
+			);
+			name = LastFM;
+			sourceTree = "<group>";
+		};
+		790992141706B2E6007BE3C4 /* Shortcuts */ = {
+			isa = PBXGroup;
+			children = (
+				790992251706B501007BE3C4 /* ShortcutsPreferencesViewController.h */,
+				790992261706B501007BE3C4 /* ShortcutsPreferencesViewController.m */,
+				790992271706B501007BE3C4 /* ShortcutsPreferencesViewController.xib */,
+			);
+			name = Shortcuts;
 			sourceTree = "<group>";
 		};
 		79242E241656AB21006379D6 /* Library */ = {
@@ -248,8 +310,6 @@
 		79C2ACB9144AB47D00C2699B /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				79242E2D1656B0CF006379D6 /* PreferencesWindowController.h */,
-				79242E2E1656B0CF006379D6 /* PreferencesWindowController.m */,
 				79F5BC0E14363BE10040DF35 /* LibraryOutlineViewManager.h */,
 				79F5BC0F14363BE10040DF35 /* LibraryOutlineViewManager.m */,
 				79C2ACB3144AB39200C2699B /* PlaylistManager.h */,
@@ -343,6 +403,7 @@
 			children = (
 				795A6CAA16E6572400215458 /* 3rd */,
 				7904597F168D826700FE0B68 /* App */,
+				790992111706B1A8007BE3C4 /* Preferences */,
 				79C2ACB9144AB47D00C2699B /* UI */,
 				79F69EB31699944800693CE5 /* Keyboard Shortcuts */,
 				79242E241656AB21006379D6 /* Library */,
@@ -437,6 +498,9 @@
 				79FF1411142F18A500E27235 /* MainMenu.xib in Resources */,
 				79D5760F1431074D00A2DA67 /* icon.icns in Resources */,
 				79242E311656B0CF006379D6 /* PreferencesWindowController.xib in Resources */,
+				7909921F1706B427007BE3C4 /* LibraryPreferencesViewController.xib in Resources */,
+				790992241706B4A3007BE3C4 /* LastFMPreferencesViewController.xib in Resources */,
+				790992291706B501007BE3C4 /* ShortcutsPreferencesViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -485,6 +549,10 @@
 				795A6CC416E6582500215458 /* SRValidator.m in Sources */,
 				79F55D6916EC6C66004510B0 /* PlaylistNameGuesser.m in Sources */,
 				79F55D6C16EC7A88004510B0 /* ID3ReadOperation.m in Sources */,
+				7909921E1706B427007BE3C4 /* LibraryPreferencesViewController.m in Sources */,
+				790992231706B4A3007BE3C4 /* LastFMPreferencesViewController.m in Sources */,
+				790992281706B501007BE3C4 /* ShortcutsPreferencesViewController.m in Sources */,
+				7909922C1706B5AF007BE3C4 /* PreferencesViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
