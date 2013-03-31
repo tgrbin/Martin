@@ -143,7 +143,7 @@
       [[MartinAppDelegate get].window makeFirstResponder:tableView];
     }];
   } else {
-    int itemsCount = 0;
+    NSInteger itemsCount = 0;
 
     NSString *draggingType = [draggingTypes lastObject];
     NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:draggingType]];
@@ -164,6 +164,7 @@
     } else if ([draggingType isEqualToString:kDragTypePlaylistItemsRows]) {
 
       if (dragSourcePlaylist == _playlist) {
+        itemsCount = items.count;
         endPosition = [_playlist reorderItemsAtRows:items toPos:endPosition];
       } else {
         NSMutableArray *arr = [NSMutableArray new];
