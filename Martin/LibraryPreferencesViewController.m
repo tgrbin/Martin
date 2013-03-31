@@ -41,7 +41,7 @@
   _foldersTableView.target = self;
   _foldersTableView.doubleAction = @selector(changeFolder);
 
-  [_foldersTableView registerForDraggedTypes:@[kDragTypeLibraryFolderRow]];
+  [_foldersTableView registerForDraggedTypes:@[kDragTypeLibraryFolderRow, NSFilenamesPboardType]];
 }
 
 #pragma mark - actions
@@ -148,17 +148,34 @@
 }
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
-  NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:kDragTypeLibraryFolderRow]];
-  int srcRow = [items[0] intValue];
+  NSString *draggingType = [info.draggingPasteboard.types lastObject];
 
-  NSMutableArray *arr = [LibraryFolder libraryFolders];
-  id tmp = arr[srcRow];
-  [arr removeObjectAtIndex:srcRow];
-  if (srcRow < row) --row;
-  [arr insertObject:tmp atIndex:row];
+  if ([draggingType isEqualToString:kDragTypeLibraryFolderRow]) { // rows reorder
+    NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:kDragTypeLibraryFolderRow]];
+    int srcRow = [items[0] intValue];
 
-  [_foldersTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
-  [self folderListChanged];
+    NSMutableArray *arr = [LibraryFolder libraryFolders];
+    id tmp = arr[srcRow];
+    [arr removeObjectAtIndex:srcRow];
+    if (srcRow < row) --row;
+    [arr insertObject:tmp atIndex:row];
+
+    [_foldersTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+    [self folderListChanged];
+  } else {
+    NSArray *items = [info.draggingPasteboard propertyListForType:NSFilenamesPboardType];
+
+    BOOL addedSomething = NO;
+    for (NSString *item in items) {
+      BOOL isDir;
+      if ([[NSFileManager defaultManager] fileExistsAtPath:item isDirectory:&isDir] && isDir == YES) {
+        [[LibraryFolder libraryFolders] addObject:item];
+        addedSomething = YES;
+      }
+    }
+
+    if (addedSomething) [self folderListChanged];
+  }
 
   return YES;
 }

@@ -70,8 +70,8 @@ static RescanState *sharedState;
     if (tf.tag) {
       tf.stringValue = @"Idle";
       ipi.hidden = YES;
-      ipi.doubleValue = 0;
       pi.hidden = NO;
+      pi.doubleValue = 0;
     } else {
       tf.hidden = pi.hidden = ipi.hidden = YES;
     }
