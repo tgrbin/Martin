@@ -12,4 +12,6 @@
 
 - (int)height;
 
+@property (nonatomic, assign) NSWindow *window;
+
 @end

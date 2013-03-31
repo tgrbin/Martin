@@ -67,7 +67,14 @@ static RescanState *sharedState;
 
 - (void)setupProgressIndicator:(NSProgressIndicator *)pi indeterminateProgressIndicator:(NSProgressIndicator *)ipi andTextField:(NSTextField *)tf {
   if (_state == kRescanStateIdle) {
-    tf.hidden = pi.hidden = ipi.hidden = YES;
+    if (tf.tag) {
+      tf.stringValue = @"Idle";
+      ipi.hidden = YES;
+      ipi.doubleValue = 0;
+      pi.hidden = NO;
+    } else {
+      tf.hidden = pi.hidden = ipi.hidden = YES;
+    }
   } else {
     tf.hidden = NO;
     tf.stringValue = self.message;

@@ -14,7 +14,9 @@
 
 + (void)getAuthURLWithBlock:(void (^)(NSString *))callbackBlock;
 + (void)getSessionKey:(void (^)(BOOL))callbackBlock;
-+ (void)resetSessionKey;
+
++ (BOOL)isScrobbling;
++ (void)stopScrobbling;
 
 + (void)updateNowPlaying:(PlaylistItem *)playlistItem;
 + (void)scrobble:(PlaylistItem *)playlistItem;

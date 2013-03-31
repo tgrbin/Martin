@@ -40,7 +40,6 @@
 }
 
 - (IBAction)resetShortcutsToDefaultsPressed:(id)sender {
-  // are you sure?
   [GlobalShortcuts resetToDefaults];
   [self updateShortcutControls];
 }

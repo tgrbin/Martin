@@ -9,8 +9,18 @@
 #import "LastFMPreferencesViewController.h"
 #import "LastFM.h"
 
+typedef enum {
+  kStateNoToken,
+  kStateNoSessionKey,
+  kStateScrobbling
+} State;
+
 @interface LastFMPreferencesViewController ()
 @property (strong) IBOutlet NSProgressIndicator *activityIndicator;
+@property (strong) IBOutlet NSButton *button;
+@property (strong) IBOutlet NSTextField *textField;
+
+@property (nonatomic, assign) State state;
 @end
 
 @implementation LastFMPreferencesViewController
@@ -22,36 +32,74 @@
   return self;
 }
 
-- (IBAction)getTokenPressed:(id)sender {
+- (void)awakeFromNib {
+  self.state = [LastFM isScrobbling]? kStateScrobbling: kStateNoToken;
+}
+
+#pragma mark - actions
+
+- (IBAction)buttonPressed:(id)sender {
+  if (_state == kStateNoToken) {
+    [self getToken];
+  } else if (_state == kStateNoSessionKey) {
+    [self getSessionKey];
+  } else if (_state == kStateScrobbling) {
+    [self resetSessionKey];
+  }
+}
+
+- (void)getToken {
   [self showSpinner];
   [LastFM getAuthURLWithBlock:^(NSString *url) {
     [self hideSpinner];
 
-    if (url == nil) {
-      [self showAlertWithMsg:@"Sorry, get token failed."];
-    } else {
-      [self showAlertWithMsg:@"Allow Martin to scrobble in your browser, and then proceed to getting the session key"];
+    if (url) {
+      self.state = kStateNoSessionKey;
       [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
+    } else {
+      [self showAlertWithMsg:@"Sorry, failed to ask LastFM for access."];
     }
   }];
 }
 
-- (IBAction)getSessionKeyPressed:(id)sender {
+
+- (void)getSessionKey {
   [self showSpinner];
   [LastFM getSessionKey:^(BOOL success) {
     [self hideSpinner];
 
-    if (success == NO) {
-      [self showAlertWithMsg:@"Sorry, get session key failed. Make sure you finished previous steps correctly."];
+    if (success == YES) {
+      self.state = kStateScrobbling;
     } else {
-      [self showAlertWithMsg:@"That's it! Martin should begin scrobbling now"];
+      self.state = kStateNoToken;
+      [self showAlertWithMsg:@"Sorry, failed to get permission to scrobble from LastFM."];
     }
   }];
 }
 
-- (IBAction)resetSessionKeyPressed:(id)sender {
-  [LastFM resetSessionKey];
+- (void)resetSessionKey {
+  [LastFM stopScrobbling];
+  self.state = kStateNoToken;
   [self showAlertWithMsg:@"Martin is no longer scrobbling."];
+}
+
+#pragma mark - util
+
+- (void)setState:(State)state {
+  _state = state;
+  [self updateUI];
+}
+
+- (void)updateUI {
+  static NSString * const buttonTitles[] = { @"Go to LastFM", @"Start scrobbling", @"Stop scrobbling" };
+  static NSString * const messages[] = {
+    @"To start scrobbling, Martin must be allowed to access your account.\nPressing below will go to www.last.fm and ask you to login and allow access.",
+    @"When you're done, press start scrobbling.",
+    @"Martin is scrobbling happily."
+  };
+
+  _button.title = buttonTitles[_state];
+  _textField.stringValue = messages[_state];
 }
 
 - (void)showSpinner {
@@ -69,10 +117,10 @@
   [alert setAlertStyle:NSInformationalAlertStyle];
   [alert setMessageText:msg];
 
-//  [alert beginSheetModalForWindow:self.window
-//                    modalDelegate:nil
-//                   didEndSelector:nil
-//                      contextInfo:nil];
+  [alert beginSheetModalForWindow:self.window
+                    modalDelegate:nil
+                   didEndSelector:nil
+                      contextInfo:nil];
 }
 
 @end

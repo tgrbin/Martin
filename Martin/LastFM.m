@@ -33,8 +33,8 @@ static NSString *currentToken = nil;
     NSString *result = nil;
     if (data != nil) {
       NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-      int l = (int)[str rangeOfString:@"<token>"].location;
-      int r = (int)[str rangeOfString:@"</token>"].location;
+      NSInteger l = [str rangeOfString:@"<token>"].location;
+      NSInteger r = [str rangeOfString:@"</token>"].location;
 
       if (l != NSNotFound && r != NSNotFound) {
         currentToken = [str substringWithRange:NSMakeRange(l+7, r-l-7)];
@@ -63,8 +63,8 @@ static NSString *currentToken = nil;
     BOOL success = NO;
     if (data != nil) {
       NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-      int l = (int)[str rangeOfString:@"<key>"].location;
-      int r = (int)[str rangeOfString:@"</key>"].location;
+      NSInteger l = [str rangeOfString:@"<key>"].location;
+      NSInteger r = [str rangeOfString:@"</key>"].location;
 
       if (l != NSNotFound && r != NSNotFound) {
         NSString *sessionKey = [str substringWithRange:NSMakeRange(l+5, r-l-5)];
@@ -77,7 +77,11 @@ static NSString *currentToken = nil;
   });
 }
 
-+ (void)resetSessionKey {
++ (BOOL)isScrobbling {
+  return [self sessionKey] != nil;
+}
+
++ (void)stopScrobbling {
   [DefaultsManager setObject:nil forKey:kDefaultsKeyLastFMSession];
 }
 

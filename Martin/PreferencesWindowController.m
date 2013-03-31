@@ -36,8 +36,14 @@
     ];
 
     titles = [NSMutableArray new];
-    for (PreferencesViewController *vc in controllers) [titles addObject:vc.title];
-    for (int i = 0; i < titles.count; ++i) [_toolbar insertItemWithItemIdentifier:titles[i] atIndex:i];
+    for (PreferencesViewController *vc in controllers) {
+      [titles addObject:vc.title];
+      vc.window = self.window;
+    }
+
+    for (int i = 0; i < titles.count; ++i) {
+      [_toolbar insertItemWithItemIdentifier:titles[i] atIndex:i];
+    }
 
     for (int i = 0; i < titles.count; ++i) {
       NSTabViewItem *item = [[NSTabViewItem alloc] initWithIdentifier:titles[i]];
@@ -45,7 +51,6 @@
       item.view = [controllers[i] view];
       [_tabView addTabViewItem:item];
     }
-
     _toolbar.selectedItemIdentifier = titles[0];
     self.window.title = titles[0];
   }
