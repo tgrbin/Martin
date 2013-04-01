@@ -461,7 +461,7 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
     TagIndex tagIndex = [Tags indexFromTagName:str];
     
     @autoreleasepool {
-      sort(playlist.begin(), playlist.end(), [&, tagIndex, isLength, isTrackNumber](int a, int b) -> bool {
+      stable_sort(playlist.begin(), playlist.end(), [&, tagIndex, isLength, isTrackNumber](int a, int b) -> bool {
         PlaylistItem *p1 = playlistItems[a];
         PlaylistItem *p2 = playlistItems[b];
         
