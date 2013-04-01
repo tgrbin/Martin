@@ -14,7 +14,6 @@
 
 @property (nonatomic, strong) Playlist *playlist;
 
-- (void)deleteSelectedItems;
 - (void)addTreeNodes:(NSArray *)treeNodes;
 - (void)addPlaylistItems:(NSArray *)items;
 

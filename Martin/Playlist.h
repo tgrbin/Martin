@@ -36,12 +36,12 @@
 - (int)addItemsFromPlaylist:(Playlist *)p;
 - (int)addItemsFromPlaylists:(NSArray *)arr atPos:(int)pos;
 
-- (void)removeFirstItem;
+- (void)shuffleIndexes:(NSIndexSet *)indexes;
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes;
-- (void)clear;
 
 // returns the actual position where items landed
 - (int)reorderItemsAtRows:(NSArray *)rows toPos:(int)pos;
+
 - (void)sortBy:(NSString *)str;
 
 - (int)numberOfItems;
@@ -76,6 +76,9 @@
 - (id)initWithFileStream:(FILE *)f;
 
 - (Playlist *)currentItemPlaylist;
+
+- (void)removeFirstItem;
+- (void)clear;
 
 // need playlists array to figure out indexes of pointers it has in items origin
 - (void)dumpItemsOriginWithPlaylists:(NSArray *)playlists toFileStream:(FILE *)f;

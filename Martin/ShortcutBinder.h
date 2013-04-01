@@ -22,7 +22,9 @@ typedef enum {
   kMartinKeySelectAlbum,
   kMartinKeySearch,
   kMartinKeyLeft,
-  kMartinKeyRight
+  kMartinKeyRight,
+  kMartinKeyCrop,
+  kMartinKeyShuffle
 } MartinKey;
 
 + (void)bindControl:(NSControl *)control toTarget:(id)target withBindings:(NSDictionary *)bindings;

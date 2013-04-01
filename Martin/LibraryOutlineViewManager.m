@@ -49,16 +49,11 @@
 
   [self initTree];
 
-  [ShortcutBinder bindControl:outlineView andKey:kMartinKeyEnter toTarget:self andAction:@selector(addSelectedItemsToPlaylist)];
-  [ShortcutBinder bindControl:outlineView andKey:kMartinKeyCmdEnter toTarget:self andAction:@selector(createPlaylistWithSelectedItems)];
-  [ShortcutBinder bindControl:outlineView andKey:kMartinKeyQueueItems toTarget:self andAction:@selector(queueSelectedItems)];
+  [ShortcutBinder bindControl:outlineView andKey:kMartinKeyEnter toTarget:self andAction:@selector(addSelectedItemsToPlaylist:)];
+  [ShortcutBinder bindControl:outlineView andKey:kMartinKeyCmdEnter toTarget:self andAction:@selector(createPlaylistWithSelectedItems:)];
+  [ShortcutBinder bindControl:outlineView andKey:kMartinKeyQueueItems toTarget:self andAction:@selector(queueSelectedItems:)];
+
   [ShortcutBinder bindControl:outlineView andKey:kMartinKeySearch toTarget:searchTextField andAction:@selector(becomeFirstResponder)];
-
-  [ShortcutBinder bindControl:searchTextField andKey:kMartinKeyCmdEnter toTarget:self andAction:@selector(bla)];
-}
-
-- (void)bla {
-  NSLog(@"click!");
 }
 
 - (void)saveState {
@@ -113,65 +108,41 @@
 
 #pragma mark - context menu actions
 
-- (void)addSelectedItemsToPlaylist {
-  [self contextMenuAddToPlaylist:nil];
+- (IBAction)addSelectedItemsToPlaylist:(id)sender {
+  [[MartinAppDelegate get].playlistTableManager addTreeNodes:[self chosenItems]];
 }
 
-- (void)createPlaylistWithSelectedItems {
-  [self contextMenuNewPlaylist:nil];
+- (IBAction)createPlaylistWithSelectedItems:(id)sender {
+  [[MartinAppDelegate get].playlistManager addNewPlaylistWithTreeNodes:[self chosenItems]];
 }
 
-- (void)queueSelectedItems {
-  [self contextMenuQueueItems:nil];
+- (IBAction)queueSelectedItems:(id)sender {
+  [[MartinAppDelegate get].playlistManager.queue addTreeNodes:[self chosenItems]];
 }
 
-- (IBAction)contextMenuShowInFinder:(id)sender {
-  NSArray *treeNodes = [self itemsToProcessFromContextMenu];
+- (IBAction)showInFinder:(id)sender {
+  NSArray *treeNodes = [self chosenItems];
   NSArray *paths = [Tree pathsForNodes:treeNodes];
   NSMutableArray *urls = [NSMutableArray new];
   for (NSString *path in paths) [urls addObject:[NSURL fileURLWithPath:path]];
   [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:urls];
 }
 
-- (IBAction)contextMenuAddToPlaylist:(id)sender {
-  [[MartinAppDelegate get].playlistTableManager addTreeNodes:[self itemsForSender:sender]];
+- (IBAction)rescan:(id)sender {
+  [[RescanProxy sharedProxy] rescanRecursivelyTreeNodes:[self chosenItems]];
 }
 
-- (IBAction)contextMenuNewPlaylist:(id)sender {
-  [[MartinAppDelegate get].playlistManager addNewPlaylistWithTreeNodes:[self itemsForSender:sender]];
-}
-
-- (IBAction)contextMenuRescanFolder:(id)sender {
-  [[RescanProxy sharedProxy] rescanRecursivelyTreeNodes:[self itemsForSender:sender]];
-}
-
-- (IBAction)contextMenuQueueItems:(id)sender {
-  [[MartinAppDelegate get].playlistManager.queue addTreeNodes:[self itemsForSender:sender]];
-}
-
-- (NSArray *)itemsForSender:(id)sender {
-  return sender? [self itemsToProcessFromContextMenu]: [self selectedItems];
-}
-
-- (NSArray *)selectedItems {
-  NSIndexSet *selectedRows = outlineView.selectedRowIndexes;
-  NSMutableArray *selectedItems = [NSMutableArray new];
-  for (NSInteger row = selectedRows.firstIndex; row != NSNotFound; row = [selectedRows indexGreaterThanIndex:row]) {
-    [selectedItems addObject:[outlineView itemAtRow:row]];
-  }
-  return selectedItems;
-}
-
-- (NSArray *)itemsToProcessFromContextMenu {
+- (NSArray *)chosenItems {
+  NSInteger clickedRow = outlineView.clickedRow;
   NSIndexSet *selectedRows = outlineView.selectedRowIndexes;
   NSMutableArray *items = [NSMutableArray new];
 
-  if ([selectedRows containsIndex:outlineView.clickedRow]) {
+  if (clickedRow == -1 || [selectedRows containsIndex:clickedRow]) {
     for (NSUInteger row = selectedRows.firstIndex; row != NSNotFound; row = [selectedRows indexGreaterThanIndex:row]) {
       [items addObject:[outlineView itemAtRow:row]];
     }
   } else {
-    [items addObject:[outlineView itemAtRow:outlineView.clickedRow]];
+    [items addObject:[outlineView itemAtRow:clickedRow]];
   }
 
   return items;
@@ -180,7 +151,7 @@
 #pragma mark - menu delegate
 
 - (void)menuNeedsUpdate:(NSMenu *)menu {
-  NSArray *items = [self itemsToProcessFromContextMenu];
+  NSArray *items = [self chosenItems];
   BOOL onlyItems = YES;
   for (id item in items) {
     if ([Tree isLeaf:[item intValue]] == NO) {

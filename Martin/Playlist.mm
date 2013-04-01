@@ -254,9 +254,19 @@ using namespace std;
   return pos;
 }
 
-- (void)removeFirstItem {
-  if ([self isEmpty]) return;
-  [self removeSongsAtIndexes:[NSIndexSet indexSetWithIndex:0]];
+- (void)shuffleIndexes:(NSIndexSet *)indexSet {
+  vector<int> indexes;
+  vector<int> items;
+  for (NSInteger curr = indexSet.firstIndex; curr != NSNotFound; curr = [indexSet indexGreaterThanIndex:curr]) {
+    indexes.push_back((int)curr);
+    items.push_back(playlist[curr]);
+  }
+  
+  srand((int)time(0));
+  random_shuffle(items.begin(), items.end());
+  for (int i = 0; i < indexes.size(); ++i) playlist[indexes[i]] = items[i];
+  
+  [self playlistChanged];
 }
 
 - (void)removeSongsAtIndexes:(NSIndexSet *)indexes {
@@ -311,10 +321,6 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
     }
   }
   v.resize(vs - rs);
-}
-
-- (void)clear {
-  [self removeSongsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.numberOfItems)]];
 }
 
 - (void)playlistChanged {
@@ -579,6 +585,15 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 - (Playlist *)currentItemPlaylist {
   if (playlistItems.size() == 0) return nil;
   return itemOrigin[playlist[0]];
+}
+
+- (void)removeFirstItem {
+  if ([self isEmpty]) return;
+  [self removeSongsAtIndexes:[NSIndexSet indexSetWithIndex:0]];
+}
+
+- (void)clear {
+  [self removeSongsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.numberOfItems)]];
 }
 
 - (void)dumpItemsOriginWithPlaylists:(NSArray *)playlists toFileStream:(FILE *)f {

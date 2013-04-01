@@ -34,7 +34,7 @@ static const double dragHoverTime = 1;
 
 - (void)awakeFromNib {
   playlistsTable.target = self;
-  playlistsTable.doubleAction = @selector(startPlayingSelectedPlaylist);
+  playlistsTable.doubleAction = @selector(playSelectedPlaylist:);
 
   [playlistsTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistsIndexes, kDragTypePlaylistItemsRows, NSFilenamesPboardType]];
 
@@ -60,9 +60,9 @@ static const double dragHoverTime = 1;
 
 - (void)bindShortcuts {
   NSDictionary *bindings = @{
-                             @(kMartinKeyDelete): @"deleteSelectedPlaylists",
-                             @(kMartinKeyCmdDown): @"startPlayingSelectedPlaylist",
-                             @(kMartinKeyQueueItems): @"queueSelectedPlaylists",
+                             @(kMartinKeyDelete): @"deleteSelectedPlaylists:",
+                             @(kMartinKeyCmdDown): @"playSelectedPlaylist:",
+                             @(kMartinKeyQueueItems): @"queueSelectedPlaylists:",
                              @(kMartinKeyRight): @"focusPlaylist"
   };
 
@@ -161,11 +161,32 @@ static const double dragHoverTime = 1;
   [playlistsTable reloadData];
 }
 
-- (void)deleteSelectedPlaylists {
+- (void)takeFocus {
+  [[MartinAppDelegate get].window makeFirstResponder:playlistsTable];
+}
+
+- (void)focusPlaylist {
+  [[MartinAppDelegate get].playlistTableManager takeFocus];
+}
+
+#pragma mark - actions
+
+- (IBAction)renameSelectedPlaylist:(id)sender {
+  [playlistsTable editColumn:0
+                         row:playlistsTable.clickedRow
+                   withEvent:nil
+                      select:YES];
+}
+
+- (IBAction)deleteSelectedPlaylists:(id)sender {
   NSMutableIndexSet *is = [[NSMutableIndexSet alloc] initWithIndexSet:playlistsTable.selectedRowIndexes];
+  NSInteger rowToSelect = playlistsTable.selectedRow;
+  if (playlistsTable.clickedRow != -1 && [is containsIndex:playlistsTable.clickedRow] == NO) {
+    is = [NSMutableIndexSet indexSetWithIndex:playlistsTable.clickedRow];
+    rowToSelect = playlistsTable.clickedRow;
+  }
   if (is.count == 0) return;
 
-  NSInteger rowToSelect = playlistsTable.selectedRow;
   rowToSelect -= [is countOfIndexesInRange:NSMakeRange(0, rowToSelect)];
 
   if (self.queue.isEmpty) { // if queue is not visible indexes need to be adjusted
@@ -191,7 +212,12 @@ static const double dragHoverTime = 1;
   [self updateSelectedPlaylist];
 }
 
-- (void)startPlayingSelectedPlaylist {
+- (IBAction)queueSelectedPlaylists:(id)sender {
+  [self.queue addItemsFromPlaylists:[self chosenItems]
+                              atPos:self.queue.numberOfItems];
+}
+
+- (IBAction)playSelectedPlaylist:(id)sender {
   NSInteger row = playlistsTable.clickedRow;
   if (row == -1) row = playlistsTable.selectedRow;
 
@@ -199,67 +225,20 @@ static const double dragHoverTime = 1;
   [[MartinAppDelegate get].player playSelectedPlaylist];
 }
 
-- (void)queueSelectedPlaylists {
-  [self.queue addItemsFromPlaylists:[self selectedPlaylists]
-                              atPos:self.queue.numberOfItems];
-}
+- (NSArray *)chosenItems {
+  NSInteger clickedRow = playlistsTable.clickedRow;
+  NSIndexSet *selectedRows = playlistsTable.selectedRowIndexes;
+  NSMutableArray *items = [NSMutableArray new];
 
-- (void)takeFocus {
-  [[MartinAppDelegate get].window makeFirstResponder:playlistsTable];
-}
-
-- (void)focusPlaylist {
-  [[MartinAppDelegate get].playlistTableManager takeFocus];
-}
-
-#pragma mark - context menu actions
-
-- (IBAction)deletePlaylistPressed:(id)sender {
-  [self deleteSelectedPlaylists];
-}
-
-- (IBAction)addPlaylistPressed:(id)sender {
-  Playlist *p = [Playlist new];
-  if (playlistsTable.clickedRow != -1) {
-    [p addItemsFromPlaylists:[self selectedPlaylists] atPos:0];
+  if (clickedRow == -1 || [selectedRows containsIndex:clickedRow]) {
+    for (NSUInteger row = selectedRows.firstIndex; row != NSNotFound; row = [selectedRows indexGreaterThanIndex:row]) {
+      [items addObject:[self playlistAtRow:row]];
+    }
+  } else {
+    [items addObject:[self playlistAtRow:clickedRow]];
   }
-  [self addPlaylist:p];
 
-  [playlistsTable editColumn:0
-                         row:playlistsTable.numberOfRows-1
-                   withEvent:nil
-                      select:YES];
-}
-
-- (IBAction)sortPlaylists:(id)sender {
-  [playlists sortUsingComparator:^NSComparisonResult(Playlist *p1, Playlist *p2) {
-    if (p1 == self.queue) return NSOrderedAscending;
-    if (p2 == self.queue) return NSOrderedDescending;
-    return [p1.name compare:p2.name];
-  }];
-  [self reload];
-}
-
-- (IBAction)renamePlaylist:(id)sender {
-  [playlistsTable editColumn:0
-                         row:playlistsTable.clickedRow
-                   withEvent:nil
-                      select:YES];
-}
-
-- (IBAction)queuePlaylists:(id)sender {
-  [self queueSelectedPlaylists];
-}
-
-- (IBAction)playPlaylist:(id)sender {
-  [self startPlayingSelectedPlaylist];
-}
-
-- (NSArray *)selectedPlaylists {
-  NSMutableArray *arr = [NSMutableArray new];
-  NSIndexSet *is = playlistsTable.selectedRowIndexes;
-  for (NSInteger i = [is firstIndex]; i != NSNotFound; i = [is indexGreaterThanIndex:i]) [arr addObject:[self playlistAtRow:i]];
-  return arr;
+  return items;
 }
 
 #pragma mark - drag and drop
@@ -464,17 +443,8 @@ static const double dragHoverTime = 1;
 #pragma mark - menu delegate
 
 - (void)menuNeedsUpdate:(NSMenu *)menu {
-  int n = (int)menu.numberOfItems;
-  if (playlistsTable.clickedRow == -1) {
-    for (int i = 0; i < n-2; ++i) [menu itemAtIndex:i].enabled = NO;
-  } else {
-    for (int i = 0; i < n-2; ++i) [menu itemAtIndex:i].enabled = YES;
-
-    if (playlistsTable.selectedRowIndexes.count > 1) {
-      [menu itemWithTitle:@"Rename"].enabled = NO;
-      [menu itemWithTitle:@"Duplicate"].enabled = NO;
-    }
-  }
+  BOOL onlyOneItem = ([self chosenItems].count == 1);
+  [menu itemWithTitle:@"Rename"].enabled = onlyOneItem;
 }
 
 @end

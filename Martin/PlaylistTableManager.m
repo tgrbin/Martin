@@ -46,14 +46,16 @@
 - (void)bindShortcuts {
   NSDictionary *bindings =
   @{
-    @(kMartinKeyDelete): @"deleteSelectedItems",
+    @(kMartinKeyDelete): @"deleteSelectedItems:",
     @(kMartinKeyEnter): @"playItemAtSelectedRow",
-    @(kMartinKeyQueueItems): @"queueSelectedItems",
-    @(kMartinKeyCmdEnter): @"createNewPlaylistWithSelectedItems",
-    @(kMartinKeySelectAll): @"selectAllItems",
-    @(kMartinKeySelectAlbum): @"selectAlbum",
-    @(kMartinKeySelectArtist): @"selectArtist",
-    @(kMartinKeyLeft): @"focusPlaylists"
+    @(kMartinKeyQueueItems): @"queueSelectedItems:",
+    @(kMartinKeyCmdEnter): @"createNewPlaylistWithSelectedItems:",
+    @(kMartinKeySelectAll): @"selectAllItems:",
+    @(kMartinKeySelectAlbum): @"selectAlbum:",
+    @(kMartinKeySelectArtist): @"selectArtist:",
+    @(kMartinKeyLeft): @"focusPlaylists",
+    @(kMartinKeyCrop): @"cropSelectedItems:",
+    @(kMartinKeyShuffle): @"shuffleSelectedItems:"
   };
 
   [ShortcutBinder bindControl:playlistTable toTarget:self withBindings:bindings];
@@ -245,23 +247,115 @@
   return value;
 }
 
+#pragma mark - actions
+
+- (IBAction)createNewPlaylistWithSelectedItems:(id)sender {
+  [[MartinAppDelegate get].playlistManager addNewPlaylistWithPlaylistItems:[self chosenItems]];
+}
+
+- (IBAction)queueSelectedItems:(id)sender {
+  [[MartinAppDelegate get].playlistManager.queue addPlaylistItems:[self chosenItems]
+                                                     fromPlaylist:_playlist];
+}
+
+- (IBAction)cropSelectedItems:(id)sender {
+  NSIndexSet *indexes = [self chosenIndexes];
+  NSMutableIndexSet *cropped = [[NSMutableIndexSet alloc] initWithIndexesInRange:NSMakeRange(0, _playlist.numberOfItems)];
+  [cropped removeIndexes:indexes];
+
+  if (cropped.count > 0) {
+    [_playlist removeSongsAtIndexes:cropped];
+    [playlistTable deselectAll:nil];
+    [self playlistChanged];
+  }
+}
+
+- (IBAction)shuffleSelectedItems:(id)sender {
+  [_playlist shuffleIndexes:[self chosenIndexes]];
+  [self playlistChanged];
+}
+
+- (void)playItemAtSelectedRow {
+  [[MartinAppDelegate get].player playItemWithIndex:(int)playlistTable.selectedRow];
+}
+
+- (IBAction)deleteSelectedItems:(id)sender {
+  NSIndexSet *indexes = [self chosenIndexes];
+  NSInteger n = _playlist.numberOfItems;
+  NSInteger m = indexes.count;
+  NSInteger selectRow = indexes.lastIndex;
+
+  if (m > 0) {
+    [_playlist removeSongsAtIndexes:indexes];
+    [playlistTable deselectAll:nil];
+    [self playlistChanged];
+
+    selectRow = (selectRow < n-1)? selectRow-m+1: n-m-1;
+
+    [playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:selectRow] byExtendingSelection:NO];
+    [playlistTable scrollRowToVisible:selectRow];
+  }
+}
+
+- (IBAction)showInFinder:(id)sender {
+  NSArray *items = [self chosenItems];
+  NSMutableArray *paths = [NSMutableArray new];
+  for (PlaylistItem *pi in items) [paths addObject:pi.filename];
+
+  NSMutableArray *urls = [NSMutableArray new];
+  for (NSString *path in paths) [urls addObject:[NSURL fileURLWithPath:path]];
+  [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:urls];
+}
+
+- (NSArray *)chosenItems {
+  NSInteger clickedRow = playlistTable.clickedRow;
+  NSIndexSet *selectedRows = playlistTable.selectedRowIndexes;
+  NSMutableArray *items = [NSMutableArray new];
+
+  if (clickedRow == -1 || [selectedRows containsIndex:clickedRow]) {
+    for (NSUInteger row = selectedRows.firstIndex; row != NSNotFound; row = [selectedRows indexGreaterThanIndex:row]) {
+      [items addObject:_playlist[(int)row]];
+    }
+  } else {
+    [items addObject:_playlist[(int)clickedRow]];
+  }
+
+  return items;
+}
+
+- (NSIndexSet *)chosenIndexes {
+  if (playlistTable.clickedRow != -1 && [playlistTable.selectedRowIndexes containsIndex:playlistTable.clickedRow] == NO) {
+    return [NSIndexSet indexSetWithIndex:playlistTable.clickedRow];
+  }
+  return playlistTable.selectedRowIndexes;
+}
+
+- (void)focusPlaylists {
+  [[MartinAppDelegate get].playlistManager takeFocus];
+}
+
+- (void)takeFocus {
+  [[MartinAppDelegate get].window makeFirstResponder:playlistTable];
+}
+
+
 #pragma mark - select items actions
 
-- (void)selectAllItems {
+- (IBAction)selectAllItems:(id)sender {
   [playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, _playlist.numberOfItems)]
              byExtendingSelection:NO];
 }
 
-- (void)selectAlbum {
-  [self selectItemsWithTagIndex:kTagIndexAlbum];
-}
-
-- (void)selectArtist {
+- (IBAction)selectArtist:(id)sender {
   [self selectItemsWithTagIndex:kTagIndexArtist];
 }
 
+- (IBAction)selectAlbum:(id)sender {
+  [self selectItemsWithTagIndex:kTagIndexAlbum];
+}
+
 - (void)selectItemsWithTagIndex:(TagIndex)tagIndex {
-  NSSet *values = [self valuesForTagWithIndex:tagIndex fromItems:[self selectedPlaylistItems]];
+  NSSet *values = [self valuesForTagWithIndex:tagIndex fromItems:[self chosenItems]];
   NSMutableIndexSet *itemsToSelect = [NSMutableIndexSet new];
   for (int i = 0; i < _playlist.numberOfItems; ++i) {
     PlaylistItem *item = _playlist[i];
@@ -282,47 +376,6 @@
     [s addObject:val];
   }
   return s;
-}
-
-#pragma mark - actions
-
-- (void)createNewPlaylistWithSelectedItems {
-  [[MartinAppDelegate get].playlistManager addNewPlaylistWithPlaylistItems:[self selectedPlaylistItems]];
-}
-
-- (void)playItemAtSelectedRow {
-  [[MartinAppDelegate get].player playItemWithIndex:(int)playlistTable.selectedRow];
-}
-
-- (void)deleteSelectedItems {
-  NSIndexSet *selectedIndexes = playlistTable.selectedRowIndexes;
-  int n = (int)playlistTable.numberOfRows;
-  int m = (int)selectedIndexes.count;
-  int selectRow = (int)selectedIndexes.lastIndex;
-
-  if (m > 0) {
-    [self.playlist removeSongsAtIndexes:selectedIndexes];
-    [playlistTable deselectAll:nil];
-    [self playlistChanged];
-
-    selectRow = (selectRow < n-1)? selectRow-m+1: n-m-1;
-
-    [playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:selectRow] byExtendingSelection:NO];
-    [playlistTable scrollRowToVisible:selectRow];
-  }
-}
-
-- (void)queueSelectedItems {
-  [[MartinAppDelegate get].playlistManager.queue addPlaylistItems:[self selectedPlaylistItems]
-                                                     fromPlaylist:_playlist];
-}
-
-- (void)focusPlaylists {
-  [[MartinAppDelegate get].playlistManager takeFocus];
-}
-
-- (void)takeFocus {
-  [[MartinAppDelegate get].window makeFirstResponder:playlistTable];
 }
 
 #pragma mark - other
@@ -359,15 +412,6 @@
 
 - (BOOL)showingQueuePlaylist {
   return _playlist == [MartinAppDelegate get].playlistManager.queue;
-}
-
-- (NSArray *)selectedPlaylistItems {
-  NSIndexSet *selectedIndexes = playlistTable.selectedRowIndexes;
-  NSMutableArray *items = [NSMutableArray new];
-  for (NSInteger index = selectedIndexes.firstIndex; index != NSNotFound; index = [selectedIndexes indexGreaterThanIndex:index]) {
-    [items addObject:_playlist[(int)index]];
-  }
-  return items;
 }
 
 @end

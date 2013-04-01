@@ -60,7 +60,11 @@ static void hookClass(Class cls) {
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-      [binding[2] performSelector:NSSelectorFromString(binding[3])];
+      if ([binding[3] hasSuffix:@":"]) {
+        [binding[2] performSelector:NSSelectorFromString(binding[3]) withObject:nil];
+      } else {
+        [binding[2] performSelector:NSSelectorFromString(binding[3])];
+      }
 #pragma clang diagnostic pop
 
       return;
@@ -80,11 +84,17 @@ static void hookClass(Class cls) {
       switch (pressedUnichar) {
         case 'a':
           if (isModifier(flags, NSCommandKeyMask)) return kMartinKeySelectAll;
+          break;
+        case L'å':
           return kMartinKeySelectArtist;
-        case 'm':
+        case L'µ':
           return kMartinKeySelectAlbum;
         case L'œ':
           return kMartinKeyQueueItems;
+        case L'ç':
+          return kMartinKeyCrop;
+        case L'ß':
+          return kMartinKeyShuffle;
         case '/':
           return kMartinKeySearch;
         case NSDeleteCharacter:
