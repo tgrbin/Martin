@@ -253,8 +253,11 @@
 }
 
 - (IBAction)queueSelectedItems:(id)sender {
-  [[MartinAppDelegate get].playlistManager.queue addPlaylistItems:[self chosenItems]
-                                                     fromPlaylist:_playlist];
+  NSArray *arr = [self chosenItems];
+  if (arr.count > 0) {
+    [[MartinAppDelegate get].playlistManager.queue addPlaylistItems:arr
+                                                       fromPlaylist:_playlist];
+  }
 }
 
 - (IBAction)cropSelectedItems:(id)sender {

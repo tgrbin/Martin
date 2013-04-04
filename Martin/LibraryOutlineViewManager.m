@@ -117,7 +117,10 @@
 }
 
 - (IBAction)queueSelectedItems:(id)sender {
-  [[MartinAppDelegate get].playlistManager.queue addTreeNodes:[self chosenItems]];
+  NSArray *arr = [self chosenItems];
+  if (arr.count > 0) {
+    [[MartinAppDelegate get].playlistManager.queue addTreeNodes:arr];
+  }
 }
 
 - (IBAction)showInFinder:(id)sender {

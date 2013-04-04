@@ -211,8 +211,11 @@
 }
 
 - (IBAction)queueSelectedPlaylists:(id)sender {
-  [self.queue addItemsFromPlaylists:[self chosenItems]
-                              atPos:self.queue.numberOfItems];
+  NSArray *arr = [self chosenItems];
+  if (arr.count > 0) {
+    [self.queue addItemsFromPlaylists:arr
+                                atPos:self.queue.numberOfItems];
+  }
 }
 
 - (IBAction)playSelectedPlaylist:(id)sender {
