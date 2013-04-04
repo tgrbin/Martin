@@ -20,13 +20,11 @@
 #import "ShortcutBinder.h"
 #import "PlaylistNameGuesser.h"
 
-static const double dragHoverTime = 1;
-
 @implementation PlaylistManager {
   NSMutableArray *playlists;
 
   BOOL ignoreSelectionChange;
-  NSTimer *dragHoverTimer;
+
   NSInteger dragHoverRow;
 
   IBOutlet NSTableView *playlistsTable;
@@ -256,8 +254,6 @@ static const double dragHoverTime = 1;
 }
 
 - (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
-  [self resetDragHoverTimer];
-
   // can't drag queue within playlists table
   if (self.queue.isEmpty == NO) {
     NSString *draggingType = [info.draggingPasteboard.types lastObject];
@@ -268,36 +264,13 @@ static const double dragHoverTime = 1;
   }
 
   if (dropOperation == NSTableViewDropOn) {
-    dragHoverRow = row;
-    [self setDragHoverTimer];
+    [self selectRow:row];
   }
 
   // can't drop anything above the queue
   if (self.queue.isEmpty == NO && dropOperation == NSTableViewDropAbove && row == 0) return NSDragOperationNone;
 
   return NSDragOperationCopy;
-}
-
-- (void)setDragHoverTimer {
-  dragHoverTimer = [NSTimer scheduledTimerWithTimeInterval:dragHoverTime
-                                                    target:self
-                                                  selector:@selector(dragHovered)
-                                                  userInfo:nil
-                                                   repeats:NO];
-}
-
-- (void)dragHovered {
-  [self resetDragHoverTimer];
-  [self selectRow:dragHoverRow];
-}
-
-- (void)dragExited {
-  [self resetDragHoverTimer];
-}
-
-- (void)resetDragHoverTimer {
-  [dragHoverTimer invalidate];
-  dragHoverTimer = nil;
 }
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {

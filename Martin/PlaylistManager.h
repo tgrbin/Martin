@@ -33,8 +33,6 @@
 
 - (void)savePlaylists;
 
-- (void)dragExited;
-
 - (void)takeFocus;
 
 @end
