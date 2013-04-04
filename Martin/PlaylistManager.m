@@ -218,6 +218,7 @@
 - (IBAction)playSelectedPlaylist:(id)sender {
   NSInteger row = playlistsTable.clickedRow;
   if (row == -1) row = playlistsTable.selectedRow;
+  if (row == -1) return;
 
   [self selectRow:row];
   [[MartinAppDelegate get].player playSelectedPlaylist];

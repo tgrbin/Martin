@@ -381,7 +381,7 @@
 				<string key="NSWindowClass">NSWindow</string>
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>
-				<string key="NSWindowContentMinSize">{600, 400}</string>
+				<string key="NSWindowContentMinSize">{700, 400}</string>
 				<object class="NSView" key="NSWindowView" id="439893737">
 					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
@@ -406,7 +406,7 @@
 								<object class="NSSlider" id="956898058">
 									<reference key="NSNextResponder" ref="758786916"/>
 									<int key="NSvFlags">265</int>
-									<string key="NSFrame">{{715, 8}, {152, 21}}</string>
+									<string key="NSFrame">{{730, 8}, {152, 21}}</string>
 									<reference key="NSSuperview" ref="758786916"/>
 									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="773061786"/>
@@ -431,7 +431,7 @@
 								<object class="NSButton" id="679630093">
 									<reference key="NSNextResponder" ref="758786916"/>
 									<int key="NSvFlags">265</int>
-									<string key="NSFrame">{{715, 34}, {82, 18}}</string>
+									<string key="NSFrame">{{730, 34}, {82, 18}}</string>
 									<reference key="NSSuperview" ref="758786916"/>
 									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="347145720"/>
@@ -466,7 +466,7 @@
 								<object class="NSButton" id="347145720">
 									<reference key="NSNextResponder" ref="758786916"/>
 									<int key="NSvFlags">265</int>
-									<string key="NSFrame">{{792, 34}, {75, 18}}</string>
+									<string key="NSFrame">{{807, 34}, {75, 18}}</string>
 									<reference key="NSSuperview" ref="758786916"/>
 									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="1067276085"/>
@@ -492,7 +492,7 @@
 								<object class="NSSlider" id="686255335">
 									<reference key="NSNextResponder" ref="758786916"/>
 									<int key="NSvFlags">303</int>
-									<string key="NSFrame">{{224, 8}, {452, 21}}</string>
+									<string key="NSFrame">{{244, 8}, {413, 21}}</string>
 									<reference key="NSSuperview" ref="758786916"/>
 									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="956898058"/>
@@ -1359,7 +1359,6 @@
 											<string key="NSFrame">{{1, 345}, {0, 15}}</string>
 											<reference key="NSSuperview" ref="388018340"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView"/>
 											<string key="NSReuseIdentifierKey">_NS:1216</string>
 											<int key="NSsFlags">1</int>
 											<reference key="NSTarget" ref="388018340"/>
@@ -1412,8 +1411,9 @@
 					<reference key="NSNextKeyView" ref="758786916"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
-				<string key="NSMinSize">{600, 422}</string>
+				<string key="NSMinSize">{700, 422}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
+				<string key="NSFrameAutosaveName">MainWindow</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 			<object class="NSCustomObject" id="976324537">
@@ -2031,6 +2031,14 @@
 					</object>
 					<int key="connectionID">870</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">menu</string>
+						<reference key="source" ref="324428214"/>
+						<reference key="destination" ref="858859210"/>
+					</object>
+					<int key="connectionID">922</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -2349,11 +2357,11 @@
 							<reference ref="93309096"/>
 							<reference ref="298360679"/>
 							<reference ref="1045873681"/>
-							<reference ref="686255335"/>
 							<reference ref="309325796"/>
-							<reference ref="956898058"/>
+							<reference ref="686255335"/>
 							<reference ref="347145720"/>
 							<reference ref="679630093"/>
+							<reference ref="956898058"/>
 						</object>
 						<reference key="parent" ref="439893737"/>
 					</object>
@@ -3079,7 +3087,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">921</int>
+			<int key="maxID">922</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -3193,63 +3201,6 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">PlaylistManager</string>
 					<string key="superclassName">NSObject</string>
-					<object class="NSMutableDictionary" key="actions">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>deleteSelectedPlaylists:</string>
-							<string>playSelectedPlaylist:</string>
-							<string>queueSelectedPlaylists:</string>
-							<string>renameSelectedPlaylist:</string>
-						</object>
-						<object class="NSArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>deleteSelectedPlaylists:</string>
-							<string>playSelectedPlaylist:</string>
-							<string>queueSelectedPlaylists:</string>
-							<string>renameSelectedPlaylist:</string>
-						</object>
-						<object class="NSArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBActionInfo">
-								<string key="name">deleteSelectedPlaylists:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">playSelectedPlaylist:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">queueSelectedPlaylists:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">renameSelectedPlaylist:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="outlets">
-						<string key="NS.key.0">playlistsTable</string>
-						<string key="NS.object.0">NSTableView</string>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<string key="NS.key.0">playlistsTable</string>
-						<object class="IBToOneOutletInfo" key="NS.object.0">
-							<string key="name">playlistsTable</string>
-							<string key="candidateClassName">NSTableView</string>
-						</object>
-					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/PlaylistManager.h</string>

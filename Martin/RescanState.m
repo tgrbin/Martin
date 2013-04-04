@@ -69,9 +69,7 @@ static RescanState *sharedState;
   if (_state == kRescanStateIdle) {
     if (tf.tag) {
       tf.stringValue = @"Idle";
-      ipi.hidden = YES;
-      pi.hidden = NO;
-      pi.doubleValue = 0;
+      ipi.hidden = pi.hidden = YES;
     } else {
       tf.hidden = pi.hidden = ipi.hidden = YES;
     }

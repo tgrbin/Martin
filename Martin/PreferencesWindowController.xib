@@ -87,6 +87,7 @@
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
+				<string key="NSFrameAutosaveName">PreferencesWindow</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 		</array>
