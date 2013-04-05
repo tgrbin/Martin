@@ -24,7 +24,7 @@
 }
 
 + (MartinAppDelegate *)get {
-  return [[NSApplication sharedApplication] delegate];
+  return (MartinAppDelegate *)[[NSApplication sharedApplication] delegate];
 }
 
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
