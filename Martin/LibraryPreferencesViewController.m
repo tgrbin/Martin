@@ -49,6 +49,7 @@
 - (IBAction)addNewPressed:(id)sender {
   NSOpenPanel *panel = [self configurePanel];
   panel.allowsMultipleSelection = YES;
+  panel.title = @"Add new folder";
 
   if ([panel runModal] == NSFileHandlingPanelOKButton) {
     for (NSURL *url in panel.URLs) {
@@ -76,6 +77,7 @@
   NSString *folderPath = [LibraryFolder libraryFolders][row];
 
   NSOpenPanel *panel = [self configurePanel];
+  panel.title = @"Change folder";
   panel.directoryURL = [NSURL fileURLWithPath:folderPath isDirectory:YES];
 
   if ([panel runModal] == NSFileHandlingPanelOKButton) {

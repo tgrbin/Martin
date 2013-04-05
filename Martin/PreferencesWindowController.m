@@ -75,25 +75,32 @@
   NSInteger oldIndex = [titles indexOfObject:[_tabView selectedTabViewItem].identifier];
   NSInteger newIndex = sender.tag;
 
-  self.window.title = titles[newIndex];
+  PreferencesViewController *oldVC = controllers[oldIndex];
+  PreferencesViewController *newVC = controllers[newIndex];
 
-  NSInteger oldH = [controllers[oldIndex] height];
-  NSInteger newH = [controllers[newIndex] height];
+  float deltaH = newVC.height - oldVC.height;
+  NSRect newWindowFrame = self.window.frame;
+  newWindowFrame.size.height += deltaH;
+  newWindowFrame.origin.y -= deltaH;
 
-  float deltaH = newH - oldH;
 
-  NSRect windowFrame = self.window.frame;
-  windowFrame.size.height += deltaH;
-  windowFrame.origin.y -= deltaH;
-
-  [_tabView selectTabViewItemAtIndex:newIndex];
-  NSView *view = ((NSViewController *)controllers[newIndex]).view;
+  NSView *view = newVC.view;
   view.frame = CGRectMake(view.frame.origin.x,
                           view.frame.origin.y,
                           view.frame.size.width,
-                          newH);
+                          newVC.height);
 
-  [self.window setFrame:windowFrame display:YES animate:YES];
+  newVC.view.alphaValue = 0;
+
+  [NSAnimationContext beginGrouping];
+  [[NSAnimationContext currentContext] setDuration:0.2];
+  [[oldVC.view animator] setAlphaValue:0];
+  [[newVC.view animator] setAlphaValue:1];
+  [[self.window animator] setFrame:newWindowFrame display:NO];
+  [NSAnimationContext endGrouping];
+
+  [_tabView selectTabViewItemAtIndex:newIndex];
+  self.window.title = titles[newIndex];
 }
 
 @end

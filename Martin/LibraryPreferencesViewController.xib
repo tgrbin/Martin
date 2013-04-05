@@ -111,7 +111,7 @@
 					</object>
 					<object class="NSScrollView" id="193843471">
 						<reference key="NSNextResponder" ref="1005"/>
-						<int key="NSvFlags">268</int>
+						<int key="NSvFlags">4364</int>
 						<array class="NSMutableArray" key="NSSubviews">
 							<object class="NSClipView" id="203811920">
 								<reference key="NSNextResponder" ref="193843471"/>
@@ -119,7 +119,7 @@
 								<array class="NSMutableArray" key="NSSubviews">
 									<object class="NSTableView" id="572649442">
 										<reference key="NSNextResponder" ref="203811920"/>
-										<int key="NSvFlags">256</int>
+										<int key="NSvFlags">4352</int>
 										<string key="NSFrameSize">{598, 209}</string>
 										<reference key="NSSuperview" ref="203811920"/>
 										<reference key="NSWindow"/>
@@ -172,8 +172,8 @@
 													</object>
 												</object>
 												<object class="NSTextFieldCell" key="NSDataCell" id="61318754">
-													<int key="NSCellFlags">337641537</int>
-													<int key="NSCellFlags2">272631808</int>
+													<int key="NSCellFlags">67108928</int>
+													<int key="NSCellFlags2">272635904</int>
 													<string key="NSContents">Text</string>
 													<reference key="NSSupport" ref="3786193"/>
 													<string key="NSCellIdentifier">_NS:9</string>
@@ -214,9 +214,13 @@
 													<reference key="NSSupport" ref="3786193"/>
 													<string key="NSCellIdentifier">_NS:9</string>
 													<reference key="NSControlView" ref="572649442"/>
-													<int key="NSButtonFlags">-2034876416</int>
+													<int key="NSButtonFlags">-2043265024</int>
 													<int key="NSButtonFlags2">1</int>
-													<reference key="NSAlternateImage" ref="3786193"/>
+													<object class="NSFont" key="NSAlternateImage">
+														<string key="NSName">LucidaGrande</string>
+														<double key="NSSize">13</double>
+														<int key="NSfFlags">16</int>
+													</object>
 													<string key="NSAlternateContents"/>
 													<string key="NSKeyEquivalent"/>
 													<int key="NSPeriodicDelay">200</int>
@@ -241,7 +245,7 @@
 											</object>
 										</object>
 										<double key="NSRowHeight">17</double>
-										<int key="NSTvFlags">-1832878080</int>
+										<int key="NSTvFlags">314605568</int>
 										<reference key="NSDelegate"/>
 										<reference key="NSDataSource"/>
 										<int key="NSColumnAutoresizingStyle">1</int>
