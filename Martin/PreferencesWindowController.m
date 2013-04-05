@@ -56,6 +56,10 @@
   }
 }
 
+- (void)showAddFolder {
+  [(LibraryPreferencesViewController *)controllers[0] showAddFolder];
+}
+
 #pragma mark - toolbar delegate
 
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag {

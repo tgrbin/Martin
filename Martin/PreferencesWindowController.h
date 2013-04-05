@@ -10,4 +10,6 @@
 
 @interface PreferencesWindowController : NSWindowController <NSTableViewDataSource, NSTableViewDelegate, NSWindowDelegate, NSToolbarDelegate>
 
+- (void)showAddFolder;
+
 @end

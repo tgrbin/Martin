@@ -23,7 +23,8 @@ static NSDictionary *defaultValues;
     @(kDefaultsKeyVolume): @0.5,
     @(kDefaultsKeyGlobalShortcuts): @{},
     @(kDefaultsKeySelectedPlaylistIndex): @0,
-    @(kDefaultsKeySearchQuery): @""
+    @(kDefaultsKeySearchQuery): @"",
+    @(kDefaultsKeyFirstRun): @YES
   };
 }
 

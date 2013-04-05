@@ -44,12 +44,16 @@
   [_foldersTableView registerForDraggedTypes:@[kDragTypeLibraryFolderRow, NSFilenamesPboardType]];
 }
 
+- (void)showAddFolder {
+  [self addNewPressed:nil];
+}
+
 #pragma mark - actions
 
 - (IBAction)addNewPressed:(id)sender {
   NSOpenPanel *panel = [self configurePanel];
   panel.allowsMultipleSelection = YES;
-  panel.title = @"Add new folder";
+  panel.title = @"Add folders to library";
 
   if ([panel runModal] == NSFileHandlingPanelOKButton) {
     for (NSURL *url in panel.URLs) {

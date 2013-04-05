@@ -9,6 +9,7 @@
 #import "MartinAppDelegate.h"
 #import "GlobalShortcuts.h"
 #import "PlaylistNameGuesser.h"
+#import "DefaultsManager.h"
 
 @interface MartinAppDelegate()
 @property (strong) IBOutlet NSProgressIndicator *martinBusyIndicator;
@@ -121,6 +122,30 @@
 
     if (oldVal == 0 && newVal > 0) ++self.martinBusy;
     if (oldVal > 0 && newVal == 0) --self.martinBusy;
+  }
+}
+
+#pragma mark - first run
+
+- (void)windowDidBecomeKey:(NSNotification *)notification {
+  _window.delegate = nil;
+  [self checkForFirstRun];
+}
+
+- (void)checkForFirstRun {
+  if ([[DefaultsManager objectForKey:kDefaultsKeyFirstRun] boolValue] == YES) {
+    [DefaultsManager setObject:@NO forKey:kDefaultsKeyFirstRun];
+
+    NSAlert *alert = [NSAlert alertWithMessageText:@"Hi! I'll need to know where is your music."
+                                     defaultButton:@"Choose folders now"
+                                   alternateButton:@"Cancel"
+                                       otherButton:nil
+                         informativeTextWithFormat:@""];
+
+    if ([alert runModal] == NSAlertDefaultReturn) {
+      [_preferencesWindowController showWindow:nil];
+      [_preferencesWindowController showAddFolder];
+    }
   }
 }
 
