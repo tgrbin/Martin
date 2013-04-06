@@ -18,19 +18,21 @@
 static NSMutableArray *playlistItems;
 
 + (NSArray *)playlistItemsFromFolder:(NSString *)folder {
-  static struct stat statBuff;
-  playlistItems = [NSMutableArray new];
+  @synchronized(self) {
+    struct stat statBuff;
+    playlistItems = [NSMutableArray new];
 
-  const char *cpath = [folder UTF8String];
-  stat(cpath, &statBuff);
+    const char *cpath = [folder UTF8String];
+    stat(cpath, &statBuff);
 
-  if (statBuff.st_mode&S_IFDIR) {
-    nftw(cpath, ftw_callback, 512, 0);
-  } else if (statBuff.st_mode&S_IFREG) {
-    checkAndAdd(cpath, statBuff.st_ino);
+    if (statBuff.st_mode&S_IFDIR) {
+      nftw(cpath, ftw_callback, 512, 0);
+    } else if (statBuff.st_mode&S_IFREG) {
+      checkAndAdd(cpath, statBuff.st_ino);
+    }
+
+    return playlistItems;
   }
-
-  return playlistItems;
 }
 
 static int ftw_callback(const char *filename, const struct stat *stat_struct, int flags, struct FTW *ftw_struct) {

@@ -67,10 +67,10 @@
     NSMutableArray *items = [NSMutableArray new];
     NSMutableDictionary *counts = [NSMutableDictionary new];
     for (NSString *folder in folders) {
-      int oldCount = (int)items.count;
-      [items addObjectsFromArray:[SongsFinder playlistItemsFromFolder:folder]];
+      NSArray *newItems = [SongsFinder playlistItemsFromFolder:folder];
+      [items addObjectsFromArray:newItems];
 
-      [self addInt:(int)items.count-oldCount
+      [self addInt:(int)newItems.count
              toKey:[folder lastPathComponent]
       inDictionary:counts];
     }
