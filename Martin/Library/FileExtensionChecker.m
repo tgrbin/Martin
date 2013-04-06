@@ -13,7 +13,12 @@
 + (BOOL)isExtensionAcceptable:(const char *)str {
   int len = (int)strlen(str);
   if (strcasecmp(str + len - 4, ".mp3") == 0) return YES;
+  if (strcasecmp(str + len - 4, ".wav") == 0) return YES;
   if (strcasecmp(str + len - 4, ".m4a") == 0) return YES;
+  if (strcasecmp(str + len - 4, ".aac") == 0) return YES;
+  if (strcasecmp(str + len - 4, ".caf") == 0) return YES;
+  if (strcasecmp(str + len - 4, ".ac3") == 0) return YES;
+  if (strcasecmp(str + len - 5, ".aiff") == 0) return YES;
   return NO;
 }
 
