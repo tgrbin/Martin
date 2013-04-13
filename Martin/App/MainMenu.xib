@@ -383,7 +383,7 @@
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{700, 400}</string>
 				<object class="NSView" key="NSWindowView" id="439893737">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -957,7 +957,7 @@
 													<int key="NSvFlags">256</int>
 													<string key="NSFrameSize">{127, 528}</string>
 													<reference key="NSSuperview" ref="1000720331"/>
-													<reference key="NSNextKeyView" ref="566755316"/>
+													<reference key="NSNextKeyView" ref="809537169"/>
 													<string key="NSReuseIdentifierKey">_NS:1197</string>
 													<bool key="NSEnabled">YES</bool>
 													<object class="_NSCornerView" key="NSCornerView">
@@ -1048,7 +1048,7 @@
 									</object>
 									<string key="NSFrame">{{218, 0}, {129, 530}}</string>
 									<reference key="NSSuperview" ref="773061786"/>
-									<reference key="NSNextKeyView" ref="1000720331"/>
+									<reference key="NSNextKeyView" ref="566755316"/>
 									<string key="NSReuseIdentifierKey">_NS:1193</string>
 									<int key="NSsFlags">154130</int>
 									<reference key="NSVScroller" ref="809537169"/>
@@ -1071,7 +1071,7 @@
 													<int key="NSvFlags">256</int>
 													<string key="NSFrameSize">{550, 512}</string>
 													<reference key="NSSuperview" ref="235089209"/>
-													<reference key="NSNextKeyView" ref="808143969"/>
+													<reference key="NSNextKeyView" ref="93719460"/>
 													<string key="NSReuseIdentifierKey">_NS:1197</string>
 													<bool key="NSEnabled">YES</bool>
 													<object class="NSTableHeaderView" key="NSHeaderView" id="324428214">
@@ -1326,6 +1326,7 @@
 											<int key="NSvFlags">-2147483392</int>
 											<string key="NSFrame">{{1, 345}, {0, 15}}</string>
 											<reference key="NSSuperview" ref="388018340"/>
+											<reference key="NSNextKeyView"/>
 											<string key="NSReuseIdentifierKey">_NS:1216</string>
 											<int key="NSsFlags">1</int>
 											<reference key="NSTarget" ref="388018340"/>
@@ -1350,13 +1351,14 @@
 									</object>
 									<string key="NSFrame">{{348, 0}, {552, 530}}</string>
 									<reference key="NSSuperview" ref="773061786"/>
-									<reference key="NSNextKeyView" ref="235089209"/>
+									<reference key="NSNextKeyView" ref="808143969"/>
 									<string key="NSReuseIdentifierKey">_NS:1193</string>
 									<int key="NSsFlags">154162</int>
 									<reference key="NSVScroller" ref="93719460"/>
 									<reference key="NSHScroller" ref="256891945"/>
 									<reference key="NSContentView" ref="235089209"/>
 									<reference key="NSHeaderClipView" ref="808143969"/>
+									<reference key="NSCornerView" ref="840016125"/>
 									<bytes key="NSScrollAmts">QSAAAEEgAABBmAAAQZgAAA</bytes>
 								</object>
 							</object>
@@ -1369,6 +1371,7 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{900, 600}</string>
+					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="758786916"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
@@ -2782,6 +2785,7 @@
 					<string>603.IBPluginDependency</string>
 					<string>604.IBPluginDependency</string>
 					<string>606.IBPluginDependency</string>
+					<string>607.CustomClassName</string>
 					<string>607.IBPluginDependency</string>
 					<string>608.IBPluginDependency</string>
 					<string>609.IBPluginDependency</string>
@@ -2896,6 +2900,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>PlaylistTableView</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2994,173 +2999,7 @@
 			<nil key="sourceID"/>
 			<int key="maxID">923</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes">
-			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
-				<bool key="EncodedWithXMLCoder">YES</bool>
-				<object class="IBPartialClassDescription">
-					<string key="className">FilePlayer</string>
-					<string key="superclassName">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/FilePlayer.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">LibraryOutlineViewManager</string>
-					<string key="superclassName">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/LibraryOutlineViewManager.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">MartinAppDelegate</string>
-					<string key="superclassName">NSObject</string>
-					<object class="NSMutableDictionary" key="outlets">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>filePlayer</string>
-							<string>libraryOutlineViewManager</string>
-							<string>martinBusyIndicator</string>
-							<string>player</string>
-							<string>playlistManager</string>
-							<string>playlistTableManager</string>
-							<string>preferencesWindowController</string>
-							<string>window</string>
-						</object>
-						<object class="NSArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>FilePlayer</string>
-							<string>LibraryOutlineViewManager</string>
-							<string>NSProgressIndicator</string>
-							<string>Player</string>
-							<string>PlaylistManager</string>
-							<string>PlaylistTableManager</string>
-							<string>PreferencesWindowController</string>
-							<string>NSWindow</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>filePlayer</string>
-							<string>libraryOutlineViewManager</string>
-							<string>martinBusyIndicator</string>
-							<string>player</string>
-							<string>playlistManager</string>
-							<string>playlistTableManager</string>
-							<string>preferencesWindowController</string>
-							<string>window</string>
-						</object>
-						<object class="NSArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBToOneOutletInfo">
-								<string key="name">filePlayer</string>
-								<string key="candidateClassName">FilePlayer</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">libraryOutlineViewManager</string>
-								<string key="candidateClassName">LibraryOutlineViewManager</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">martinBusyIndicator</string>
-								<string key="candidateClassName">NSProgressIndicator</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">player</string>
-								<string key="candidateClassName">Player</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">playlistManager</string>
-								<string key="candidateClassName">PlaylistManager</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">playlistTableManager</string>
-								<string key="candidateClassName">PlaylistTableManager</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">preferencesWindowController</string>
-								<string key="candidateClassName">PreferencesWindowController</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">window</string>
-								<string key="candidateClassName">NSWindow</string>
-							</object>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/MartinAppDelegate.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">Player</string>
-					<string key="superclassName">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/Player.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">PlaylistManager</string>
-					<string key="superclassName">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/PlaylistManager.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">PlaylistTableManager</string>
-					<string key="superclassName">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/PlaylistTableManager.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">PreferencesWindowController</string>
-					<string key="superclassName">NSWindowController</string>
-					<object class="NSMutableDictionary" key="outlets">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>tabView</string>
-							<string>toolbar</string>
-						</object>
-						<object class="NSArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>NSTabView</string>
-							<string>NSToolbar</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>tabView</string>
-							<string>toolbar</string>
-						</object>
-						<object class="NSArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tabView</string>
-								<string key="candidateClassName">NSTabView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">toolbar</string>
-								<string key="candidateClassName">NSToolbar</string>
-							</object>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/PreferencesWindowController.h</string>
-					</object>
-				</object>
-			</object>
-		</object>
+		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">

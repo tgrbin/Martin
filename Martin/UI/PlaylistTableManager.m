@@ -75,6 +75,7 @@
 - (void)setPlaylist:(Playlist *)playlist {
   _playlist = playlist;
   [playlistTable reloadData];
+  [self centerTableToCurrentItem];
   [self updateSortIndicator];
   [playlistTable deselectAll:nil];
 }
@@ -332,6 +333,8 @@
   return playlistTable.selectedRowIndexes;
 }
 
+#pragma mark - focus changes
+
 - (void)focusPlaylists {
   [[MartinAppDelegate get].playlistManager takeFocus];
 }
@@ -340,6 +343,16 @@
   [[MartinAppDelegate get].window makeFirstResponder:playlistTable];
 }
 
+- (void)gotFocus {
+  if ([NSApp currentEvent].type != NSKeyDown) return;
+
+  int row = MAX(0, _playlist.currentItemIndex);
+  [playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+}
+
+- (void)lostFocus {
+  [playlistTable deselectAll:nil];
+}
 
 #pragma mark - select items actions
 
@@ -381,6 +394,16 @@
 }
 
 #pragma mark - other
+
+- (void)centerTableToCurrentItem {
+  int row = _playlist.currentItemIndex;
+
+  [playlistTable scrollPoint:CGPointZero];
+  if (row >= 0) {
+    int n = playlistTable.superview.frame.size.height / playlistTable.rowHeight;
+    [playlistTable scrollRowToVisible:row + n/2];
+  }
+}
 
 - (void)queueChanged {
   [[MartinAppDelegate get].playlistManager reload];
