@@ -38,7 +38,7 @@
   [self observe:kLibraryRescanFinishedNotification withAction:@selector(reloadTableData)];
 
   _playlist = [MartinAppDelegate get].playlistManager.selectedPlaylist;
-
+  [self centerTableToCurrentItem];
   [self bindShortcuts];
   [self initTableHeaderViewMenu];
 }
@@ -401,7 +401,7 @@
   [playlistTable scrollPoint:CGPointZero];
   if (row >= 0) {
     int n = playlistTable.superview.frame.size.height / playlistTable.rowHeight;
-    [playlistTable scrollRowToVisible:row + n/2];
+    [playlistTable scrollRowToVisible:MIN(row + n/2, _playlist.numberOfItems-1)];
   }
 }
 
