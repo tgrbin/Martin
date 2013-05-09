@@ -20,8 +20,6 @@
 #import "PlaylistNameGuesser.h"
 
 @implementation PlaylistTableManager {
-  Playlist *dragSourcePlaylist;
-
   IBOutlet NSTableView *playlistTable;
 }
 
@@ -122,7 +120,7 @@
   [pboard declareTypes:@[kDragTypePlaylistItemsRows] owner:nil];
   [pboard setData:[DragDataConverter dataFromArray:rows]
           forType:kDragTypePlaylistItemsRows];
-  dragSourcePlaylist = _playlist;
+  _dragSourcePlaylist = _playlist;
   return YES;
 }
 
@@ -165,13 +163,13 @@
 
     } else if ([draggingType isEqualToString:kDragTypePlaylistItemsRows]) {
 
-      if (dragSourcePlaylist == _playlist) {
+      if (_dragSourcePlaylist == _playlist) {
         itemsCount = items.count;
         endPosition = [_playlist reorderItemsAtRows:items toPos:endPosition];
       } else {
         NSMutableArray *arr = [NSMutableArray new];
-        for (NSNumber *n in items) [arr addObject:dragSourcePlaylist[n.intValue]];
-        itemsCount = [_playlist addPlaylistItems:arr atPos:endPosition fromPlaylist:dragSourcePlaylist];
+        for (NSNumber *n in items) [arr addObject:_dragSourcePlaylist[n.intValue]];
+        itemsCount = [_playlist addPlaylistItems:arr atPos:endPosition fromPlaylist:_dragSourcePlaylist];
       }
     }
 

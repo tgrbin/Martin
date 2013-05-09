@@ -318,8 +318,9 @@
       BOOL fromLibrary = [draggingType isEqualToString:kDragTypeTreeNodes];
 
       if (fromLibrary == NO) {
+        Playlist *srcPlaylist = [MartinAppDelegate get].playlistTableManager.dragSourcePlaylist;
         NSMutableArray *arr = [NSMutableArray new];
-        for (NSNumber *row in items) [arr addObject:_selectedPlaylist[row.intValue]];
+        for (NSNumber *row in items) [arr addObject:srcPlaylist[row.intValue]];
         items = arr;
       }
 

@@ -13,6 +13,7 @@
 @interface PlaylistTableManager : NSObject <NSTableViewDataSource, NSTableViewDelegate, NSMenuDelegate>
 
 @property (nonatomic, strong) Playlist *playlist;
+@property (nonatomic, strong) Playlist *dragSourcePlaylist;
 
 - (void)addTreeNodes:(NSArray *)treeNodes;
 - (void)addPlaylistItems:(NSArray *)items;
