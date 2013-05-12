@@ -65,6 +65,8 @@
   };
 
   [ShortcutBinder bindControl:playlistsTable toTarget:self withBindings:bindings];
+
+  [ShortcutBinder bindControl:playlistsTable andKey:kMartinKeyPlayPause toTarget:[MartinAppDelegate get].player andAction:@selector(playOrPause)];
 }
 
 - (NSArray *)playlistsAtIndexes:(NSArray *)indexes {
@@ -117,6 +119,10 @@
 - (void)savePlaylists {
   [PlaylistPersistence savePlaylists:playlists];
   [DefaultsManager setObject:@(playlistsTable.selectedRow) forKey:kDefaultsKeySelectedPlaylistIndex];
+}
+
+- (IBAction)addNewEmptyPlaylist:(id)sender {
+  [self addPlaylist:[Playlist new]];
 }
 
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes andName:(NSString *)name {

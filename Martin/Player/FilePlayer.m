@@ -98,4 +98,14 @@
   [DefaultsManager setObject:@(_volume) forKey:kDefaultsKeyVolume];
 }
 
+#pragma mark - context menu actions
+
+- (IBAction)volumeUp:(id)sender {
+  self.volume = MIN(_volume+0.1, 1);
+}
+
+- (IBAction)volumeDown:(id)sender {
+  self.volume = MAX(_volume-0.1, 0);
+}
+
 @end

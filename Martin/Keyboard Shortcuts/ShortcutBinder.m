@@ -82,6 +82,8 @@ static void hookClass(Class cls) {
       NSUInteger flags = (event.modifierFlags & NSDeviceIndependentModifierFlagsMask);
 
       switch (pressedUnichar) {
+        case ' ':
+          return kMartinKeyPlayPause;
         case 'a':
           if (isModifier(flags, NSCommandKeyMask)) return kMartinKeySelectAll;
           break;

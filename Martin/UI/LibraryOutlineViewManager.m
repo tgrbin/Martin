@@ -54,6 +54,7 @@
   [ShortcutBinder bindControl:outlineView andKey:kMartinKeyQueueItems toTarget:self andAction:@selector(queueSelectedItems:)];
 
   [ShortcutBinder bindControl:outlineView andKey:kMartinKeySearch toTarget:searchTextField andAction:@selector(becomeFirstResponder)];
+  [ShortcutBinder bindControl:outlineView andKey:kMartinKeyPlayPause toTarget:[MartinAppDelegate get].player andAction:@selector(playOrPause)];
 }
 
 - (void)saveState {
@@ -313,6 +314,10 @@
   }
 
   return NO;
+}
+
+- (IBAction)searchPressed:(id)sender {
+  [searchTextField becomeFirstResponder];
 }
 
 @end

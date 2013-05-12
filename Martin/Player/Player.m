@@ -203,6 +203,10 @@ typedef enum {
   [self next];
 }
 
+- (IBAction)stopPressed:(id)sender {
+  [self stop];
+}
+
 - (void)setNowPlayingPlaylistIfNecessary {
   if (_nowPlayingPlaylist == nil) _nowPlayingPlaylist = [MartinAppDelegate get].playlistManager.selectedPlaylist;
 }

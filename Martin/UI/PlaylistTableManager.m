@@ -53,10 +53,13 @@
     @(kMartinKeySelectArtist): @"selectArtist:",
     @(kMartinKeyLeft): @"focusPlaylists",
     @(kMartinKeyCrop): @"cropSelectedItems:",
-    @(kMartinKeyShuffle): @"shuffleSelectedItems:"
+    @(kMartinKeyShuffle): @"shuffleSelectedItems:",
+    @(kMartinKeyPlayPause): @"playOrPausePressed"
   };
 
   [ShortcutBinder bindControl:playlistTable toTarget:self withBindings:bindings];
+
+  [ShortcutBinder bindControl:playlistTable andKey:kMartinKeyPlayPause toTarget:[MartinAppDelegate get].player andAction:@selector(playOrPause)];
 }
 
 - (void)reloadTableData {
