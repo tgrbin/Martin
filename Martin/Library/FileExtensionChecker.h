@@ -11,5 +11,6 @@
 @interface FileExtensionChecker : NSObject
 
 + (BOOL)isExtensionAcceptable:(const char *)filename;
++ (NSArray *)acceptableExtensions;
 
 @end

@@ -10,6 +10,7 @@
 #import "GlobalShortcuts.h"
 #import "PlaylistNameGuesser.h"
 #import "DefaultsManager.h"
+#import "FileExtensionChecker.h"
 
 @interface MartinAppDelegate()
 @property (strong) IBOutlet NSProgressIndicator *martinBusyIndicator;
@@ -64,6 +65,21 @@
 }
 
 #pragma mark - opening external files
+
+- (IBAction)openPressed:(id)sender {
+  NSOpenPanel *panel = [NSOpenPanel openPanel];
+  panel.canChooseDirectories = YES;
+  panel.canChooseFiles = YES;
+  panel.allowsMultipleSelection = YES;
+  panel.allowedFileTypes = [FileExtensionChecker acceptableExtensions];
+  panel.title = @"Open";
+
+  if ([panel runModal] == NSFileHandlingPanelOKButton) {
+    NSMutableArray *filenames = [NSMutableArray new];
+    for (NSURL *url in panel.URLs) [filenames addObject:[url path]];
+    [self addFoldersToPlaylist:filenames];
+  }
+}
 
 - (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename {
   [self addFoldersToPlaylist:@[filename]];

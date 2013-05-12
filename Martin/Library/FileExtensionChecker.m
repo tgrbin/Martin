@@ -10,16 +10,23 @@
 
 @implementation FileExtensionChecker
 
+static const int N = 7;
+static const char extensions[][5] = { "mp3", "wav", "m4a", "aac", "caf", "ac3", "aiff" };
+static const int lengths[] = { 3, 3, 3, 3, 3, 3, 4 };
+
 + (BOOL)isExtensionAcceptable:(const char *)str {
   int len = (int)strlen(str);
-  if (strcasecmp(str + len - 4, ".mp3") == 0) return YES;
-  if (strcasecmp(str + len - 4, ".wav") == 0) return YES;
-  if (strcasecmp(str + len - 4, ".m4a") == 0) return YES;
-  if (strcasecmp(str + len - 4, ".aac") == 0) return YES;
-  if (strcasecmp(str + len - 4, ".caf") == 0) return YES;
-  if (strcasecmp(str + len - 4, ".ac3") == 0) return YES;
-  if (strcasecmp(str + len - 5, ".aiff") == 0) return YES;
+
+  for (int i = 0; i < N; ++i)
+    if (strcasecmp(str + len - lengths[i], extensions[i]) == 0) return YES;
+
   return NO;
+}
+
++ (NSArray *)acceptableExtensions {
+  NSMutableArray *arr = [NSMutableArray new];
+  for (int i = 0; i < N; ++i) [arr addObject:@(extensions[i])];
+  return arr;
 }
 
 @end
