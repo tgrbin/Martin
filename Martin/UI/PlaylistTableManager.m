@@ -185,12 +185,17 @@
 }
 
 - (void)addTreeNodes:(NSArray *)treeNodes {
-  [_playlist addTreeNodes:treeNodes];
-  [self playlistChanged];
+  [self addedItemsToEndOfPlaylist:[_playlist addTreeNodes:treeNodes]];
 }
 
 - (void)addPlaylistItems:(NSArray *)items {
-  [_playlist addPlaylistItems:items];
+  [self addedItemsToEndOfPlaylist:[_playlist addPlaylistItems:items]];
+}
+
+- (void)addedItemsToEndOfPlaylist:(int)count {
+  NSIndexSet *addedIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(_playlist.numberOfItems - count, count)];
+  [playlistTable selectRowIndexes:addedIndexes byExtendingSelection:NO];
+  [playlistTable scrollRowToVisible:_playlist.numberOfItems - 1];
   [self playlistChanged];
 }
 
@@ -347,12 +352,14 @@
 - (void)gotFocus {
   if ([NSApp currentEvent].type != NSKeyDown) return;
 
-  int row = MAX(0, _playlist.currentItemIndex);
-  [playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+  if (playlistTable.selectedRowIndexes.count == 0) {
+    int row = MAX(0, _playlist.currentItemIndex);
+    [playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+  }
 }
 
 - (void)lostFocus {
-  [playlistTable deselectAll:nil];
+//  [playlistTable deselectAll:nil];
 }
 
 #pragma mark - select items actions
