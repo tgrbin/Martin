@@ -35,4 +35,6 @@
 
 - (void)takeFocus;
 
+- (void)dragExited;
+
 @end

@@ -20,10 +20,13 @@
 #import "ShortcutBinder.h"
 #import "PlaylistNameGuesser.h"
 
+static const double kDragHoverTime = 0.4;
+
 @implementation PlaylistManager {
   NSMutableArray *playlists;
 
   BOOL ignoreSelectionChange;
+  NSTimer *dragHoverTimer;
 
   NSInteger dragHoverRow;
 
@@ -264,6 +267,8 @@
 }
 
 - (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
+  [self resetDragHoverTimer];
+
   // can't drag queue within playlists table
   if (self.queue.isEmpty == NO) {
     NSString *draggingType = [info.draggingPasteboard.types lastObject];
@@ -274,7 +279,8 @@
   }
 
   if (dropOperation == NSTableViewDropOn) {
-    [self selectRow:row];
+    dragHoverRow = row;
+    [self setDragHoverTimer];
   }
 
   // can't drop anything above the queue
@@ -282,6 +288,29 @@
 
   return NSDragOperationCopy;
 }
+
+- (void)setDragHoverTimer {
+  dragHoverTimer = [NSTimer scheduledTimerWithTimeInterval:kDragHoverTime
+                                                    target:self
+                                                  selector:@selector(dragHovered)
+                                                  userInfo:nil
+                                                   repeats:NO];
+}
+
+- (void)dragHovered {
+  [self resetDragHoverTimer];
+  [self selectRow:dragHoverRow];
+}
+
+- (void)dragExited {
+  [self resetDragHoverTimer];
+}
+
+- (void)resetDragHoverTimer {
+  [dragHoverTimer invalidate];
+  dragHoverTimer = nil;
+}
+
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
   NSArray *draggingTypes = info.draggingPasteboard.types;
