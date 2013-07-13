@@ -21,6 +21,7 @@
 
 - (id)initWithName:(NSString *)n andPlaylistItems:(NSArray *)arr;
 - (id)initWithName:(NSString *)n andTreeNodes:(NSArray *)arr;
+- (id)initWithSuggestedName:(NSString *)n andTreeNodes:(NSArray *)arr;
 
 // these two method suggest playlist name based on items
 - (id)initWithTreeNodes:(NSArray *)arr;

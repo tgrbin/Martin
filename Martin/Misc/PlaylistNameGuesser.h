@@ -12,7 +12,7 @@
 
 @interface PlaylistNameGuesser : NSObject
 
-+ (void)guessNameAndAddItems:(NSArray *)items toPlaylist:(Playlist *)playlist;
++ (BOOL)guessNameAndAddItems:(NSArray *)items toPlaylist:(Playlist *)playlist;
 + (void)itemsAndNameFromFolders:(NSArray *)folders withBlock:(void (^)(NSArray *items, NSString *name))block;
 
 @end

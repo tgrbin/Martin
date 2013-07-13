@@ -125,6 +125,15 @@ using namespace std;
   return self;
 }
 
+- (id)initWithSuggestedName:(NSString *)n andTreeNodes:(NSArray *)arr {
+  if (self = [super init]) {
+    if ([PlaylistNameGuesser guessNameAndAddItems:arr toPlaylist:self] == NO) {
+      _name = [n capitalizedString];
+    }
+  }
+  return self;
+}
+
 - (id)initWithTreeNodes:(NSArray *)arr {
   if (self = [self init]) {
     [PlaylistNameGuesser guessNameAndAddItems:arr toPlaylist:self];
@@ -140,7 +149,7 @@ using namespace std;
 }
 
 - (id)init {
-  return [self initWithName:@"new playlist" andPlaylistItems:@[]];
+  return [self initWithName:@"New playlist" andPlaylistItems:@[]];
 }
 
 #pragma mark - adding and removing items

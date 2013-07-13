@@ -15,16 +15,32 @@
 
 @implementation PlaylistNameGuesser
 
-+ (void)guessNameAndAddItems:(NSArray *)arr toPlaylist:(Playlist *)playlist { // arr contains only treenodes or only playlistitems
-  if (arr.count == 0) return;
+// arr contains only treenodes or only playlistitems
+// playlistitems won't be added to playlist, they should already be in there,
+// except when called just with root item
++ (BOOL)guessNameAndAddItems:(NSArray *)arr toPlaylist:(Playlist *)playlist {
+  if (arr.count == 0) return NO;
 
   BOOL containsPlaylistItems = [arr[0] isKindOfClass:[PlaylistItem class]];
+  BOOL addingAllNodes = (arr.count == 1 && [arr[0] intValue] == 0);
+
+  if (addingAllNodes) {
+    [playlist addTreeNodes:arr];
+  }
 
   NSMutableDictionary *counts = [NSMutableDictionary new];
   NSString *onlyAlbum = @"";
 
-  for (id item in arr) {
-    if (containsPlaylistItems) {
+  int N = addingAllNodes? playlist.numberOfItems: (int)arr.count;
+  for (int i = 0; i < N; ++i) {
+    id item;
+    if (addingAllNodes) {
+      item = playlist[i];
+    } else {
+      item = arr[i];
+    }
+
+    if (containsPlaylistItems || addingAllNodes) {
       NSString *artist = [item tagValueForIndex:kTagIndexArtist];
       if (artist.length > 0) [self addInt:1 toKey:artist inDictionary:counts];
 
@@ -43,22 +59,28 @@
       int song = [Tree songFromNode:node];
       if (song != -1) node = [Tree parentOfNode:node];
 
-      int oldCount = playlist.numberOfItems;
-      [playlist addTreeNodes:@[item]];
-      [self addInt:playlist.numberOfItems-oldCount toKey:[Tree nameForNode:node] inDictionary:counts];
+      [self addInt:[playlist addTreeNodes:@[item]]
+             toKey:[Tree nameForNode:node]
+      inDictionary:counts];
     }
   }
 
   NSArray *ordered = [self orderedCounts:counts];
 
+  BOOL suggestionShouldOverrideSearchQuery = NO;
+
   NSString *suggestedName;
-  if (containsPlaylistItems && onlyAlbum && onlyAlbum.length > 0) {
+  if ((containsPlaylistItems || addingAllNodes) && onlyAlbum && onlyAlbum.length > 0) {
     suggestedName = [NSString stringWithFormat:@"%@ - %@", ordered[0][0], onlyAlbum];
+    suggestionShouldOverrideSearchQuery = YES;
   } else {
     suggestedName = [self nameFromOrdered:ordered];
+    suggestionShouldOverrideSearchQuery = (ordered.count == 1);
   }
 
   playlist.name = suggestedName;
+
+  return suggestionShouldOverrideSearchQuery;
 }
 
 + (void)itemsAndNameFromFolders:(NSArray *)folders withBlock:(void (^)(NSArray *, NSString *))block {

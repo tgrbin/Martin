@@ -128,8 +128,8 @@ static const double kDragHoverTime = 0.4;
   [self addPlaylist:[Playlist new]];
 }
 
-- (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes andName:(NSString *)name {
-  [self addPlaylist:[[Playlist alloc] initWithName:name andTreeNodes:nodes]];
+- (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes andSuggestedName:(NSString *)name {
+  [self addPlaylist:[[Playlist alloc] initWithSuggestedName:name andTreeNodes:nodes]];
 }
 
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes {
