@@ -62,6 +62,10 @@
   [DefaultsManager setObject:searchTextField.stringValue forKey:kDefaultsKeySearchQuery];
 }
 
+- (IBAction)takeFocus:(id)sender {
+  [[MartinAppDelegate get].window makeFirstResponder:outlineView];
+}
+
 #pragma mark - init tree
 
 - (void)initTree {

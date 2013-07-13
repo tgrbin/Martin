@@ -350,6 +350,10 @@
   [[MartinAppDelegate get].window makeFirstResponder:playlistTable];
 }
 
+- (IBAction)takeFocus:(id)sender {
+  [self takeFocus];
+}
+
 #pragma mark - select items actions
 
 - (IBAction)selectAllItems:(id)sender {

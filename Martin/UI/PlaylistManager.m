@@ -182,6 +182,10 @@ static const double kDragHoverTime = 0.4;
   [[MartinAppDelegate get].window makeFirstResponder:playlistsTable];
 }
 
+- (IBAction)takeFocus:(id)sender {
+  [self takeFocus];
+}
+
 - (void)focusPlaylist {
   [[MartinAppDelegate get].playlistTableManager takeFocus];
 }
