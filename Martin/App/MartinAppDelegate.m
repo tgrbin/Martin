@@ -49,6 +49,7 @@
 - (void)toggleMartinVisible {
   BOOL inForeground = [NSApp isActive];
   BOOL isVisible = _window.isVisible;
+  BOOL showedMartin = NO;
   if (inForeground) {
     if (isVisible == YES) {
       [_window performClose:nil];
@@ -58,9 +59,15 @@
       [NSApp hide:nil];
     } else {
       [_window makeKeyAndOrderFront:nil];
+      showedMartin = YES;
     }
   } else {
+    showedMartin = YES;
     [NSApp activateIgnoringOtherApps:YES];
+  }
+
+  if (showedMartin) {
+    [_playlistManager selectNowPlayingPlaylist];
   }
 }
 

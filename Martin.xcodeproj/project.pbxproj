@@ -34,7 +34,6 @@
 		799EF5ED16884D7000AD3A67 /* RescanProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 799EF5EC16884D7000AD3A67 /* RescanProxy.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		79AF97EB145305C200BE8391 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 79AF97EA145305C200BE8391 /* Player.m */; };
 		79B3706D149D21EA003372CB /* LastFM.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B3706C149D21EA003372CB /* LastFM.m */; };
-		79BB36DB17194B3E00CE306B /* PlaylistTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB36DA17194B3E00CE306B /* PlaylistTableView.m */; };
 		79C2ACB5144AB39200C2699B /* PlaylistManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C2ACB4144AB39200C2699B /* PlaylistManager.m */; };
 		79C7F523170F3DBC00B25C05 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 79C7F521170F3DBC00B25C05 /* Credits.rtf */; };
 		79C7F524170F3DBC00B25C05 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 79C7F522170F3DBC00B25C05 /* InfoPlist.strings */; };
@@ -116,8 +115,6 @@
 		79AF97EA145305C200BE8391 /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Player.m; sourceTree = "<group>"; };
 		79B3706B149D21EA003372CB /* LastFM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFM.h; sourceTree = "<group>"; };
 		79B3706C149D21EA003372CB /* LastFM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LastFM.m; sourceTree = "<group>"; };
-		79BB36D917194B3E00CE306B /* PlaylistTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistTableView.h; sourceTree = "<group>"; };
-		79BB36DA17194B3E00CE306B /* PlaylistTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistTableView.m; sourceTree = "<group>"; };
 		79C2ACB3144AB39200C2699B /* PlaylistManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistManager.h; sourceTree = "<group>"; };
 		79C2ACB4144AB39200C2699B /* PlaylistManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistManager.m; sourceTree = "<group>"; };
 		79C7F521170F3DBC00B25C05 /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
@@ -320,8 +317,6 @@
 				79C2ACB4144AB39200C2699B /* PlaylistManager.m */,
 				795C20CC14378D9600A61B21 /* PlaylistTableManager.h */,
 				795C20CD14378D9600A61B21 /* PlaylistTableManager.m */,
-				79BB36D917194B3E00CE306B /* PlaylistTableView.h */,
-				79BB36DA17194B3E00CE306B /* PlaylistTableView.m */,
 				79928CAF17918FC1003BFE3F /* PlaylistsTableView.h */,
 				79928CB017918FC1003BFE3F /* PlaylistsTableView.m */,
 			);
@@ -566,7 +561,6 @@
 				790992231706B4A3007BE3C4 /* LastFMPreferencesViewController.m in Sources */,
 				790992281706B501007BE3C4 /* ShortcutsPreferencesViewController.m in Sources */,
 				7909922C1706B5AF007BE3C4 /* PreferencesViewController.m in Sources */,
-				79BB36DB17194B3E00CE306B /* PlaylistTableView.m in Sources */,
 				79928CB117918FC1003BFE3F /* PlaylistsTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

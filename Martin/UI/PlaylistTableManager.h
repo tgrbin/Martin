@@ -24,7 +24,5 @@
 - (void)reloadTableData;
 
 - (void)takeFocus;
-- (void)gotFocus;
-- (void)lostFocus;
 
 @end

@@ -20,6 +20,8 @@
 
 - (NSArray *)playlistsAtIndexes:(NSArray *)indexes;
 
+- (void)selectNowPlayingPlaylist;
+
 - (void)reload;
 
 - (QueuePlaylist *)queue;

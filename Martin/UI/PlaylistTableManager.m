@@ -78,7 +78,8 @@
   [playlistTable reloadData];
   [self centerTableToCurrentItem];
   [self updateSortIndicator];
-  [playlistTable deselectAll:nil];
+  [playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:_playlist.currentItemIndex]
+             byExtendingSelection:NO];
 }
 
 - (void)selectFirstItem {
@@ -347,19 +348,6 @@
 
 - (void)takeFocus {
   [[MartinAppDelegate get].window makeFirstResponder:playlistTable];
-}
-
-- (void)gotFocus {
-  if ([NSApp currentEvent].type != NSKeyDown) return;
-
-  if (playlistTable.selectedRowIndexes.count == 0) {
-    int row = MAX(0, _playlist.currentItemIndex);
-    [playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
-  }
-}
-
-- (void)lostFocus {
-//  [playlistTable deselectAll:nil];
 }
 
 #pragma mark - select items actions

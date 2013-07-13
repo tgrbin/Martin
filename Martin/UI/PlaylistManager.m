@@ -155,6 +155,16 @@ static const double kDragHoverTime = 0.4;
   [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
 }
 
+- (void)selectNowPlayingPlaylist {
+  Playlist *np = [MartinAppDelegate get].player.nowPlayingPlaylist;
+  if (np) {
+    int index = (int)[playlists indexOfObject:np];
+    if (self.queue.isEmpty) --index;
+    [self selectRow:index];
+    [self updateSelectedPlaylist];
+  }
+}
+
 - (void)updateSelectedPlaylist {
   if ([self numberOfRows] == 0) {
     _selectedPlaylist = nil;
