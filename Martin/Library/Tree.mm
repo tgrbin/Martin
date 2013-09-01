@@ -17,6 +17,16 @@
 
 using namespace std;
 
+typedef enum {
+  kSearchStateNotMatching = 0,
+  kSearchStateSomeChildrenMatching = 1,
+  kSearchStateWholeNodeMatching = 2,
+  
+  // during traversal, this means that correct searchState values were already propagated to node's children
+  kSearchStateWholeNodePropagated = 3,
+  kSearchStateSomeChildrenPropagated = 4
+} SearchState;
+
 @implementation Tree
 
 static int nodesCounter;
@@ -27,7 +37,7 @@ static tr1::unordered_map<ino_t, int> nodeByInode;
 
 + (void)initialize {
   nodes.resize(128);
-  nodes[0].searchState = 2;
+  nodes[0].searchState = kSearchStateWholeNodeMatching;
   nodes[0].p_song = -1;
   nodes[0].p_parent = -1;
   nodes[0].inode = -1;
@@ -56,7 +66,7 @@ static tr1::unordered_map<ino_t, int> nodeByInode;
   songsCounter = 0;
   nodesCounter = 1;
   nodes[0].children.clear();
-  nodes[0].searchState = 2;
+  nodes[0].searchState = kSearchStateWholeNodeMatching;
   nodeByInode.clear();
 }
 
@@ -105,29 +115,29 @@ static tr1::unordered_map<ino_t, int> nodeByInode;
 + (int)numberOfChildrenForNode:(int)p_node {
   struct TreeNode &node = nodes[p_node];
   
-  if (node.searchState == 0) return 0;
+  if (node.searchState == kSearchStateNotMatching) return 0;
   
-  if (node.searchState == 1) {
+  if (node.searchState == kSearchStateSomeChildrenMatching) {
     node.searchMatchingChildren.clear();
     for (auto it = node.children.begin(); it != node.children.end(); ++it) {
       if (nodes[*it].searchState > 0) node.searchMatchingChildren.push_back(*it);
     }
-    node.searchState = 4;
+    node.searchState = kSearchStateSomeChildrenPropagated;
   }
   
-  if (node.searchState == 2) {
+  if (node.searchState == kSearchStateWholeNodeMatching) {
     for (auto it = node.children.begin(); it != node.children.end(); ++it) {
-      nodes[*it].searchState = 2;
+      nodes[*it].searchState = kSearchStateWholeNodeMatching;
     }
-    node.searchState = 3;
+    node.searchState = kSearchStateWholeNodePropagated;
   }
   
-  return (int) (node.searchState == 3? node.children.size(): node.searchMatchingChildren.size());
+  return (int) (node.searchState == kSearchStateWholeNodePropagated? node.children.size(): node.searchMatchingChildren.size());
 }
 
 + (int)childAtIndex:(int)i forNode:(int)p_node {
   struct TreeNode &node = nodes[p_node];
-  return node.searchState == 3? node.children[i]: node.searchMatchingChildren[i];
+  return node.searchState == kSearchStateWholeNodePropagated? node.children[i]: node.searchMatchingChildren[i];
 }
 
 + (int)parentOfNode:(int)p_node {
@@ -391,8 +401,10 @@ static BOOL searchInNode(int wordIndex, const struct TreeNode &node) {
 static int searchTree(int p_node) {
   struct TreeNode &node = nodes[p_node];
   
-  if (poppedCharactersFromQuery && (node.searchState == 2 || node.searchState == 3)) return 2;
-  if (appendedCharactersToQuery && node.searchState == 0) return 0;
+  BOOL wholeNodeMatching = (node.searchState == kSearchStateWholeNodeMatching || node.searchState == kSearchStateWholeNodePropagated);
+  
+  if (poppedCharactersFromQuery && wholeNodeMatching) return 1;
+  if (appendedCharactersToQuery && node.searchState == kSearchStateNotMatching) return 0;
   
   vector<int> modified;
   for (int i = 0; i < numberOfWords; ++i) {
@@ -405,15 +417,18 @@ static int searchTree(int p_node) {
     }
   }
   
-  BOOL was2 = (node.searchState == 2);
-  node.searchState = 0;
-  
   if (numberOfHits == numberOfWords) {
-    node.searchState = 2;
+    node.searchState = kSearchStateWholeNodeMatching;
   } else {
+    node.searchState = kSearchStateNotMatching;
+  
     for (auto it = node.children.begin(); it != node.children.end(); ++it) {
-      if (was2) nodes[*it].searchState = -1;
-      if (searchTree(*it)) node.searchState = 1;
+      if (wholeNodeMatching) {
+        nodes[*it].searchState = kSearchStateWholeNodeMatching;
+      }
+      if (searchTree(*it)) {
+        node.searchState = kSearchStateSomeChildrenMatching;
+      }
     }
   }
   
@@ -422,7 +437,7 @@ static int searchTree(int p_node) {
     queryHits[modified[i]] = NO;
   }
   
-  return node.searchState;
+  return node.searchState > 0? 1: 0;
 }
 
 @end

@@ -126,7 +126,7 @@ using namespace std;
 }
 
 - (id)initWithSuggestedName:(NSString *)n andTreeNodes:(NSArray *)arr {
-  if (self = [super init]) {
+  if (self = [self init]) {
     if ([PlaylistNameGuesser guessNameAndAddItems:arr toPlaylist:self] == NO) {
       _name = [n capitalizedString];
     }
