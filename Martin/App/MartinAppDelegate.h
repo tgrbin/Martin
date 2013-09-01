@@ -14,7 +14,7 @@
 #import "PreferencesWindowController.h"
 #import "FilePlayer.h"
 
-@interface MartinAppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate>
+@interface MartinAppDelegate : NSObject
 
 + (MartinAppDelegate *)get;
 

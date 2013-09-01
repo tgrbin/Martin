@@ -12,7 +12,7 @@
 #import "DefaultsManager.h"
 #import "FileExtensionChecker.h"
 
-@interface MartinAppDelegate()
+@interface MartinAppDelegate() <NSApplicationDelegate, NSWindowDelegate>
 @property (strong) IBOutlet NSProgressIndicator *martinBusyIndicator;
 @end
 

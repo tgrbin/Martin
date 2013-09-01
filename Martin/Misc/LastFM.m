@@ -110,13 +110,6 @@ static NSString *currentToken = nil;
   return [self md5HexDigest:str];
 }
 
-#pragma mark - update now playing
-
-static void updateNowPlayingCallback(WSMethodInvocationRef ref, void *info, CFDictionaryRef dict) {
-  CFRelease(ref);
-  CFRelease(dict);
-}
-
 + (void)updateNowPlaying:(PlaylistItem *)item {
 #ifndef DEBUG
   NSString *sessionKey = [self sessionKey];
@@ -140,13 +133,6 @@ static void updateNowPlayingCallback(WSMethodInvocationRef ref, void *info, CFDi
   WSMethodInvocationSetCallBack(myRef, &updateNowPlayingCallback, NULL);
   WSMethodInvocationScheduleWithRunLoop(myRef, [[NSRunLoop currentRunLoop] getCFRunLoop], (CFStringRef)NSDefaultRunLoopMode);
 #endif
-}
-
-#pragma mark - scrobble
-
-static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionaryRef dict) {
-  CFRelease(ref);
-  CFRelease(dict);
 }
 
 + (void)scrobble:(PlaylistItem *)item {
@@ -189,5 +175,18 @@ static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionary
 + (NSString *)sessionKey {
   return [DefaultsManager objectForKey:kDefaultsKeyLastFMSession];
 }
+
+#ifndef DEBUG
+static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionaryRef dict) {
+  CFRelease(ref);
+  CFRelease(dict);
+}
+
+static void updateNowPlayingCallback(WSMethodInvocationRef ref, void *info, CFDictionaryRef dict) {
+  CFRelease(ref);
+  CFRelease(dict);
+}
+
+#endif
 
 @end

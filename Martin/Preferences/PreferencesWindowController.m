@@ -13,7 +13,7 @@
 #import "LastFMPreferencesViewController.h"
 #import "ShortcutsPreferencesViewController.h"
 
-@interface PreferencesWindowController()
+@interface PreferencesWindowController() <NSTableViewDataSource, NSTableViewDelegate, NSWindowDelegate, NSToolbarDelegate>
 @property (strong) IBOutlet NSToolbar *toolbar;
 @property (strong) IBOutlet NSTabView *tabView;
 @end
