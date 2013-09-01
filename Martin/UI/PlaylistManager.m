@@ -218,6 +218,9 @@ static const double kDragHoverTime = 0.4;
 
   for (NSInteger index = [is firstIndex]; index != NSNotFound; index = [is indexGreaterThanIndex:index]) {
     [playlists[index] cancelID3Reads];
+    if ([MartinAppDelegate get].player.nowPlayingPlaylist == playlists[index]) {
+      [MartinAppDelegate get].player.nowPlayingPlaylist = nil;
+    }
     [self.queue willRemovePlaylist:playlists[index]];
   }
 

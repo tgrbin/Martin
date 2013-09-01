@@ -620,8 +620,9 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 }
 
 - (void)willRemovePlaylist:(Playlist *)p {
-  for (auto it = itemOrigin.begin(); it != itemOrigin.end(); ++it)
+  for (auto it = itemOrigin.begin(); it != itemOrigin.end(); ++it) {
     if (*it == p) *it = nil;
+  }
 }
 
 - (void)initItemOriginWithIndexArray:(NSArray *)indexArray andPlaylists:(NSArray *)playlists {
