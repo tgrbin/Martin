@@ -49,6 +49,9 @@
 - (BOOL)isEmpty;
 - (PlaylistItem *)objectAtIndexedSubscript:(int)index;
 
+- (int)numberOfPlayedItems;
+- (void)forgetPlayedItems;
+
 @property (nonatomic, readonly) int currentItemIndex;
 - (PlaylistItem *)currentItem;
 - (PlaylistItem *)moveToNextItem;

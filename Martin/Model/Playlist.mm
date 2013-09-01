@@ -53,7 +53,6 @@ using namespace std;
 #pragma mark - file stream init and output
 
 - (id)initWithFileStream:(FILE *)f {
-  
   if (self = [super init]) {
     char buff[1024];
     fgets(buff, 1024, f);
@@ -550,6 +549,10 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
   return (int)playlistItems.size();
 }
 
+- (int)numberOfPlayedItems {
+  return (int)playedItems.size();
+}
+
 - (void)myIota:(vector<int>&) v start:(int)s {
   size_t n = v.size();
   for (int i = 0; i < n; ++i) v[i] = s+i;
@@ -570,6 +573,10 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 
 - (PlaylistItem *)playlistItemAtIndex:(int)i {
   return playlistItems[i];
+}
+
+- (void)forgetPlayedItems {
+  playedItems.clear();
 }
 
 @end
