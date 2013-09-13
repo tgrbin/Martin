@@ -158,7 +158,7 @@ typedef enum {
 }
 
 - (void)setPlayButtonStyle:(PlayButtonStyle)style {
-  playOrPauseButton.title = (style == kPlayButtonStylePlay)? @">": @"II";
+  playOrPauseButton.state = (style == kPlayButtonStylePause);
 }
 
 #pragma mark - queue management

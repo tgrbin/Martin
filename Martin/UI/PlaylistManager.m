@@ -22,6 +22,11 @@
 
 static const double kDragHoverTime = 0.4;
 
+@interface PlaylistManager()
+@property (unsafe_unretained) IBOutlet NSButton *repeatButton;
+@property (unsafe_unretained) IBOutlet NSButton *shuffleButton;
+@end
+
 @implementation PlaylistManager {
   NSMutableArray *playlists;
 
@@ -112,11 +117,21 @@ static const double kDragHoverTime = 0.4;
 - (void)setShuffle:(BOOL)shuffle {
   _shuffle = shuffle;
   [DefaultsManager setObject:@(_shuffle) forKey:kDefaultsKeyShuffle];
+  _shuffleButton.state = shuffle;
 }
 
 - (void)setRepeat:(BOOL)repeat {
   _repeat = repeat;
   [DefaultsManager setObject:@(_repeat) forKey:kDefaultsKeyRepeat];
+  _repeatButton.state = repeat;
+}
+
+- (IBAction)repeatPressed:(id)sender {
+  self.repeat = !self.repeat;
+}
+
+- (IBAction)shufflePressed:(id)sender {
+  self.shuffle = !self.shuffle;
 }
 
 - (void)savePlaylists {
