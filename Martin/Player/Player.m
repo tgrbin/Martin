@@ -167,7 +167,13 @@ typedef enum {
 }
 
 - (void)setPlayButtonStyle:(PlayButtonStyle)style {
-  playOrPauseButton.state = (style == kPlayButtonStylePause);
+  if (style == kPlayButtonStylePlay) {
+    playOrPauseButton.image = [NSImage imageNamed:@"play"];
+    playOrPauseButton.alternateImage = [NSImage imageNamed:@"play_h"];
+  } else {
+    playOrPauseButton.image = [NSImage imageNamed:@"pause"];
+    playOrPauseButton.alternateImage = [NSImage imageNamed:@"pause_h"];
+  }
 }
 
 #pragma mark - queue management
