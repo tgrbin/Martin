@@ -34,10 +34,12 @@
   self.currentKnobRect = knobRect;
 
   NSImage *image = _mouseDown? _knobOnImage: _knobOffImage;
-  [image drawAtPoint:NSMakePoint(knobRect.origin.x, knobRect.origin.y)
-            fromRect:NSZeroRect
-           operation:NSCompositeSourceOver
-            fraction:1];
+  [image drawInRect:NSMakeRect(knobRect.origin.x, knobRect.origin.y, image.size.width, image.size.height)
+           fromRect:NSZeroRect
+          operation:NSCompositeSourceOver
+           fraction:1
+     respectFlipped:YES
+              hints:nil];
 }
 
 - (BOOL)startTrackingAt:(NSPoint)startPoint inView:(NSView *)controlView {
@@ -51,23 +53,27 @@
 }
 
 - (void)drawBarInside:(NSRect)aRect flipped:(BOOL)flipped {
-  static const int kBarY = 9;
+  static const int kBarY = 10;
   static const int kBarMargin = 8; // subsctracted from left and right of the bar so that knob covers the bar completely
   static const int kBarHeight = 6;
 
   NSRect backgroundRect = NSMakeRect(kBarMargin, kBarY, aRect.size.width - kBarMargin*2, kBarHeight);
   [_barBackgroundImage setSize:backgroundRect.size];
   [_barBackgroundImage drawInRect:backgroundRect
-                    fromRect:NSZeroRect
-                   operation:NSCompositeSourceOver
-                    fraction:1];
+                         fromRect:NSZeroRect
+                        operation:NSCompositeSourceOver
+                         fraction:1
+                   respectFlipped:YES
+                            hints:nil];
 
   NSRect filledRect = NSMakeRect(kBarMargin, kBarY, _currentKnobRect.origin.x, kBarHeight);
   [_leftBarImage setSize:filledRect.size];
   [_leftBarImage drawInRect:filledRect
                    fromRect:NSZeroRect
                   operation:NSCompositeSourceOver
-                   fraction:1];
+                   fraction:1
+             respectFlipped:YES
+                      hints:nil];
 }
 
 - (BOOL)_usesCustomTrackImage {
