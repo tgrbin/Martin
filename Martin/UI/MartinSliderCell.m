@@ -37,7 +37,7 @@
   [image drawAtPoint:NSMakePoint(knobRect.origin.x, knobRect.origin.y)
             fromRect:NSZeroRect
            operation:NSCompositeSourceOver
-            fraction:0.5];
+            fraction:1];
 }
 
 - (BOOL)startTrackingAt:(NSPoint)startPoint inView:(NSView *)controlView {

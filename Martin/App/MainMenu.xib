@@ -759,7 +759,7 @@
 					<bool key="NSToolbarAllowsUserCustomization">NO</bool>
 					<bool key="NSToolbarAutosavesConfiguration">NO</bool>
 					<int key="NSToolbarDisplayMode">2</int>
-					<int key="NSToolbarSizeMode">1</int>
+					<int key="NSToolbarSizeMode">2</int>
 					<dictionary class="NSMutableDictionary" key="NSToolbarIBIdentifiedItems">
 						<object class="NSToolbarItem" key="6F179BAD-DA62-49B8-B109-44E8D9A8D41F" id="384538965">
 							<object class="NSMutableString" key="NSToolbarItemIdentifier">
@@ -780,7 +780,7 @@
 												<reference key="NSNextResponder" ref="213973519"/>
 												<int key="NSvFlags">1292</int>
 												<object class="NSPSMatrix" key="NSFrameMatrix"/>
-												<string key="NSFrame">{{84, 17}, {26, 26}}</string>
+												<string key="NSFrame">{{84, 7}, {26, 26}}</string>
 												<reference key="NSSuperview" ref="213973519"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView" ref="818987398"/>
@@ -816,7 +816,7 @@
 												<reference key="NSNextResponder" ref="213973519"/>
 												<int key="NSvFlags">1292</int>
 												<object class="NSPSMatrix" key="NSFrameMatrix"/>
-												<string key="NSFrame">{{7, 17}, {26, 26}}</string>
+												<string key="NSFrame">{{7, 7}, {26, 26}}</string>
 												<reference key="NSSuperview" ref="213973519"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView" ref="807388696"/>
@@ -848,7 +848,7 @@
 												<reference key="NSNextResponder" ref="213973519"/>
 												<int key="NSvFlags">1292</int>
 												<object class="NSPSMatrix" key="NSFrameMatrix"/>
-												<string key="NSFrame">{{5, 0}, {152, 21}}</string>
+												<string key="NSFrame">{{5, -10}, {152, 21}}</string>
 												<reference key="NSSuperview" ref="213973519"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView"/>
@@ -872,7 +872,7 @@
 												<reference key="NSNextResponder" ref="213973519"/>
 												<int key="NSvFlags">-2147482356</int>
 												<object class="NSPSMatrix" key="NSFrameMatrix"/>
-												<string key="NSFrame">{{155, 27}, {16, 16}}</string>
+												<string key="NSFrame">{{155, 17}, {16, 16}}</string>
 												<reference key="NSSuperview" ref="213973519"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView" ref="154152356"/>
@@ -881,14 +881,14 @@
 												<double key="NSMaxValue">100</double>
 											</object>
 										</array>
-										<string key="NSFrameSize">{180, 50}</string>
+										<string key="NSFrameSize">{200, 40}</string>
 										<reference key="NSSuperview" ref="567820236"/>
 										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="349993954"/>
 										<string key="NSReuseIdentifierKey">_NS:11</string>
 									</object>
 								</array>
-								<string key="NSFrame">{{0, 14}, {180, 50}}</string>
+								<string key="NSFrame">{{0, 14}, {200, 40}}</string>
 								<reference key="NSSuperview"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="213973519"/>
@@ -931,8 +931,8 @@
 							<nil key="NSToolbarItemImage"/>
 							<nil key="NSToolbarItemTarget"/>
 							<nil key="NSToolbarItemAction"/>
-							<string key="NSToolbarItemMinSize">{180, 50}</string>
-							<string key="NSToolbarItemMaxSize">{180, 50}</string>
+							<string key="NSToolbarItemMinSize">{200, 40}</string>
+							<string key="NSToolbarItemMaxSize">{200, 40}</string>
 							<bool key="NSToolbarItemEnabled">YES</bool>
 							<bool key="NSToolbarItemAutovalidates">YES</bool>
 							<int key="NSToolbarItemTag">-1</int>
@@ -958,7 +958,7 @@
 												<reference key="NSNextResponder" ref="910504900"/>
 												<int key="NSvFlags">1292</int>
 												<object class="NSPSMatrix" key="NSFrameMatrix"/>
-												<string key="NSFrame">{{16, 10}, {30, 30}}</string>
+												<string key="NSFrame">{{39, 12}, {30, 30}}</string>
 												<reference key="NSSuperview" ref="910504900"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView" ref="889160600"/>
@@ -991,7 +991,7 @@
 												<reference key="NSNextResponder" ref="910504900"/>
 												<int key="NSvFlags">1292</int>
 												<object class="NSPSMatrix" key="NSFrameMatrix"/>
-												<string key="NSFrame">{{62, 12}, {26, 26}}</string>
+												<string key="NSFrame">{{89, 17}, {26, 26}}</string>
 												<reference key="NSSuperview" ref="910504900"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView" ref="7000536"/>
@@ -1024,7 +1024,7 @@
 												<reference key="NSNextResponder" ref="910504900"/>
 												<int key="NSvFlags">1292</int>
 												<object class="NSPSMatrix" key="NSFrameMatrix"/>
-												<string key="NSFrame">{{99, 10}, {30, 30}}</string>
+												<string key="NSFrame">{{132, 12}, {30, 30}}</string>
 												<reference key="NSSuperview" ref="910504900"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView"/>
@@ -1054,14 +1054,14 @@
 												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											</object>
 										</array>
-										<string key="NSFrameSize">{147, 46}</string>
+										<string key="NSFrameSize">{200, 40}</string>
 										<reference key="NSSuperview" ref="376459325"/>
 										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="501294306"/>
 										<string key="NSReuseIdentifierKey">_NS:11</string>
 									</object>
 								</array>
-								<string key="NSFrame">{{0, 14}, {147, 46}}</string>
+								<string key="NSFrame">{{0, 14}, {200, 40}}</string>
 								<reference key="NSSuperview"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="910504900"/>
@@ -1089,8 +1089,8 @@
 							<nil key="NSToolbarItemImage"/>
 							<nil key="NSToolbarItemTarget"/>
 							<nil key="NSToolbarItemAction"/>
-							<string key="NSToolbarItemMinSize">{147, 46}</string>
-							<string key="NSToolbarItemMaxSize">{147, 50}</string>
+							<string key="NSToolbarItemMinSize">{200, 40}</string>
+							<string key="NSToolbarItemMaxSize">{200, 40}</string>
 							<bool key="NSToolbarItemEnabled">YES</bool>
 							<bool key="NSToolbarItemAutovalidates">YES</bool>
 							<int key="NSToolbarItemTag">-1</int>
@@ -1116,7 +1116,7 @@
 												<reference key="NSNextResponder" ref="273953564"/>
 												<int key="NSvFlags">1290</int>
 												<object class="NSPSMatrix" key="NSFrameMatrix"/>
-												<string key="NSFrame">{{8, 15}, {385, 35}}</string>
+												<string key="NSFrame">{{8, 5}, {385, 35}}</string>
 												<reference key="NSSuperview" ref="273953564"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView"/>
@@ -1177,14 +1177,14 @@
 												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											</object>
 										</array>
-										<string key="NSFrameSize">{400, 50}</string>
+										<string key="NSFrameSize">{400, 40}</string>
 										<reference key="NSSuperview" ref="227961034"/>
 										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="562110583"/>
 										<string key="NSReuseIdentifierKey">_NS:11</string>
 									</object>
 								</array>
-								<string key="NSFrame">{{0, 14}, {400, 50}}</string>
+								<string key="NSFrame">{{0, 14}, {400, 40}}</string>
 								<reference key="NSSuperview"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="273953564"/>
@@ -1212,8 +1212,8 @@
 							<nil key="NSToolbarItemImage"/>
 							<nil key="NSToolbarItemTarget"/>
 							<nil key="NSToolbarItemAction"/>
-							<string key="NSToolbarItemMinSize">{171, 50}</string>
-							<string key="NSToolbarItemMaxSize">{400, 50}</string>
+							<string key="NSToolbarItemMinSize">{171, 40}</string>
+							<string key="NSToolbarItemMaxSize">{400, 40}</string>
 							<bool key="NSToolbarItemEnabled">YES</bool>
 							<bool key="NSToolbarItemAutovalidates">YES</bool>
 							<int key="NSToolbarItemTag">-1</int>
@@ -1248,7 +1248,7 @@
 							</object>
 						</object>
 					</dictionary>
-					<array key="NSToolbarIBAllowedItems">
+					<array class="NSMutableArray" key="NSToolbarIBAllowedItems">
 						<reference ref="817240581"/>
 						<reference ref="260644457"/>
 						<reference ref="870249344"/>
@@ -2024,7 +2024,7 @@
 					<reference key="NSNextKeyView" ref="568533982"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
-				<string key="NSMinSize">{700, 480}</string>
+				<string key="NSMinSize">{700, 470}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<string key="NSFrameAutosaveName">MainWindow</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -3723,9 +3723,9 @@
 						<string key="id">Li3-Gu-nFX</string>
 						<reference key="object" ref="376459325"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="7000536"/>
 							<reference ref="501294306"/>
 							<reference ref="889160600"/>
+							<reference ref="7000536"/>
 						</array>
 						<reference key="parent" ref="817240581"/>
 					</object>
