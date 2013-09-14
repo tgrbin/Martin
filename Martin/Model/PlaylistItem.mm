@@ -125,19 +125,6 @@ static NSOperationQueue *operationQueue;
   }
 }
 
-- (NSString *)prettyName {
-  NSString *artist = [self tagValueForIndex:kTagIndexArtist];
-  NSString *album = [self tagValueForIndex:kTagIndexAlbum];
-  NSString *title = [self tagValueForIndex:kTagIndexTitle];
-  
-  if (title.length == 0) {
-    NSArray *arr = [self.filename pathComponents];
-    return [NSString stringWithFormat:@"%@/%@", arr[arr.count-2], arr.lastObject];
-  } else {
-    return [NSString stringWithFormat:@"%@ - %@ - %@", artist, album, title];
-  }
-}
-
 - (void)outputToFileStream:(FILE *)f {
   [self checkLibrarySong];
   

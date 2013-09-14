@@ -71,7 +71,7 @@ typedef enum {
   [self setPlayButtonStyle:kPlayButtonStylePause];
   [LastFM updateNowPlaying:_nowPlayingPlaylist.currentItem];
 
-  playerStatusTextField.displayString = _nowPlayingPlaylist.currentItem.prettyName;
+  playerStatusTextField.playlistItem = _nowPlayingPlaylist.currentItem;
   playerStatusTextField.status = kTextFieldStatusPlaying;
 }
 

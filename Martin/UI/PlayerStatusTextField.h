@@ -14,9 +14,12 @@ typedef enum {
   kTextFieldStatusPlaying
 } TextFieldStatus;
 
+@class PlaylistItem;
+
 @interface PlayerStatusTextField : NSTextField
 
 @property (nonatomic, assign) TextFieldStatus status;
-@property (nonatomic, strong) NSString *displayString;
+
+@property (nonatomic, strong) PlaylistItem *playlistItem;
 
 @end

@@ -23,7 +23,6 @@
 - (void)createTagsFromArray:(NSArray *)array;
 
 - (NSString *)tagValueForIndex:(TagIndex)i;
-- (NSString *)prettyName;
 
 - (void)outputToFileStream:(FILE *)f;
 
