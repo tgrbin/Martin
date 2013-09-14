@@ -50,14 +50,14 @@ static const double kDragHoverTime = 0.4;
   [self observe:kFilePlayerEventNotification withAction:@selector(handlePlayerEvent)];
 
   [self bindShortcuts];
+
+  self.shuffle = [[DefaultsManager objectForKey:kDefaultsKeyShuffle] boolValue];
+  self.repeat = [[DefaultsManager objectForKey:kDefaultsKeyRepeat] boolValue];
 }
 
 - (id)init {
   if (self = [super init]) {
     [LibManager initLibrary];
-
-    _shuffle = [[DefaultsManager objectForKey:kDefaultsKeyShuffle] boolValue];
-    _repeat = [[DefaultsManager objectForKey:kDefaultsKeyRepeat] boolValue];
     playlists = [NSMutableArray arrayWithArray:[PlaylistPersistence loadPlaylists]];
   }
 
