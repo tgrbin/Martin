@@ -1552,7 +1552,7 @@
 													<object class="NSPSMatrix" key="NSFrameMatrix"/>
 													<string key="NSFrameSize">{127, 598}</string>
 													<reference key="NSSuperview" ref="126021442"/>
-													<reference key="NSNextKeyView" ref="382821415"/>
+													<reference key="NSNextKeyView" ref="856753234"/>
 													<bool key="NSEnabled">YES</bool>
 													<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 													<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -1642,7 +1642,7 @@
 									<object class="NSPSMatrix" key="NSFrameMatrix"/>
 									<string key="NSFrame">{{218, 0}, {129, 600}}</string>
 									<reference key="NSSuperview" ref="568533982"/>
-									<reference key="NSNextKeyView" ref="126021442"/>
+									<reference key="NSNextKeyView" ref="382821415"/>
 									<bool key="NSDoNotTranslateAutoresizingMask">YES</bool>
 									<int key="NSsFlags">154130</int>
 									<reference key="NSVScroller" ref="856753234"/>
@@ -1667,7 +1667,7 @@
 													<object class="NSPSMatrix" key="NSFrameMatrix"/>
 													<string key="NSFrameSize">{550, 582}</string>
 													<reference key="NSSuperview" ref="780036824"/>
-													<reference key="NSNextKeyView" ref="802531692"/>
+													<reference key="NSNextKeyView" ref="1049701428"/>
 													<bool key="NSEnabled">YES</bool>
 													<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 													<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -1947,7 +1947,7 @@
 									<object class="NSPSMatrix" key="NSFrameMatrix"/>
 									<string key="NSFrame">{{348, 0}, {552, 600}}</string>
 									<reference key="NSSuperview" ref="568533982"/>
-									<reference key="NSNextKeyView" ref="780036824"/>
+									<reference key="NSNextKeyView" ref="802531692"/>
 									<bool key="NSDoNotTranslateAutoresizingMask">YES</bool>
 									<int key="NSsFlags">154162</int>
 									<reference key="NSVScroller" ref="1049701428"/>
@@ -4009,7 +4009,7 @@
 				<boolean value="NO" key="689.showNotes"/>
 				<string key="690.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="NO" key="690.showNotes"/>
-				<string key="691.CustomClassName">TGToggleButton</string>
+				<string key="691.CustomClassName">MartinToggleButton</string>
 				<string key="691.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<reference key="691.IBUserGuides" ref="0"/>
 				<boolean value="NO" key="691.showNotes"/>
@@ -4031,22 +4031,24 @@
 				<string key="727.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<reference key="727.IBUserGuides" ref="0"/>
 				<boolean value="NO" key="727.showNotes"/>
+				<string key="728.CustomClassName">MartinSliderCell</string>
 				<string key="728.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="NO" key="728.showNotes"/>
 				<string key="737.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<reference key="737.IBUserGuides" ref="0"/>
 				<boolean value="NO" key="737.showNotes"/>
+				<string key="738.CustomClassName">MartinSliderCell</string>
 				<string key="738.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="NO" key="738.showNotes"/>
 				<string key="758.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="NO" key="758.showNotes"/>
-				<string key="767.CustomClassName">TGToggleButton</string>
+				<string key="767.CustomClassName">MartinToggleButton</string>
 				<string key="767.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<reference key="767.IBUserGuides" ref="0"/>
 				<boolean value="NO" key="767.showNotes"/>
 				<string key="768.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="NO" key="768.showNotes"/>
-				<string key="769.CustomClassName">TGToggleButton</string>
+				<string key="769.CustomClassName">MartinToggleButton</string>
 				<string key="769.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<reference key="769.IBUserGuides" ref="0"/>
 				<boolean value="NO" key="769.showNotes"/>

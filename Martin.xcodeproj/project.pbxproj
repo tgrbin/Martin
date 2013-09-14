@@ -23,21 +23,22 @@
 		79242E311656B0CF006379D6 /* PreferencesWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79242E2F1656B0CF006379D6 /* PreferencesWindowController.xib */; };
 		792831A117E35BED00223E5C /* fwd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7928319317E35BED00223E5C /* fwd.png */; };
 		792831A217E35BED00223E5C /* fwd_h.png in Resources */ = {isa = PBXBuildFile; fileRef = 7928319417E35BED00223E5C /* fwd_h.png */; };
-		792831A317E35BED00223E5C /* handle.png in Resources */ = {isa = PBXBuildFile; fileRef = 7928319517E35BED00223E5C /* handle.png */; };
-		792831A417E35BED00223E5C /* handle_h.png in Resources */ = {isa = PBXBuildFile; fileRef = 7928319617E35BED00223E5C /* handle_h.png */; };
 		792831A517E35BED00223E5C /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 7928319717E35BED00223E5C /* play.png */; };
 		792831A617E35BED00223E5C /* play_h.png in Resources */ = {isa = PBXBuildFile; fileRef = 7928319817E35BED00223E5C /* play_h.png */; };
-		792831A717E35BED00223E5C /* progress.png in Resources */ = {isa = PBXBuildFile; fileRef = 7928319917E35BED00223E5C /* progress.png */; };
-		792831A817E35BED00223E5C /* progress_a.png in Resources */ = {isa = PBXBuildFile; fileRef = 7928319A17E35BED00223E5C /* progress_a.png */; };
 		792831A917E35BED00223E5C /* repeat.png in Resources */ = {isa = PBXBuildFile; fileRef = 7928319B17E35BED00223E5C /* repeat.png */; };
 		792831AA17E35BED00223E5C /* repeat_h.png in Resources */ = {isa = PBXBuildFile; fileRef = 7928319C17E35BED00223E5C /* repeat_h.png */; };
 		792831AB17E35BED00223E5C /* rwd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7928319D17E35BED00223E5C /* rwd.png */; };
 		792831AC17E35BED00223E5C /* rwd_h.png in Resources */ = {isa = PBXBuildFile; fileRef = 7928319E17E35BED00223E5C /* rwd_h.png */; };
 		792831AD17E35BED00223E5C /* shuffle.png in Resources */ = {isa = PBXBuildFile; fileRef = 7928319F17E35BED00223E5C /* shuffle.png */; };
 		792831AE17E35BED00223E5C /* shuffle_h.png in Resources */ = {isa = PBXBuildFile; fileRef = 792831A017E35BED00223E5C /* shuffle_h.png */; };
-		792831B117E365D500223E5C /* TGToggleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 792831B017E365D500223E5C /* TGToggleButton.m */; };
 		792DC197166B5D390003E664 /* Tags.m in Sources */ = {isa = PBXBuildFile; fileRef = 792DC196166B5D390003E664 /* Tags.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		792DC19B166B6E5D0003E664 /* Tree.mm in Sources */ = {isa = PBXBuildFile; fileRef = 792DC19A166B6E5D0003E664 /* Tree.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		795022E017E42A4B00212801 /* MartinToggleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 795022DF17E42A4B00212801 /* MartinToggleButton.m */; };
+		795022E317E42B5100212801 /* MartinSliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 795022E217E42B5100212801 /* MartinSliderCell.m */; };
+		795022E917E42C4800212801 /* handle.png in Resources */ = {isa = PBXBuildFile; fileRef = 795022E517E42C4800212801 /* handle.png */; };
+		795022EA17E42C4800212801 /* handle_h.png in Resources */ = {isa = PBXBuildFile; fileRef = 795022E617E42C4800212801 /* handle_h.png */; };
+		795022EB17E42C4800212801 /* progress.png in Resources */ = {isa = PBXBuildFile; fileRef = 795022E717E42C4800212801 /* progress.png */; };
+		795022EC17E42C4800212801 /* progress_a.png in Resources */ = {isa = PBXBuildFile; fileRef = 795022E817E42C4800212801 /* progress_a.png */; };
 		795A6CC016E6582500215458 /* SRCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 795A6CB316E6582500215458 /* SRCommon.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		795A6CC116E6582500215458 /* SRKeyCodeTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 795A6CB516E6582500215458 /* SRKeyCodeTransformer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		795A6CC216E6582500215458 /* SRRecorderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 795A6CB716E6582500215458 /* SRRecorderCell.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -104,24 +105,26 @@
 		79242E2F1656B0CF006379D6 /* PreferencesWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PreferencesWindowController.xib; sourceTree = "<group>"; };
 		7928319317E35BED00223E5C /* fwd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fwd.png; sourceTree = "<group>"; };
 		7928319417E35BED00223E5C /* fwd_h.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fwd_h.png; sourceTree = "<group>"; };
-		7928319517E35BED00223E5C /* handle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = handle.png; sourceTree = "<group>"; };
-		7928319617E35BED00223E5C /* handle_h.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = handle_h.png; sourceTree = "<group>"; };
 		7928319717E35BED00223E5C /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
 		7928319817E35BED00223E5C /* play_h.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play_h.png; sourceTree = "<group>"; };
-		7928319917E35BED00223E5C /* progress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = progress.png; sourceTree = "<group>"; };
-		7928319A17E35BED00223E5C /* progress_a.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = progress_a.png; sourceTree = "<group>"; };
 		7928319B17E35BED00223E5C /* repeat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = repeat.png; sourceTree = "<group>"; };
 		7928319C17E35BED00223E5C /* repeat_h.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = repeat_h.png; sourceTree = "<group>"; };
 		7928319D17E35BED00223E5C /* rwd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rwd.png; sourceTree = "<group>"; };
 		7928319E17E35BED00223E5C /* rwd_h.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rwd_h.png; sourceTree = "<group>"; };
 		7928319F17E35BED00223E5C /* shuffle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuffle.png; sourceTree = "<group>"; };
 		792831A017E35BED00223E5C /* shuffle_h.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuffle_h.png; sourceTree = "<group>"; };
-		792831AF17E365D500223E5C /* TGToggleButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGToggleButton.h; sourceTree = "<group>"; };
-		792831B017E365D500223E5C /* TGToggleButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGToggleButton.m; sourceTree = "<group>"; };
 		792DC195166B5D390003E664 /* Tags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tags.h; sourceTree = "<group>"; };
 		792DC196166B5D390003E664 /* Tags.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tags.m; sourceTree = "<group>"; };
 		792DC199166B6E5D0003E664 /* Tree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tree.h; sourceTree = "<group>"; };
 		792DC19A166B6E5D0003E664 /* Tree.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Tree.mm; sourceTree = "<group>"; };
+		795022DE17E42A4B00212801 /* MartinToggleButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MartinToggleButton.h; sourceTree = "<group>"; };
+		795022DF17E42A4B00212801 /* MartinToggleButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MartinToggleButton.m; sourceTree = "<group>"; };
+		795022E117E42B5100212801 /* MartinSliderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MartinSliderCell.h; sourceTree = "<group>"; };
+		795022E217E42B5100212801 /* MartinSliderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MartinSliderCell.m; sourceTree = "<group>"; };
+		795022E517E42C4800212801 /* handle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = handle.png; sourceTree = "<group>"; };
+		795022E617E42C4800212801 /* handle_h.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = handle_h.png; sourceTree = "<group>"; };
+		795022E717E42C4800212801 /* progress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = progress.png; sourceTree = "<group>"; };
+		795022E817E42C4800212801 /* progress_a.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = progress_a.png; sourceTree = "<group>"; };
 		795A6CB116E6582500215458 /* ShortcutRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShortcutRecorder.h; path = 3rd/ShortcutRecorder/ShortcutRecorder.h; sourceTree = "<group>"; };
 		795A6CB216E6582500215458 /* SRCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SRCommon.h; path = 3rd/ShortcutRecorder/SRCommon.h; sourceTree = "<group>"; };
 		795A6CB316E6582500215458 /* SRCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SRCommon.m; path = 3rd/ShortcutRecorder/SRCommon.m; sourceTree = "<group>"; };
@@ -322,16 +325,23 @@
 				7928319817E35BED00223E5C /* play_h.png */,
 				7928319317E35BED00223E5C /* fwd.png */,
 				7928319417E35BED00223E5C /* fwd_h.png */,
-				7928319517E35BED00223E5C /* handle.png */,
-				7928319617E35BED00223E5C /* handle_h.png */,
-				7928319917E35BED00223E5C /* progress.png */,
-				7928319A17E35BED00223E5C /* progress_a.png */,
 				7928319B17E35BED00223E5C /* repeat.png */,
 				7928319C17E35BED00223E5C /* repeat_h.png */,
 				7928319F17E35BED00223E5C /* shuffle.png */,
 				792831A017E35BED00223E5C /* shuffle_h.png */,
 			);
 			path = Toolbar;
+			sourceTree = "<group>";
+		};
+		795022E417E42C4800212801 /* Slider */ = {
+			isa = PBXGroup;
+			children = (
+				795022E517E42C4800212801 /* handle.png */,
+				795022E617E42C4800212801 /* handle_h.png */,
+				795022E717E42C4800212801 /* progress.png */,
+				795022E817E42C4800212801 /* progress_a.png */,
+			);
+			path = Slider;
 			sourceTree = "<group>";
 		};
 		795A6CAA16E6572400215458 /* 3rd */ = {
@@ -371,6 +381,10 @@
 				795C20CD14378D9600A61B21 /* PlaylistTableManager.m */,
 				79928CAF17918FC1003BFE3F /* PlaylistsTableView.h */,
 				79928CB017918FC1003BFE3F /* PlaylistsTableView.m */,
+				795022DE17E42A4B00212801 /* MartinToggleButton.h */,
+				795022DF17E42A4B00212801 /* MartinToggleButton.m */,
+				795022E117E42B5100212801 /* MartinSliderCell.h */,
+				795022E217E42B5100212801 /* MartinSliderCell.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -380,6 +394,7 @@
 			children = (
 				79C7F520170F3ADB00B25C05 /* App */,
 				7928319217E35BED00223E5C /* Toolbar */,
+				795022E417E42C4800212801 /* Slider */,
 			);
 			path = Assets;
 			sourceTree = "<group>";
@@ -411,8 +426,6 @@
 				79F55D6816EC6C66004510B0 /* PlaylistNameGuesser.m */,
 				79F55D6A16EC7A88004510B0 /* ID3ReadOperation.h */,
 				79F55D6B16EC7A88004510B0 /* ID3ReadOperation.m */,
-				792831AF17E365D500223E5C /* TGToggleButton.h */,
-				792831B017E365D500223E5C /* TGToggleButton.m */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
@@ -559,25 +572,25 @@
 			files = (
 				79D5760F1431074D00A2DA67 /* icon.icns in Resources */,
 				79242E311656B0CF006379D6 /* PreferencesWindowController.xib in Resources */,
+				795022EA17E42C4800212801 /* handle_h.png in Resources */,
 				792831A217E35BED00223E5C /* fwd_h.png in Resources */,
 				792831AB17E35BED00223E5C /* rwd.png in Resources */,
+				795022EB17E42C4800212801 /* progress.png in Resources */,
 				792831AE17E35BED00223E5C /* shuffle_h.png in Resources */,
 				792831AC17E35BED00223E5C /* rwd_h.png in Resources */,
 				7909921F1706B427007BE3C4 /* LibraryPreferencesViewController.xib in Resources */,
 				792831A117E35BED00223E5C /* fwd.png in Resources */,
 				790992241706B4A3007BE3C4 /* LastFMPreferencesViewController.xib in Resources */,
-				792831A817E35BED00223E5C /* progress_a.png in Resources */,
 				790992291706B501007BE3C4 /* ShortcutsPreferencesViewController.xib in Resources */,
+				795022EC17E42C4800212801 /* progress_a.png in Resources */,
 				79C7F523170F3DBC00B25C05 /* Credits.rtf in Resources */,
 				792831AA17E35BED00223E5C /* repeat_h.png in Resources */,
-				792831A317E35BED00223E5C /* handle.png in Resources */,
 				79C7F524170F3DBC00B25C05 /* InfoPlist.strings in Resources */,
-				792831A417E35BED00223E5C /* handle_h.png in Resources */,
 				792831AD17E35BED00223E5C /* shuffle.png in Resources */,
 				792831A517E35BED00223E5C /* play.png in Resources */,
 				792831A617E35BED00223E5C /* play_h.png in Resources */,
 				79C7F526170F3DF600B25C05 /* MainMenu.xib in Resources */,
-				792831A717E35BED00223E5C /* progress.png in Resources */,
+				795022E917E42C4800212801 /* handle.png in Resources */,
 				792831A917E35BED00223E5C /* repeat.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -592,6 +605,7 @@
 				79E98E1A1679A65B00559F14 /* TagsUtils.mm in Sources */,
 				79FF1407142F18A500E27235 /* main.m in Sources */,
 				79FF140E142F18A500E27235 /* MartinAppDelegate.m in Sources */,
+				795022E317E42B5100212801 /* MartinSliderCell.m in Sources */,
 				79FF1422142F1DB100E27235 /* LibManager.mm in Sources */,
 				79F5BC1014363BE10040DF35 /* LibraryOutlineViewManager.m in Sources */,
 				795C20AE14377A3E00A61B21 /* Playlist.mm in Sources */,
@@ -600,13 +614,13 @@
 				79AF97EB145305C200BE8391 /* Player.m in Sources */,
 				79B3706D149D21EA003372CB /* LastFM.m in Sources */,
 				79242E1E16569A47006379D6 /* ID3Reader.m in Sources */,
+				795022E017E42A4B00212801 /* MartinToggleButton.m in Sources */,
 				79242E231656AB1C006379D6 /* LibraryFolder.m in Sources */,
 				79242E301656B0CF006379D6 /* PreferencesWindowController.m in Sources */,
 				79DEAD62165BD81C0017E4DD /* PlaylistItem.mm in Sources */,
 				79DCB7AA165FFB3B00077082 /* FilePlayer.m in Sources */,
 				792DC197166B5D390003E664 /* Tags.m in Sources */,
 				792DC19B166B6E5D0003E664 /* Tree.mm in Sources */,
-				792831B117E365D500223E5C /* TGToggleButton.m in Sources */,
 				79EDE63E1678EB9A0060F9F9 /* FolderWatcher.m in Sources */,
 				799EF5ED16884D7000AD3A67 /* RescanProxy.m in Sources */,
 				79D63C65168C438100A248F9 /* RescanState.m in Sources */,

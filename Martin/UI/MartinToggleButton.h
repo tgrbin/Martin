@@ -8,6 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface TGToggleButton : NSButton
+@interface MartinToggleButton : NSButton
 
 @end

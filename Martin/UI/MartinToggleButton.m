@@ -6,9 +6,9 @@
 //
 //
 
-#import "TGToggleButton.h"
+#import "MartinToggleButton.h"
 
-@implementation TGToggleButton {
+@implementation MartinToggleButton {
   NSInteger myCurrentValue;
 }
 
