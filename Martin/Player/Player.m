@@ -97,8 +97,13 @@ typedef enum {
     }
   } else {
     [[MartinAppDelegate get].filePlayer togglePause];
-    [self setPlayButtonStyle:[[MartinAppDelegate get].filePlayer playing]? kPlayButtonStylePause: kPlayButtonStylePlay];
-    playerStatusTextField.status = kTextFieldStatusPaused;
+    if ([[MartinAppDelegate get].filePlayer playing]) {
+      [self setPlayButtonStyle:kPlayButtonStylePause];
+      playerStatusTextField.status = kTextFieldStatusPlaying;
+    } else {
+      [self setPlayButtonStyle:kPlayButtonStylePlay];
+      playerStatusTextField.status = kTextFieldStatusPaused;
+    }
   }
 }
 
