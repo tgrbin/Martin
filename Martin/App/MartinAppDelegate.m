@@ -16,6 +16,7 @@
 @property (nonatomic, strong) IBOutlet NSProgressIndicator *martinBusyIndicator;
 @property (nonatomic, strong) IBOutlet NSBox *rightControlsView;
 @property (nonatomic, unsafe_unretained) IBOutlet NSView *contentView;
+@property (nonatomic, strong) IBOutlet NSTextField *playerStatusTextField;
 @end
 
 @implementation MartinAppDelegate
@@ -184,6 +185,12 @@
                                         60);
   [_contentView.superview addSubview:_rightControlsView];
 
+  [_playerStatusTextField removeFromSuperview];
+  _playerStatusTextField.frame = NSMakeRect((_contentView.frame.size.width - _playerStatusTextField.frame.size.width)/2,
+                                            _contentView.frame.size.height + 27,
+                                            _playerStatusTextField.frame.size.width,
+                                            _playerStatusTextField.frame.size.height);
+  [_contentView.superview addSubview:_playerStatusTextField];
 }
 
 @end
