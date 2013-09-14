@@ -15,7 +15,7 @@
 @property (nonatomic, strong) NSImage *barBackgroundImage;
 
 @property (nonatomic, assign) BOOL mouseDown;
-@property (nonatomic, assign) CGRect currentKnobRect;
+@property (nonatomic, assign) NSRect currentKnobRect;
 @end
 
 @implementation MartinSliderCell

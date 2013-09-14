@@ -13,7 +13,9 @@
 #import "FileExtensionChecker.h"
 
 @interface MartinAppDelegate() <NSApplicationDelegate, NSWindowDelegate>
-@property (strong) IBOutlet NSProgressIndicator *martinBusyIndicator;
+@property (nonatomic, strong) IBOutlet NSProgressIndicator *martinBusyIndicator;
+@property (nonatomic, strong) IBOutlet NSBox *rightControlsView;
+@property (nonatomic, unsafe_unretained) IBOutlet NSView *contentView;
 @end
 
 @implementation MartinAppDelegate
@@ -170,6 +172,18 @@
       [_preferencesWindowController showAddFolder];
     }
   }
+}
+
+#pragma mark - placing controls above titlebar
+
+- (void)awakeFromNib {
+  [_rightControlsView removeFromSuperview];
+  _rightControlsView.frame = NSMakeRect(_contentView.frame.size.width - _rightControlsView.frame.size.width,
+                                        _contentView.frame.size.height + 3,
+                                        _rightControlsView.frame.size.width,
+                                        60);
+  [_contentView.superview addSubview:_rightControlsView];
+
 }
 
 @end

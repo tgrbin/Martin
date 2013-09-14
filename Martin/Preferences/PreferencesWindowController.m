@@ -89,7 +89,7 @@
 
 
   NSView *view = newVC.view;
-  view.frame = CGRectMake(view.frame.origin.x,
+  view.frame = NSMakeRect(view.frame.origin.x,
                           view.frame.origin.y,
                           view.frame.size.width,
                           newVC.height);
