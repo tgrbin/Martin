@@ -14,4 +14,9 @@
   [super setNeedsDisplayInRect:[self bounds]];
 }
 
+- (void)setEnabled:(BOOL)flag {
+  [super setEnabled:flag];
+  self.alphaValue = flag? 1: 0.7;
+}
+
 @end
