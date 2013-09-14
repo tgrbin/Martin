@@ -187,7 +187,7 @@
 
   [_playerStatusTextField removeFromSuperview];
   _playerStatusTextField.frame = NSMakeRect((_contentView.frame.size.width - _playerStatusTextField.frame.size.width)/2,
-                                            _contentView.frame.size.height + 27,
+                                            _contentView.frame.size.height + 26,
                                             _playerStatusTextField.frame.size.width,
                                             _playerStatusTextField.frame.size.height);
   [_contentView.superview addSubview:_playerStatusTextField];

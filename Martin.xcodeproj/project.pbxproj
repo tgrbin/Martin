@@ -40,6 +40,7 @@
 		795022EB17E42C4800212801 /* progress.png in Resources */ = {isa = PBXBuildFile; fileRef = 795022E717E42C4800212801 /* progress.png */; };
 		795022EC17E42C4800212801 /* progress_a.png in Resources */ = {isa = PBXBuildFile; fileRef = 795022E817E42C4800212801 /* progress_a.png */; };
 		795022EF17E436A600212801 /* MartinSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 795022EE17E436A600212801 /* MartinSlider.m */; };
+		795022F317E4562800212801 /* PlayerStatusTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 795022F217E4562800212801 /* PlayerStatusTextField.m */; };
 		795A6CC016E6582500215458 /* SRCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 795A6CB316E6582500215458 /* SRCommon.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		795A6CC116E6582500215458 /* SRKeyCodeTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 795A6CB516E6582500215458 /* SRKeyCodeTransformer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		795A6CC216E6582500215458 /* SRRecorderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 795A6CB716E6582500215458 /* SRRecorderCell.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -128,6 +129,8 @@
 		795022E817E42C4800212801 /* progress_a.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = progress_a.png; sourceTree = "<group>"; };
 		795022ED17E436A600212801 /* MartinSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MartinSlider.h; sourceTree = "<group>"; };
 		795022EE17E436A600212801 /* MartinSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MartinSlider.m; sourceTree = "<group>"; };
+		795022F117E4562800212801 /* PlayerStatusTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerStatusTextField.h; sourceTree = "<group>"; };
+		795022F217E4562800212801 /* PlayerStatusTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerStatusTextField.m; sourceTree = "<group>"; };
 		795A6CB116E6582500215458 /* ShortcutRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShortcutRecorder.h; path = 3rd/ShortcutRecorder/ShortcutRecorder.h; sourceTree = "<group>"; };
 		795A6CB216E6582500215458 /* SRCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SRCommon.h; path = 3rd/ShortcutRecorder/SRCommon.h; sourceTree = "<group>"; };
 		795A6CB316E6582500215458 /* SRCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SRCommon.m; path = 3rd/ShortcutRecorder/SRCommon.m; sourceTree = "<group>"; };
@@ -358,6 +361,8 @@
 				795022E217E42B5100212801 /* MartinSliderCell.m */,
 				795022ED17E436A600212801 /* MartinSlider.h */,
 				795022EE17E436A600212801 /* MartinSlider.m */,
+				795022F117E4562800212801 /* PlayerStatusTextField.h */,
+				795022F217E4562800212801 /* PlayerStatusTextField.m */,
 			);
 			name = "Custom controls";
 			sourceTree = "<group>";
@@ -617,6 +622,7 @@
 			files = (
 				79E98E1A1679A65B00559F14 /* TagsUtils.mm in Sources */,
 				79FF1407142F18A500E27235 /* main.m in Sources */,
+				795022F317E4562800212801 /* PlayerStatusTextField.m in Sources */,
 				79FF140E142F18A500E27235 /* MartinAppDelegate.m in Sources */,
 				795022E317E42B5100212801 /* MartinSliderCell.m in Sources */,
 				79FF1422142F1DB100E27235 /* LibManager.mm in Sources */,

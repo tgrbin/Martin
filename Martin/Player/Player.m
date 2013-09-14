@@ -12,6 +12,7 @@
 #import "Playlist.h"
 #import "PlaylistItem.h"
 #import "NSObject+Observe.h"
+#import "PlayerStatusTextField.h"
 
 typedef enum {
   kPlayButtonStylePlay,
@@ -22,7 +23,7 @@ typedef enum {
   NSTimer *seekTimer;
   IBOutlet NSSlider *seekSlider;
   IBOutlet NSButton *playOrPauseButton;
-  IBOutlet NSTextField *nowPlayingTextField;
+  IBOutlet PlayerStatusTextField *playerStatusTextField;
 
   BOOL playingQueuedItem;
 }
@@ -30,6 +31,7 @@ typedef enum {
 - (void)awakeFromNib {
   seekSlider.enabled = NO;
   [self observe:kFilePlayerPlayedItemNotification withAction:@selector(trackFinished)];
+  playerStatusTextField.status = kTextFieldStatusStopped;
 }
 
 - (BOOL)nowPlayingItemFromPlaylist:(Playlist *)playlist {
@@ -69,7 +71,8 @@ typedef enum {
   [self setPlayButtonStyle:kPlayButtonStylePause];
   [LastFM updateNowPlaying:_nowPlayingPlaylist.currentItem];
 
-  nowPlayingTextField.stringValue = _nowPlayingPlaylist.currentItem.prettyName;
+  playerStatusTextField.displayString = _nowPlayingPlaylist.currentItem.prettyName;
+  playerStatusTextField.status = kTextFieldStatusPlaying;
 }
 
 - (void)trackFinished {
@@ -81,7 +84,7 @@ typedef enum {
   [self setPlayButtonStyle:kPlayButtonStylePlay];
   [self disableTimer];
   [[MartinAppDelegate get].filePlayer stop];
-  nowPlayingTextField.stringValue = @"";
+  playerStatusTextField.status = kTextFieldStatusStopped;
   _nowPlayingPlaylist = nil;
 }
 
@@ -95,6 +98,7 @@ typedef enum {
   } else {
     [[MartinAppDelegate get].filePlayer togglePause];
     [self setPlayButtonStyle:[[MartinAppDelegate get].filePlayer playing]? kPlayButtonStylePause: kPlayButtonStylePlay];
+    playerStatusTextField.status = kTextFieldStatusPaused;
   }
 }
 
