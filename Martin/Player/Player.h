@@ -24,4 +24,7 @@
 - (void)next;
 - (void)prev;
 
+- (void)storePlayerState;
+- (void)restorePlayerState;
+
 @end

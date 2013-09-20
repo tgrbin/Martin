@@ -24,7 +24,9 @@ static NSDictionary *defaultValues;
     @(kDefaultsKeyGlobalShortcuts): @{},
     @(kDefaultsKeySelectedPlaylistIndex): @0,
     @(kDefaultsKeySearchQuery): @"",
-    @(kDefaultsKeyFirstRun): @YES
+    @(kDefaultsKeyFirstRun): @YES,
+    @(kDefaultsKeySeekPosition): @0,
+    @(kDefaultsKeyPlayerState): @0
   };
 }
 

@@ -38,6 +38,10 @@
   return YES;
 }
 
+- (void)applicationDidFinishLaunching:(NSNotification *)notification {
+  [_player restorePlayerState];
+}
+
 - (void)applicationWillBecomeActive:(NSNotification *)notification {
   if (_window.isVisible == NO) {
     [_window makeKeyAndOrderFront:nil];
@@ -47,7 +51,7 @@
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
   [_playlistManager savePlaylists];
   [_libraryOutlineViewManager saveState];
-  [_filePlayer storeVolume];
+  [_player storePlayerState];
   return YES;
 }
 

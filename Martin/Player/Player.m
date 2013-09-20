@@ -13,6 +13,7 @@
 #import "PlaylistItem.h"
 #import "NSObject+Observe.h"
 #import "PlayerStatusTextField.h"
+#import "DefaultsManager.h"
 
 typedef enum {
   kPlayButtonStylePlay,
@@ -31,7 +32,6 @@ typedef enum {
 - (void)awakeFromNib {
   seekSlider.enabled = NO;
   [self observe:kFilePlayerPlayedItemNotification withAction:@selector(trackFinished)];
-  playerStatusTextField.status = kTextFieldStatusStopped;
 }
 
 - (BOOL)nowPlayingItemFromPlaylist:(Playlist *)playlist {
@@ -72,7 +72,7 @@ typedef enum {
   [LastFM updateNowPlaying:_nowPlayingPlaylist.currentItem];
 
   playerStatusTextField.playlistItem = _nowPlayingPlaylist.currentItem;
-  playerStatusTextField.status = kTextFieldStatusPlaying;
+  playerStatusTextField.status = kPlayerStatusPlaying;
 }
 
 - (void)trackFinished {
@@ -84,7 +84,7 @@ typedef enum {
   [self setPlayButtonStyle:kPlayButtonStylePlay];
   [self disableTimer];
   [[MartinAppDelegate get].filePlayer stop];
-  playerStatusTextField.status = kTextFieldStatusStopped;
+  playerStatusTextField.status = kPlayerStatusStopped;
   _nowPlayingPlaylist = nil;
 }
 
@@ -99,10 +99,10 @@ typedef enum {
     [[MartinAppDelegate get].filePlayer togglePause];
     if ([[MartinAppDelegate get].filePlayer playing]) {
       [self setPlayButtonStyle:kPlayButtonStylePause];
-      playerStatusTextField.status = kTextFieldStatusPlaying;
+      playerStatusTextField.status = kPlayerStatusPlaying;
     } else {
       [self setPlayButtonStyle:kPlayButtonStylePlay];
-      playerStatusTextField.status = kTextFieldStatusPaused;
+      playerStatusTextField.status = kPlayerStatusPaused;
     }
   }
 }
@@ -223,7 +223,9 @@ typedef enum {
 }
 
 - (void)setNowPlayingPlaylistIfNecessary {
-  if (_nowPlayingPlaylist == nil) _nowPlayingPlaylist = [MartinAppDelegate get].playlistManager.selectedPlaylist;
+  if (_nowPlayingPlaylist == nil) {
+    _nowPlayingPlaylist = [MartinAppDelegate get].playlistManager.selectedPlaylist;
+  }
 }
 
 - (void)playItemWithIndex:(int)index {
@@ -240,6 +242,36 @@ typedef enum {
   }
 
   [self startPlayingCurrentItem];
+}
+
+#pragma mark - saving state
+
+- (void)storePlayerState {
+  FilePlayer *filePlayer = [MartinAppDelegate get].filePlayer;
+  [DefaultsManager setObject:@(filePlayer.volume) forKey:kDefaultsKeyVolume];
+
+  PlayerStatus status = playerStatusTextField.status;
+  [DefaultsManager setObject:@(status) forKey:kDefaultsKeyPlayerState];
+  if (status != kPlayerStatusStopped) {
+    [DefaultsManager setObject:@(filePlayer.seek) forKey:kDefaultsKeySeekPosition];
+  }
+}
+
+- (void)restorePlayerState {
+  PlayerStatus savedStatus = [[DefaultsManager objectForKey:kDefaultsKeyPlayerState] intValue];
+
+  if (savedStatus == kPlayerStatusStopped) {
+    playerStatusTextField.status = kPlayerStatusStopped;
+  } else {
+    [self setNowPlayingPlaylistIfNecessary];
+
+    FilePlayer *filePlayer = [MartinAppDelegate get].filePlayer;
+    [filePlayer prepareForPlayingItem:_nowPlayingPlaylist.currentItem];
+    filePlayer.seek = [[DefaultsManager objectForKey:kDefaultsKeySeekPosition] doubleValue];
+    [self startSeekTimer];
+    playerStatusTextField.playlistItem = _nowPlayingPlaylist.currentItem;
+    playerStatusTextField.status = kPlayerStatusPaused;
+  }
 }
 
 @end

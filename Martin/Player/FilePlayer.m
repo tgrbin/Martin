@@ -21,6 +21,14 @@
 }
 
 - (void)startPlayingItem:(PlaylistItem *)item {
+  [self playItem:item justPrepare:NO];
+}
+
+- (void)prepareForPlayingItem:(PlaylistItem *)item {
+  [self playItem:item justPrepare:YES];
+}
+
+- (void)playItem:(PlaylistItem *)item justPrepare:(BOOL)prepare {
   [self stop];
 
   sound = [[NSSound alloc] initWithContentsOfFile:item.filename byReference:YES];
@@ -31,18 +39,27 @@
 
   sound.delegate = self;
   self.volume = _volume;
-  [sound play];
 
-  _playing = YES;
+  _playing = NO;
   _stopped = NO;
+
+  if (prepare == NO) {
+    [sound play];
+    _playing = YES;
+  }
 
   playlistItem = item;
   [self postNotification:kFilePlayerEventNotification];
 }
 
 - (void)togglePause {
-  if (_playing) [sound pause];
-  else [sound resume];
+  if (_playing) {
+    [sound pause];
+  } else {
+    if ([sound resume] == NO) {
+      [sound play];
+    }
+  }
   _playing = !_playing;
 }
 
@@ -67,12 +84,17 @@
 }
 
 - (void)setSeek:(double)seek {
-  if (sound) sound.currentTime = seek * sound.duration;
+  if (sound) {
+    sound.currentTime = seek * sound.duration;
+  }
 }
 
 - (double)seek {
-  if (sound == nil || sound.duration == 0) return 0;
-  return sound.currentTime / sound.duration;
+  if (sound == nil || sound.duration == 0) {
+    return 0;
+  } else {
+    return sound.currentTime / sound.duration;
+  }
 }
 
 - (double)timeElapsed {
@@ -92,20 +114,16 @@
   [[NSNotificationCenter defaultCenter] postNotificationName:notification object:playlistItem];
 }
 
-#pragma mark - saving state
-
-- (void)storeVolume {
-  [DefaultsManager setObject:@(_volume) forKey:kDefaultsKeyVolume];
-}
-
 #pragma mark - context menu actions
 
+static const double kVolumeChangeStep = 0.05;
+
 - (IBAction)volumeUp:(id)sender {
-  self.volume = MIN(_volume+0.1, 1);
+  self.volume = MIN(_volume + kVolumeChangeStep, 1);
 }
 
 - (IBAction)volumeDown:(id)sender {
-  self.volume = MAX(_volume-0.1, 0);
+  self.volume = MAX(_volume - kVolumeChangeStep, 0);
 }
 
 @end

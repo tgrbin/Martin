@@ -27,9 +27,8 @@
 - (double)timeElapsed;
 
 - (void)startPlayingItem:(PlaylistItem *)item;
+- (void)prepareForPlayingItem:(PlaylistItem *)item;
 - (void)togglePause;
 - (void)stop;
-
-- (void)storeVolume;
 
 @end

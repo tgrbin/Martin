@@ -22,7 +22,9 @@ typedef enum {
   kDefaultsKeyGlobalShortcuts,
   kDefaultsKeySelectedPlaylistIndex,
   kDefaultsKeySearchQuery,
-  kDefaultsKeyFirstRun
+  kDefaultsKeyFirstRun,
+  kDefaultsKeySeekPosition,
+  kDefaultsKeyPlayerState
 } DefaultsKey;
 
 + (id)objectForKey:(DefaultsKey)key;

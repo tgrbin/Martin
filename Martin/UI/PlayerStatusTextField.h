@@ -9,16 +9,16 @@
 #import <Cocoa/Cocoa.h>
 
 typedef enum {
-  kTextFieldStatusStopped,
-  kTextFieldStatusPaused,
-  kTextFieldStatusPlaying
-} TextFieldStatus;
+  kPlayerStatusStopped,
+  kPlayerStatusPaused,
+  kPlayerStatusPlaying
+} PlayerStatus;
 
 @class PlaylistItem;
 
 @interface PlayerStatusTextField : NSTextField
 
-@property (nonatomic, assign) TextFieldStatus status;
+@property (nonatomic, assign) PlayerStatus status;
 
 @property (nonatomic, strong) PlaylistItem *playlistItem;
 

@@ -31,10 +31,10 @@ static const int kStoppedOpacity = 40;
   return self;
 }
 
-- (void)setStatus:(TextFieldStatus)status {
+- (void)setStatus:(PlayerStatus)status {
   _status = status;
 
-  int opacity = (status == kTextFieldStatusPlaying)? kPlayingOpacity: kStoppedOpacity;
+  int opacity = (status == kPlayerStatusPlaying)? kPlayingOpacity: kStoppedOpacity;
   self.textColor = [NSColor colorWithCalibratedWhite:0 alpha:opacity / 100.];
 
   [self updateDisplayText];
@@ -48,7 +48,7 @@ static const int kStoppedOpacity = 40;
 - (void)updateDisplayText {
   NSString *text = kStoppedText;
 
-  if (_status != kTextFieldStatusStopped && _playlistItem != nil) {
+  if (_status != kPlayerStatusStopped && _playlistItem != nil) {
     NSString *title = [_playlistItem tagValueForIndex:kTagIndexTitle];
 
     if (title.length == 0) {
