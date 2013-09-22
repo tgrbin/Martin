@@ -24,6 +24,8 @@ typedef enum {
   NSTimer *seekTimer;
   IBOutlet NSSlider *seekSlider;
   IBOutlet NSButton *playOrPauseButton;
+  IBOutlet NSButton *repeatButton;
+  IBOutlet NSButton *shuffleButton;
   IBOutlet PlayerStatusTextField *playerStatusTextField;
 
   BOOL playingQueuedItem;
@@ -32,6 +34,9 @@ typedef enum {
 - (void)awakeFromNib {
   seekSlider.enabled = NO;
   [self observe:kFilePlayerPlayedItemNotification withAction:@selector(trackFinished)];
+
+  self.shuffle = [[DefaultsManager objectForKey:kDefaultsKeyShuffle] boolValue];
+  self.repeat = [[DefaultsManager objectForKey:kDefaultsKeyRepeat] boolValue];
 }
 
 - (BOOL)nowPlayingItemFromPlaylist:(Playlist *)playlist {
@@ -272,6 +277,28 @@ typedef enum {
     playerStatusTextField.playlistItem = _nowPlayingPlaylist.currentItem;
     playerStatusTextField.status = kPlayerStatusPaused;
   }
+}
+
+#pragma mark - shuffle and repeat
+
+- (void)setShuffle:(BOOL)shuffle {
+  _shuffle = shuffle;
+  [DefaultsManager setObject:@(_shuffle) forKey:kDefaultsKeyShuffle];
+  shuffleButton.state = shuffle;
+}
+
+- (void)setRepeat:(BOOL)repeat {
+  _repeat = repeat;
+  [DefaultsManager setObject:@(_repeat) forKey:kDefaultsKeyRepeat];
+  repeatButton.state = repeat;
+}
+
+- (IBAction)repeatPressed:(id)sender {
+  self.repeat = !self.repeat;
+}
+
+- (IBAction)shufflePressed:(id)sender {
+  self.shuffle = !self.shuffle;
 }
 
 @end

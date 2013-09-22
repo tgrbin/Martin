@@ -15,9 +15,6 @@
 
 @property (nonatomic, strong) Playlist *selectedPlaylist;
 
-@property (nonatomic, assign) BOOL shuffle;
-@property (nonatomic, assign) BOOL repeat;
-
 - (NSArray *)playlistsAtIndexes:(NSArray *)indexes;
 
 - (void)selectNowPlayingPlaylist;

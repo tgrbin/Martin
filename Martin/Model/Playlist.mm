@@ -370,8 +370,8 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 }
 
 - (PlaylistItem *)moveToItemWithDelta:(int)delta {
-  BOOL shuffle = [MartinAppDelegate get].playlistManager.shuffle;
-  BOOL repeat = [MartinAppDelegate get].playlistManager.repeat;
+  BOOL shuffle = [MartinAppDelegate get].player.shuffle;
+  BOOL repeat = [MartinAppDelegate get].player.repeat;
 
   if (_currentIndexInPlaylistItems == -1) {
     if (shuffle) {

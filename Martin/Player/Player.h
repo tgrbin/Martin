@@ -27,4 +27,7 @@
 - (void)storePlayerState;
 - (void)restorePlayerState;
 
+@property (nonatomic, assign) BOOL shuffle;
+@property (nonatomic, assign) BOOL repeat;
+
 @end

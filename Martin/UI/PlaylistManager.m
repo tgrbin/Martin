@@ -50,9 +50,6 @@ static const double kDragHoverTime = 0.4;
   [self observe:kFilePlayerEventNotification withAction:@selector(handlePlayerEvent)];
 
   [self bindShortcuts];
-
-  self.shuffle = [[DefaultsManager objectForKey:kDefaultsKeyShuffle] boolValue];
-  self.repeat = [[DefaultsManager objectForKey:kDefaultsKeyRepeat] boolValue];
 }
 
 - (id)init {
@@ -112,26 +109,6 @@ static const double kDragHoverTime = 0.4;
 
 - (void)reload {
   [playlistsTable reloadData];
-}
-
-- (void)setShuffle:(BOOL)shuffle {
-  _shuffle = shuffle;
-  [DefaultsManager setObject:@(_shuffle) forKey:kDefaultsKeyShuffle];
-  _shuffleButton.state = shuffle;
-}
-
-- (void)setRepeat:(BOOL)repeat {
-  _repeat = repeat;
-  [DefaultsManager setObject:@(_repeat) forKey:kDefaultsKeyRepeat];
-  _repeatButton.state = repeat;
-}
-
-- (IBAction)repeatPressed:(id)sender {
-  self.repeat = !self.repeat;
-}
-
-- (IBAction)shufflePressed:(id)sender {
-  self.shuffle = !self.shuffle;
 }
 
 - (void)savePlaylists {
