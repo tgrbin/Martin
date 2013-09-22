@@ -57,7 +57,6 @@ static const double kDragHoverTime = 0.4;
     [LibManager initLibrary];
     playlists = [NSMutableArray arrayWithArray:[PlaylistPersistence loadPlaylists]];
   }
-
   return self;
 }
 

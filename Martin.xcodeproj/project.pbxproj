@@ -183,6 +183,7 @@
 		79CF70EA17EE32620057E678 /* MMSafariTabStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CF706F17EE32620057E678 /* MMSafariTabStyle.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		79CF70EC17EE33750057E678 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CF70EB17EE33750057E678 /* QuartzCore.framework */; };
 		79CF70EF17EE33DB0057E678 /* TabsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CF70EE17EE33DB0057E678 /* TabsManager.m */; };
+		79CF70F317EEBF310057E678 /* PlaylistTabBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CF70F217EEBF310057E678 /* PlaylistTabBarItem.m */; };
 		79D5760F1431074D00A2DA67 /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 79D5760E1431074D00A2DA67 /* icon.icns */; };
 		79D63C65168C438100A248F9 /* RescanState.m in Sources */ = {isa = PBXBuildFile; fileRef = 79D63C64168C438100A248F9 /* RescanState.m */; };
 		79D63C69168C88F900A248F9 /* DefaultsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79D63C68168C88F900A248F9 /* DefaultsManager.m */; };
@@ -447,6 +448,8 @@
 		79CF70EB17EE33750057E678 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		79CF70ED17EE33DB0057E678 /* TabsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabsManager.h; sourceTree = "<group>"; };
 		79CF70EE17EE33DB0057E678 /* TabsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabsManager.m; sourceTree = "<group>"; };
+		79CF70F117EEBF310057E678 /* PlaylistTabBarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistTabBarItem.h; sourceTree = "<group>"; };
+		79CF70F217EEBF310057E678 /* PlaylistTabBarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistTabBarItem.m; sourceTree = "<group>"; };
 		79D5760E1431074D00A2DA67 /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
 		79D63C63168C438100A248F9 /* RescanState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RescanState.h; sourceTree = "<group>"; };
 		79D63C64168C438100A248F9 /* RescanState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RescanState.m; sourceTree = "<group>"; };
@@ -691,6 +694,8 @@
 				795C20CD14378D9600A61B21 /* PlaylistTableManager.m */,
 				79CF70ED17EE33DB0057E678 /* TabsManager.h */,
 				79CF70EE17EE33DB0057E678 /* TabsManager.m */,
+				79CF70F117EEBF310057E678 /* PlaylistTabBarItem.h */,
+				79CF70F217EEBF310057E678 /* PlaylistTabBarItem.m */,
 				795022F017E436B400212801 /* Custom controls */,
 			);
 			path = UI;
@@ -1246,6 +1251,7 @@
 				79CF70AD17EE32620057E678 /* NSAffineTransform+MMTabBarViewExtensions.m in Sources */,
 				79CF70A917EE32620057E678 /* MMTabDragView.m in Sources */,
 				79CF70B117EE32620057E678 /* NSTabViewItem+MMTabBarViewExtensions.m in Sources */,
+				79CF70F317EEBF310057E678 /* PlaylistTabBarItem.m in Sources */,
 				79CF70A417EE32620057E678 /* MMTabBarButtonCell.m in Sources */,
 				79CF70B517EE32620057E678 /* MMCardTabStyle.m in Sources */,
 				79F69EB21699731200693CE5 /* NSObject+Observe.m in Sources */,
