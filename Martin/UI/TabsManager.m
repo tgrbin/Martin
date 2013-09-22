@@ -17,6 +17,7 @@
 @interface TabsManager() <MMTabBarViewDelegate>
 @property (unsafe_unretained) IBOutlet MMTabBarView *tabBarView;
 @property (nonatomic, strong) NSTabView *dummyTabView;
+@property (strong) IBOutlet NSMenu *contextMenu;
 @end
 
 @implementation TabsManager {
@@ -25,6 +26,7 @@
 
 - (void)awakeFromNib {
   [self createDummyTabView];
+  [self configureMMTabView];
   [self loadPlaylists];
 }
 
@@ -36,6 +38,10 @@
   self.dummyTabView = [NSTabView new];
   _tabBarView.tabView = _dummyTabView;
   _dummyTabView.delegate = _tabBarView;
+}
+
+- (void)configureMMTabView {
+  _tabBarView.onlyShowCloseOnHover = YES;
 }
 
 - (void)loadPlaylists {
@@ -153,6 +159,40 @@
 
 - (void)tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem {
   [self updateSelectedPlaylist];
+}
+
+- (BOOL)tabView:(NSTabView *)aTabView shouldAllowTabViewItem:(NSTabViewItem *)tabViewItem toLeaveTabBarView:(MMTabBarView *)tabBarView {
+  return NO;
+}
+
+- (BOOL)tabView:(NSTabView *)aTabView shouldDragTabViewItem:(NSTabViewItem *)tabViewItem inTabBarView:(MMTabBarView *)tabBarView {
+  PlaylistTabBarItem *item = tabViewItem.identifier;
+  return ([item.playlist isKindOfClass:[QueuePlaylist class]] == NO);
+}
+
+#pragma mark - context menu
+
+- (IBAction)forgetPlayedItems:(NSMenuItem *)sender {
+  NSTabViewItem *tabItem = [_dummyTabView tabViewItemAtIndex:sender.tag];
+  PlaylistTabBarItem *item = tabItem.identifier;
+  [item.playlist forgetPlayedItems];
+}
+
+- (NSMenu *)tabView:(NSTabView *)aTabView menuForTabViewItem:(NSTabViewItem *)tabViewItem {
+  PlaylistTabBarItem *item = tabViewItem.identifier;
+  Playlist *playlist = item.playlist;
+
+  if ([playlist isKindOfClass:[QueuePlaylist class]]) {
+    return nil;
+  }
+
+  [_contextMenu itemAtIndex:0].tag = [_dummyTabView indexOfTabViewItem:tabViewItem];
+
+  [_contextMenu itemAtIndex:1].title = [NSString stringWithFormat:@"%d/%d played",
+                                        playlist.numberOfPlayedItems,
+                                        playlist.numberOfItems];
+
+  return _contextMenu;
 }
 
 @end

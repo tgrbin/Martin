@@ -300,13 +300,6 @@ static const double kDragHoverTime = 0.4;
 
   [menu itemWithTag:kRenameItemTag].enabled = (chosenItems.count == 1);
 
-  int playedCount = 0;
-  int totalCount = 0;
-  for (Playlist *p in chosenItems) {
-    playedCount += p.numberOfPlayedItems;
-    totalCount += p.numberOfItems;
-  }
-  [menu itemWithTag:kStateIndicatorTag].title = [NSString stringWithFormat:@"%d/%d played", playedCount, totalCount];
 }
 
 @end
