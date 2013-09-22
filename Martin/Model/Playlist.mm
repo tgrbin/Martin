@@ -582,6 +582,10 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
   playedItems.clear();
 }
 
+- (BOOL)isQueue {
+  return isQueue;
+}
+
 @end
 
 @implementation QueuePlaylist

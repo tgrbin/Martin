@@ -1583,7 +1583,7 @@
 									<array class="NSMutableArray" key="NSSubviews">
 										<object class="NSScrollView" id="548408122">
 											<reference key="NSNextResponder" ref="1048030296"/>
-											<int key="NSvFlags">1330</int>
+											<int key="NSvFlags">1298</int>
 											<array class="NSMutableArray" key="NSSubviews">
 												<object class="NSClipView" id="780036824">
 													<reference key="NSNextResponder" ref="548408122"/>
@@ -1862,7 +1862,6 @@
 													<string key="NSFrame">{{1, 122}, {285, 15}}</string>
 													<reference key="NSSuperview" ref="548408122"/>
 													<reference key="NSWindow"/>
-													<reference key="NSNextKeyView"/>
 													<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 													<reference key="NSTarget" ref="548408122"/>
 													<string key="NSAction">_doScroller:</string>
@@ -4052,79 +4051,6 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">LibraryOutlineViewManager</string>
 					<string key="superclassName">NSObject</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="addSelectedItemsToPlaylist:">id</string>
-						<string key="createPlaylistWithSelectedItems:">id</string>
-						<string key="queueSelectedItems:">id</string>
-						<string key="rescan:">id</string>
-						<string key="searchPressed:">id</string>
-						<string key="showInFinder:">id</string>
-						<string key="takeFocus:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="addSelectedItemsToPlaylist:">
-							<string key="name">addSelectedItemsToPlaylist:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="createPlaylistWithSelectedItems:">
-							<string key="name">createPlaylistWithSelectedItems:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="queueSelectedItems:">
-							<string key="name">queueSelectedItems:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="rescan:">
-							<string key="name">rescan:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="searchPressed:">
-							<string key="name">searchPressed:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="showInFinder:">
-							<string key="name">showInFinder:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="takeFocus:">
-							<string key="name">takeFocus:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="determinateRescanIndicator">NSProgressIndicator</string>
-						<string key="outlineView">NSOutlineView</string>
-						<string key="rescanIndicator">NSProgressIndicator</string>
-						<string key="rescanMessage">NSTextField</string>
-						<string key="rescanStatusView">NSView</string>
-						<string key="searchTextField">NSTextField</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="determinateRescanIndicator">
-							<string key="name">determinateRescanIndicator</string>
-							<string key="candidateClassName">NSProgressIndicator</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="outlineView">
-							<string key="name">outlineView</string>
-							<string key="candidateClassName">NSOutlineView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="rescanIndicator">
-							<string key="name">rescanIndicator</string>
-							<string key="candidateClassName">NSProgressIndicator</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="rescanMessage">
-							<string key="name">rescanMessage</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="rescanStatusView">
-							<string key="name">rescanStatusView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="searchTextField">
-							<string key="name">searchTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/LibraryOutlineViewManager.h</string>
@@ -4160,17 +4086,6 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">MartinAppDelegate</string>
 					<string key="superclassName">NSObject</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">openPressed:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">openPressed:</string>
-						<object class="IBActionInfo" key="NS.object.0">
-							<string key="name">openPressed:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</object>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="contentView">NSView</string>
 						<string key="filePlayer">FilePlayer</string>
@@ -4301,35 +4216,6 @@
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="playOrPauseButton">NSButton</string>
-						<string key="playerStatusTextField">PlayerStatusTextField</string>
-						<string key="repeatButton">NSButton</string>
-						<string key="seekSlider">NSSlider</string>
-						<string key="shuffleButton">NSButton</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="playOrPauseButton">
-							<string key="name">playOrPauseButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="playerStatusTextField">
-							<string key="name">playerStatusTextField</string>
-							<string key="candidateClassName">PlayerStatusTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="repeatButton">
-							<string key="name">repeatButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="seekSlider">
-							<string key="name">seekSlider</string>
-							<string key="candidateClassName">NSSlider</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="shuffleButton">
-							<string key="name">shuffleButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/Player.h</string>
@@ -4376,6 +4262,20 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">TabsManager</string>
 					<string key="superclassName">NSObject</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="forgetPlayedItems:">NSMenuItem</string>
+						<string key="newPlaylistPressed:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="forgetPlayedItems:">
+							<string key="name">forgetPlayedItems:</string>
+							<string key="candidateClassName">NSMenuItem</string>
+						</object>
+						<object class="IBActionInfo" key="newPlaylistPressed:">
+							<string key="name">newPlaylistPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="contextMenu">NSMenu</string>
 						<string key="tabBarView">MMTabBarView</string>

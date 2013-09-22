@@ -14,6 +14,9 @@
 #import "MMSlideButtonsAnimation.h"
 #import "NSView+MMTabBarViewExtensions.h"
 
+#import "PlaylistTabBarItem.h"
+#import "Playlist.h"
+
 @interface MMTabBarView (SharedPrivate)
 
 @property (assign) BOOL isReorderingTabViewItems;
@@ -496,7 +499,12 @@ static MMTabDragAssistant *sharedDragAssistant = nil;
   double myCenterX = (aButton.frame.origin.x + aButton.frame.size.width / 2);
 
   if (myCenterX < [tabBarView leftMargin]) {
-    resultingIndex = 0;
+    PlaylistTabBarItem *item = [tabBarView.tabView tabViewItemAtIndex:0].identifier;
+    if (item.playlist.isQueue == YES) {
+      resultingIndex = 1;
+    } else {
+      resultingIndex = 0;
+    }
   } else {
     MMAttachedTabBarButton *overButton = nil;
     NSUInteger overButtonIndex = NSNotFound;
@@ -526,17 +534,10 @@ static MMTabDragAssistant *sharedDragAssistant = nil;
     }
 
     if (overButton) {
-      if (overButton == aButton) {
-        return overButtonIndex;
-      }
-
-      NSRect overButtonFrame = [overButton frame];
-
-      if (myCenterX < (overButtonFrame.origin.x + (overButtonFrame.size.width / 2.0))) {
-        // mouse on left side of button
-        resultingIndex = overButtonIndex;
+      PlaylistTabBarItem *item = overButton.tabViewItem.identifier;
+      if (item.playlist.isQueue == YES) {
+        resultingIndex = 1;
       } else {
-        // mouse on right side of button
         resultingIndex = overButtonIndex;
       }
     } else {

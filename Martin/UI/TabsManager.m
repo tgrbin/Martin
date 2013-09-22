@@ -42,6 +42,8 @@
 
 - (void)configureMMTabView {
   _tabBarView.onlyShowCloseOnHover = YES;
+  _tabBarView.showAddTabButton = YES;
+  [_tabBarView setStyleNamed:@"Card"];
 }
 
 - (void)loadPlaylists {
@@ -167,7 +169,29 @@
 
 - (BOOL)tabView:(NSTabView *)aTabView shouldDragTabViewItem:(NSTabViewItem *)tabViewItem inTabBarView:(MMTabBarView *)tabBarView {
   PlaylistTabBarItem *item = tabViewItem.identifier;
-  return ([item.playlist isKindOfClass:[QueuePlaylist class]] == NO);
+  return (item.playlist.isQueue == NO);
+}
+
+- (void)addNewTabToTabView:(NSTabView *)aTabView {
+  [self newPlaylistPressed:self];
+}
+
+- (void)tabView:(NSTabView *)aTabView didCloseTabViewItem:(NSTabViewItem *)tabViewItem {
+  PlaylistTabBarItem *item = tabViewItem.identifier;
+  Playlist *playlist = item.playlist;
+
+  [playlist cancelID3Reads];
+
+  if ([MartinAppDelegate get].player.nowPlayingPlaylist == playlist) {
+    [MartinAppDelegate get].player.nowPlayingPlaylist = nil;
+  }
+
+  [self.queue willRemovePlaylist:playlist];
+
+  if (playlist == _queue) {
+    [_queue clear];
+    showingQueueTab = NO;
+  }
 }
 
 #pragma mark - context menu
@@ -182,7 +206,7 @@
   PlaylistTabBarItem *item = tabViewItem.identifier;
   Playlist *playlist = item.playlist;
 
-  if ([playlist isKindOfClass:[QueuePlaylist class]]) {
+  if (playlist.isQueue == YES) {
     return nil;
   }
 

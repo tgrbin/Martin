@@ -72,6 +72,8 @@
 - (void)storeIndexes:(NSIndexSet *)indexSet;
 - (NSIndexSet *)indexesAfterSorting;
 
+- (BOOL)isQueue;
+
 @end
 
 @interface QueuePlaylist : Playlist

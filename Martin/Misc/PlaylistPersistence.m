@@ -20,7 +20,7 @@
   fprintf(f, "%ld\n", playlists.count);
   for (Playlist *p in playlists) {
     [p outputToFileStream:f];
-    if ([p isKindOfClass:[QueuePlaylist class]]) {
+    if (p.isQueue == YES) {
       [(QueuePlaylist *)p dumpItemsOriginWithPlaylists:playlists toFileStream:f];
     }
   }

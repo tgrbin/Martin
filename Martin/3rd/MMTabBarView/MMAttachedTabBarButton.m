@@ -200,16 +200,20 @@ static const int kRenameFieldTag = 601;
 - (void)beginRenaming {
   PlaylistTabBarItem *item = self.tabViewItem.identifier;
 
-  if ([item.playlist isKindOfClass:[QueuePlaylist class]]) {
+  if (item.playlist.isQueue == YES) {
     return;
   }
 
   renamingTitle = YES;
 
+  // TODO: font nije kako treba
+  // TODO: popravi frame
+
   NSTextField *renameField = [[NSTextField alloc] initWithFrame:self.bounds];
   renameField.tag = kRenameFieldTag;
   renameField.delegate = self;
   renameField.focusRingType = NSFocusRingTypeNone;
+  renameField.font = self.cell.font;
 
   NSTextFieldCell *cell = renameField.cell;
   cell.editable = YES;
@@ -217,7 +221,7 @@ static const int kRenameFieldTag = 601;
   cell.bordered = NO;
   cell.drawsBackground = NO;
   cell.usesSingleLineMode = YES;
-  cell.font = self.font;
+  cell.font = self.cell.font;
   cell.alignment = NSCenterTextAlignment;
 
   cell.stringValue = item.title;

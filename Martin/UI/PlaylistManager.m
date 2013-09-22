@@ -95,24 +95,6 @@ static const double kDragHoverTime = 0.4;
 }
 
 - (IBAction)deleteSelectedPlaylists:(id)sender {
-//  for (NSInteger index = [is firstIndex]; index != NSNotFound; index = [is indexGreaterThanIndex:index]) {
-//    [playlists[index] cancelID3Reads];
-//    if ([MartinAppDelegate get].player.nowPlayingPlaylist == playlists[index]) {
-//      [MartinAppDelegate get].player.nowPlayingPlaylist = nil;
-//    }
-//    [self.queue willRemovePlaylist:playlists[index]];
-//  }
-
-//  if (self.queue.isEmpty == NO && [is containsIndex:0]) {
-//    [self.queue clear];
-//    [is removeIndex:0];
-//  }
-
-//  [playlists removeObjectsAtIndexes:is];
-//  [playlistsTable reloadData];
-//
-//  [self selectRow:MAX(0, MIN(rowToSelect, [self numberOfRows]-1))];
-//  [self updateSelectedPlaylist];
 }
 
 - (void)updateSelectedPlaylist {}
@@ -180,7 +162,6 @@ static const double kDragHoverTime = 0.4;
   [dragHoverTimer invalidate];
   dragHoverTimer = nil;
 }
-
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
   NSArray *draggingTypes = info.draggingPasteboard.types;
