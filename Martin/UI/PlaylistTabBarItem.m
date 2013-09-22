@@ -40,7 +40,7 @@
 
 - (void)setTitle:(NSString *)title {
   _title = [title copy];
-  _playlist.name = title;
+  _playlist.name = _title;
 }
 
 @end

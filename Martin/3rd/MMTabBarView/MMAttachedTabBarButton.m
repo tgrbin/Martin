@@ -15,6 +15,7 @@
 
 #import "PlaylistTabBarItem.h"
 #import "MartinAppDelegate.h"
+#import "Playlist.h"
 
 @interface MMAttachedTabBarButton (/*Private*/) <NSTextFieldDelegate>
 
@@ -197,6 +198,12 @@
 static const int kRenameFieldTag = 601;
 
 - (void)beginRenaming {
+  PlaylistTabBarItem *item = self.tabViewItem.identifier;
+
+  if ([item.playlist isKindOfClass:[QueuePlaylist class]]) {
+    return;
+  }
+
   renamingTitle = YES;
 
   NSTextField *renameField = [[NSTextField alloc] initWithFrame:self.bounds];
@@ -213,7 +220,6 @@ static const int kRenameFieldTag = 601;
   cell.font = self.font;
   cell.alignment = NSCenterTextAlignment;
 
-  PlaylistTabBarItem *item = self.tabViewItem.identifier;
   cell.stringValue = item.title;
   self.title = @"";
 
