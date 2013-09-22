@@ -45,26 +45,6 @@ static const double kDragHoverTime = 0.4;
   [self observe:kFilePlayerEventNotification withAction:@selector(handlePlayerEvent)];
 }
 
-- (id)init {
-  if (self = [super init]) {
-    [LibManager initLibrary];
-    playlists = [NSMutableArray arrayWithArray:[PlaylistPersistence loadPlaylists]];
-  }
-  return self;
-}
-
-- (NSIndexSet *)offsetSelectedRowsBy:(int)offset {
-  NSIndexSet *is = [playlistsTable selectedRowIndexes];
-  NSMutableIndexSet *offsetIs = [NSMutableIndexSet new];
-  for (NSInteger i = is.firstIndex; i != NSNotFound; i = [is indexGreaterThanIndex:i])
-    if (i+offset >= 0) [offsetIs addIndex:i+offset];
-  return offsetIs;
-}
-
-- (IBAction)addNewEmptyPlaylist:(id)sender {
-//  [self addPlaylist:[Playlist new]];
-}
-
 - (void)selectRow:(NSInteger)row {
   [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
 }
@@ -108,22 +88,6 @@ static const double kDragHoverTime = 0.4;
   [[MartinAppDelegate get].player playSelectedPlaylist];
 }
 
-- (NSArray *)chosenItems {
-  NSInteger clickedRow = playlistsTable.clickedRow;
-  NSIndexSet *selectedRows = playlistsTable.selectedRowIndexes;
-  NSMutableArray *items = [NSMutableArray new];
-
-  if (clickedRow == -1 || [selectedRows containsIndex:clickedRow]) {
-    for (NSUInteger row = selectedRows.firstIndex; row != NSNotFound; row = [selectedRows indexGreaterThanIndex:row]) {
-      [items addObject:[self playlistAtRow:row]];
-    }
-  } else {
-    [items addObject:[self playlistAtRow:clickedRow]];
-  }
-
-  return items;
-}
-
 #pragma mark - drag and drop
 
 - (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
@@ -133,10 +97,6 @@ static const double kDragHoverTime = 0.4;
     dragHoverRow = row;
     [self setDragHoverTimer];
   }
-
-// TODO: don't allow tab reorder left of the queue
-// can't drop anything above the queue
-//  if (self.queue.isEmpty == NO && dropOperation == NSTableViewDropAbove && row == 0) return NSDragOperationNone;
 
   return NSDragOperationCopy;
 }
@@ -219,50 +179,13 @@ static const double kDragHoverTime = 0.4;
   return YES;
 }
 
-#pragma mark - table data source
-
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-  return [self numberOfRows];
-}
-
-- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-  Playlist *p = [self playlistAtRow:row];
-  return p.name;
-}
-
-- (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-  Playlist *p = [self playlistAtRow:row];
-  NSString *newName = (NSString *)object;
-  p.name = [newName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-}
-
 #pragma mark - table delegate
 
-- (BOOL)tableView:(NSTableView *)tableView shouldEditTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-  NSEvent *e = [NSApp currentEvent];
-  if (e.type == NSKeyDown && e.keyCode == 48) return NO;
-  return YES;
-}
-
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)c forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-  NSTextFieldCell *cell = (NSTextFieldCell*)c;
-  BOOL playingThisPlaylist = [[MartinAppDelegate get].player nowPlayingItemFromPlaylist:[self playlistAtRow:row]];
-  cell.font = playingThisPlaylist? [NSFont boldSystemFontOfSize:13]: [NSFont systemFontOfSize:13];
+// TODO: make playing playlist display in bold
+//  NSTextFieldCell *cell = (NSTextFieldCell*)c;
+//  BOOL playingThisPlaylist = [[MartinAppDelegate get].player nowPlayingItemFromPlaylist:[self playlistAtRow:row]];
+//  cell.font = playingThisPlaylist? [NSFont boldSystemFontOfSize:13]: [NSFont systemFontOfSize:13];
 }
-
-- (void)tableViewSelectionDidChange:(NSNotification *)notification {
-  if (ignoreSelectionChange == NO) {
-    [self updateSelectedPlaylist];
-  }
-}
-
-- (NSInteger)numberOfRows {
-  return playlists.count;
-}
-
-- (Playlist *)playlistAtRow:(NSInteger)index {
-  return playlists[index];
-}
-
 
 @end

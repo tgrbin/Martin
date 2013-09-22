@@ -196,6 +196,7 @@
 		79EBAA9116B834240038BC0F /* GlobalShortcuts.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EBAA9016B834240038BC0F /* GlobalShortcuts.m */; };
 		79EDE63A1678EB6A0060F9F9 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79EDE6391678EB6A0060F9F9 /* CoreServices.framework */; };
 		79EDE63E1678EB9A0060F9F9 /* FolderWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EDE63D1678EB9A0060F9F9 /* FolderWatcher.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		79EEFB9E17EF294100D5C3E6 /* NewPlaylistButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EEFB9D17EF294100D5C3E6 /* NewPlaylistButton.m */; };
 		79F55D6916EC6C66004510B0 /* PlaylistNameGuesser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F55D6816EC6C66004510B0 /* PlaylistNameGuesser.m */; };
 		79F55D6C16EC7A88004510B0 /* ID3ReadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F55D6B16EC7A88004510B0 /* ID3ReadOperation.m */; };
 		79F5BC1014363BE10040DF35 /* LibraryOutlineViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F5BC0F14363BE10040DF35 /* LibraryOutlineViewManager.m */; };
@@ -471,6 +472,8 @@
 		79EDE6391678EB6A0060F9F9 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		79EDE63C1678EB9A0060F9F9 /* FolderWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderWatcher.h; sourceTree = "<group>"; };
 		79EDE63D1678EB9A0060F9F9 /* FolderWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FolderWatcher.m; sourceTree = "<group>"; };
+		79EEFB9C17EF294100D5C3E6 /* NewPlaylistButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewPlaylistButton.h; sourceTree = "<group>"; };
+		79EEFB9D17EF294100D5C3E6 /* NewPlaylistButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewPlaylistButton.m; sourceTree = "<group>"; };
 		79F55D6716EC6C66004510B0 /* PlaylistNameGuesser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistNameGuesser.h; sourceTree = "<group>"; };
 		79F55D6816EC6C66004510B0 /* PlaylistNameGuesser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistNameGuesser.m; sourceTree = "<group>"; };
 		79F55D6A16EC7A88004510B0 /* ID3ReadOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ID3ReadOperation.h; sourceTree = "<group>"; };
@@ -652,6 +655,8 @@
 				795022EE17E436A600212801 /* MartinSlider.m */,
 				795022F117E4562800212801 /* PlayerStatusTextField.h */,
 				795022F217E4562800212801 /* PlayerStatusTextField.m */,
+				79EEFB9C17EF294100D5C3E6 /* NewPlaylistButton.h */,
+				79EEFB9D17EF294100D5C3E6 /* NewPlaylistButton.m */,
 			);
 			name = "Custom controls";
 			sourceTree = "<group>";
@@ -1233,6 +1238,7 @@
 				792DC197166B5D390003E664 /* Tags.m in Sources */,
 				792DC19B166B6E5D0003E664 /* Tree.mm in Sources */,
 				79EDE63E1678EB9A0060F9F9 /* FolderWatcher.m in Sources */,
+				79EEFB9E17EF294100D5C3E6 /* NewPlaylistButton.m in Sources */,
 				79CF70A117EE32620057E678 /* MMRolloverButtonCell.m in Sources */,
 				799EF5ED16884D7000AD3A67 /* RescanProxy.m in Sources */,
 				79CF70A517EE32620057E678 /* MMTabBarController.m in Sources */,

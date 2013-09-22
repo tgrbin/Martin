@@ -42,7 +42,6 @@
 
 - (void)configureMMTabView {
   _tabBarView.onlyShowCloseOnHover = YES;
-  _tabBarView.showAddTabButton = YES;
   [_tabBarView setStyleNamed:@"Card"];
 }
 
@@ -122,8 +121,10 @@
 }
 
 - (void)addPlaylist:(Playlist *)p {
-  [_dummyTabView addTabViewItem:[self createTabViewItemWithPlaylist:p]];
-  [_dummyTabView selectLastTabViewItem:self];
+  int index = (showingQueueTab == YES)? 1: 0;
+  [_dummyTabView insertTabViewItem:[self createTabViewItemWithPlaylist:p]
+                           atIndex:index];
+  [_dummyTabView selectTabViewItemAtIndex:index];
 }
 
 #pragma mark - queue
