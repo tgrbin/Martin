@@ -83,31 +83,12 @@ static const double kDragHoverTime = 0.4;
   return playlists[0];
 }
 
-- (void)queueWillAppear {
-  ignoreSelectionChange = YES;
-  [playlistsTable selectRowIndexes:[self offsetSelectedRowsBy:1]
-              byExtendingSelection:NO];
-  ignoreSelectionChange = NO;
-}
-
-- (void)queueWillDisappear {
-  ignoreSelectionChange = YES;
-  [playlistsTable selectRowIndexes:[self offsetSelectedRowsBy:-1]
-              byExtendingSelection:NO];
-  ignoreSelectionChange = NO;
-  [self updateSelectedPlaylist];
-}
-
 - (NSIndexSet *)offsetSelectedRowsBy:(int)offset {
   NSIndexSet *is = [playlistsTable selectedRowIndexes];
   NSMutableIndexSet *offsetIs = [NSMutableIndexSet new];
   for (NSInteger i = is.firstIndex; i != NSNotFound; i = [is indexGreaterThanIndex:i])
     if (i+offset >= 0) [offsetIs addIndex:i+offset];
   return offsetIs;
-}
-
-- (void)reload {
-  [playlistsTable reloadData];
 }
 
 - (void)savePlaylists {

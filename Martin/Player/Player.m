@@ -43,7 +43,7 @@ typedef enum {
   if ([MartinAppDelegate get].filePlayer.stopped == NO) {
     if (_nowPlayingPlaylist == playlist) return YES;
 
-    QueuePlaylist *queue = [MartinAppDelegate get].playlistManager.queue;
+    QueuePlaylist *queue = [MartinAppDelegate get].tabsManager.queue;
     if (_nowPlayingPlaylist == queue && [queue currentItemPlaylist] == playlist) {
       for (int i = 0; i < playlist.numberOfItems; ++i)
         if (playlist[i] == queue.currentItem) return YES;
@@ -127,7 +127,7 @@ typedef enum {
     [self startPlayingCurrentItem];
   } else {
     if (playingQueuedItem) {
-      _nowPlayingPlaylist = [[MartinAppDelegate get].playlistManager.queue currentItemPlaylist];
+      _nowPlayingPlaylist = [[MartinAppDelegate get].tabsManager.queue currentItemPlaylist];
       playingQueuedItem = NO;
       [self stopOrPlayWithTestObject:_nowPlayingPlaylist];
     } else {
@@ -184,14 +184,13 @@ typedef enum {
 #pragma mark - queue management
 
 - (BOOL)willPlayQueuedItem {
-  QueuePlaylist *queue = [MartinAppDelegate get].playlistManager.queue;
+  QueuePlaylist *queue = [MartinAppDelegate get].tabsManager.queue;
 
   if (playingQueuedItem) {
     _nowPlayingPlaylist = [queue currentItemPlaylist];
     playingQueuedItem = NO;
     [queue removeFirstItem];
     [[MartinAppDelegate get].playlistTableManager queueChanged];
-    [[MartinAppDelegate get].playlistManager reload];
   }
 
   if ([queue isEmpty]) {
@@ -236,7 +235,7 @@ typedef enum {
 - (void)playItemWithIndex:(int)index {
   _nowPlayingPlaylist = [[MartinAppDelegate get].playlistManager selectedPlaylist];
 
-  if (_nowPlayingPlaylist == [MartinAppDelegate get].playlistManager.queue) {
+  if (_nowPlayingPlaylist == [MartinAppDelegate get].tabsManager.queue) {
     playingQueuedItem = YES;
     [_nowPlayingPlaylist reorderItemsAtRows:@[@(index)] toPos:0];
     [_nowPlayingPlaylist moveToFirstItem];

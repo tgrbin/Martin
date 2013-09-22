@@ -263,8 +263,8 @@
 - (IBAction)queueSelectedItems:(id)sender {
   NSArray *arr = [self chosenItems];
   if (arr.count > 0) {
-    [[MartinAppDelegate get].playlistManager.queue addPlaylistItems:arr
-                                                       fromPlaylist:_playlist];
+    [[MartinAppDelegate get].tabsManager.queue addPlaylistItems:arr
+                                                   fromPlaylist:_playlist];
   }
 }
 
@@ -406,10 +406,13 @@
 }
 
 - (void)queueChanged {
-  [[MartinAppDelegate get].playlistManager reload];
-  if ([MartinAppDelegate get].playlistManager.queue.isEmpty) {
-    [[MartinAppDelegate get].playlistManager queueWillDisappear];
+  if ([MartinAppDelegate get].tabsManager.queue.isEmpty) {
+    [[MartinAppDelegate get].tabsManager hideQueueTab];
+  } else {
+    [[MartinAppDelegate get].tabsManager showQueueTab];
   }
+
+  [[MartinAppDelegate get].tabsManager refreshQueueObjectCount];
 }
 
 - (void)playlistChanged {
@@ -436,7 +439,7 @@
 }
 
 - (BOOL)showingQueuePlaylist {
-  return _playlist == [MartinAppDelegate get].playlistManager.queue;
+  return _playlist == [MartinAppDelegate get].tabsManager.queue;
 }
 
 @end

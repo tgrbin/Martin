@@ -647,13 +647,9 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 }
 
 - (int)addPlaylistItems:(NSArray *)arr atPos:(int)pos fromPlaylist:(Playlist *)_playlist {
-  BOOL queueWasEmpty = [MartinAppDelegate get].playlistManager.queue.isEmpty;
-
   int returnVal = [super addPlaylistItems:arr atPos:pos fromPlaylist:_playlist];
 
-  [[MartinAppDelegate get].playlistManager reload];
   [[MartinAppDelegate get].playlistTableManager queueChanged];
-  if (queueWasEmpty) [[MartinAppDelegate get].playlistManager queueWillAppear];
   
   return returnVal;
 }

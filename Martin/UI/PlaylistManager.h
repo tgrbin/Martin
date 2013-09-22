@@ -19,12 +19,6 @@
 
 - (void)selectNowPlayingPlaylist;
 
-- (void)reload;
-
-- (QueuePlaylist *)queue;
-- (void)queueWillAppear;
-- (void)queueWillDisappear;
-
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes;
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes andSuggestedName:(NSString *)name;
 - (void)addNewPlaylistWithPlaylistItems:(NSArray *)items;

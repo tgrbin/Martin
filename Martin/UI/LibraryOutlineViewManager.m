@@ -124,7 +124,7 @@
 - (IBAction)queueSelectedItems:(id)sender {
   NSArray *arr = [self chosenItems];
   if (arr.count > 0) {
-    [[MartinAppDelegate get].playlistManager.queue addTreeNodes:arr];
+    [[MartinAppDelegate get].tabsManager.queue addTreeNodes:arr];
   }
 }
 
@@ -298,9 +298,9 @@
 
 - (void)controlTextDidChange:(NSNotification *)obj {
   NSString *val = searchTextField.stringValue;
-  if ([val characterAtIndex:val.length-1] == L'œ') {
+  if ([val characterAtIndex:val.length-1] == L'œ') { // option+Q pressed
     searchTextField.stringValue = [val substringToIndex:val.length-1];
-    [[MartinAppDelegate get].playlistManager.queue addTreeNodes:@[ @0 ]];
+    [[MartinAppDelegate get].tabsManager.queue addTreeNodes:@[ @0 ]];
   } else {
     [Tree performSearch:val];
   }
