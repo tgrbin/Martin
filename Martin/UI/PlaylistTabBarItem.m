@@ -11,7 +11,13 @@
 
 @implementation PlaylistTabBarItem
 
+@synthesize title = _title;
+
 - (id)init {
+  return self = [super init];
+}
+
+- (id)initWithPlaylist:(Playlist *)playlist {
   if (self = [super init]) {
     _isProcessing = NO;
 		_objectCount = 0;
@@ -21,15 +27,19 @@
     _icon = nil;
 		_iconName = nil;
     _largeImage = nil;
+
+    self.playlist = playlist;
+    _title = playlist.name;
   }
   return self;
 }
 
 - (NSString *)title {
-  return _playlist.name;
+  return _title;
 }
 
 - (void)setTitle:(NSString *)title {
+  _title = [title copy];
   _playlist.name = title;
 }
 

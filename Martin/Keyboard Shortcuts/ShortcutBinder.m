@@ -108,10 +108,6 @@ static void hookClass(Class cls) {
         case NSCarriageReturnCharacter:
           if (isModifier(flags, NSCommandKeyMask)) return kMartinKeyCmdEnter;
           return kMartinKeyEnter;
-        case NSLeftArrowFunctionKey:
-          return kMartinKeyLeft;
-        case NSRightArrowFunctionKey:
-          return kMartinKeyRight;
         case NSDownArrowFunctionKey:
           if (isModifier(flags, NSCommandKeyMask)) return kMartinKeyCmdDown;
       }

@@ -13,6 +13,8 @@
 
 @interface PlaylistTabBarItem : NSObject <MMTabBarItem>
 
+- (id)initWithPlaylist:(Playlist *)playlist;
+
 @property (nonatomic, strong) Playlist *playlist;
 
 @property (copy)   NSString *title;

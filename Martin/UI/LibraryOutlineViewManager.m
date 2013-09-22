@@ -118,7 +118,7 @@
 }
 
 - (IBAction)createPlaylistWithSelectedItems:(id)sender {
-  [[MartinAppDelegate get].playlistManager addNewPlaylistWithTreeNodes:[self chosenItems]];
+  [[MartinAppDelegate get].tabsManager addNewPlaylistWithTreeNodes:[self chosenItems]];
 }
 
 - (IBAction)queueSelectedItems:(id)sender {
@@ -310,7 +310,7 @@
   if (searchTextField.stringValue.length == 0) return NO;
 
   if (commandSelector == @selector(noop:) && [ShortcutBinder martinKeyForEvent:[NSApp currentEvent]] == kMartinKeyCmdEnter) {
-    [[MartinAppDelegate get].playlistManager addNewPlaylistWithTreeNodes:@[ @0 ] andSuggestedName:searchTextField.stringValue];
+    [[MartinAppDelegate get].tabsManager addNewPlaylistWithTreeNodes:@[ @0 ] andSuggestedName:searchTextField.stringValue];
     return YES;
   } else if (commandSelector == @selector(insertNewline:)) {
     [[MartinAppDelegate get].playlistTableManager addTreeNodes:@[ @0 ]];

@@ -22,11 +22,6 @@
 
 static const double kDragHoverTime = 0.4;
 
-@interface PlaylistManager()
-@property (unsafe_unretained) IBOutlet NSButton *repeatButton;
-@property (unsafe_unretained) IBOutlet NSButton *shuffleButton;
-@end
-
 @implementation PlaylistManager {
   NSMutableArray *playlists;
 
@@ -42,14 +37,12 @@ static const double kDragHoverTime = 0.4;
   playlistsTable.target = self;
   playlistsTable.doubleAction = @selector(playSelectedPlaylist:);
 
-  [playlistsTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistsIndexes, kDragTypePlaylistItemsRows, NSFilenamesPboardType]];
+  [playlistsTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistItemsRows, NSFilenamesPboardType]];
 
   [self selectRow:[[DefaultsManager objectForKey:kDefaultsKeySelectedPlaylistIndex] intValue]];
   [self updateSelectedPlaylist];
 
   [self observe:kFilePlayerEventNotification withAction:@selector(handlePlayerEvent)];
-
-  [self bindShortcuts];
 }
 
 - (id)init {
@@ -60,29 +53,6 @@ static const double kDragHoverTime = 0.4;
   return self;
 }
 
-- (void)bindShortcuts {
-  NSDictionary *bindings = @{
-                             @(kMartinKeyDelete): @"deleteSelectedPlaylists:",
-                             @(kMartinKeyCmdDown): @"playSelectedPlaylist:",
-                             @(kMartinKeyQueueItems): @"queueSelectedPlaylists:",
-                             @(kMartinKeyRight): @"focusPlaylist"
-  };
-
-  [ShortcutBinder bindControl:playlistsTable toTarget:self withBindings:bindings];
-
-  [ShortcutBinder bindControl:playlistsTable andKey:kMartinKeyPlayPause toTarget:[MartinAppDelegate get].player andAction:@selector(playOrPause)];
-}
-
-- (NSArray *)playlistsAtIndexes:(NSArray *)indexes {
-  NSMutableArray *arr = [NSMutableArray new];
-  for (NSNumber *n in indexes) [arr addObject:playlists[n.intValue]];
-  return arr;
-}
-
-- (QueuePlaylist *)queue {
-  return playlists[0];
-}
-
 - (NSIndexSet *)offsetSelectedRowsBy:(int)offset {
   NSIndexSet *is = [playlistsTable selectedRowIndexes];
   NSMutableIndexSet *offsetIs = [NSMutableIndexSet new];
@@ -91,59 +61,12 @@ static const double kDragHoverTime = 0.4;
   return offsetIs;
 }
 
-- (void)savePlaylists {
-  [PlaylistPersistence savePlaylists:playlists];
-  [DefaultsManager setObject:@(playlistsTable.selectedRow) forKey:kDefaultsKeySelectedPlaylistIndex];
-}
-
 - (IBAction)addNewEmptyPlaylist:(id)sender {
-  [self addPlaylist:[Playlist new]];
-}
-
-- (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes andSuggestedName:(NSString *)name {
-  [self addPlaylist:[[Playlist alloc] initWithSuggestedName:name andTreeNodes:nodes]];
-}
-
-- (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes {
-  [self addPlaylist:[[Playlist alloc] initWithTreeNodes:nodes]];
-}
-
-- (void)addNewPlaylistWithPlaylistItems:(NSArray *)items {
-  [self addPlaylist:[[Playlist alloc] initWithPlaylistItems:items]];
-}
-
-- (void)addNewPlaylistWithPlaylistItems:(NSArray *)items andName:(NSString *)name {
-  [self addPlaylist:[[Playlist alloc] initWithName:name andPlaylistItems:items]];
-}
-
-- (void)addPlaylist:(Playlist *)p {
-  [playlists addObject:p];
-  [playlistsTable reloadData];
-  [self selectRow:[self numberOfRows]-1];
-  [self updateSelectedPlaylist];
+//  [self addPlaylist:[Playlist new]];
 }
 
 - (void)selectRow:(NSInteger)row {
   [playlistsTable selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
-}
-
-- (void)selectNowPlayingPlaylist {
-  Playlist *np = [MartinAppDelegate get].player.nowPlayingPlaylist;
-  if (np) {
-    int index = (int)[playlists indexOfObject:np];
-    if (self.queue.isEmpty) --index;
-    [self selectRow:index];
-    [self updateSelectedPlaylist];
-  }
-}
-
-- (void)updateSelectedPlaylist {
-  if ([self numberOfRows] == 0) {
-    _selectedPlaylist = nil;
-  } else {
-    _selectedPlaylist = [self playlistAtRow:playlistsTable.selectedRow];
-  }
-  [MartinAppDelegate get].playlistTableManager.playlist = _selectedPlaylist;
 }
 
 - (void)handlePlayerEvent {
@@ -172,49 +95,27 @@ static const double kDragHoverTime = 0.4;
 }
 
 - (IBAction)deleteSelectedPlaylists:(id)sender {
-  NSMutableIndexSet *is = [[NSMutableIndexSet alloc] initWithIndexSet:playlistsTable.selectedRowIndexes];
-  NSInteger rowToSelect = playlistsTable.selectedRow;
-  if (playlistsTable.clickedRow != -1 && [is containsIndex:playlistsTable.clickedRow] == NO) {
-    is = [NSMutableIndexSet indexSetWithIndex:playlistsTable.clickedRow];
-    rowToSelect = playlistsTable.clickedRow;
-  }
-  if (is.count == 0) return;
+//  for (NSInteger index = [is firstIndex]; index != NSNotFound; index = [is indexGreaterThanIndex:index]) {
+//    [playlists[index] cancelID3Reads];
+//    if ([MartinAppDelegate get].player.nowPlayingPlaylist == playlists[index]) {
+//      [MartinAppDelegate get].player.nowPlayingPlaylist = nil;
+//    }
+//    [self.queue willRemovePlaylist:playlists[index]];
+//  }
 
-  rowToSelect -= [is countOfIndexesInRange:NSMakeRange(0, rowToSelect)];
+//  if (self.queue.isEmpty == NO && [is containsIndex:0]) {
+//    [self.queue clear];
+//    [is removeIndex:0];
+//  }
 
-  if (self.queue.isEmpty) { // if queue is not visible indexes need to be adjusted
-    NSMutableIndexSet *increased = [NSMutableIndexSet new];
-    for (NSInteger index = [is firstIndex]; index != NSNotFound; index = [is indexGreaterThanIndex:index]) [increased addIndex:index+1];
-    is = increased;
-  }
-
-  for (NSInteger index = [is firstIndex]; index != NSNotFound; index = [is indexGreaterThanIndex:index]) {
-    [playlists[index] cancelID3Reads];
-    if ([MartinAppDelegate get].player.nowPlayingPlaylist == playlists[index]) {
-      [MartinAppDelegate get].player.nowPlayingPlaylist = nil;
-    }
-    [self.queue willRemovePlaylist:playlists[index]];
-  }
-
-  if (self.queue.isEmpty == NO && [is containsIndex:0]) {
-    [self.queue clear];
-    [is removeIndex:0];
-  }
-
-  [playlists removeObjectsAtIndexes:is];
-  [playlistsTable reloadData];
-
-  [self selectRow:MAX(0, MIN(rowToSelect, [self numberOfRows]-1))];
-  [self updateSelectedPlaylist];
+//  [playlists removeObjectsAtIndexes:is];
+//  [playlistsTable reloadData];
+//
+//  [self selectRow:MAX(0, MIN(rowToSelect, [self numberOfRows]-1))];
+//  [self updateSelectedPlaylist];
 }
 
-- (IBAction)queueSelectedPlaylists:(id)sender {
-  NSArray *arr = [self chosenItems];
-  if (arr.count > 0) {
-    [self.queue addItemsFromPlaylists:arr
-                                atPos:self.queue.numberOfItems];
-  }
-}
+- (void)updateSelectedPlaylist {}
 
 - (IBAction)playSelectedPlaylist:(id)sender {
   NSInteger row = playlistsTable.clickedRow;
@@ -250,37 +151,17 @@ static const double kDragHoverTime = 0.4;
 
 #pragma mark - drag and drop
 
-- (BOOL)tableView:(NSTableView *)tableView writeRows:(NSArray *)rows toPasteboard:(NSPasteboard *)pboard {
-  if (self.queue.isEmpty) {
-    NSMutableArray *increasedRows = [NSMutableArray new];
-    for (NSNumber *n in rows) [increasedRows addObject:@(n.intValue+1)];
-    rows = increasedRows;
-  }
-  [pboard declareTypes:@[kDragTypePlaylistsIndexes] owner:nil];
-  [pboard setData:[DragDataConverter dataFromArray:rows]
-          forType:kDragTypePlaylistsIndexes];
-  return YES;
-}
-
 - (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
   [self resetDragHoverTimer];
-
-  // can't drag queue within playlists table
-  if (self.queue.isEmpty == NO) {
-    NSString *draggingType = [info.draggingPasteboard.types lastObject];
-    if ([draggingType isEqualToString:kDragTypePlaylistsIndexes]) {
-      NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:draggingType]];
-      if (items.count == 1 && [items[0] intValue] == 0) return NSDragOperationNone;
-    }
-  }
 
   if (dropOperation == NSTableViewDropOn) {
     dragHoverRow = row;
     [self setDragHoverTimer];
   }
 
-  // can't drop anything above the queue
-  if (self.queue.isEmpty == NO && dropOperation == NSTableViewDropAbove && row == 0) return NSDragOperationNone;
+// TODO: don't allow tab reorder left of the queue
+// can't drop anything above the queue
+//  if (self.queue.isEmpty == NO && dropOperation == NSTableViewDropAbove && row == 0) return NSDragOperationNone;
 
   return NSDragOperationCopy;
 }
@@ -312,7 +193,6 @@ static const double kDragHoverTime = 0.4;
   NSArray *draggingTypes = info.draggingPasteboard.types;
 
   NSInteger actualRow = row;
-  if (self.queue.isEmpty) ++row;
 
   if ([draggingTypes containsObject:NSFilenamesPboardType]) {
     NSArray *items = [info.draggingPasteboard propertyListForType:NSFilenamesPboardType];
@@ -335,68 +215,34 @@ static const double kDragHoverTime = 0.4;
     NSString *draggingType = [draggingTypes lastObject];
     NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:draggingType]];
 
-    if ([draggingType isEqualToString:kDragTypePlaylistsIndexes]) {
-      if (dropOperation == NSTableViewDropAbove) {
-        [self relocateRows:items toPos:row];
-      } else {
-        Playlist *destPlaylist = playlists[row];
-        for (NSNumber *n in items) {
-          [destPlaylist addItemsFromPlaylist:playlists[n.intValue]];
-        }
-        [self selectRow:actualRow];
-      }
-    } else {
-      BOOL fromLibrary = [draggingType isEqualToString:kDragTypeTreeNodes];
+    BOOL fromLibrary = [draggingType isEqualToString:kDragTypeTreeNodes];
 
-      if (fromLibrary == NO) {
-        Playlist *srcPlaylist = [MartinAppDelegate get].playlistTableManager.dragSourcePlaylist;
-        NSMutableArray *arr = [NSMutableArray new];
-        for (NSNumber *row in items) [arr addObject:srcPlaylist[row.intValue]];
-        items = arr;
-      }
-
-      if (dropOperation == NSTableViewDropAbove) {
-        Playlist *p;
-        if (fromLibrary) p = [[Playlist alloc] initWithTreeNodes:items];
-        else p = [[Playlist alloc] initWithPlaylistItems:items];
-
-        [playlists insertObject:p atIndex:row];
-        [tableView reloadData];
-      } else {
-        Playlist *p = playlists[row];
-        if (fromLibrary) [p addTreeNodes:items atPos:p.numberOfItems];
-        else [p addPlaylistItems:items];
-      }
-      [self selectRow:actualRow];
-      [self updateSelectedPlaylist];
+    if (fromLibrary == NO) {
+      Playlist *srcPlaylist = [MartinAppDelegate get].playlistTableManager.dragSourcePlaylist;
+      NSMutableArray *arr = [NSMutableArray new];
+      for (NSNumber *row in items) [arr addObject:srcPlaylist[row.intValue]];
+      items = arr;
     }
+
+    if (dropOperation == NSTableViewDropAbove) {
+      Playlist *p;
+      if (fromLibrary) p = [[Playlist alloc] initWithTreeNodes:items];
+      else p = [[Playlist alloc] initWithPlaylistItems:items];
+
+      [playlists insertObject:p atIndex:row];
+      [tableView reloadData];
+    } else {
+      Playlist *p = playlists[row];
+      if (fromLibrary) [p addTreeNodes:items atPos:p.numberOfItems];
+      else [p addPlaylistItems:items];
+    }
+    [self selectRow:actualRow];
+    [self updateSelectedPlaylist];
+
     [[MartinAppDelegate get].window makeFirstResponder:playlistsTable];
   }
 
   return YES;
-}
-
-- (void)relocateRows:(NSArray *)rows toPos:(NSInteger)pos {
-  NSMutableIndexSet *rowsToRelocate = [NSMutableIndexSet new];
-  NSMutableArray *objectsToRelocate = [NSMutableArray new];
-  NSInteger dest = pos;
-  for (NSNumber *n in rows) {
-    int i = n.intValue;
-    if (i > 0) {
-      [objectsToRelocate addObject:playlists[i]];
-      [rowsToRelocate addIndex:i];
-      if (i < pos) --dest;
-    }
-  };
-
-  NSIndexSet *destIndexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(dest, rowsToRelocate.count)];
-  NSIndexSet *actualIndexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(dest-self.queue.isEmpty, rowsToRelocate.count)];
-  [playlists removeObjectsAtIndexes:rowsToRelocate];
-  [playlists insertObjects:objectsToRelocate atIndexes:destIndexSet];
-  [playlistsTable reloadData];
-  ignoreSelectionChange = YES;
-  [playlistsTable selectRowIndexes:actualIndexSet byExtendingSelection:NO];
-  ignoreSelectionChange = NO;
 }
 
 #pragma mark - table data source
@@ -407,8 +253,7 @@ static const double kDragHoverTime = 0.4;
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   Playlist *p = [self playlistAtRow:row];
-  if (p == self.queue) return [NSString stringWithFormat:@"%@ (%d)", p.name, p.numberOfItems];
-  else return p.name;
+  return p.name;
 }
 
 - (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
@@ -420,9 +265,6 @@ static const double kDragHoverTime = 0.4;
 #pragma mark - table delegate
 
 - (BOOL)tableView:(NSTableView *)tableView shouldEditTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-  // cant rename queue playlist
-  if (row == 0 && self.queue.isEmpty == NO) return NO;
-
   NSEvent *e = [NSApp currentEvent];
   if (e.type == NSKeyDown && e.keyCode == 48) return NO;
   return YES;
@@ -441,11 +283,10 @@ static const double kDragHoverTime = 0.4;
 }
 
 - (NSInteger)numberOfRows {
-  return playlists.count - (self.queue.isEmpty == YES);
+  return playlists.count;
 }
 
 - (Playlist *)playlistAtRow:(NSInteger)index {
-  if (self.queue.isEmpty) ++index;
   return playlists[index];
 }
 

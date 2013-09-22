@@ -453,8 +453,11 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
   if (_currentIndexInPlaylistItems == -1) {
     _currentItemIndex = -1;
   } else {
-    for (int i = 0; i < playlist.size(); ++i)
-      if (playlist[i] == _currentIndexInPlaylistItems) _currentItemIndex = i;
+    for (int i = 0; i < playlist.size(); ++i) {
+      if (playlist[i] == _currentIndexInPlaylistItems) {
+        _currentItemIndex = i;
+      }
+    }
   }
   
   [[NSNotificationCenter defaultCenter] postNotificationName:kPlaylistCurrentItemChanged object:nil];

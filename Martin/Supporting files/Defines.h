@@ -10,7 +10,6 @@
 #define Martin_Defines_h
 
 #define kDragTypeTreeNodes            @"kDragTypeTreeNodes"
-#define kDragTypePlaylistsIndexes     @"kDragTypePlaylistsIndexes"
 #define kDragTypePlaylistItemsRows    @"kDragTypePlaylistItemsRows"
 #define kDragTypeLibraryFolderRow     @"kDragTypeLibraryFolderRow"
 

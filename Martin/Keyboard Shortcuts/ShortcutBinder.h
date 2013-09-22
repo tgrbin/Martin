@@ -21,8 +21,6 @@ typedef enum {
   kMartinKeySelectArtist,
   kMartinKeySelectAlbum,
   kMartinKeySearch,
-  kMartinKeyLeft,
-  kMartinKeyRight,
   kMartinKeyCrop,
   kMartinKeyShuffle,
   kMartinKeyPlayPause

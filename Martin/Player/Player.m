@@ -228,12 +228,12 @@ typedef enum {
 
 - (void)setNowPlayingPlaylistIfNecessary {
   if (_nowPlayingPlaylist == nil) {
-    _nowPlayingPlaylist = [MartinAppDelegate get].playlistManager.selectedPlaylist;
+    _nowPlayingPlaylist = [MartinAppDelegate get].tabsManager.selectedPlaylist;
   }
 }
 
 - (void)playItemWithIndex:(int)index {
-  _nowPlayingPlaylist = [[MartinAppDelegate get].playlistManager selectedPlaylist];
+  _nowPlayingPlaylist = [[MartinAppDelegate get].tabsManager selectedPlaylist];
 
   if (_nowPlayingPlaylist == [MartinAppDelegate get].tabsManager.queue) {
     playingQueuedItem = YES;
@@ -267,6 +267,7 @@ typedef enum {
   if (savedStatus == kPlayerStatusStopped) {
     playerStatusTextField.status = kPlayerStatusStopped;
   } else {
+    // TODO: playlist that current item belonged to might have been erased
     [self setNowPlayingPlaylistIfNecessary];
 
     FilePlayer *filePlayer = [MartinAppDelegate get].filePlayer;

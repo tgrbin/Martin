@@ -8,9 +8,23 @@
 
 #import <Foundation/Foundation.h>
 
+@class Playlist;
 @class QueuePlaylist;
 
 @interface TabsManager : NSObject
+
+- (void)allLoaded;
+
+@property (nonatomic, strong) Playlist *selectedPlaylist;
+
+- (void)selectNowPlayingPlaylist;
+
+- (void)savePlaylists;
+
+- (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes;
+- (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes andSuggestedName:(NSString *)name;
+- (void)addNewPlaylistWithPlaylistItems:(NSArray *)items;
+- (void)addNewPlaylistWithPlaylistItems:(NSArray *)items andName:(NSString *)name;
 
 @property (nonatomic, strong) QueuePlaylist *queue;
 - (void)showQueueTab;

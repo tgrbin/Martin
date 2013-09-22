@@ -29,14 +29,12 @@
   playlistTable.target = self;
   playlistTable.doubleAction = @selector(itemDoubleClicked);
 
-  [playlistTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistsIndexes, kDragTypePlaylistItemsRows, NSFilenamesPboardType]];
+  [playlistTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistItemsRows, NSFilenamesPboardType]];
 
   [self observe:kFilePlayerEventNotification withAction:@selector(playlistChanged)];
   [self observe:kPlaylistCurrentItemChanged withAction:@selector(playlistChanged)];
   [self observe:kLibraryRescanFinishedNotification withAction:@selector(reloadTableData)];
 
-  _playlist = [MartinAppDelegate get].playlistManager.selectedPlaylist;
-  [self centerTableToCurrentItem];
   [self bindShortcuts];
   [self initTableHeaderViewMenu];
 }
@@ -51,7 +49,6 @@
     @(kMartinKeySelectAll): @"selectAllItems:",
     @(kMartinKeySelectAlbum): @"selectAlbum:",
     @(kMartinKeySelectArtist): @"selectArtist:",
-    @(kMartinKeyLeft): @"focusPlaylists",
     @(kMartinKeyCrop): @"cropSelectedItems:",
     @(kMartinKeyShuffle): @"shuffleSelectedItems:",
     @(kMartinKeyPlayPause): @"playOrPausePressed"
@@ -154,16 +151,11 @@
     if ([draggingType isEqualToString:kDragTypeTreeNodes]) {
 
       if (_playlist == nil) {
-        [[MartinAppDelegate get].playlistManager addNewPlaylistWithTreeNodes:items];
+        [[MartinAppDelegate get].tabsManager addNewPlaylistWithTreeNodes:items];
         itemsCount = _playlist.numberOfItems;
       } else {
         itemsCount = [_playlist addTreeNodes:items atPos:endPosition];
       }
-
-    } else if ([draggingType isEqualToString:kDragTypePlaylistsIndexes]) {
-
-      itemsCount = [_playlist addItemsFromPlaylists:[[MartinAppDelegate get].playlistManager playlistsAtIndexes:items]
-                                              atPos:endPosition];
 
     } else if ([draggingType isEqualToString:kDragTypePlaylistItemsRows]) {
 
@@ -257,7 +249,7 @@
 #pragma mark - actions
 
 - (IBAction)createNewPlaylistWithSelectedItems:(id)sender {
-  [[MartinAppDelegate get].playlistManager addNewPlaylistWithPlaylistItems:[self chosenItems]];
+  [[MartinAppDelegate get].tabsManager addNewPlaylistWithPlaylistItems:[self chosenItems]];
 }
 
 - (IBAction)queueSelectedItems:(id)sender {
@@ -341,10 +333,6 @@
 }
 
 #pragma mark - focus changes
-
-- (void)focusPlaylists {
-  [[MartinAppDelegate get].playlistManager takeFocus];
-}
 
 - (void)takeFocus {
   [[MartinAppDelegate get].window makeFirstResponder:playlistTable];
@@ -439,7 +427,7 @@
 }
 
 - (BOOL)showingQueuePlaylist {
-  return _playlist == [MartinAppDelegate get].tabsManager.queue;
+  return _playlist != nil && _playlist == [MartinAppDelegate get].tabsManager.queue;
 }
 
 @end

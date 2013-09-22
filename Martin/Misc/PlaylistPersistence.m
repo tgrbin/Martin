@@ -37,6 +37,7 @@
   FILE *f = fopen([ResourcePath playlistsPath], "r");
   if (f == NULL) {
     [playlists addObject:[[QueuePlaylist alloc] initWithName:@"Queue" andPlaylistItems:@[]]];
+    [playlists addObject:[Playlist new]];
   } else {
     int nPlaylists;
     fscanf(f, "%d\n", &nPlaylists);

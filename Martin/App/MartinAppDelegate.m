@@ -39,6 +39,7 @@
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
+  [_tabsManager allLoaded];
   [_player restorePlayerState];
 }
 
@@ -49,7 +50,7 @@
 }
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
-  [_playlistManager savePlaylists];
+  [_tabsManager savePlaylists];
   [_libraryOutlineViewManager saveState];
   [_player storePlayerState];
   return YES;
@@ -76,7 +77,7 @@
   }
 
   if (showedMartin) {
-    [_playlistManager selectNowPlayingPlaylist];
+    [_tabsManager selectNowPlayingPlaylist];
   }
 }
 
@@ -113,7 +114,7 @@
       if (_player.nowPlayingPlaylist) {
         [_playlistTableManager addPlaylistItems:items];
       } else {
-        [_playlistManager addNewPlaylistWithPlaylistItems:items andName:name];
+        [_tabsManager addNewPlaylistWithPlaylistItems:items andName:name];
       }
     }
   }];
