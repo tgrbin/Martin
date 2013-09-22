@@ -13,14 +13,19 @@
 #import "MMTabStyle.h"
 #import "NSView+MMTabBarViewExtensions.h"
 
-@interface MMAttachedTabBarButton (/*Private*/)
+#import "PlaylistTabBarItem.h"
+#import "MartinAppDelegate.h"
+
+@interface MMAttachedTabBarButton (/*Private*/) <NSTextFieldDelegate>
 
 - (MMAttachedTabBarButton *)_selectedAttachedTabBarButton;
 - (NSRect)_draggingRect;
 
 @end
 
-@implementation MMAttachedTabBarButton
+@implementation MMAttachedTabBarButton {
+  BOOL renamingTitle;
+}
 
 @synthesize tabViewItem = _tabViewItem;
 @dynamic slidingFrame;
@@ -30,88 +35,88 @@
 @dynamic isOverflowButton;
 
 + (void)initialize {
-    [super initialize];
+  [super initialize];
 }
 
 + (Class)cellClass {
-    return [MMAttachedTabBarButtonCell class];
+  return [MMAttachedTabBarButtonCell class];
 }
 
 - (id)initWithFrame:(NSRect)frame tabViewItem:(NSTabViewItem *)anItem {
 
-    self = [super initWithFrame:frame];
-    if (self) {
-        _tabViewItem = [anItem retain];
-        _isInAnimatedSlide = NO;
-        _isInDraggedSlide = NO;
-    }
+  self = [super initWithFrame:frame];
+  if (self) {
+    _tabViewItem = [anItem retain];
+    _isInAnimatedSlide = NO;
+    _isInDraggedSlide = NO;
+  }
 
-    return self;
+  return self;
 }
 
 - (id)initWithFrame:(NSRect)frame {
 
-    NSAssert(FALSE,@"please use designated initializer -initWithFrame:tabViewItem:");
+  NSAssert(FALSE,@"please use designated initializer -initWithFrame:tabViewItem:");
 
-    [self release];
-    return nil;
+  [self release];
+  return nil;
 }
 
 - (void)dealloc
 {
-    [_tabViewItem release], _tabViewItem = nil;
-    [super dealloc];
+  [_tabViewItem release], _tabViewItem = nil;
+  [super dealloc];
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
-    [super drawRect:dirtyRect];
+  [super drawRect:dirtyRect];
 }
 
 - (MMAttachedTabBarButtonCell *)cell {
-    return (MMAttachedTabBarButtonCell *)[super cell];
+  return (MMAttachedTabBarButtonCell *)[super cell];
 }
 
 - (void)setCell:(MMAttachedTabBarButtonCell *)aCell {
-    [super setCell:aCell];
+  [super setCell:aCell];
 }
 
 -(void)viewWillDraw {
 
-    NSView *superview = [self superview];
-    [superview setNeedsDisplayInRect:[superview bounds]];
+  NSView *superview = [self superview];
+  [superview setNeedsDisplayInRect:[superview bounds]];
 
-    [super viewWillDraw];
+  [super viewWillDraw];
 }
 
 #pragma mark -
 #pragma mark Accessors
 
 - (NSRect)slidingFrame {
-    @synchronized(self) {
-        return [self frame];
-    }
+  @synchronized(self) {
+    return [self frame];
+  }
 }
 
 - (void)setSlidingFrame:(NSRect)aRect {
-    @synchronized(self) {
-        aRect.origin.y = [self frame].origin.y;
-        [self setFrame:aRect];
-    }
+  @synchronized(self) {
+    aRect.origin.y = [self frame].origin.y;
+    [self setFrame:aRect];
+  }
 }
 
 - (BOOL)isSliding {
-    return _isInDraggedSlide || _isInAnimatedSlide;
+  return _isInDraggedSlide || _isInAnimatedSlide;
 }
 
 - (void)setTitle:(NSString *)aString {
-    [super setTitle:aString];
+  [super setTitle:aString];
 
-        // additionally synchronize label of tab view item if appropriate
-    if (_tabViewItem && [_tabViewItem respondsToSelector:@selector(label)]) {
-        if (![[_tabViewItem label] isEqualToString:aString]) {
-            [_tabViewItem setLabel:aString];
-        }
+  // additionally synchronize label of tab view item if appropriate
+  if (_tabViewItem && [_tabViewItem respondsToSelector:@selector(label)]) {
+    if (![[_tabViewItem label] isEqualToString:aString]) {
+      [_tabViewItem setLabel:aString];
     }
+  }
 }
 
 #pragma mark -
@@ -119,70 +124,125 @@
 
 - (BOOL)shouldDisplayLeftDivider {
 
-    if ([self isSliding] || ([self tabState] & MMTab_PlaceholderOnLeft))
-        return YES;
+  if ([self isSliding] || ([self tabState] & MMTab_PlaceholderOnLeft))
+    return YES;
 
-    return [super shouldDisplayLeftDivider];
+  return [super shouldDisplayLeftDivider];
 }
 
 - (BOOL)shouldDisplayRightDivider {
 
-    if ([self isOverflowButton])
-        return NO;
+  if ([self isOverflowButton])
+    return NO;
 
-    return YES;
+  return YES;
 }
 
 #pragma mark -
 #pragma mark Interfacing Cell
 
 - (BOOL)isOverflowButton {
-    return [[self cell] isOverflowButton];
+  return [[self cell] isOverflowButton];
 }
 
 - (void)setIsOverflowButton:(BOOL)value {
-    [[self cell] setIsOverflowButton:value];
+  [[self cell] setIsOverflowButton:value];
 }
 
 #pragma mark -
 #pragma mark Event Handling
 
 - (void)mouseDown:(NSEvent *)theEvent {
+  MMAttachedTabBarButton *previousSelectedButton = [self _selectedAttachedTabBarButton];
 
-    MMAttachedTabBarButton *previousSelectedButton = [self _selectedAttachedTabBarButton];
+  MMTabBarView *tabBarView = [self tabBarView];
 
-    MMTabBarView *tabBarView = [self tabBarView];
-
-        // select immediately
-    if ([tabBarView selectsTabsOnMouseDown]) {
-        if (self != previousSelectedButton) {
-            [previousSelectedButton setState:NSOffState];
-            [self setState:NSOnState];
-            [self sendAction:[self action] to:[self target]];
-        }
+  // select immediately
+  if ([tabBarView selectsTabsOnMouseDown]) {
+    if (self != previousSelectedButton) {
+      [previousSelectedButton setState:NSOffState];
+      [self setState:NSOnState];
+      [self sendAction:[self action] to:[self target]];
     }
+  }
 
-        // eventually begin dragging of button
-    if ([tabBarView shouldStartDraggingAttachedTabBarButton:self withMouseDownEvent:theEvent]) {
-        [tabBarView startDraggingAttachedTabBarButton:self withMouseDownEvent:theEvent];
-    }
+  // eventually begin dragging of button
+  if ([tabBarView shouldStartDraggingAttachedTabBarButton:self withMouseDownEvent:theEvent]) {
+    [tabBarView startDraggingAttachedTabBarButton:self withMouseDownEvent:theEvent];
+  }
 }
 
 - (void)mouseUp:(NSEvent *)theEvent {
+  MMTabBarView *tabBarView = [self tabBarView];
 
-    MMTabBarView *tabBarView = [self tabBarView];
+  NSPoint mouseUpPoint = [theEvent locationInWindow];
+  NSPoint mousePt = [self convertPoint:mouseUpPoint fromView:nil];
 
-    NSPoint mouseUpPoint = [theEvent locationInWindow];
-    NSPoint mousePt = [self convertPoint:mouseUpPoint fromView:nil];
-
-    if (NSMouseInRect(mousePt, [self bounds], [self isFlipped])) {
-        if (![tabBarView selectsTabsOnMouseDown]) {
-            MMAttachedTabBarButton *previousSelectedButton = [self _selectedAttachedTabBarButton];
-            [previousSelectedButton setState:NSOffState];
-            [self setState:NSOnState];
-            [self sendAction:[self action] to:[self target]];
-        }
+  if (NSMouseInRect(mousePt, [self bounds], [self isFlipped])) {
+    if (![tabBarView selectsTabsOnMouseDown]) {
+      MMAttachedTabBarButton *previousSelectedButton = [self _selectedAttachedTabBarButton];
+      [previousSelectedButton setState:NSOffState];
+      [self setState:NSOnState];
+      [self sendAction:[self action] to:[self target]];
     }
+
+    if (theEvent.clickCount > 1) {
+      [self beginRenaming];
+    }
+  }
+}
+
+#pragma mark - Renaming support
+
+static const int kRenameFieldTag = 601;
+
+- (void)beginRenaming {
+  renamingTitle = YES;
+
+  NSTextField *renameField = [[NSTextField alloc] initWithFrame:self.bounds];
+  renameField.tag = kRenameFieldTag;
+  renameField.delegate = self;
+  renameField.focusRingType = NSFocusRingTypeNone;
+
+  NSTextFieldCell *cell = renameField.cell;
+  cell.editable = YES;
+  cell.bezeled = NO;
+  cell.bordered = NO;
+  cell.drawsBackground = NO;
+  cell.usesSingleLineMode = YES;
+  cell.font = self.font;
+  cell.alignment = NSCenterTextAlignment;
+
+  PlaylistTabBarItem *item = self.tabViewItem.identifier;
+  cell.stringValue = item.title;
+  self.title = @"";
+
+  [self addSubview:renameField];
+
+  [[MartinAppDelegate get].window makeFirstResponder:renameField];
+}
+
+- (void)endRenaming {
+  renamingTitle = NO;
+  NSTextField *renameField = [self viewWithTag:kRenameFieldTag];
+  [renameField removeFromSuperview];
+}
+
+- (void)cancelOperation:(id)sender {
+  PlaylistTabBarItem *item = self.tabViewItem.identifier;
+  self.title = item.title;
+  [self endRenaming];
+}
+
+- (BOOL)control:(NSControl *)control textShouldEndEditing:(NSText *)fieldEditor {
+  if (renamingTitle == NO) {
+    return YES;
+  }
+
+  PlaylistTabBarItem *item = self.tabViewItem.identifier;
+  item.title = fieldEditor.string;
+  [self endRenaming];
+  return YES;
 }
 
 #pragma mark -
@@ -190,44 +250,44 @@
 
 - (NSRect)draggingRect {
 
-    id <MMTabStyle> style = [self style];
-    MMTabBarView *tabBarView = [self tabBarView];
+  id <MMTabStyle> style = [self style];
+  MMTabBarView *tabBarView = [self tabBarView];
 
-    NSRect draggingRect = NSZeroRect;
+  NSRect draggingRect = NSZeroRect;
 
-    if (style && [style respondsToSelector:@selector(dragRectForTabButton:ofTabBarView:)]) {
-        draggingRect = [style draggingRectForTabButton:self ofTabBarView:tabBarView];
-    } else {
-        draggingRect = [self _draggingRect];
-    }
+  if (style && [style respondsToSelector:@selector(dragRectForTabButton:ofTabBarView:)]) {
+    draggingRect = [style draggingRectForTabButton:self ofTabBarView:tabBarView];
+  } else {
+    draggingRect = [self _draggingRect];
+  }
 
-    return draggingRect;
+  return draggingRect;
 }
 
 - (NSImage *)dragImage {
 
-        // assure that we will draw the tab bar contents correctly
-    [self setFrame:[self stackingFrame]];
+  // assure that we will draw the tab bar contents correctly
+  [self setFrame:[self stackingFrame]];
 
-    MMTabBarView *tabBarView = [self tabBarView];
+  MMTabBarView *tabBarView = [self tabBarView];
 
-    NSRect draggingRect = [self draggingRect];
+  NSRect draggingRect = [self draggingRect];
 
 	[tabBarView lockFocus];
-    [tabBarView display];  // forces update to ensure that we get current state
+  [tabBarView display];  // forces update to ensure that we get current state
 	NSBitmapImageRep *rep = [[[NSBitmapImageRep alloc] initWithFocusedViewRect:draggingRect] autorelease];
 	[tabBarView unlockFocus];
 	NSImage *image = [[[NSImage alloc] initWithSize:[rep size]] autorelease];
 	[image addRepresentation:rep];
 	NSImage *returnImage = [[[NSImage alloc] initWithSize:[rep size]] autorelease];
 	[returnImage lockFocus];
-    [image drawAtPoint:NSMakePoint(0.0, 0.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+  [image drawAtPoint:NSMakePoint(0.0, 0.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
 	[returnImage unlockFocus];
 	if (![[self indicator] isHidden]) {
 		NSImage *pi = [[NSImage alloc] initByReferencingFile:[[MMTabBarView bundle] pathForImageResource:@"pi"]];
 		[returnImage lockFocus];
 		NSPoint indicatorPoint = NSMakePoint([self frame].size.width - MARGIN_X - kMMTabBarIndicatorWidth, MARGIN_Y);
-        [pi drawAtPoint:indicatorPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+    [pi drawAtPoint:indicatorPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
 		[returnImage unlockFocus];
 		[pi release];
 	}
@@ -238,11 +298,11 @@
 #pragma mark Animation Support
 
 - (void)slideAnimationWillStart {
-    _isInAnimatedSlide = YES;
+  _isInAnimatedSlide = YES;
 }
 
 - (void)slideAnimationDidEnd {
-    _isInAnimatedSlide = NO;
+  _isInAnimatedSlide = NO;
 }
 
 #pragma mark -
@@ -250,12 +310,12 @@
 
 - (MMAttachedTabBarButton *)_selectedAttachedTabBarButton {
 
-    MMTabBarView *tabBarView = [self enclosingTabBarView];
-    return [tabBarView selectedAttachedButton];
+  MMTabBarView *tabBarView = [self enclosingTabBarView];
+  return [tabBarView selectedAttachedButton];
 }
 
 - (NSRect)_draggingRect {
-    return [self frame];
+  return [self frame];
 }
 
 @end

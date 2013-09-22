@@ -126,13 +126,6 @@ static const double kDragHoverTime = 0.4;
   [[MartinAppDelegate get].player playSelectedPlaylist];
 }
 
-- (IBAction)forgetPlayedItems:(id)sender {
-  NSArray *arr = [self chosenItems];
-  for (Playlist *p in arr) {
-    [p forgetPlayedItems];
-  }
-}
-
 - (NSArray *)chosenItems {
   NSInteger clickedRow = playlistsTable.clickedRow;
   NSIndexSet *selectedRows = playlistsTable.selectedRowIndexes;
@@ -290,16 +283,5 @@ static const double kDragHoverTime = 0.4;
   return playlists[index];
 }
 
-#pragma mark - menu delegate
-
-- (void)menuNeedsUpdate:(NSMenu *)menu {
-  static const int kRenameItemTag = 1;
-  static const int kStateIndicatorTag = 2;
-
-  NSArray *chosenItems = [self chosenItems];
-
-  [menu itemWithTag:kRenameItemTag].enabled = (chosenItems.count == 1);
-
-}
 
 @end
