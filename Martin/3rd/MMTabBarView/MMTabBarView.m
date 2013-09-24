@@ -1652,88 +1652,88 @@ static NSMutableDictionary *registeredStyleClasses = nil;
 #pragma mark NSDraggingDestination
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
+  NSDragOperation dragOp = NSDragOperationNone;
 
-    NSDragOperation dragOp = NSDragOperationNone;
+  NSPasteboard *pb = [sender draggingPasteboard];
 
-    NSPasteboard *pb = [sender draggingPasteboard];
-
-    if ([pb canReadItemWithDataConformingToTypes:[NSArray arrayWithObject:AttachedTabBarButtonUTI]]) {
-
-        MMTabDragAssistant *dragAssistant = [MMTabDragAssistant sharedDragAssistant];
-
-        dragOp = [dragAssistant draggingEntered:sender inTabBarView:self];
-    }
+  if ([pb canReadItemWithDataConformingToTypes:[NSArray arrayWithObject:AttachedTabBarButtonUTI]]) {
+    MMTabDragAssistant *dragAssistant = [MMTabDragAssistant sharedDragAssistant];
+    dragOp = [dragAssistant draggingEntered:sender inTabBarView:self];
+  } else if ([pb.types containsObject:kDragTypeTreeNodes] || [pb.types containsObject:kDragTypePlaylistItemsRows]) {
+    dragOp = NSDragOperationCopy;
+  }
 
 	return dragOp;
 }
 
 - (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender {
+  NSPasteboard *pb = [sender draggingPasteboard];
 
-    NSPasteboard *pb = [sender draggingPasteboard];
+  if ([pb canReadItemWithDataConformingToTypes:[NSArray arrayWithObject:AttachedTabBarButtonUTI]]) {
+    MMTabDragAssistant *dragAssistant = [MMTabDragAssistant sharedDragAssistant];
+    return [dragAssistant draggingUpdated:sender inTabBarView:self];
+  } else {
+    //something that was accepted by the delegate was dragged on
 
-    if ([pb canReadItemWithDataConformingToTypes:[NSArray arrayWithObject:AttachedTabBarButtonUTI]]) {
+    NSPoint aPoint = [self convertPoint:[sender draggingLocation] fromView:nil];
 
-        MMTabDragAssistant *dragAssistant = [MMTabDragAssistant sharedDragAssistant];
-        return [dragAssistant draggingUpdated:sender inTabBarView:self];
-
-    } else {
-            //something that was accepted by the delegate was dragged on
-
-        NSPoint aPoint = [self convertPoint:[sender draggingLocation] fromView:nil];
-
-        MMAttachedTabBarButton *destinationButton = (MMAttachedTabBarButton *)[self tabBarButtonAtPoint:aPoint];
-        if (![destinationButton isKindOfClass:[MMAttachedTabBarButton class]])
-            return NSDragOperationNone;
+    MMAttachedTabBarButton *destinationButton = (MMAttachedTabBarButton *)[self tabBarButtonAtPoint:aPoint];
+    if (![destinationButton isKindOfClass:[MMAttachedTabBarButton class]]) {
+      return NSDragOperationNone;
+    }
 
 		//Wind the spring for a spring-loaded drop.
 		//The delay time comes from Finder's defaults, which specifies it in milliseconds.
 		//If the delegate can't handle our spring-loaded drop, we'll abort it when the timer fires. See fireSpring:. This is simpler than constantly (checking for spring-loaded awareness and tearing down/rebuilding the timer) at every delegate change.
 
-            //If the user has dragged to a different tab, reset the timer.
+    //If the user has dragged to a different tab, reset the timer.
 		if (_tabViewItemWithSpring != [destinationButton tabViewItem]) {
 			[_springTimer invalidate];
 			[_springTimer release]; _springTimer = nil;
 			_tabViewItemWithSpring = [destinationButton tabViewItem];
 		}
-		if (!_springTimer) {
-                //Finder's default delay time, as of Tiger, is 668 ms. If the user has never changed it, there's no setting in its defaults, so we default to that amount.
-			NSNumber *delayNumber = [(NSNumber *)CFPreferencesCopyAppValue((CFStringRef)@"SpringingDelayMilliseconds", (CFStringRef)@"com.apple.finder") autorelease];
-			NSTimeInterval delaySeconds = delayNumber ?[delayNumber doubleValue] / 1000.0 : 0.668;
-			_springTimer = [[NSTimer scheduledTimerWithTimeInterval:delaySeconds
-							 target:self
-							 selector:@selector(fireSpring:)
-							 userInfo:sender
-							 repeats:NO] retain];
-		}
-		return NSDragOperationCopy;
+
+    MMAttachedTabBarButton *button = [self attachedButtonAtPoint:aPoint];
+    if (button != nil) {
+        [_tabView selectTabViewItem:[button tabViewItem]];
+
+        _tabViewItemWithSpring = nil;
+        [_springTimer invalidate];
+        [_springTimer release]; _springTimer = nil;
     }
 
-    return NSDragOperationNone;
+		return NSDragOperationCopy;
+  }
+
+  return NSDragOperationNone;
 }
 
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
 	[_springTimer invalidate];
-	[_springTimer release]; _springTimer = nil;
+	[_springTimer release];
+  _springTimer = nil;
 
 	[[MMTabDragAssistant sharedDragAssistant] draggingExitedTabBarView:self draggingInfo:sender];
 }
 
 - (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender {
+  NSPasteboard *pb = [sender draggingPasteboard];
 
-    NSPasteboard *pb = [sender draggingPasteboard];
+  if ([pb.types containsObject:kDragTypeTreeNodes]) return YES;
+  if ([pb.types containsObject:kDragTypePlaylistItemsRows]) return YES;
 
-        //validate the drag operation only if there's a valid tab bar to drop into
-    if (![pb canReadItemWithDataConformingToTypes:[NSArray arrayWithObject:AttachedTabBarButtonUTI]])
-        return NO;
+  if (![pb canReadItemWithDataConformingToTypes:@[AttachedTabBarButtonUTI]]) {
+    return NO;
+  }
 
-    if (![[MMTabDragAssistant sharedDragAssistant] destinationTabBar])
-        return NO;
+  if (![[MMTabDragAssistant sharedDragAssistant] destinationTabBar]) {
+    return NO;
+  }
 
-    return YES;
+  return YES;
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
-
     MMTabDragAssistant *dragAssistant = [MMTabDragAssistant sharedDragAssistant];
 
     if (![dragAssistant performDragOperation:sender forTabBarView:self]) {
@@ -1914,7 +1914,6 @@ static NSMutableDictionary *registeredStyleClasses = nil;
 #pragma mark Spring-loading
 
 - (void)fireSpring:(NSTimer *)timer {
-
     NSAssert1(timer == _springTimer, @"Spring fired by unrecognized timer %@", timer);
 
     id <NSDraggingInfo> sender = [timer userInfo];

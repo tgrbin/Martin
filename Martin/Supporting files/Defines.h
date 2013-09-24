@@ -9,8 +9,8 @@
 #ifndef Martin_Defines_h
 #define Martin_Defines_h
 
-#define kDragTypeTreeNodes            @"kDragTypeTreeNodes"
-#define kDragTypePlaylistItemsRows    @"kDragTypePlaylistItemsRows"
-#define kDragTypeLibraryFolderRow     @"kDragTypeLibraryFolderRow"
+#define kDragTypeTreeNodes            @"martin.kDragTypeTreeNodes"
+#define kDragTypePlaylistItemsRows    @"martin.kDragTypePlaylistItemsRows"
+#define kDragTypeLibraryFolderRow     @"martin.kDragTypeLibraryFolderRow"
 
 #endif

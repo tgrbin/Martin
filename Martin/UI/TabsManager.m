@@ -13,6 +13,8 @@
 #import "Playlist.h"
 #import "DefaultsManager.h"
 #import "MartinAppDelegate.h"
+#import "PlaylistNameGuesser.h"
+#import "DragDataConverter.h"
 
 @interface TabsManager() <MMTabBarViewDelegate>
 @property (unsafe_unretained) IBOutlet MMTabBarView *tabBarView;
@@ -198,6 +200,43 @@
     showingQueueTab = NO;
   }
 }
+
+- (NSArray *)allowedDraggedTypesForTabView:(NSTabView *)aTabView {
+  return @[kDragTypeTreeNodes, kDragTypePlaylistItemsRows];
+}
+
+- (BOOL)tabView:(NSTabView *)aTabView acceptedDraggingInfo:(id <NSDraggingInfo>)draggingInfo onTabViewItem:(NSTabViewItem *)tabViewItem {
+  NSPasteboard *pasteboard = draggingInfo.draggingPasteboard;
+  NSArray *draggingTypes = pasteboard.types;
+
+  if ([draggingTypes containsObject:NSFilenamesPboardType]) {
+    NSArray *items = [pasteboard propertyListForType:NSFilenamesPboardType];
+    [PlaylistNameGuesser itemsAndNameFromFolders:items withBlock:^(NSArray *items, NSString *name) {
+      [[MartinAppDelegate get].playlistTableManager addPlaylistItems:items];
+    }];
+  } else {
+    NSString *draggingType = [draggingTypes lastObject];
+    NSArray *items = [DragDataConverter arrayFromData:[pasteboard dataForType:draggingType]];
+
+    BOOL fromLibrary = [draggingType isEqualToString:kDragTypeTreeNodes];
+
+    if (fromLibrary == NO) {
+      Playlist *srcPlaylist = [MartinAppDelegate get].playlistTableManager.dragSourcePlaylist;
+      NSMutableArray *arr = [NSMutableArray new];
+      for (NSNumber *row in items) [arr addObject:srcPlaylist[row.intValue]];
+      items = arr;
+    }
+
+    if (fromLibrary) {
+      [[MartinAppDelegate get].playlistTableManager addTreeNodes:items];
+    } else {
+      [[MartinAppDelegate get].playlistTableManager addPlaylistItems:items];
+    }
+  }
+
+  return YES;
+}
+
 
 #pragma mark - context menu
 
