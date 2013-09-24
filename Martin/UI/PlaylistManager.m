@@ -67,13 +67,6 @@ static const double kDragHoverTime = 0.4;
 
 #pragma mark - actions
 
-- (IBAction)renameSelectedPlaylist:(id)sender {
-  [playlistsTable editColumn:0
-                         row:playlistsTable.clickedRow
-                   withEvent:nil
-                      select:YES];
-}
-
 - (IBAction)deleteSelectedPlaylists:(id)sender {
 }
 

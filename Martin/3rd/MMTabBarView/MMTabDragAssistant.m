@@ -496,9 +496,10 @@ static MMTabDragAssistant *sharedDragAssistant = nil;
 - (NSUInteger)_destinationIndexForButton:(MMAttachedTabBarButton *)aButton atPoint:(NSPoint)aPoint inTabBarView:(MMTabBarView *)tabBarView {
   NSUInteger resultingIndex = NSNotFound;
 
-  double myCenterX = (aButton.frame.origin.x + aButton.frame.size.width / 2);
+  double leftX = CGRectGetMinX(aButton.frame);
+  double rightX = CGRectGetMaxX(aButton.frame);
 
-  if (myCenterX < [tabBarView leftMargin]) {
+  if (leftX < [tabBarView leftMargin]) {
     PlaylistTabBarItem *item = [tabBarView.tabView tabViewItemAtIndex:0].identifier;
     if (item.playlist.isQueue == YES) {
       resultingIndex = 1;
@@ -523,10 +524,26 @@ static MMTabDragAssistant *sharedDragAssistant = nil;
                                 }
                               }];
 
-    for (MMAttachedTabBarButton *aSortedButton in sortedButtons) {
-      NSPoint checkPoint = CGPointMake(myCenterX, NSMidY([tabBarView bounds]));
+    double midY = NSMidY(tabBarView.bounds);
+    NSPoint leftCheckPoint = CGPointMake(leftX, midY);
+    NSPoint rightCheckPoint = CGPointMake(rightX, midY);
 
-      if (NSPointInRect(checkPoint, [aSortedButton stackingFrame])) {
+    for (MMAttachedTabBarButton *aSortedButton in sortedButtons) {
+      if (aSortedButton == aButton || aSortedButton.isSliding) {
+        continue;
+      }
+
+      NSRect frame = aSortedButton.stackingFrame;
+      NSRect leftHalf = frame;
+      leftHalf.size.width /= 2;
+      NSRect rightHalf = leftHalf;
+      rightHalf.origin.x += frame.size.width/2;
+
+      BOOL inLeftHalf = NSPointInRect(leftCheckPoint, leftHalf);
+      BOOL inRightHalf = NSPointInRect(rightCheckPoint, rightHalf);
+
+      if ((CGRectGetMinX(frame) < CGRectGetMinX(aButton.stackingFrame) && inLeftHalf) ||
+          (CGRectGetMinX(frame) > CGRectGetMinX(aButton.stackingFrame) && inRightHalf)) {
         overButton = aSortedButton;
         overButtonIndex = [sortedButtons indexOfObjectIdenticalTo:aSortedButton];
         break;
@@ -539,19 +556,6 @@ static MMTabDragAssistant *sharedDragAssistant = nil;
         resultingIndex = 1;
       } else {
         resultingIndex = overButtonIndex;
-      }
-    } else {
-      if ([self isSliding])
-        resultingIndex = [tabBarView numberOfVisibleTabViewItems]-1;
-      else if ([self isDragging]) {
-        if ([tabBarView destinationIndexForDraggedItem] != NSNotFound)
-          resultingIndex = [tabBarView destinationIndexForDraggedItem];
-        else {
-          NSRect lastFrame = [[tabBarView lastAttachedButton] frame];
-          if (myCenterX > NSMaxX(lastFrame)) {
-            resultingIndex = [tabBarView numberOfVisibleTabViewItems];
-          }
-        }
       }
     }
   }

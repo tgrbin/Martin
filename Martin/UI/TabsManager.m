@@ -43,6 +43,10 @@
 - (void)configureMMTabView {
   _tabBarView.onlyShowCloseOnHover = YES;
   [_tabBarView setStyleNamed:@"Card"];
+  _tabBarView.buttonMinWidth = 50;
+  _tabBarView.buttonMaxWidth = 180;
+  _tabBarView.buttonOptimumWidth = 90;
+  _tabBarView.sizeButtonsToFit = YES;
 }
 
 - (void)loadPlaylists {

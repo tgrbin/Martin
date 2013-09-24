@@ -200,7 +200,7 @@ static const int kRenameFieldTag = 601;
 - (void)beginRenaming {
   PlaylistTabBarItem *item = self.tabViewItem.identifier;
 
-  if (item.playlist.isQueue == YES) {
+  if ([self viewWithTag:kRenameFieldTag] != nil || item.playlist.isQueue == YES) {
     return;
   }
 
@@ -225,7 +225,8 @@ static const int kRenameFieldTag = 601;
   cell.alignment = NSCenterTextAlignment;
 
   cell.stringValue = item.title;
-  self.title = @"";
+
+  self.attributedTitle = [[NSAttributedString alloc] initWithString:@""];
 
   [self addSubview:renameField];
 
