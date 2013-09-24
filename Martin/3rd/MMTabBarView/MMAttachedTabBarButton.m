@@ -206,14 +206,10 @@ static const int kRenameFieldTag = 601;
 
   renamingTitle = YES;
 
-  // TODO: font nije kako treba
-  // TODO: popravi frame
-
-  NSTextField *renameField = [[NSTextField alloc] initWithFrame:self.bounds];
+  NSTextField *renameField = [[NSTextField alloc] initWithFrame:NSOffsetRect(NSInsetRect(self.bounds, 20, 0), 0, 3)];
   renameField.tag = kRenameFieldTag;
   renameField.delegate = self;
   renameField.focusRingType = NSFocusRingTypeNone;
-  renameField.font = self.cell.font;
 
   NSTextFieldCell *cell = renameField.cell;
   cell.editable = YES;
@@ -221,11 +217,14 @@ static const int kRenameFieldTag = 601;
   cell.bordered = NO;
   cell.drawsBackground = NO;
   cell.usesSingleLineMode = YES;
-  cell.font = self.cell.font;
   cell.alignment = NSCenterTextAlignment;
+  cell.wraps = YES;
+  cell.lineBreakMode = NSLineBreakByTruncatingTail;
+  cell.font = [NSFont systemFontOfSize:11];
 
   cell.stringValue = item.title;
 
+  // this hides tab's title but leaves it's size intact
   self.attributedTitle = [[NSAttributedString alloc] initWithString:@""];
 
   [self addSubview:renameField];
