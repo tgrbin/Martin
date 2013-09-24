@@ -24,7 +24,7 @@
   BOOL containsPlaylistItems = [arr[0] isKindOfClass:[PlaylistItem class]];
   BOOL addingAllNodes = (arr.count == 1 && [arr[0] intValue] == 0);
 
-  if (addingAllNodes) {
+  if (containsPlaylistItems == NO && addingAllNodes) {
     [playlist addTreeNodes:arr];
   }
 
@@ -119,9 +119,13 @@
 }
 
 + (NSString *)nameFromOrdered:(NSArray *)ordered {
+  static const int kMaxCharCount = 19;
+
   NSMutableString *name = [NSMutableString stringWithFormat:@"%@", ordered[0][0]];
-  if (ordered.count > 1) [name appendFormat:@", %@", ordered[1][0]];
-  if (ordered.count > 2) [name appendString:@", ..."];
+  for (int i = 1; i < ordered.count && name.length < kMaxCharCount; ++i) {
+    [name appendFormat:@", %@", ordered[i][0]];
+  }
+
   return name;
 }
 
