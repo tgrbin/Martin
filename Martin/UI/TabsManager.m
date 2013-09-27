@@ -33,6 +33,8 @@
 }
 
 - (void)allLoaded {
+  int index = [[DefaultsManager objectForKey:kDefaultsKeySelectedPlaylistIndex] intValue];
+  [_dummyTabView selectTabViewItemAtIndex:index];
   [self updateSelectedPlaylist];
 }
 
@@ -70,23 +72,33 @@
   if (self.queue.isEmpty == YES) {
     [playlists addObject:_queue];
   }
-  for (NSTabViewItem *item in _dummyTabView.tabViewItems) {
-    PlaylistTabBarItem *playlistItem = item.identifier;
-    [playlists addObject:playlistItem.playlist];
+
+  int nowPlayingIndex = -1, currentIndex = 0;
+  for (NSTabViewItem *tabIitem in _dummyTabView.tabViewItems) {
+    PlaylistTabBarItem *item = tabIitem.identifier;
+    [playlists addObject:item.playlist];
+    if (item.playlist == [MartinAppDelegate get].player.nowPlayingPlaylist) {
+      nowPlayingIndex = currentIndex;
+    }
+    ++currentIndex;
   }
   [PlaylistPersistence savePlaylists:playlists];
 
-  [DefaultsManager setObject:@([_dummyTabView indexOfTabViewItem:_dummyTabView.selectedTabViewItem])
+  int indexToStore = nowPlayingIndex;
+  if (indexToStore == -1) {
+    indexToStore = (int)[_dummyTabView indexOfTabViewItem:_dummyTabView.selectedTabViewItem];
+  }
+  [DefaultsManager setObject:@(indexToStore)
                       forKey:kDefaultsKeySelectedPlaylistIndex];
 }
 
 - (void)selectNowPlayingPlaylist {
   Playlist *np = [MartinAppDelegate get].player.nowPlayingPlaylist;
   if (np) {
-    for (NSTabViewItem *item in _dummyTabView.tabViewItems) {
-      PlaylistTabBarItem *playlistItem = item.identifier;
-      if (playlistItem.playlist == np) {
-        [_dummyTabView selectTabViewItem:item];
+    for (NSTabViewItem *tabItem in _dummyTabView.tabViewItems) {
+      PlaylistTabBarItem *item = tabItem.identifier;
+      if (item.playlist == np) {
+        [_dummyTabView selectTabViewItem:tabItem];
       }
     }
     [self updateSelectedPlaylist];

@@ -255,6 +255,13 @@ typedef enum {
   [DefaultsManager setObject:@(filePlayer.volume) forKey:kDefaultsKeyVolume];
 
   PlayerStatus status = playerStatusTextField.status;
+
+  // TODO: martin can't remember seek position of item that doesn't belong to any playlist
+  // without a now playing playlist we can't store playlistItem that's currently playing
+  if ([MartinAppDelegate get].player.nowPlayingPlaylist == nil) {
+    status = kPlayerStatusStopped;
+  }
+
   [DefaultsManager setObject:@(status) forKey:kDefaultsKeyPlayerState];
   if (status != kPlayerStatusStopped) {
     [DefaultsManager setObject:@(filePlayer.seek) forKey:kDefaultsKeySeekPosition];
@@ -267,7 +274,6 @@ typedef enum {
   if (savedStatus == kPlayerStatusStopped) {
     playerStatusTextField.status = kPlayerStatusStopped;
   } else {
-    // TODO: playlist that current item belonged to might have been erased
     [self setNowPlayingPlaylistIfNecessary];
 
     FilePlayer *filePlayer = [MartinAppDelegate get].filePlayer;

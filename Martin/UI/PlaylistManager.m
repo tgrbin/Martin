@@ -39,9 +39,6 @@ static const double kDragHoverTime = 0.4;
 
   [playlistsTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistItemsRows, NSFilenamesPboardType]];
 
-  [self selectRow:[[DefaultsManager objectForKey:kDefaultsKeySelectedPlaylistIndex] intValue]];
-  [self updateSelectedPlaylist];
-
   [self observe:kFilePlayerEventNotification withAction:@selector(handlePlayerEvent)];
 }
 
@@ -79,97 +76,6 @@ static const double kDragHoverTime = 0.4;
 
   [self selectRow:row];
   [[MartinAppDelegate get].player playSelectedPlaylist];
-}
-
-#pragma mark - drag and drop
-
-- (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
-  [self resetDragHoverTimer];
-
-  if (dropOperation == NSTableViewDropOn) {
-    dragHoverRow = row;
-    [self setDragHoverTimer];
-  }
-
-  return NSDragOperationCopy;
-}
-
-- (void)setDragHoverTimer {
-  dragHoverTimer = [NSTimer scheduledTimerWithTimeInterval:kDragHoverTime
-                                                    target:self
-                                                  selector:@selector(dragHovered)
-                                                  userInfo:nil
-                                                   repeats:NO];
-}
-
-- (void)dragHovered {
-  [self resetDragHoverTimer];
-  [self selectRow:dragHoverRow];
-}
-
-- (void)dragExited {
-  [self resetDragHoverTimer];
-}
-
-- (void)resetDragHoverTimer {
-  [dragHoverTimer invalidate];
-  dragHoverTimer = nil;
-}
-
-- (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
-  NSArray *draggingTypes = info.draggingPasteboard.types;
-
-  NSInteger actualRow = row;
-
-  if ([draggingTypes containsObject:NSFilenamesPboardType]) {
-    NSArray *items = [info.draggingPasteboard propertyListForType:NSFilenamesPboardType];
-    [PlaylistNameGuesser itemsAndNameFromFolders:items withBlock:^(NSArray *items, NSString *name) {
-      if (items.count > 0) {
-        if (dropOperation == NSTableViewDropAbove) {
-          Playlist *p = [[Playlist alloc] initWithName:name andPlaylistItems:items];
-          [playlists insertObject:p atIndex:row];
-          [tableView reloadData];
-        } else {
-          Playlist *p = playlists[row];
-          [p addPlaylistItems:items];
-        }
-        [self selectRow:actualRow];
-        [self updateSelectedPlaylist];
-        [[MartinAppDelegate get].window makeFirstResponder:playlistsTable];
-      }
-    }];
-  } else {
-    NSString *draggingType = [draggingTypes lastObject];
-    NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:draggingType]];
-
-    BOOL fromLibrary = [draggingType isEqualToString:kDragTypeTreeNodes];
-
-    if (fromLibrary == NO) {
-      Playlist *srcPlaylist = [MartinAppDelegate get].playlistTableManager.dragSourcePlaylist;
-      NSMutableArray *arr = [NSMutableArray new];
-      for (NSNumber *row in items) [arr addObject:srcPlaylist[row.intValue]];
-      items = arr;
-    }
-
-    if (dropOperation == NSTableViewDropAbove) {
-      Playlist *p;
-      if (fromLibrary) p = [[Playlist alloc] initWithTreeNodes:items];
-      else p = [[Playlist alloc] initWithPlaylistItems:items];
-
-      [playlists insertObject:p atIndex:row];
-      [tableView reloadData];
-    } else {
-      Playlist *p = playlists[row];
-      if (fromLibrary) [p addTreeNodes:items atPos:p.numberOfItems];
-      else [p addPlaylistItems:items];
-    }
-    [self selectRow:actualRow];
-    [self updateSelectedPlaylist];
-
-    [[MartinAppDelegate get].window makeFirstResponder:playlistsTable];
-  }
-
-  return YES;
 }
 
 #pragma mark - table delegate
