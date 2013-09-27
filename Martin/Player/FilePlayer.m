@@ -9,6 +9,7 @@
 #import "FilePlayer.h"
 #import "PlaylistItem.h"
 #import "DefaultsManager.h"
+#import "NotificationsGenerator.h"
 
 @implementation FilePlayer {
   NSSound *sound;
@@ -21,6 +22,7 @@
 }
 
 - (void)startPlayingItem:(PlaylistItem *)item {
+  [[NotificationsGenerator shared] showWithItem:item];
   [self playItem:item justPrepare:NO];
 }
 

@@ -54,6 +54,7 @@
 		799EF5ED16884D7000AD3A67 /* RescanProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 799EF5EC16884D7000AD3A67 /* RescanProxy.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		79AF97EB145305C200BE8391 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 79AF97EA145305C200BE8391 /* Player.m */; };
 		79B3706D149D21EA003372CB /* LastFM.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B3706C149D21EA003372CB /* LastFM.m */; };
+		79BEC6D217F5A9A400F1A3FA /* NotificationsGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BEC6D117F5A9A400F1A3FA /* NotificationsGenerator.m */; };
 		79C2ACB5144AB39200C2699B /* PlaylistManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C2ACB4144AB39200C2699B /* PlaylistManager.m */; };
 		79C7F523170F3DBC00B25C05 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 79C7F521170F3DBC00B25C05 /* Credits.rtf */; };
 		79C7F524170F3DBC00B25C05 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 79C7F522170F3DBC00B25C05 /* InfoPlist.strings */; };
@@ -284,6 +285,8 @@
 		79AF97EA145305C200BE8391 /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Player.m; sourceTree = "<group>"; };
 		79B3706B149D21EA003372CB /* LastFM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFM.h; sourceTree = "<group>"; };
 		79B3706C149D21EA003372CB /* LastFM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LastFM.m; sourceTree = "<group>"; };
+		79BEC6D017F5A9A400F1A3FA /* NotificationsGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsGenerator.h; sourceTree = "<group>"; };
+		79BEC6D117F5A9A400F1A3FA /* NotificationsGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsGenerator.m; sourceTree = "<group>"; };
 		79C2ACB3144AB39200C2699B /* PlaylistManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistManager.h; sourceTree = "<group>"; };
 		79C2ACB4144AB39200C2699B /* PlaylistManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistManager.m; sourceTree = "<group>"; };
 		79C7F521170F3DBC00B25C05 /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
@@ -936,6 +939,8 @@
 				79F55D6816EC6C66004510B0 /* PlaylistNameGuesser.m */,
 				79F55D6A16EC7A88004510B0 /* ID3ReadOperation.h */,
 				79F55D6B16EC7A88004510B0 /* ID3ReadOperation.m */,
+				79BEC6D017F5A9A400F1A3FA /* NotificationsGenerator.h */,
+				79BEC6D117F5A9A400F1A3FA /* NotificationsGenerator.m */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
@@ -1210,6 +1215,7 @@
 				79E98E1A1679A65B00559F14 /* TagsUtils.mm in Sources */,
 				79CF70A717EE32620057E678 /* MMTabBarView.m in Sources */,
 				79FF1407142F18A500E27235 /* main.m in Sources */,
+				79BEC6D217F5A9A400F1A3FA /* NotificationsGenerator.m in Sources */,
 				79CF70A817EE32620057E678 /* MMTabDragAssistant.m in Sources */,
 				79CF70B017EE32620057E678 /* NSString+MMTabBarViewExtensions.m in Sources */,
 				795022F317E4562800212801 /* PlayerStatusTextField.m in Sources */,
