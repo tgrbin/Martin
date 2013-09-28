@@ -18,7 +18,10 @@
 @property (nonatomic, assign) NSRect currentKnobRect;
 @end
 
-@implementation MartinSliderCell
+@implementation MartinSliderCell {
+  NSRect lastBarRect;
+  BOOL lastFlipped;
+}
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
   if (self = [super initWithCoder:aDecoder]) {
@@ -32,6 +35,8 @@
 
 - (void)drawKnob:(NSRect)knobRect {
   self.currentKnobRect = knobRect;
+
+  [self drawBarInside:lastBarRect flipped:lastFlipped];
 
   NSImage *image = _mouseDown? _knobOnImage: _knobOffImage;
   [image drawInRect:NSMakeRect(knobRect.origin.x, knobRect.origin.y, image.size.width, image.size.height)
@@ -56,6 +61,9 @@
   static const int kBarY = 10;
   static const int kBarMargin = 8; // subsctracted from left and right of the bar so that knob covers the bar completely
   static const int kBarHeight = 6;
+
+  lastBarRect = aRect;
+  lastFlipped = flipped;
 
   NSRect backgroundRect = NSMakeRect(kBarMargin, kBarY, aRect.size.width - kBarMargin*2, kBarHeight);
   [_barBackgroundImage setSize:backgroundRect.size];
