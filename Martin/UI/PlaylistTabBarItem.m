@@ -13,10 +13,6 @@
 
 @synthesize title = _title;
 
-- (id)init {
-  return self = [super init];
-}
-
 - (id)initWithPlaylist:(Playlist *)playlist {
   if (self = [super init]) {
     _isProcessing = NO;

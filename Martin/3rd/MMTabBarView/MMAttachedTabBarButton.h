@@ -48,4 +48,8 @@
 - (void)slideAnimationWillStart;
 - (void)slideAnimationDidEnd;
 
+#pragma mark - Martin stuff
+
+- (void)updateNowPlayingIndicator;
+
 @end

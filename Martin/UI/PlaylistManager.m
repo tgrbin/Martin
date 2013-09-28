@@ -78,13 +78,4 @@ static const double kDragHoverTime = 0.4;
   [[MartinAppDelegate get].player playSelectedPlaylist];
 }
 
-#pragma mark - table delegate
-
-- (void)tableView:(NSTableView *)tableView willDisplayCell:(id)c forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-// TODO: make playing playlist display in bold
-//  NSTextFieldCell *cell = (NSTextFieldCell*)c;
-//  BOOL playingThisPlaylist = [[MartinAppDelegate get].player nowPlayingItemFromPlaylist:[self playlistAtRow:row]];
-//  cell.font = playingThisPlaylist? [NSFont boldSystemFontOfSize:13]: [NSFont systemFontOfSize:13];
-}
-
 @end

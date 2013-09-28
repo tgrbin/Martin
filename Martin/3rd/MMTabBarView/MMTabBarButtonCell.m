@@ -519,7 +519,7 @@
 	attrStr = [[[NSMutableAttributedString alloc] initWithString:contents] autorelease];
 	NSRange range = NSMakeRange(0, [contents length]);
 
-	[attrStr addAttribute:NSFontAttributeName value:[NSFont systemFontOfSize:11.0] range:range];
+	[attrStr addAttribute:NSFontAttributeName value:self.font range:range];
 	[attrStr addAttribute:NSForegroundColorAttributeName value:[NSColor controlTextColor] range:range];
 
 	// Paragraph Style for Truncating Long Text

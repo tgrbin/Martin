@@ -556,6 +556,8 @@ static NSMutableDictionary *registeredStyleClasses = nil;
 	[self bindPropertiesOfAttachedButton:button andTabViewItem:item];
 
         // add button as subview
+  [button updateNowPlayingIndicator];
+
     [self addSubview:button];
 	[button release];
 
@@ -2437,8 +2439,7 @@ static NSMutableDictionary *registeredStyleClasses = nil;
 }
 
 - (void)_drawInteriorInRect:(NSRect)rect {
-
-        // no tab view == not connected
+  // no tab view == not connected
 	if (![self tabView]) {
 		NSRect labelRect = rect;
 		labelRect.size.height -= 4.0;
@@ -2454,7 +2455,7 @@ static NSMutableDictionary *registeredStyleClasses = nil;
 		[attrStr addAttribute:NSParagraphStyleAttributeName value:centeredParagraphStyle range:range];
 		[attrStr drawInRect:labelRect];
 
-        [centeredParagraphStyle release];
+    [centeredParagraphStyle release];
 		return;
 	}
 }

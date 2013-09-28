@@ -15,6 +15,8 @@
 #import "MartinAppDelegate.h"
 #import "PlaylistNameGuesser.h"
 #import "DragDataConverter.h"
+#import "NSObject+Observe.h"
+#import "MMAttachedTabBarButton.h"
 
 @interface TabsManager() <MMTabBarViewDelegate>
 @property (unsafe_unretained) IBOutlet MMTabBarView *tabBarView;
@@ -30,6 +32,18 @@
   [self createDummyTabView];
   [self configureMMTabView];
   [self loadPlaylists];
+
+  [self observe:kFilePlayerEventNotification withAction:@selector(handlePlayerEvent)];
+}
+
+- (void)handlePlayerEvent {
+  [self updateNowPlayingIndicatorForTabs];
+}
+
+- (void)updateNowPlayingIndicatorForTabs {
+  [_tabBarView enumerateAttachedButtonsUsingBlock:^(MMAttachedTabBarButton *aButton, NSUInteger idx, BOOL *stop) {
+    [aButton updateNowPlayingIndicator];
+  }];
 }
 
 - (void)allLoaded {

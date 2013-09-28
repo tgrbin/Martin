@@ -67,7 +67,7 @@ typedef enum MMAttachedButtonsEnumerationOptions : NSUInteger {
 
 @protocol MMTabBarViewDelegate;
 
-@interface MMTabBarView : NSView <NSDraggingSource, NSDraggingDestination, NSAnimationDelegate> {
+@interface MMTabBarView : NSView <NSDraggingSource, NSDraggingDestination, NSAnimationDelegate, NSTabViewDelegate> {
 
     // control basics
     NSTabView                       *_tabView;                    // the tab view being navigated

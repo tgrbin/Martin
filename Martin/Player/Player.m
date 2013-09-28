@@ -45,8 +45,9 @@ typedef enum {
 
     QueuePlaylist *queue = [MartinAppDelegate get].tabsManager.queue;
     if (_nowPlayingPlaylist == queue && [queue currentItemPlaylist] == playlist) {
-      for (int i = 0; i < playlist.numberOfItems; ++i)
+      for (int i = 0; i < playlist.numberOfItems; ++i) {
         if (playlist[i] == queue.currentItem) return YES;
+      }
     }
   }
   return NO;
@@ -256,8 +257,8 @@ typedef enum {
 
   PlayerStatus status = playerStatusTextField.status;
 
-  // TODO: martin can't remember seek position of item that doesn't belong to any playlist
-  // without a now playing playlist we can't store playlistItem that's currently playing
+  // TODO: martin can't remember seek position of an item that doesn't belong to any playlist
+  // we could remember a library id or a filename to solve this
   if ([MartinAppDelegate get].player.nowPlayingPlaylist == nil) {
     status = kPlayerStatusStopped;
   }

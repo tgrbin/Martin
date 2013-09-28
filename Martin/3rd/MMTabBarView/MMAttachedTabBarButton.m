@@ -193,7 +193,7 @@
   }
 }
 
-#pragma mark - Renaming support
+#pragma mark - Martin renaming support
 
 static const int kRenameFieldTag = 601;
 
@@ -220,7 +220,7 @@ static const int kRenameFieldTag = 601;
   cell.alignment = NSCenterTextAlignment;
   cell.wraps = YES;
   cell.lineBreakMode = NSLineBreakByTruncatingTail;
-  cell.font = [NSFont systemFontOfSize:11];
+  cell.font = self.cell.font;
 
   cell.stringValue = item.title;
 
@@ -253,6 +253,18 @@ static const int kRenameFieldTag = 601;
   item.title = fieldEditor.string;
   [self endRenaming];
   return YES;
+}
+
+#pragma mark - Martin now playing support
+
+- (void)updateNowPlayingIndicator {
+  PlaylistTabBarItem *item = self.tabViewItem.identifier;
+  Playlist *playlist = item.playlist;
+  BOOL nowPlaying = [[MartinAppDelegate get].player nowPlayingItemFromPlaylist:playlist];
+
+  CGFloat fontSize = self.cell.font.pointSize;
+  NSFont *font = nowPlaying? [NSFont boldSystemFontOfSize:fontSize]: [NSFont systemFontOfSize:fontSize];
+  self.cell.font = font;
 }
 
 #pragma mark -
