@@ -2608,6 +2608,7 @@ static NSMutableDictionary *registeredStyleClasses = nil;
             if ([aButton state] != NSOnState)
                 [aButton setState:NSOnState];
         } else {
+          [aButton cancelRenaming];
             if ([aButton state] != NSOffState)
                 [aButton setState:NSOffState];
         }

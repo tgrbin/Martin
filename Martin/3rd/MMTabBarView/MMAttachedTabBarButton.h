@@ -51,5 +51,6 @@
 #pragma mark - Martin stuff
 
 - (void)updateNowPlayingIndicator;
+- (void)cancelRenaming;
 
 @end

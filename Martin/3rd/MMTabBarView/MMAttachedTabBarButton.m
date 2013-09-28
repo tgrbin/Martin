@@ -233,15 +233,27 @@ static const int kRenameFieldTag = 601;
 }
 
 - (void)endRenaming {
+  if (renamingTitle == NO) {
+    return;
+  }
+
   renamingTitle = NO;
   NSTextField *renameField = [self viewWithTag:kRenameFieldTag];
   [renameField removeFromSuperview];
 }
 
-- (void)cancelOperation:(id)sender {
+- (void)cancelRenaming {
+  if (renamingTitle == NO) {
+    return;
+  }
+
   PlaylistTabBarItem *item = self.tabViewItem.identifier;
   self.title = item.title;
   [self endRenaming];
+}
+
+- (void)cancelOperation:(id)sender {
+  [self cancelRenaming];
 }
 
 - (BOOL)control:(NSControl *)control textShouldEndEditing:(NSText *)fieldEditor {
