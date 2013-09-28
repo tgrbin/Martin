@@ -8,12 +8,15 @@
 
 #import "PlayerStatusTextField.h"
 #import "PlaylistItem.h"
+#import "MartinAppDelegate.h"
 
 @interface PlayerStatusTextField()
 @property (nonatomic, strong) NSDictionary *textAttributes;
 @end
 
-@implementation PlayerStatusTextField
+@implementation PlayerStatusTextField {
+  BOOL mouseDragged;
+}
 
 static NSString * const kStoppedText = @"--";
 
@@ -89,6 +92,17 @@ static const int kStoppedOpacity = 40;
 - (void)setFrame:(NSRect)frameRect {
   [super setFrame:frameRect];
   [self updateDisplayText];
+}
+
+- (void)mouseDragged:(NSEvent *)theEvent {
+  mouseDragged = YES;
+}
+
+- (void)mouseUp:(NSEvent *)theEvent {
+  if (mouseDragged == NO) {
+    [[MartinAppDelegate get].tabsManager selectNowPlayingPlaylist];
+  }
+  mouseDragged = NO;
 }
 
 @end
