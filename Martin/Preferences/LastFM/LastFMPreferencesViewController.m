@@ -8,6 +8,7 @@
 
 #import "LastFMPreferencesViewController.h"
 #import "LastFM.h"
+#import "MartinAppDelegate.h"
 
 typedef enum {
   kStateNoToken,
@@ -62,7 +63,6 @@ typedef enum {
   }];
 }
 
-
 - (void)getSessionKey {
   [self showSpinner];
   [LastFM getSessionKey:^(BOOL success) {
@@ -70,6 +70,10 @@ typedef enum {
 
     if (success == YES) {
       self.state = kStateScrobbling;
+      PlaylistItem *currentItem = [MartinAppDelegate get].filePlayer.currentItem;
+      if (currentItem) {
+        [LastFM updateNowPlaying:currentItem];
+      }
     } else {
       self.state = kStateNoToken;
       [self showAlertWithMsg:@"Sorry, failed to get permission to scrobble from LastFM."];

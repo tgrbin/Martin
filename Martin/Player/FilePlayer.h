@@ -31,4 +31,6 @@
 - (void)togglePause;
 - (void)stop;
 
+- (PlaylistItem *)currentItem;
+
 @end

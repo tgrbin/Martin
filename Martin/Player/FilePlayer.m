@@ -54,6 +54,10 @@
   [self postNotification:kFilePlayerEventNotification];
 }
 
+- (PlaylistItem *)currentItem {
+  return playlistItem;
+}
+
 - (void)togglePause {
   if (_playing) {
     [sound pause];

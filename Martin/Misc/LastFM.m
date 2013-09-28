@@ -186,7 +186,6 @@ static void updateNowPlayingCallback(WSMethodInvocationRef ref, void *info, CFDi
   CFRelease(ref);
   CFRelease(dict);
 }
-
 #endif
 
 @end
