@@ -215,15 +215,15 @@
 
   [playlist cancelID3Reads];
 
-  if ([MartinAppDelegate get].player.nowPlayingPlaylist == playlist) {
-    [MartinAppDelegate get].player.nowPlayingPlaylist = nil;
-  }
-
-  [self.queue willRemovePlaylist:playlist];
-
   if (playlist == _queue) {
+    [MartinAppDelegate get].player.nowPlayingPlaylist = [_queue currentItemPlaylist];
     [_queue clear];
     showingQueueTab = NO;
+  } else {
+    [self.queue willRemovePlaylist:playlist];
+    if ([MartinAppDelegate get].player.nowPlayingPlaylist == playlist) {
+      [MartinAppDelegate get].player.nowPlayingPlaylist = nil;
+    }
   }
 }
 
