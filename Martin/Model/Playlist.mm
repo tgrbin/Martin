@@ -263,6 +263,8 @@ using namespace std;
 }
 
 - (void)shuffleIndexes:(NSIndexSet *)indexSet {
+  [self resetSortState];
+  
   vector<int> indexes;
   vector<int> items;
   for (NSInteger curr = indexSet.firstIndex; curr != NSNotFound; curr = [indexSet indexGreaterThanIndex:curr]) {
