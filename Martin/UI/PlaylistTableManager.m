@@ -75,8 +75,14 @@
   [playlistTable reloadData];
   [self centerTableToCurrentItem];
   [self updateSortIndicator];
-  [playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:_playlist.currentItemIndex]
-             byExtendingSelection:NO];
+
+  int indexToSelect = _playlist.currentItemIndex;
+  if (indexToSelect == -1) {
+    [playlistTable deselectAll:self];
+  } else {
+    [playlistTable selectRowIndexes:[NSIndexSet indexSetWithIndex:indexToSelect]
+               byExtendingSelection:NO];
+  }
 }
 
 - (void)selectFirstItem {
