@@ -1661,7 +1661,7 @@ static NSMutableDictionary *registeredStyleClasses = nil;
   if ([pb canReadItemWithDataConformingToTypes:[NSArray arrayWithObject:AttachedTabBarButtonUTI]]) {
     MMTabDragAssistant *dragAssistant = [MMTabDragAssistant sharedDragAssistant];
     dragOp = [dragAssistant draggingEntered:sender inTabBarView:self];
-  } else if ([pb.types containsObject:kDragTypeTreeNodes] || [pb.types containsObject:kDragTypePlaylistItemsRows]) {
+  } else if ([self containsAllowedDraggedType:pb.types]) {
     dragOp = NSDragOperationCopy;
   }
 
@@ -1721,8 +1721,9 @@ static NSMutableDictionary *registeredStyleClasses = nil;
 - (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender {
   NSPasteboard *pb = [sender draggingPasteboard];
 
-  if ([pb.types containsObject:kDragTypeTreeNodes]) return YES;
-  if ([pb.types containsObject:kDragTypePlaylistItemsRows]) return YES;
+  if ([self containsAllowedDraggedType:pb.types]) {
+    return YES;
+  }
 
   if (![pb canReadItemWithDataConformingToTypes:@[AttachedTabBarButtonUTI]]) {
     return NO;
@@ -1733,6 +1734,15 @@ static NSMutableDictionary *registeredStyleClasses = nil;
   }
 
   return YES;
+}
+
+- (BOOL)containsAllowedDraggedType:(NSArray *)types {
+  for (id item in [_delegate allowedDraggedTypesForTabView:_tabView]) {
+    if ([types containsObject:item]) {
+      return YES;
+    }
+  }
+  return NO;
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {

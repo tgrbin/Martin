@@ -228,7 +228,7 @@
 }
 
 - (NSArray *)allowedDraggedTypesForTabView:(NSTabView *)aTabView {
-  return @[kDragTypeTreeNodes, kDragTypePlaylistItemsRows];
+  return @[kDragTypeTreeNodes, kDragTypePlaylistItemsRows, NSFilenamesPboardType];
 }
 
 - (BOOL)tabView:(NSTabView *)aTabView acceptedDraggingInfo:(id <NSDraggingInfo>)draggingInfo onTabViewItem:(NSTabViewItem *)tabViewItem {
