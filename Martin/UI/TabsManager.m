@@ -152,8 +152,17 @@
   [self addPlaylist:[[Playlist alloc] initWithName:name andPlaylistItems:items]];
 }
 
-- (void)addPlaylist:(Playlist *)p {
-  int index = (showingQueueTab == YES)? 1: 0;
+- (void)addPlaylist:(Playlist *)playlist {
+  [self addPlaylist:playlist toTheLeft:YES];
+}
+
+- (void)addPlaylist:(Playlist *)p toTheLeft:(BOOL)left {
+  int index;
+  if (left == YES) {
+    index = (showingQueueTab == YES)? 1: 0;
+  } else {
+    index = (int)_dummyTabView.numberOfTabViewItems;
+  }
   [_dummyTabView insertTabViewItem:[self createTabViewItemWithPlaylist:p]
                            atIndex:index];
   [_dummyTabView selectTabViewItemAtIndex:index];
@@ -232,13 +241,27 @@
 }
 
 - (BOOL)tabView:(NSTabView *)aTabView acceptedDraggingInfo:(id <NSDraggingInfo>)draggingInfo onTabViewItem:(NSTabViewItem *)tabViewItem {
-  NSPasteboard *pasteboard = draggingInfo.draggingPasteboard;
+  [self addPlaylistWithDraggingInfo:draggingInfo
+                     createPlaylist:NO
+                          onTheLeft:NO];
+  return YES;
+}
+
+- (void)addPlaylistWithDraggingInfo:(id<NSDraggingInfo>)sender createPlaylist:(BOOL)create onTheLeft:(BOOL)left {
+  NSPasteboard *pasteboard = sender.draggingPasteboard;
   NSArray *draggingTypes = pasteboard.types;
 
   if ([draggingTypes containsObject:NSFilenamesPboardType]) {
     NSArray *items = [pasteboard propertyListForType:NSFilenamesPboardType];
     [PlaylistNameGuesser itemsAndNameFromFolders:items withBlock:^(NSArray *items, NSString *name) {
-      [[MartinAppDelegate get].playlistTableManager addPlaylistItems:items];
+      if (items.count > 0) {
+        if (create) {
+          [self addNewPlaylistWithPlaylistItems:items
+                                        andName:name];
+        } else {
+          [[MartinAppDelegate get].playlistTableManager addPlaylistItems:items];
+        }
+      }
     }];
   } else {
     NSString *draggingType = [draggingTypes lastObject];
@@ -253,16 +276,23 @@
       items = arr;
     }
 
-    if (fromLibrary) {
-      [[MartinAppDelegate get].playlistTableManager addTreeNodes:items];
+    if (create) {
+      Playlist *p;
+      if (fromLibrary) {
+        p = [[Playlist alloc] initWithTreeNodes:items];
+      } else {
+        p = [[Playlist alloc] initWithPlaylistItems:items];
+      }
+      [self addPlaylist:p toTheLeft:left];
     } else {
-      [[MartinAppDelegate get].playlistTableManager addPlaylistItems:items];
+      if (fromLibrary) {
+        [[MartinAppDelegate get].playlistTableManager addTreeNodes:items];
+      } else {
+        [[MartinAppDelegate get].playlistTableManager addPlaylistItems:items];
+      }
     }
   }
-
-  return YES;
 }
-
 
 #pragma mark - context menu
 

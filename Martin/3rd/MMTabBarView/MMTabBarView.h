@@ -75,10 +75,6 @@ typedef enum MMAttachedButtonsEnumerationOptions : NSUInteger {
     MMRolloverButton                *_addTabButton;
     MMTabBarController              *_controller;
 
-    // Spring-loading.
-    NSTimer                         *_springTimer;
-    NSTabViewItem                   *_tabViewItemWithSpring;
-
     // configuration
     id <MMTabStyle>                 _style;
     BOOL                            _onlyShowCloseOnHover;

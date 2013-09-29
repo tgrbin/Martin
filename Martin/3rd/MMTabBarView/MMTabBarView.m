@@ -28,6 +28,7 @@
 #import "MMSlideButtonsAnimation.h"
 #import "NSView+MMTabBarViewExtensions.h"
 #import "MMTabBarItem.h"
+#import "MartinAppDelegate.h"
 
 #define DIVIDER_WIDTH 3
 
@@ -126,7 +127,6 @@ static NSMutableDictionary *registeredStyleClasses = nil;
 }
 
 - (void)dealloc {
-
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 
     // assure that pending animation will stop
@@ -138,10 +138,6 @@ static NSMutableDictionary *registeredStyleClasses = nil;
         [_hideShowTabBarAnimation stopAnimation];
         [_hideShowTabBarAnimation release], _hideShowTabBarAnimation = nil;
     }
-
-	//Also unwind the spring, if it's wound.
-	[_springTimer invalidate];
-	[_springTimer release]; _springTimer = nil;
 
 	//unbind all the items to prevent crashing
 	//not sure if this is necessary or not
@@ -1679,29 +1675,13 @@ static NSMutableDictionary *registeredStyleClasses = nil;
 
     NSPoint aPoint = [self convertPoint:[sender draggingLocation] fromView:nil];
 
-    MMAttachedTabBarButton *destinationButton = (MMAttachedTabBarButton *)[self tabBarButtonAtPoint:aPoint];
-    if (![destinationButton isKindOfClass:[MMAttachedTabBarButton class]]) {
-      return NSDragOperationNone;
-    }
-
-		//Wind the spring for a spring-loaded drop.
-		//The delay time comes from Finder's defaults, which specifies it in milliseconds.
-		//If the delegate can't handle our spring-loaded drop, we'll abort it when the timer fires. See fireSpring:. This is simpler than constantly (checking for spring-loaded awareness and tearing down/rebuilding the timer) at every delegate change.
-
-    //If the user has dragged to a different tab, reset the timer.
-		if (_tabViewItemWithSpring != [destinationButton tabViewItem]) {
-			[_springTimer invalidate];
-			[_springTimer release]; _springTimer = nil;
-			_tabViewItemWithSpring = [destinationButton tabViewItem];
-		}
-
     MMAttachedTabBarButton *button = [self attachedButtonAtPoint:aPoint];
     if (button != nil) {
-        [_tabView selectTabViewItem:[button tabViewItem]];
-
-        _tabViewItemWithSpring = nil;
-        [_springTimer invalidate];
-        [_springTimer release]; _springTimer = nil;
+      [_tabView selectTabViewItem:[button tabViewItem]];
+      button.state = NSOnState;
+    } else {
+      MMAttachedTabBarButton *selected = self.selectedAttachedButton;
+      selected.state = NSOffState;
     }
 
 		return NSDragOperationCopy;
@@ -1711,10 +1691,6 @@ static NSMutableDictionary *registeredStyleClasses = nil;
 }
 
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
-	[_springTimer invalidate];
-	[_springTimer release];
-  _springTimer = nil;
-
 	[[MMTabDragAssistant sharedDragAssistant] draggingExitedTabBarView:self draggingInfo:sender];
 }
 
@@ -1746,25 +1722,27 @@ static NSMutableDictionary *registeredStyleClasses = nil;
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
-    MMTabDragAssistant *dragAssistant = [MMTabDragAssistant sharedDragAssistant];
+  MMTabDragAssistant *dragAssistant = [MMTabDragAssistant sharedDragAssistant];
 
-    if (![dragAssistant performDragOperation:sender forTabBarView:self]) {
-
-        NSPoint aPoint = [self convertPoint:[sender draggingLocation] fromView:nil];
-        MMTabBarButton *tabBarButton = [self tabBarButtonAtPoint:aPoint];
-        if (![tabBarButton isKindOfClass:[MMAttachedTabBarButton class]])
-            return NO;
-
-        id <MMTabBarViewDelegate> myDelegate = [self delegate];
-        if (myDelegate && [myDelegate respondsToSelector:@selector(tabView:acceptedDraggingInfo:onTabViewItem:)]) {
-
-                //forward the drop to the delegate
-            return [myDelegate tabView:_tabView acceptedDraggingInfo:sender onTabViewItem:[(MMAttachedTabBarButton *)tabBarButton tabViewItem]];
-        }
-
+  if (![dragAssistant performDragOperation:sender forTabBarView:self]) {
+    NSPoint aPoint = [self convertPoint:[sender draggingLocation] fromView:nil];
+    MMTabBarButton *tabBarButton = [self tabBarButtonAtPoint:aPoint];
+    if (![tabBarButton isKindOfClass:[MMAttachedTabBarButton class]]) {
+      [[MartinAppDelegate get].tabsManager addPlaylistWithDraggingInfo:sender
+                                                        createPlaylist:YES
+                                                             onTheLeft:aPoint.x < 10];
+      return YES;
     }
 
-    return NO;
+    id <MMTabBarViewDelegate> myDelegate = [self delegate];
+    if (myDelegate && [myDelegate respondsToSelector:@selector(tabView:acceptedDraggingInfo:onTabViewItem:)]) {
+      //forward the drop to the delegate
+      return [myDelegate tabView:_tabView acceptedDraggingInfo:sender onTabViewItem:[(MMAttachedTabBarButton *)tabBarButton tabViewItem]];
+    }
+
+  }
+
+  return NO;
 }
 
 - (void)concludeDragOperation:(id <NSDraggingInfo>)sender {
@@ -1919,25 +1897,6 @@ static NSMutableDictionary *registeredStyleClasses = nil;
         if ([self mm_dragShouldBeginFromMouseDown:theEvent withExpiration:[NSDate distantFuture] xHysteresis:0.0 yHysteresis:0]) {
             [self _beginResizingWithMouseDownEvent:theEvent];
         }
-    }
-}
-
-#pragma mark -
-#pragma mark Spring-loading
-
-- (void)fireSpring:(NSTimer *)timer {
-    NSAssert1(timer == _springTimer, @"Spring fired by unrecognized timer %@", timer);
-
-    id <NSDraggingInfo> sender = [timer userInfo];
-
-    NSPoint aPoint = [self convertPoint:[sender draggingLocation] fromView:nil];
-    MMAttachedTabBarButton *button = [self attachedButtonAtPoint:aPoint];
-    if (button != nil) {
-        [_tabView selectTabViewItem:[button tabViewItem]];
-
-        _tabViewItemWithSpring = nil;
-        [_springTimer invalidate];
-        [_springTimer release]; _springTimer = nil;
     }
 }
 

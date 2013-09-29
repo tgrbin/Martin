@@ -25,7 +25,8 @@
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes andSuggestedName:(NSString *)name;
 - (void)addNewPlaylistWithPlaylistItems:(NSArray *)items;
 - (void)addNewPlaylistWithPlaylistItems:(NSArray *)items andName:(NSString *)name;
-- (void)addPlaylist:(Playlist *)playlist;
+
+- (void)addPlaylistWithDraggingInfo:(id<NSDraggingInfo>)sender createPlaylist:(BOOL)create onTheLeft:(BOOL)left;
 
 @property (nonatomic, strong) QueuePlaylist *queue;
 - (void)showQueueTab;
