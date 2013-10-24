@@ -914,7 +914,7 @@
     }
 
     // the label
-    resultWidth += [[self attributedStringValue] size].width;
+    resultWidth += [[self attributedStringValue] size].width + 2; // constant added to acommodate changing to bold
 
     // object counter?
     if ([self showObjectCount]) {
