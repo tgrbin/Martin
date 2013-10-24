@@ -372,6 +372,8 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 }
 
 - (PlaylistItem *)moveToItemWithDelta:(int)delta {
+  if (self.numberOfItems == 0) return nil;
+  
   BOOL shuffle = [MartinAppDelegate get].player.shuffle;
   BOOL repeat = [MartinAppDelegate get].player.repeat;
 
@@ -665,8 +667,16 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 
 - (int)addTreeNodes:(NSArray *)treeNodes {
   int added = [super addTreeNodes:treeNodes];
+
+  Playlist *playlistToReturnTo;
+  if ([MartinAppDelegate get].player.nowPlayingPlaylist == self) {
+    playlistToReturnTo = [self currentItemPlaylist];
+  } else {
+    playlistToReturnTo = [MartinAppDelegate get].player.nowPlayingPlaylist;
+  }
+  
   for (int i = (int)itemOrigin.size() - added; i < itemOrigin.size(); ++i) {
-    itemOrigin[i] = [MartinAppDelegate get].player.nowPlayingPlaylist;
+    itemOrigin[i] = playlistToReturnTo;
   }
   return added;
 }
