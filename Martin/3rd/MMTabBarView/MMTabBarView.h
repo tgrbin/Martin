@@ -129,6 +129,10 @@ typedef enum MMAttachedButtonsEnumerationOptions : NSUInteger {
 @property (readonly) BOOL isResizing;
 @property (assign) BOOL needsUpdate;
 
+#pragma mark - Martin
+
+- (void)_didClickCloseButton:(id)sender;
+
 #pragma mark Control Characteristics
 
 + (NSBundle *)bundle;

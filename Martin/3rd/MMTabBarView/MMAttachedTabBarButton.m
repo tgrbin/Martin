@@ -267,6 +267,12 @@ static const int kRenameFieldTag = 601;
   return YES;
 }
 
+#pragma mark - Martin delete with middle click support
+
+- (void)otherMouseUp:(NSEvent *)theEvent {
+  [self.tabBarView _didClickCloseButton:_closeButton];
+}
+
 #pragma mark - Martin now playing support
 
 - (void)updateNowPlayingIndicator {
