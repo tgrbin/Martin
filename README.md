@@ -3,13 +3,16 @@ Martin
 
 Martin is a lightweight open source mp3 player for OSX.
 
-It uses a library, your music collection is scanned and stored to allow faster searching and browsing.
+It uses a library, music collection is scanned and info is stored to allow faster searching and browsing.
 
-There's a foobar-like tree of your folder hierarchy on the left and you can drag and drop stuff around to manage playlists.
+Your folders are watched for changes automatically.
 
-Global shortcuts and last.fm support are included, but no other annoying features are present.
+There's a tree of your folder hierarchy on the left and you can drag and drop stuff around to manage playlists.
+
+It has global shortcuts and last.fm support.
 
 I've been working on this for my own needs because I couldn't find anything similar.
 
-Feel free to contact me if you have questions, curses or suggestions.
+Feel free to contact me if you have questions or suggestions.
 
+I apologize in advance for any annoying bugs that you might encounter.
