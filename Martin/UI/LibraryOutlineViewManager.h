@@ -12,4 +12,6 @@
 
 - (void)saveState;
 
+@property (nonatomic, strong) IBOutlet NSTextField *searchTextField;
+
 @end

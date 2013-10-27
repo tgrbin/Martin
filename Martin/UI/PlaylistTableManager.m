@@ -51,12 +51,16 @@
     @(kMartinKeySelectArtist): @"selectArtist:",
     @(kMartinKeyCrop): @"cropSelectedItems:",
     @(kMartinKeyShuffle): @"shuffleSelectedItems:",
-    @(kMartinKeyPlayPause): @"playOrPausePressed"
+    @(kMartinKeyLeft): @"selectPreviousTab",
+    @(kMartinKeyRight): @"selectNextTab"
   };
 
   [ShortcutBinder bindControl:playlistTable toTarget:self withBindings:bindings];
 
-  [ShortcutBinder bindControl:playlistTable andKey:kMartinKeyPlayPause toTarget:[MartinAppDelegate get].player andAction:@selector(playOrPause)];
+  [ShortcutBinder bindControl:playlistTable
+                       andKey:kMartinKeySearch
+                     toTarget:[MartinAppDelegate get].libraryOutlineViewManager.searchTextField
+                    andAction:@selector(becomeFirstResponder)];
 }
 
 - (void)reloadTableData {
@@ -338,14 +342,12 @@
   return playlistTable.selectedRowIndexes;
 }
 
-#pragma mark - focus changes
-
-- (void)takeFocus {
-  [[MartinAppDelegate get].window makeFirstResponder:playlistTable];
+- (void)selectNextTab {
+  [[MartinAppDelegate get].tabsManager selectNextTab];
 }
 
-- (IBAction)takeFocus:(id)sender {
-  [self takeFocus];
+- (void)selectPreviousTab {
+  [[MartinAppDelegate get].tabsManager selectPreviousTab];
 }
 
 #pragma mark - select items actions

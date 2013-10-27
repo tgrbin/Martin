@@ -22,9 +22,9 @@
   if (arr.count == 0) return NO;
 
   BOOL containsPlaylistItems = [arr[0] isKindOfClass:[PlaylistItem class]];
-  BOOL addingAllNodes = (arr.count == 1 && [arr[0] intValue] == 0);
+  BOOL addingAllNodes = (containsPlaylistItems == NO) && (arr.count == 1 && [arr[0] intValue] == 0);
 
-  if (containsPlaylistItems == NO && addingAllNodes) {
+  if (addingAllNodes) {
     [playlist addTreeNodes:arr];
   }
 

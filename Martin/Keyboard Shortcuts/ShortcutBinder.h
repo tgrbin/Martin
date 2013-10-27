@@ -15,7 +15,6 @@ typedef enum {
   kMartinKeyEnter,
   kMartinKeyDelete,
   kMartinKeyCmdEnter,
-  kMartinKeyCmdDown,
   kMartinKeySelectAll,
   kMartinKeyQueueItems,
   kMartinKeySelectArtist,
@@ -23,7 +22,8 @@ typedef enum {
   kMartinKeySearch,
   kMartinKeyCrop,
   kMartinKeyShuffle,
-  kMartinKeyPlayPause
+  kMartinKeyLeft,
+  kMartinKeyRight
 } MartinKey;
 
 + (void)bindControl:(NSControl *)control toTarget:(id)target withBindings:(NSDictionary *)bindings;

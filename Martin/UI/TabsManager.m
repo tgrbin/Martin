@@ -130,6 +130,16 @@
   return [[NSTabViewItem alloc] initWithIdentifier:item];
 }
 
+#pragma mark - next/prev tab
+
+- (void)selectNextTab {
+  [_dummyTabView selectNextTabViewItem:self];
+}
+
+- (void)selectPreviousTab {
+  [_dummyTabView selectPreviousTabViewItem:self];
+}
+
 #pragma mark - adding playlists
 
 - (IBAction)newPlaylistPressed:(id)sender {

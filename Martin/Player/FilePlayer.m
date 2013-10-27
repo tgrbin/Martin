@@ -72,18 +72,18 @@
 - (void)stop {
   if (sound) {
     [sound stop];
-    [self postNotification:kFilePlayerEventNotification];
   }
   sound = nil;
   playlistItem = nil;
   _stopped = YES;
   _playing = NO;
+  [self postNotification:kFilePlayerEventNotification];
 }
 
 - (void)setVolume:(double)volume {
   _volume = volume;
   if (sound) {
-    // logarithmic scale for volume, read in Cog player source that it should be done this way
+    // logarithmic scale for volume, read somewhere that it should be done this way
     double x = _volume * _volume * _volume;
     sound.volume = (_volume == 0)? 0: MAX(x, 0.001);
   }

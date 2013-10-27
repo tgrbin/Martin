@@ -82,8 +82,6 @@ static void hookClass(Class cls) {
       NSUInteger flags = (event.modifierFlags & NSDeviceIndependentModifierFlagsMask);
 
       switch (pressedUnichar) {
-        case ' ':
-          return kMartinKeyPlayPause;
         case 'a':
           if (isModifier(flags, NSCommandKeyMask)) return kMartinKeySelectAll;
           break;
@@ -108,8 +106,10 @@ static void hookClass(Class cls) {
         case NSCarriageReturnCharacter:
           if (isModifier(flags, NSCommandKeyMask)) return kMartinKeyCmdEnter;
           return kMartinKeyEnter;
-        case NSDownArrowFunctionKey:
-          if (isModifier(flags, NSCommandKeyMask)) return kMartinKeyCmdDown;
+        case NSLeftArrowFunctionKey:
+          return kMartinKeyLeft;
+        case NSRightArrowFunctionKey:
+          return kMartinKeyRight;
       }
     }
   }

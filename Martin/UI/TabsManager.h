@@ -33,4 +33,7 @@
 - (void)hideQueueTab;
 - (void)refreshQueueObjectCount;
 
+- (void)selectNextTab;
+- (void)selectPreviousTab;
+
 @end

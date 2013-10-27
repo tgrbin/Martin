@@ -19,15 +19,11 @@
 #import "DefaultsManager.h"
 #import "Playlist.h"
 
-@interface LibraryOutlineViewManager()
-@end
-
 @implementation LibraryOutlineViewManager {
   BOOL userIsManipulatingTree;
   NSMutableSet *userExpandedItems;
 
   IBOutlet NSOutlineView *outlineView;
-  IBOutlet NSTextField *searchTextField;
 
   IBOutlet NSView *rescanStatusView;
   IBOutlet NSProgressIndicator *rescanIndicator;
@@ -53,17 +49,12 @@
   [ShortcutBinder bindControl:outlineView andKey:kMartinKeyCmdEnter toTarget:self andAction:@selector(createPlaylistWithSelectedItems:)];
   [ShortcutBinder bindControl:outlineView andKey:kMartinKeyQueueItems toTarget:self andAction:@selector(queueSelectedItems:)];
 
-  [ShortcutBinder bindControl:outlineView andKey:kMartinKeySearch toTarget:searchTextField andAction:@selector(becomeFirstResponder)];
-  [ShortcutBinder bindControl:outlineView andKey:kMartinKeyPlayPause toTarget:[MartinAppDelegate get].player andAction:@selector(playOrPause)];
+  [ShortcutBinder bindControl:outlineView andKey:kMartinKeySearch toTarget:_searchTextField andAction:@selector(becomeFirstResponder)];
 }
 
 - (void)saveState {
   [TreeStateManager saveStateForOutlineView:outlineView];
-  [DefaultsManager setObject:searchTextField.stringValue forKey:kDefaultsKeySearchQuery];
-}
-
-- (IBAction)takeFocus:(id)sender {
-  [[MartinAppDelegate get].window makeFirstResponder:outlineView];
+  [DefaultsManager setObject:_searchTextField.stringValue forKey:kDefaultsKeySearchQuery];
 }
 
 #pragma mark - init tree
@@ -84,8 +75,8 @@
   userIsManipulatingTree = YES;
   NSString *searchQuery = [DefaultsManager objectForKey:kDefaultsKeySearchQuery];
   if (searchQuery.length > 0) {
-    searchTextField.stringValue = searchQuery;
-    [searchTextField resignFirstResponder];
+    _searchTextField.stringValue = searchQuery;
+    [_searchTextField resignFirstResponder];
     [Tree performSearch:searchQuery];
   }
 }
@@ -205,9 +196,9 @@
 - (void)libraryRescanned {
   [outlineView reloadData];
   [Tree restoreNodesForStoredInodesAndLevelsToSet:userExpandedItems];
-  if (searchTextField.stringValue.length > 0) {
+  if (_searchTextField.stringValue.length > 0) {
     [Tree resetSearchState];
-    [Tree performSearch:searchTextField.stringValue];
+    [Tree performSearch:_searchTextField.stringValue];
   } else {
     [self closeAllExceptWhatUserOpened];
   }
@@ -228,7 +219,7 @@
 - (void)autoExpandSearchResults {
   [self closeAllExceptWhatUserOpened];
 
-  if (searchTextField.stringValue.length == 0) return;
+  if (_searchTextField.stringValue.length == 0) return;
 
   userIsManipulatingTree = NO;
   for (int visibleRows = (int) (outlineView.frame.size.height/outlineView.rowHeight) - 5;;) {
@@ -297,9 +288,9 @@
 #pragma mark - search
 
 - (void)controlTextDidChange:(NSNotification *)obj {
-  NSString *val = searchTextField.stringValue;
+  NSString *val = _searchTextField.stringValue;
   if ([val characterAtIndex:val.length-1] == L'œ') { // option+Q pressed
-    searchTextField.stringValue = [val substringToIndex:val.length-1];
+    _searchTextField.stringValue = [val substringToIndex:val.length-1];
     [[MartinAppDelegate get].tabsManager.queue addTreeNodes:@[ @0 ]];
   } else {
     [Tree performSearch:val];
@@ -307,10 +298,10 @@
 }
 
 - (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
-  if (searchTextField.stringValue.length == 0) return NO;
+  if (_searchTextField.stringValue.length == 0) return NO;
 
   if (commandSelector == @selector(noop:) && [ShortcutBinder martinKeyForEvent:[NSApp currentEvent]] == kMartinKeyCmdEnter) {
-    [[MartinAppDelegate get].tabsManager addNewPlaylistWithTreeNodes:@[ @0 ] andSuggestedName:searchTextField.stringValue];
+    [[MartinAppDelegate get].tabsManager addNewPlaylistWithTreeNodes:@[ @0 ] andSuggestedName:_searchTextField.stringValue];
     return YES;
   } else if (commandSelector == @selector(insertNewline:)) {
     [[MartinAppDelegate get].playlistTableManager addTreeNodes:@[ @0 ]];
@@ -321,7 +312,7 @@
 }
 
 - (IBAction)searchPressed:(id)sender {
-  [searchTextField becomeFirstResponder];
+  [_searchTextField becomeFirstResponder];
 }
 
 @end
