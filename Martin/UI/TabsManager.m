@@ -329,4 +329,10 @@
   return _contextMenu;
 }
 
+- (IBAction)closeTabPressed:(NSMenuItem *)sender {
+  NSTabViewItem *item = _dummyTabView.selectedTabViewItem;
+  [_dummyTabView removeTabViewItem:item];
+  [self tabView:_dummyTabView didCloseTabViewItem:item];
+}
+
 @end
