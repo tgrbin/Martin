@@ -98,8 +98,8 @@ typedef enum {
   static NSString * const buttonTitles[] = { @"Go to LastFM", @"Start scrobbling", @"Stop scrobbling" };
   static NSString * const messages[] = {
     @"To start scrobbling, Martin must be allowed to access your account.\nPressing below will go to www.last.fm and ask you to login and allow access.",
-    @"When you're done, press start scrobbling.",
-    @"Martin is scrobbling happily."
+    @"\nWhen you're done, press start scrobbling.",
+    @"\nMartin is scrobbling happily."
   };
 
   _button.title = buttonTitles[_state];
