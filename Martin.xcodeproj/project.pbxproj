@@ -50,7 +50,6 @@
 		795C20CE14378D9600A61B21 /* PlaylistTableManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 795C20CD14378D9600A61B21 /* PlaylistTableManager.m */; };
 		795E72DF17E49A75005CD05C /* pause_h.png in Resources */ = {isa = PBXBuildFile; fileRef = 795E72DD17E49A75005CD05C /* pause_h.png */; };
 		795E72E017E49A75005CD05C /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 795E72DE17E49A75005CD05C /* pause.png */; };
-		79928CB117918FC1003BFE3F /* PlaylistsTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 79928CB017918FC1003BFE3F /* PlaylistsTableView.m */; };
 		799EF5ED16884D7000AD3A67 /* RescanProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 799EF5EC16884D7000AD3A67 /* RescanProxy.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		79AF97EB145305C200BE8391 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 79AF97EA145305C200BE8391 /* Player.m */; };
 		79B3706D149D21EA003372CB /* LastFM.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B3706C149D21EA003372CB /* LastFM.m */; };
@@ -275,8 +274,6 @@
 		795C20CD14378D9600A61B21 /* PlaylistTableManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistTableManager.m; sourceTree = "<group>"; };
 		795E72DD17E49A75005CD05C /* pause_h.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause_h.png; sourceTree = "<group>"; };
 		795E72DE17E49A75005CD05C /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause.png; sourceTree = "<group>"; };
-		79928CAF17918FC1003BFE3F /* PlaylistsTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistsTableView.h; sourceTree = "<group>"; };
-		79928CB017918FC1003BFE3F /* PlaylistsTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistsTableView.m; sourceTree = "<group>"; };
 		799EF5EB16884D7000AD3A67 /* RescanProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RescanProxy.h; sourceTree = "<group>"; };
 		799EF5EC16884D7000AD3A67 /* RescanProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RescanProxy.m; sourceTree = "<group>"; };
 		799EF5F0168863BE00AD3A67 /* TreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreeNode.h; sourceTree = "<group>"; };
@@ -587,27 +584,27 @@
 		79242E241656AB21006379D6 /* Library */ = {
 			isa = PBXGroup;
 			children = (
-				79242E211656AB1B006379D6 /* LibraryFolder.h */,
-				79242E221656AB1C006379D6 /* LibraryFolder.m */,
-				79FF1420142F1DB100E27235 /* LibManager.h */,
-				79FF1421142F1DB100E27235 /* LibManager.mm */,
-				79242E1C16569A47006379D6 /* ID3Reader.h */,
-				79242E1D16569A47006379D6 /* ID3Reader.m */,
-				792DC199166B6E5D0003E664 /* Tree.h */,
-				792DC19A166B6E5D0003E664 /* Tree.mm */,
-				799EF5F0168863BE00AD3A67 /* TreeNode.h */,
+				79CF466916BE714B00A6E13A /* FileExtensionChecker.h */,
+				79CF466A16BE714B00A6E13A /* FileExtensionChecker.m */,
 				79EDE63C1678EB9A0060F9F9 /* FolderWatcher.h */,
 				79EDE63D1678EB9A0060F9F9 /* FolderWatcher.m */,
+				79242E1C16569A47006379D6 /* ID3Reader.h */,
+				79242E1D16569A47006379D6 /* ID3Reader.m */,
+				79FF1420142F1DB100E27235 /* LibManager.h */,
+				79FF1421142F1DB100E27235 /* LibManager.mm */,
+				79242E211656AB1B006379D6 /* LibraryFolder.h */,
+				79242E221656AB1C006379D6 /* LibraryFolder.m */,
 				799EF5EB16884D7000AD3A67 /* RescanProxy.h */,
 				799EF5EC16884D7000AD3A67 /* RescanProxy.m */,
 				79D63C63168C438100A248F9 /* RescanState.h */,
 				79D63C64168C438100A248F9 /* RescanState.m */,
-				79CF466916BE714B00A6E13A /* FileExtensionChecker.h */,
-				79CF466A16BE714B00A6E13A /* FileExtensionChecker.m */,
-				79CF466C16BE73F900A6E13A /* SongsFinder.h */,
-				79CF466D16BE73F900A6E13A /* SongsFinder.m */,
 				79D83067168EE1530000C8EF /* ResourcePath.h */,
 				79D83068168EE1530000C8EF /* ResourcePath.m */,
+				79CF466C16BE73F900A6E13A /* SongsFinder.h */,
+				79CF466D16BE73F900A6E13A /* SongsFinder.m */,
+				792DC199166B6E5D0003E664 /* Tree.h */,
+				792DC19A166B6E5D0003E664 /* Tree.mm */,
+				799EF5F0168863BE00AD3A67 /* TreeNode.h */,
 			);
 			path = Library;
 			sourceTree = "<group>";
@@ -645,8 +642,6 @@
 		795022F017E436B400212801 /* Custom controls */ = {
 			isa = PBXGroup;
 			children = (
-				79928CAF17918FC1003BFE3F /* PlaylistsTableView.h */,
-				79928CB017918FC1003BFE3F /* PlaylistsTableView.m */,
 				795022DE17E42A4B00212801 /* MartinToggleButton.h */,
 				795022DF17E42A4B00212801 /* MartinToggleButton.m */,
 				795022E117E42B5100212801 /* MartinSliderCell.h */,
@@ -1283,7 +1278,6 @@
 				790992281706B501007BE3C4 /* ShortcutsPreferencesViewController.m in Sources */,
 				79CF70B317EE32620057E678 /* MMAdiumTabStyle.m in Sources */,
 				7909922C1706B5AF007BE3C4 /* PreferencesViewController.m in Sources */,
-				79928CB117918FC1003BFE3F /* PlaylistsTableView.m in Sources */,
 				79CF70AF17EE32620057E678 /* NSCell+MMTabBarViewExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
