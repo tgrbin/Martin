@@ -257,7 +257,9 @@
   return YES;
 }
 
-- (void)addPlaylistWithDraggingInfo:(id<NSDraggingInfo>)sender createPlaylist:(BOOL)create onTheLeft:(BOOL)left {
+- (void)addPlaylistWithDraggingInfo:(id<NSDraggingInfo>)sender
+                     createPlaylist:(BOOL)createPlaylist
+                          onTheLeft:(BOOL)left {
   NSPasteboard *pasteboard = sender.draggingPasteboard;
   NSArray *draggingTypes = pasteboard.types;
 
@@ -265,7 +267,7 @@
     NSArray *items = [pasteboard propertyListForType:NSFilenamesPboardType];
     [PlaylistNameGuesser itemsAndNameFromFolders:items withBlock:^(NSArray *items, NSString *name) {
       if (items.count > 0) {
-        if (create) {
+        if (createPlaylist) {
           [self addNewPlaylistWithPlaylistItems:items
                                         andName:name];
         } else {
@@ -286,7 +288,7 @@
       items = arr;
     }
 
-    if (create) {
+    if (createPlaylist) {
       Playlist *p;
       if (fromLibrary) {
         p = [[Playlist alloc] initWithTreeNodes:items];
@@ -302,6 +304,11 @@
       }
     }
   }
+}
+
+- (void)removeTemporaryCmdDragPlaylist {
+  NSTabViewItem *tempItem = [_dummyTabView tabViewItemAtIndex:showingQueueTab? 1: 0];
+  [self removeTabViewItem:tempItem];
 }
 
 #pragma mark - context menu
@@ -330,7 +337,10 @@
 }
 
 - (IBAction)closeTabPressed:(NSMenuItem *)sender {
-  NSTabViewItem *item = _dummyTabView.selectedTabViewItem;
+  [self removeTabViewItem:_dummyTabView.selectedTabViewItem];
+}
+
+- (void)removeTabViewItem:(NSTabViewItem *)item {
   [_dummyTabView removeTabViewItem:item];
   [self tabView:_dummyTabView didCloseTabViewItem:item];
 }

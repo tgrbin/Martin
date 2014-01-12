@@ -28,6 +28,8 @@
 
 - (void)addPlaylistWithDraggingInfo:(id<NSDraggingInfo>)sender createPlaylist:(BOOL)create onTheLeft:(BOOL)left;
 
+- (void)removeTemporaryCmdDragPlaylist;
+
 @property (nonatomic, strong) QueuePlaylist *queue;
 - (void)showQueueTab;
 - (void)hideQueueTab;

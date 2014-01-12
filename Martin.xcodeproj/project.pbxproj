@@ -206,6 +206,7 @@
 		79FF1407142F18A500E27235 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF1406142F18A500E27235 /* main.m */; };
 		79FF140E142F18A500E27235 /* MartinAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF140D142F18A500E27235 /* MartinAppDelegate.m */; };
 		79FF1422142F1DB100E27235 /* LibManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79FF1421142F1DB100E27235 /* LibManager.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		8D76AB1218831E4500799617 /* PlaylistTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D76AB1118831E4500799617 /* PlaylistTableView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -496,6 +497,8 @@
 		79FF140D142F18A500E27235 /* MartinAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MartinAppDelegate.m; sourceTree = "<group>"; };
 		79FF1420142F1DB100E27235 /* LibManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibManager.h; sourceTree = "<group>"; };
 		79FF1421142F1DB100E27235 /* LibManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LibManager.mm; sourceTree = "<group>"; };
+		8D76AB1018831E4500799617 /* PlaylistTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistTableView.h; sourceTree = "<group>"; };
+		8D76AB1118831E4500799617 /* PlaylistTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistTableView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -642,6 +645,8 @@
 		795022F017E436B400212801 /* Custom controls */ = {
 			isa = PBXGroup;
 			children = (
+				8D76AB1018831E4500799617 /* PlaylistTableView.h */,
+				8D76AB1118831E4500799617 /* PlaylistTableView.m */,
 				795022DE17E42A4B00212801 /* MartinToggleButton.h */,
 				795022DF17E42A4B00212801 /* MartinToggleButton.m */,
 				795022E117E42B5100212801 /* MartinSliderCell.h */,
@@ -1256,6 +1261,7 @@
 				79CF70A917EE32620057E678 /* MMTabDragView.m in Sources */,
 				79CF70B117EE32620057E678 /* NSTabViewItem+MMTabBarViewExtensions.m in Sources */,
 				79CF70F317EEBF310057E678 /* PlaylistTabBarItem.m in Sources */,
+				8D76AB1218831E4500799617 /* PlaylistTableView.m in Sources */,
 				79CF70A417EE32620057E678 /* MMTabBarButtonCell.m in Sources */,
 				79CF70B517EE32620057E678 /* MMCardTabStyle.m in Sources */,
 				79F69EB21699731200693CE5 /* NSObject+Observe.m in Sources */,

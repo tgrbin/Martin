@@ -150,7 +150,8 @@
     [PlaylistNameGuesser itemsAndNameFromFolders:items withBlock:^(NSArray *items, NSString *name) {
       int c = [_playlist addPlaylistItems:items atPos:endPosition];
       [self playlistChanged];
-      [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(endPosition, c)] byExtendingSelection:NO];
+      [tableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(endPosition, c)]
+             byExtendingSelection:NO];
       [[MartinAppDelegate get].window makeFirstResponder:tableView];
     }];
   } else {
