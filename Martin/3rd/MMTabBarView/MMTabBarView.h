@@ -67,7 +67,7 @@ typedef enum MMAttachedButtonsEnumerationOptions : NSUInteger {
 
 @protocol MMTabBarViewDelegate;
 
-@interface MMTabBarView : NSView <NSDraggingSource, NSDraggingDestination, NSAnimationDelegate, NSTabViewDelegate> {
+@interface MMTabBarView : NSView <NSDraggingDestination, NSAnimationDelegate, NSTabViewDelegate> {
 
     // control basics
     NSTabView                       *_tabView;                    // the tab view being navigated
@@ -160,6 +160,10 @@ typedef enum MMAttachedButtonsEnumerationOptions : NSUInteger {
 - (void)selectTabViewItem:(NSTabViewItem *)anItem;
 - (void)moveTabViewItem:(NSTabViewItem *)anItem toIndex:(NSUInteger)index;
 - (void)removeTabViewItem:(NSTabViewItem *)anItem;
+
+// moved to public .h file to prevent undeclared selector warnings
+- (void)_didClickTabButton:(id)sender;
+- (void)_overflowMenuAction:(id)sender;
 
 - (NSTabViewItem *)tabViewItemPinnedToOverflowButton;
 - (void)setTabViewItemPinnedToOverflowButton:(NSTabViewItem *)item;

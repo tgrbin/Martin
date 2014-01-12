@@ -953,7 +953,10 @@
 				79FF13F9142F18A500E27235 /* Frameworks */,
 				79FF13F7142F18A500E27235 /* Products */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
+			wrapsLines = 0;
 		};
 		79FF13F7142F18A500E27235 /* Products */ = {
 			isa = PBXGroup;
@@ -1357,7 +1360,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Martin/Supporting Files/Martin-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/Martin/Supporting files/Martin-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.6.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1374,7 +1377,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Martin/Supporting Files/Martin-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/Martin/Supporting files/Martin-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.6.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

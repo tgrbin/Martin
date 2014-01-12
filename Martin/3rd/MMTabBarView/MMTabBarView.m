@@ -77,8 +77,6 @@
 - (BOOL)_shouldDisplayTabBar;
 
 // private actions
-- (void)_overflowMenuAction:(id)sender;
-- (void)_didClickTabButton:(id)sender;
 - (void)_didClickCloseButton:(id)sender;
 
 // notification handlers

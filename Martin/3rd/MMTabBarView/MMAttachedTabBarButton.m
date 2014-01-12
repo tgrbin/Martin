@@ -289,19 +289,7 @@ static const int kRenameFieldTag = 601;
 #pragma mark Drag Support
 
 - (NSRect)draggingRect {
-
-  id <MMTabStyle> style = [self style];
-  MMTabBarView *tabBarView = [self tabBarView];
-
-  NSRect draggingRect = NSZeroRect;
-
-  if (style && [style respondsToSelector:@selector(dragRectForTabButton:ofTabBarView:)]) {
-    draggingRect = [style draggingRectForTabButton:self ofTabBarView:tabBarView];
-  } else {
-    draggingRect = [self _draggingRect];
-  }
-
-  return draggingRect;
+  return [self _draggingRect];
 }
 
 - (NSImage *)dragImage {

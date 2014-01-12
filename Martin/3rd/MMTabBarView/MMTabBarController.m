@@ -608,8 +608,8 @@ static NSInteger potentialMinimumForArray(NSArray *array, NSInteger minimum){
     NSString *truncatedString = [title stringByTruncatingToLength:MAX_OVERFLOW_MENUITEM_TITLE_LENGTH];
 
     menuItem = [_overflowMenu addItemWithTitle:truncatedString
-                action:@selector(_overflowMenuAction:)
-                keyEquivalent:@""];
+                                        action:@selector(_overflowMenuAction:)
+                                 keyEquivalent:@""];
     [menuItem setTarget:_tabBarView];
     [menuItem setRepresentedObject:anItem];
 /*

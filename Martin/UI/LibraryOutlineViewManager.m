@@ -300,7 +300,9 @@
 - (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
   if (_searchTextField.stringValue.length == 0) return NO;
 
-  if (commandSelector == @selector(noop:) && [ShortcutBinder martinKeyForEvent:[NSApp currentEvent]] == kMartinKeyCmdEnter) {
+  SEL noopSelector = NSSelectorFromString(@"noop:");
+  
+  if (commandSelector == noopSelector && [ShortcutBinder martinKeyForEvent:[NSApp currentEvent]] == kMartinKeyCmdEnter) {
     [[MartinAppDelegate get].tabsManager addNewPlaylistWithTreeNodes:@[ @0 ] andSuggestedName:_searchTextField.stringValue];
     return YES;
   } else if (commandSelector == @selector(insertNewline:)) {
