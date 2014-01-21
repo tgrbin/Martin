@@ -3,7 +3,7 @@ Martin
 
 Martin is a lightweight open source mp3 player for OSX.
 
-It uses a library, music collection is scanned and info is stored to allow faster searching and browsing.
+It uses a library, music collection is scanned and tracks info is stored to allow faster searching and browsing.
 
 Your folders are watched for changes automatically.
 
@@ -15,4 +15,4 @@ I've been working on this for my own needs because I couldn't find anything simi
 
 Feel free to contact me if you have questions or suggestions.
 
-I apologize in advance for any annoying bugs that you might encounter.
+I apologize in advance for any annoying bugs that you may encounter.
