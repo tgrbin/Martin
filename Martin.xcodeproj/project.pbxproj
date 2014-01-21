@@ -207,6 +207,12 @@
 		79FF140E142F18A500E27235 /* MartinAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF140D142F18A500E27235 /* MartinAppDelegate.m */; };
 		79FF1422142F1DB100E27235 /* LibManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79FF1421142F1DB100E27235 /* LibManager.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		8D76AB1218831E4500799617 /* PlaylistTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D76AB1118831E4500799617 /* PlaylistTableView.m */; };
+		8DCC66C9188E801400032B89 /* preficon_lastfm.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C3188E801400032B89 /* preficon_lastfm.png */; };
+		8DCC66CA188E801400032B89 /* preficon_lastfm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C4188E801400032B89 /* preficon_lastfm@2x.png */; };
+		8DCC66CB188E801400032B89 /* preficon_lib.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C5188E801400032B89 /* preficon_lib.png */; };
+		8DCC66CC188E801400032B89 /* preficon_lib@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C6188E801400032B89 /* preficon_lib@2x.png */; };
+		8DCC66CD188E801400032B89 /* preficon_shortcuts.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C7188E801400032B89 /* preficon_shortcuts.png */; };
+		8DCC66CE188E801400032B89 /* preficon_shortcuts@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C8188E801400032B89 /* preficon_shortcuts@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -499,6 +505,12 @@
 		79FF1421142F1DB100E27235 /* LibManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LibManager.mm; sourceTree = "<group>"; };
 		8D76AB1018831E4500799617 /* PlaylistTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistTableView.h; sourceTree = "<group>"; };
 		8D76AB1118831E4500799617 /* PlaylistTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistTableView.m; sourceTree = "<group>"; };
+		8DCC66C3188E801400032B89 /* preficon_lastfm.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = preficon_lastfm.png; sourceTree = "<group>"; };
+		8DCC66C4188E801400032B89 /* preficon_lastfm@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "preficon_lastfm@2x.png"; sourceTree = "<group>"; };
+		8DCC66C5188E801400032B89 /* preficon_lib.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = preficon_lib.png; sourceTree = "<group>"; };
+		8DCC66C6188E801400032B89 /* preficon_lib@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "preficon_lib@2x.png"; sourceTree = "<group>"; };
+		8DCC66C7188E801400032B89 /* preficon_shortcuts.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = preficon_shortcuts.png; sourceTree = "<group>"; };
+		8DCC66C8188E801400032B89 /* preficon_shortcuts@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "preficon_shortcuts@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -710,6 +722,7 @@
 				79C7F520170F3ADB00B25C05 /* App */,
 				7928319217E35BED00223E5C /* Toolbar */,
 				795022E417E42C4800212801 /* Slider */,
+				8DCC66C2188E801400032B89 /* Preferences */,
 			);
 			path = Assets;
 			sourceTree = "<group>";
@@ -1034,6 +1047,19 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		8DCC66C2188E801400032B89 /* Preferences */ = {
+			isa = PBXGroup;
+			children = (
+				8DCC66C3188E801400032B89 /* preficon_lastfm.png */,
+				8DCC66C4188E801400032B89 /* preficon_lastfm@2x.png */,
+				8DCC66C5188E801400032B89 /* preficon_lib.png */,
+				8DCC66C6188E801400032B89 /* preficon_lib@2x.png */,
+				8DCC66C7188E801400032B89 /* preficon_shortcuts.png */,
+				8DCC66C8188E801400032B89 /* preficon_shortcuts@2x.png */,
+			);
+			path = Preferences;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1094,6 +1120,7 @@
 				79CF709217EE32620057E678 /* TabClose_Front.png in Resources */,
 				79CF70D417EE32620057E678 /* SafariIWATClose.png in Resources */,
 				79CF70C317EE32620057E678 /* SafariAWATFill@2x.png in Resources */,
+				8DCC66CE188E801400032B89 /* preficon_shortcuts@2x.png in Resources */,
 				79CF707917EE32620057E678 /* AquaTabCloseDirty_Front_Pressed.png in Resources */,
 				79CF70D817EE32620057E678 /* SafariIWATCloseRollover.png in Resources */,
 				79CF70C117EE32620057E678 /* SafariAWATCloseRollover@2x.png in Resources */,
@@ -1111,6 +1138,8 @@
 				79CF708517EE32620057E678 /* AquaTabsSeparator.png in Resources */,
 				795022EA17E42C4800212801 /* handle_h.png in Resources */,
 				792831A217E35BED00223E5C /* fwd_h.png in Resources */,
+				8DCC66CC188E801400032B89 /* preficon_lib@2x.png in Resources */,
+				8DCC66CB188E801400032B89 /* preficon_lib.png in Resources */,
 				792831AB17E35BED00223E5C /* rwd.png in Resources */,
 				79CF709517EE32620057E678 /* TabClose_Front_Pressed@2x.png in Resources */,
 				795022EB17E42C4800212801 /* progress.png in Resources */,
@@ -1132,6 +1161,7 @@
 				79CF70E617EE32620057E678 /* SafariIWITLeftCap.png in Resources */,
 				79CF70D317EE32620057E678 /* SafariIWAddTabButton.png in Resources */,
 				7909921F1706B427007BE3C4 /* LibraryPreferencesViewController.xib in Resources */,
+				8DCC66CA188E801400032B89 /* preficon_lastfm@2x.png in Resources */,
 				79CF70D217EE32620057E678 /* SafariAWITRightCap@2x.png in Resources */,
 				79CF70E817EE32620057E678 /* SafariIWITRightCap.png in Resources */,
 				792831A117E35BED00223E5C /* fwd.png in Resources */,
@@ -1174,6 +1204,7 @@
 				79CF70CD17EE32620057E678 /* SafariAWITCloseRollover.png in Resources */,
 				79CF708817EE32620057E678 /* overflowImage@2x.png in Resources */,
 				79CF709317EE32620057E678 /* TabClose_Front@2x.png in Resources */,
+				8DCC66CD188E801400032B89 /* preficon_shortcuts.png in Resources */,
 				79CF70CA17EE32620057E678 /* SafariAWITClose@2x.png in Resources */,
 				79CF708917EE32620057E678 /* overflowImagePressed.png in Resources */,
 				79CF70D917EE32620057E678 /* SafariIWATCloseRollover@2x.png in Resources */,
@@ -1194,6 +1225,7 @@
 				79CF707817EE32620057E678 /* AquaTabCloseDirty_Front.png in Resources */,
 				79CF70BE17EE32620057E678 /* SafariAWATClosePressed.png in Resources */,
 				795022E917E42C4800212801 /* handle.png in Resources */,
+				8DCC66C9188E801400032B89 /* preficon_lastfm.png in Resources */,
 				79CF70C817EE32620057E678 /* SafariAWBG.png in Resources */,
 				792831A917E35BED00223E5C /* repeat.png in Resources */,
 				79CF707F17EE32620057E678 /* AquaTabNewRollover.png in Resources */,

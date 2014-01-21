@@ -64,10 +64,18 @@
 
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag {
   NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
+  NSUInteger index = [titles indexOfObject:itemIdentifier];
   item.label = itemIdentifier;
-  item.tag = [titles indexOfObject:itemIdentifier];
+  item.tag = index;
   item.target = self;
   item.action = @selector(toolbarItemPressed:);
+  
+  static NSString * const iconNames[] = { @"preficon_lib", @"preficon_lastfm", @"preficon_shortcuts" };
+  NSImage *img = [NSImage imageNamed:iconNames[index]];
+  double max = MAX(img.size.width, img.size.height);
+  img.alignmentRect = NSMakeRect(0, 0, max, max);
+  item.image = img;
+  
   return item;
 }
 
