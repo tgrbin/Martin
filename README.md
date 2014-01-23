@@ -39,4 +39,5 @@ Global:
 
 - <kbd>/</kbd> or <kbd>Command+F</kbd> - go to search
 
+Use <kbd>Command</kbd>+drag to create a new playlist while dragging from tree or another playlist.
 Other keyboard shortcuts should be discoverable through menu and context menus.
