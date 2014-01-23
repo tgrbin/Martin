@@ -584,7 +584,7 @@
 								<object class="NSMenuItem" id="956711075">
 									<reference key="NSMenu" ref="117493482"/>
 									<string key="NSTitle">Album</string>
-									<string key="NSKeyEquiv">m</string>
+									<string key="NSKeyEquiv">b</string>
 									<int key="NSKeyEquivModMask">524288</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="181488094"/>
@@ -4320,15 +4320,15 @@
 			<string key="NSMenuCheckmark">{11, 11}</string>
 			<string key="NSMenuMixedState">{10, 3}</string>
 			<string key="fwd">{24, 24}</string>
-			<string key="fwd_h">{24, 24}</string>
+			<string key="fwd_h">{24.338028169014084, 24.338028169014084}</string>
 			<string key="play">{24, 24}</string>
-			<string key="play_h">{24, 24}</string>
+			<string key="play_h">{24.338028169014084, 24.338028169014084}</string>
 			<string key="repeat">{24, 24}</string>
-			<string key="repeat_h">{24, 24}</string>
+			<string key="repeat_h">{24.338028169014084, 24.338028169014084}</string>
 			<string key="rwd">{24, 24}</string>
-			<string key="rwd_h">{24, 24}</string>
+			<string key="rwd_h">{24.338028169014084, 24.338028169014084}</string>
 			<string key="shuffle">{24, 24}</string>
-			<string key="shuffle_h">{24, 24}</string>
+			<string key="shuffle_h">{24.338028169014084, 24.338028169014084}</string>
 		</dictionary>
 	</data>
 </archive>

@@ -87,7 +87,7 @@ static void hookClass(Class cls) {
           break;
         case L'å':
           return kMartinKeySelectArtist;
-        case L'µ':
+        case L'∫':
           return kMartinKeySelectAlbum;
         case L'œ':
           return kMartinKeyQueueItems;
