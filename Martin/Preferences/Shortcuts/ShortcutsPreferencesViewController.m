@@ -9,9 +9,11 @@
 #import "ShortcutsPreferencesViewController.h"
 #import "ShortcutRecorder.h"
 #import "GlobalShortcuts.h"
+#import "MediaKeysManager.h"
 
 @interface ShortcutsPreferencesViewController ()
-@property (strong) IBOutlet NSView *recorderControlsHolderView;
+@property (nonatomic, strong) IBOutlet NSView *recorderControlsHolderView;
+@property (nonatomic, assign) BOOL mediaKeysEnabled;
 @end
 
 @implementation ShortcutsPreferencesViewController
@@ -19,6 +21,7 @@
 - (id)init {
   if (self = [super init]) {
     self.title = @"Shortcuts";
+    _mediaKeysEnabled = [MediaKeysManager shared].mediaKeysEnabled;
   }
   return self;
 }
@@ -42,6 +45,11 @@
 - (IBAction)resetShortcutsToDefaultsPressed:(id)sender {
   [GlobalShortcuts resetToDefaults];
   [self updateShortcutControls];
+}
+
+- (void)setMediaKeysEnabled:(BOOL)mediaKeysEnabled {
+  _mediaKeysEnabled = mediaKeysEnabled;
+  [MediaKeysManager shared].mediaKeysEnabled = mediaKeysEnabled;
 }
 
 @end

@@ -209,6 +209,10 @@
 		8D3CB8FF18915C3800D6F471 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 8D3CB8FD18915C3800D6F471 /* LICENSE */; };
 		8D3CB90018915C3800D6F471 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 8D3CB8FE18915C3800D6F471 /* README.md */; };
 		8D76AB1218831E4500799617 /* PlaylistTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D76AB1118831E4500799617 /* PlaylistTableView.m */; };
+		8DA2B97118939983002F1DF5 /* NSObject+SPInvocationGrabbing.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DA2B96C18939983002F1DF5 /* NSObject+SPInvocationGrabbing.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		8DA2B97318939983002F1DF5 /* SPMediaKeyTap.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DA2B96F18939983002F1DF5 /* SPMediaKeyTap.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		8DA2B97618939A3A002F1DF5 /* MartinApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DA2B97518939A3A002F1DF5 /* MartinApp.m */; };
+		8DA2B97918939B0A002F1DF5 /* MediaKeysManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DA2B97818939B0A002F1DF5 /* MediaKeysManager.m */; };
 		8DCC66C9188E801400032B89 /* preficon_lastfm.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C3188E801400032B89 /* preficon_lastfm.png */; };
 		8DCC66CA188E801400032B89 /* preficon_lastfm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C4188E801400032B89 /* preficon_lastfm@2x.png */; };
 		8DCC66CB188E801400032B89 /* preficon_lib.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C5188E801400032B89 /* preficon_lib.png */; };
@@ -509,6 +513,14 @@
 		8D3CB8FE18915C3800D6F471 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
 		8D76AB1018831E4500799617 /* PlaylistTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistTableView.h; sourceTree = "<group>"; };
 		8D76AB1118831E4500799617 /* PlaylistTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistTableView.m; sourceTree = "<group>"; };
+		8DA2B96B18939983002F1DF5 /* NSObject+SPInvocationGrabbing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SPInvocationGrabbing.h"; sourceTree = "<group>"; };
+		8DA2B96C18939983002F1DF5 /* NSObject+SPInvocationGrabbing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SPInvocationGrabbing.m"; sourceTree = "<group>"; };
+		8DA2B96E18939983002F1DF5 /* SPMediaKeyTap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPMediaKeyTap.h; sourceTree = "<group>"; };
+		8DA2B96F18939983002F1DF5 /* SPMediaKeyTap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPMediaKeyTap.m; sourceTree = "<group>"; };
+		8DA2B97418939A3A002F1DF5 /* MartinApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MartinApp.h; sourceTree = "<group>"; };
+		8DA2B97518939A3A002F1DF5 /* MartinApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MartinApp.m; sourceTree = "<group>"; };
+		8DA2B97718939B0A002F1DF5 /* MediaKeysManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaKeysManager.h; sourceTree = "<group>"; };
+		8DA2B97818939B0A002F1DF5 /* MediaKeysManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaKeysManager.m; sourceTree = "<group>"; };
 		8DCC66C3188E801400032B89 /* preficon_lastfm.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = preficon_lastfm.png; sourceTree = "<group>"; };
 		8DCC66C4188E801400032B89 /* preficon_lastfm@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "preficon_lastfm@2x.png"; sourceTree = "<group>"; };
 		8DCC66C5188E801400032B89 /* preficon_lib.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = preficon_lib.png; sourceTree = "<group>"; };
@@ -551,6 +563,8 @@
 				79C7F525170F3DF600B25C05 /* MainMenu.xib */,
 				79FF140C142F18A500E27235 /* MartinAppDelegate.h */,
 				79FF140D142F18A500E27235 /* MartinAppDelegate.m */,
+				8DA2B97418939A3A002F1DF5 /* MartinApp.h */,
+				8DA2B97518939A3A002F1DF5 /* MartinApp.m */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -680,6 +694,7 @@
 		795A6CAA16E6572400215458 /* 3rd */ = {
 			isa = PBXGroup;
 			children = (
+				8DA2B96918939983002F1DF5 /* SPMediaKeyTap */,
 				79CF6FCE17EE32610057E678 /* MMTabBarView */,
 				795A6CAB16E6573A00215458 /* ShortcutRecorder */,
 			);
@@ -964,6 +979,8 @@
 				79F69EB8169999CD00693CE5 /* ShortcutBinder.m */,
 				79EBAA8F16B834240038BC0F /* GlobalShortcuts.h */,
 				79EBAA9016B834240038BC0F /* GlobalShortcuts.m */,
+				8DA2B97718939B0A002F1DF5 /* MediaKeysManager.h */,
+				8DA2B97818939B0A002F1DF5 /* MediaKeysManager.m */,
 			);
 			path = "Keyboard Shortcuts";
 			sourceTree = "<group>";
@@ -1051,6 +1068,18 @@
 				79DEAD61165BD81C0017E4DD /* PlaylistItem.mm */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		8DA2B96918939983002F1DF5 /* SPMediaKeyTap */ = {
+			isa = PBXGroup;
+			children = (
+				8DA2B96E18939983002F1DF5 /* SPMediaKeyTap.h */,
+				8DA2B96F18939983002F1DF5 /* SPMediaKeyTap.m */,
+				8DA2B96B18939983002F1DF5 /* NSObject+SPInvocationGrabbing.h */,
+				8DA2B96C18939983002F1DF5 /* NSObject+SPInvocationGrabbing.m */,
+			);
+			name = SPMediaKeyTap;
+			path = 3rd/SPMediaKeyTap;
 			sourceTree = "<group>";
 		};
 		8DCC66C2188E801400032B89 /* Preferences */ = {
@@ -1256,6 +1285,7 @@
 				79BEC6D217F5A9A400F1A3FA /* NotificationsGenerator.m in Sources */,
 				79CF70A817EE32620057E678 /* MMTabDragAssistant.m in Sources */,
 				79CF70B017EE32620057E678 /* NSString+MMTabBarViewExtensions.m in Sources */,
+				8DA2B97318939983002F1DF5 /* SPMediaKeyTap.m in Sources */,
 				795022F317E4562800212801 /* PlayerStatusTextField.m in Sources */,
 				79FF140E142F18A500E27235 /* MartinAppDelegate.m in Sources */,
 				795022E317E42B5100212801 /* MartinSliderCell.m in Sources */,
@@ -1271,6 +1301,7 @@
 				79AF97EB145305C200BE8391 /* Player.m in Sources */,
 				79B3706D149D21EA003372CB /* LastFM.m in Sources */,
 				79242E1E16569A47006379D6 /* ID3Reader.m in Sources */,
+				8DA2B97118939983002F1DF5 /* NSObject+SPInvocationGrabbing.m in Sources */,
 				795022E017E42A4B00212801 /* MartinToggleButton.m in Sources */,
 				79242E231656AB1C006379D6 /* LibraryFolder.m in Sources */,
 				79242E301656B0CF006379D6 /* PreferencesWindowController.m in Sources */,
@@ -1292,6 +1323,7 @@
 				79CF709C17EE32620057E678 /* MMAttachedTabBarButtonCell.m in Sources */,
 				79D63C69168C88F900A248F9 /* DefaultsManager.m in Sources */,
 				7904597E168D7D0900FE0B68 /* TreeStateManager.m in Sources */,
+				8DA2B97918939B0A002F1DF5 /* MediaKeysManager.m in Sources */,
 				79D83065168EE0F50000C8EF /* PlaylistPersistence.m in Sources */,
 				79CF70AC17EE32620057E678 /* MMTabPasteboardItem.m in Sources */,
 				79D83069168EE1530000C8EF /* ResourcePath.m in Sources */,
@@ -1307,6 +1339,7 @@
 				79F69EB21699731200693CE5 /* NSObject+Observe.m in Sources */,
 				79F69EB9169999CD00693CE5 /* ShortcutBinder.m in Sources */,
 				79EBAA9116B834240038BC0F /* GlobalShortcuts.m in Sources */,
+				8DA2B97618939A3A002F1DF5 /* MartinApp.m in Sources */,
 				79CF466B16BE714B00A6E13A /* FileExtensionChecker.m in Sources */,
 				79CF466E16BE73F900A6E13A /* SongsFinder.m in Sources */,
 				79CF709B17EE32620057E678 /* MMAttachedTabBarButton.m in Sources */,

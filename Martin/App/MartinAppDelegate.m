@@ -13,6 +13,7 @@
 #import "FileExtensionChecker.h"
 #import "PlayerStatusTextField.h"
 #import "FolderWatcher.h"
+#import "MediaKeysManager.h"
 
 @interface MartinAppDelegate() <NSApplicationDelegate, NSWindowDelegate>
 @property (nonatomic, strong) IBOutlet NSProgressIndicator *martinBusyIndicator;
@@ -43,6 +44,7 @@
   [_tabsManager allLoaded];
   [_player restorePlayerState];
   [FolderWatcher sharedWatcher];
+  [MediaKeysManager shared];
 }
 
 - (void)applicationWillBecomeActive:(NSNotification *)notification {

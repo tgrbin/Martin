@@ -24,7 +24,8 @@ typedef enum {
   kDefaultsKeySearchQuery,
   kDefaultsKeyFirstRun,
   kDefaultsKeySeekPosition,
-  kDefaultsKeyPlayerState
+  kDefaultsKeyPlayerState,
+  kDefaultsKeyMediaKeysEnabled
 } DefaultsKey;
 
 + (id)objectForKey:(DefaultsKey)key;

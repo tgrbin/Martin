@@ -19,7 +19,7 @@
 - (void)playSelectedPlaylist;
 - (void)playItemWithIndex:(int)index;
 
-// used only by GlobalShortcuts class
+// used only by GlobalShortcuts and MediaKeyManager
 - (void)playOrPause;
 - (void)next;
 - (void)prev;

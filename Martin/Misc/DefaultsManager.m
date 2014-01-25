@@ -26,7 +26,8 @@ static NSDictionary *defaultValues;
     @(kDefaultsKeySearchQuery): @"",
     @(kDefaultsKeyFirstRun): @YES,
     @(kDefaultsKeySeekPosition): @0,
-    @(kDefaultsKeyPlayerState): @0
+    @(kDefaultsKeyPlayerState): @0,
+    @(kDefaultsKeyMediaKeysEnabled): @YES
   };
 }
 

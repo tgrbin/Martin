@@ -1,6 +1,5 @@
 Martin
 ======
-------
 
 Martin is a lightweight open source mp3 player for OSX.
 
@@ -16,7 +15,6 @@ Feel free to contact me if you have any questions or suggestions.
 I apologize in advance for any annoying bugs that you may encounter.
 
 Keyboard shortcuts and hints
-------------------
 ------------------
 
 While in search field:
