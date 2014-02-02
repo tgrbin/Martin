@@ -3,7 +3,6 @@
 //  Martin
 //
 //  Created by Tomislav Grbin on 10/1/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
 #import "Playlist.h"
@@ -374,8 +373,8 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
 - (PlaylistItem *)moveToItemWithDelta:(int)delta {
   if (self.numberOfItems == 0) return nil;
   
-  BOOL shuffle = [MartinAppDelegate get].player.shuffle;
-  BOOL repeat = [MartinAppDelegate get].player.repeat;
+  BOOL shuffle = [MartinAppDelegate get].playerController.shuffle;
+  BOOL repeat = [MartinAppDelegate get].playerController.repeat;
 
   if (_currentIndexInPlaylistItems == -1) {
     if (shuffle) {
@@ -669,10 +668,10 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
   int added = [super addTreeNodes:treeNodes];
 
   Playlist *playlistToReturnTo;
-  if ([MartinAppDelegate get].player.nowPlayingPlaylist == self) {
+  if ([MartinAppDelegate get].playerController.nowPlayingPlaylist == self) {
     playlistToReturnTo = [self currentItemPlaylist];
   } else {
-    playlistToReturnTo = [MartinAppDelegate get].player.nowPlayingPlaylist;
+    playlistToReturnTo = [MartinAppDelegate get].playerController.nowPlayingPlaylist;
   }
   
   for (int i = (int)itemOrigin.size() - added; i < itemOrigin.size(); ++i) {

@@ -1,13 +1,12 @@
 //
-//  Player.m
+//  PlayerController.m
 //  Martin
 //
 //  Created by Tomislav Grbin on 10/22/11.
-//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
 #import "MartinAppDelegate.h"
-#import "Player.h"
+#import "PlayerController.h"
 #import "LastFM.h"
 #import "Playlist.h"
 #import "PlaylistItem.h"
@@ -20,7 +19,7 @@ typedef enum {
   kPlayButtonStylePause
 } PlayButtonStyle;
 
-@implementation Player {
+@implementation PlayerController {
   NSTimer *seekTimer;
   IBOutlet NSSlider *seekSlider;
   IBOutlet NSButton *playOrPauseButton;
@@ -259,7 +258,7 @@ typedef enum {
 
   // TODO: martin can't remember seek position of an item that doesn't belong to any playlist
   // we could remember a library id or a filename to solve this
-  if ([MartinAppDelegate get].player.nowPlayingPlaylist == nil) {
+  if ([MartinAppDelegate get].playerController.nowPlayingPlaylist == nil) {
     status = kPlayerStatusStopped;
   }
 

@@ -278,7 +278,7 @@ static const int kRenameFieldTag = 601;
 - (void)updateNowPlayingIndicator {
   PlaylistTabBarItem *item = self.tabViewItem.identifier;
   Playlist *playlist = item.playlist;
-  BOOL nowPlaying = [[MartinAppDelegate get].player nowPlayingItemFromPlaylist:playlist];
+  BOOL nowPlaying = [[MartinAppDelegate get].playerController nowPlayingItemFromPlaylist:playlist];
 
   CGFloat fontSize = self.cell.font.pointSize;
   NSFont *font = nowPlaying? [NSFont boldSystemFontOfSize:fontSize]: [NSFont systemFontOfSize:fontSize];

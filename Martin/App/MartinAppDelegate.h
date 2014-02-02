@@ -3,11 +3,10 @@
 //  Martin
 //
 //  Created by Tomislav Grbin on 9/25/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>
-#import "Player.h"
+#import "PlayerController.h"
 #import "LibraryOutlineViewManager.h"
 #import "PlaylistTableManager.h"
 #import "PreferencesWindowController.h"
@@ -23,7 +22,7 @@
 @property (nonatomic, strong) IBOutlet NSWindow *window;
 
 @property (nonatomic, strong) IBOutlet PreferencesWindowController *preferencesWindowController;
-@property (nonatomic, strong) IBOutlet Player *player;
+@property (nonatomic, strong) IBOutlet PlayerController *playerController;
 @property (nonatomic, strong) IBOutlet LibraryOutlineViewManager *libraryOutlineViewManager;
 @property (nonatomic, strong) IBOutlet PlaylistTableManager *playlistTableManager;
 @property (nonatomic, strong) IBOutlet FilePlayer *filePlayer;

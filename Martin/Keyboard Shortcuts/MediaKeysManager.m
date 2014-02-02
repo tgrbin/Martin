@@ -9,7 +9,7 @@
 #import "MediaKeysManager.h"
 #import "SPMediaKeyTap.h"
 #import "MartinAppDelegate.h"
-#import "Player.h"
+#import "PlayerController.h"
 #import "DefaultsManager.h"
 
 @implementation MediaKeysManager {
@@ -68,7 +68,7 @@ static MediaKeysManager *instance;
   int keyRepeat = (keyFlags & 0x1);
 	
 	if (keyIsPressed && keyRepeat == 0) {
-    Player *player = [MartinAppDelegate get].player;
+    PlayerController *player = [MartinAppDelegate get].playerController;
     
 		switch (keyCode) {
 			case NX_KEYTYPE_PLAY:

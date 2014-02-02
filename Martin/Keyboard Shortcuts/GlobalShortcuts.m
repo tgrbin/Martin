@@ -9,7 +9,7 @@
 #import "MartinAppDelegate.h"
 #import "GlobalShortcuts.h"
 #import <Carbon/Carbon.h>
-#import "Player.h"
+#import "PlayerController.h"
 #import "DefaultsManager.h"
 
 @implementation GlobalShortcuts
@@ -89,7 +89,7 @@ static OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent
   EventHotKeyID hkCom;
   GetEventParameter(theEvent, kEventParamDirectObject, typeEventHotKeyID, NULL, sizeof(hkCom), NULL, &hkCom);
 
-  Player *player = [MartinAppDelegate get].player;
+  PlayerController *playerController = [MartinAppDelegate get].playerController;
   GlobalShortcutAction action = hkCom.id - 1;
 
   switch (action) {
@@ -97,13 +97,13 @@ static OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent
       [[MartinAppDelegate get] toggleMartinVisible];
       break;
     case kGlobalShortcutActionPlayOrPause:
-      [player playOrPause];
+      [playerController playOrPause];
       break;
     case kGlobalShrotcutActionPrev:
-      [player prev];
+      [playerController prev];
       break;
     case kGlobalShortcutActionNext:
-      [player next];
+      [playerController next];
       break;
   }
 

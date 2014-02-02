@@ -3,7 +3,6 @@
 //  Martin
 //
 //  Created by Tomislav Grbin on 9/25/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
 #import "MartinAppDelegate.h"
@@ -42,7 +41,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
   [_tabsManager allLoaded];
-  [_player restorePlayerState];
+  [_playerController restorePlayerState];
   [FolderWatcher sharedWatcher];
   [MediaKeysManager shared];
 }
@@ -56,7 +55,7 @@
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
   [_tabsManager savePlaylists];
   [_libraryOutlineViewManager saveState];
-  [_player storePlayerState];
+  [_playerController storePlayerState];
   return YES;
 }
 
@@ -115,7 +114,7 @@
 - (void)addFoldersToPlaylist:(NSArray *)folders {
   [PlaylistNameGuesser itemsAndNameFromFolders:folders withBlock:^(NSArray *items, NSString *name) {
     if (items.count > 0) {
-      if (_player.nowPlayingPlaylist) {
+      if (_playerController.nowPlayingPlaylist) {
         [_playlistTableManager addPlaylistItems:items];
       } else {
         [_tabsManager addNewPlaylistWithPlaylistItems:items andName:name];

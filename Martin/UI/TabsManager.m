@@ -91,7 +91,7 @@
   for (NSTabViewItem *tabIitem in _dummyTabView.tabViewItems) {
     PlaylistTabBarItem *item = tabIitem.identifier;
     [playlists addObject:item.playlist];
-    if (item.playlist == [MartinAppDelegate get].player.nowPlayingPlaylist) {
+    if (item.playlist == [MartinAppDelegate get].playerController.nowPlayingPlaylist) {
       nowPlayingIndex = currentIndex;
     }
     ++currentIndex;
@@ -107,7 +107,7 @@
 }
 
 - (void)selectNowPlayingPlaylist {
-  Playlist *np = [MartinAppDelegate get].player.nowPlayingPlaylist;
+  Playlist *np = [MartinAppDelegate get].playerController.nowPlayingPlaylist;
   if (np) {
     for (NSTabViewItem *tabItem in _dummyTabView.tabViewItems) {
       PlaylistTabBarItem *item = tabItem.identifier;
@@ -235,13 +235,13 @@
   [playlist cancelID3Reads];
 
   if (playlist == _queue) {
-    [MartinAppDelegate get].player.nowPlayingPlaylist = [_queue currentItemPlaylist];
+    [MartinAppDelegate get].playerController.nowPlayingPlaylist = [_queue currentItemPlaylist];
     [_queue clear];
     showingQueueTab = NO;
   } else {
     [self.queue willRemovePlaylist:playlist];
-    if ([MartinAppDelegate get].player.nowPlayingPlaylist == playlist) {
-      [MartinAppDelegate get].player.nowPlayingPlaylist = nil;
+    if ([MartinAppDelegate get].playerController.nowPlayingPlaylist == playlist) {
+      [MartinAppDelegate get].playerController.nowPlayingPlaylist = nil;
     }
   }
 }

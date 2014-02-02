@@ -3,7 +3,6 @@
 //  Martin
 //
 //  Created by Tomislav Grbin on 10/1/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
 #import "PlaylistTableManager.h"
@@ -71,7 +70,7 @@
 
 - (void)itemDoubleClicked {
   if (playlistTable.clickedRow == -1) return;
-  [[MartinAppDelegate get].player playItemWithIndex:(int)playlistTable.clickedRow];
+  [[MartinAppDelegate get].playerController playItemWithIndex:(int)playlistTable.clickedRow];
 }
 
 - (void)setPlaylist:(Playlist *)playlist {
@@ -217,7 +216,7 @@
   NSTextFieldCell *cell = (NSTextFieldCell*)c;
 
   BOOL atCurrentItem = (row == _playlist.currentItemIndex);
-  BOOL nowPlaying = [[MartinAppDelegate get].player nowPlayingItemFromPlaylist:_playlist];
+  BOOL nowPlaying = [[MartinAppDelegate get].playerController nowPlayingItemFromPlaylist:_playlist];
 
   BOOL altBkg = atCurrentItem;
   BOOL bold = atCurrentItem && nowPlaying;
@@ -289,7 +288,7 @@
 }
 
 - (void)playItemAtSelectedRow {
-  [[MartinAppDelegate get].player playItemWithIndex:(int)playlistTable.selectedRow];
+  [[MartinAppDelegate get].playerController playItemWithIndex:(int)playlistTable.selectedRow];
 }
 
 - (IBAction)deleteSelectedItems:(id)sender {
