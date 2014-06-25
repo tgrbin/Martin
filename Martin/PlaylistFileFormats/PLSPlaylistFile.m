@@ -19,4 +19,22 @@
   return nil;
 }
 
+- (NSString *)stringFromPaths:(NSArray *)paths {
+  NSMutableArray *lines = [NSMutableArray new];
+  
+  [lines addObject:@"[playlist]"];
+  [lines addObject:[NSString stringWithFormat:@"numberOfEntries=%ld", paths.count]];
+  [lines addObject:@""];
+  
+  [paths enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    [lines addObject:[NSString stringWithFormat:@"File%ld=%@", idx + 1, obj]];
+  }];
+  
+  
+  [lines addObject:@""];
+  [lines addObject:@"VERSION=2"];
+  
+  return [lines componentsJoinedByString:@"\n"];
+}
+
 @end

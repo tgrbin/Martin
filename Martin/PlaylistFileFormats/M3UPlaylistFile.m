@@ -16,4 +16,8 @@
   return lineString;
 }
 
+- (NSString *)stringFromPaths:(NSArray *)paths {
+  return [paths componentsJoinedByString:@"\n"];
+}
+
 @end

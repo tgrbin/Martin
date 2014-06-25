@@ -15,6 +15,7 @@
 #import "FolderWatcher.h"
 #import "MediaKeysManager.h"
 #import "PlaylistFile.h"
+#import "Playlist.h"
 
 @interface MartinAppDelegate() <NSApplicationDelegate, NSWindowDelegate>
 @property (nonatomic, strong) IBOutlet NSProgressIndicator *martinBusyIndicator;
@@ -80,7 +81,7 @@
     showedMartin = YES;
     [NSApp activateIgnoringOtherApps:YES];
   }
-
+  
   if (showedMartin) {
     [_tabsManager selectNowPlayingPlaylist];
   }
@@ -94,8 +95,8 @@
   panel.canChooseFiles = YES;
   panel.allowsMultipleSelection = YES;
   panel.allowedFileTypes = [[FileExtensionChecker acceptableExtensions] arrayByAddingObjectsFromArray:[PlaylistFile supportedFileFormats]];
-  panel.title = @"Open";
-
+  panel.title = @"Open...";
+  
   if ([panel runModal] == NSFileHandlingPanelOKButton) {
     NSMutableArray *filenames = [NSMutableArray new];
     for (NSURL *url in panel.URLs) [filenames addObject:[url path]];
@@ -151,6 +152,32 @@
   }
 }
 
+- (IBAction)savePlaylistPressed:(id)sender {
+  Playlist *playlist = _tabsManager.selectedPlaylist;
+  
+  if (playlist) { // shouldn't ever be nil, but still..
+    NSSavePanel *panel = [NSSavePanel savePanel];
+    panel.allowedFileTypes = [PlaylistFile supportedFileFormats];
+    panel.canCreateDirectories = YES;
+    panel.title = @"Save Playlist";
+    panel.nameFieldStringValue = playlist.name;
+    
+    if ([panel runModal] == NSFileHandlingPanelOKButton) {
+      NSString *filename = panel.URL.path;
+      PlaylistFile *playlistFile = [PlaylistFile playlistFileWithFilename:filename];
+      if (![playlistFile savePlaylist:playlist]) {
+        NSString *errorMessage = [NSString stringWithFormat:@"Sorry, couldn't save playlist:\n'%@'", filename];
+        NSAlert *alert = [NSAlert alertWithMessageText:errorMessage
+                                         defaultButton:@"OK"
+                                       alternateButton:nil
+                                           otherButton:nil
+                             informativeTextWithFormat:@""];
+        [alert runModal];
+      }
+    }
+  }
+}
+
 #pragma mark - martin busy indicator
 
 - (int)martinBusy {
@@ -162,9 +189,9 @@
 - (void)setMartinBusy:(int)martinBusy {
   @synchronized (self) {
     _martinBusy = martinBusy;
-
+    
     [_martinBusyIndicator setHidden:martinBusy == 0];
-
+    
     if (martinBusy > 0) {
       [_martinBusyIndicator startAnimation:nil];
     } else {
@@ -177,13 +204,13 @@
   if ([keyPath isEqualToString:@"operationCount"]) {
     int oldVal = [[change objectForKey:NSKeyValueChangeOldKey] intValue];
     int newVal = [[change objectForKey:NSKeyValueChangeNewKey] intValue];
-
+    
     if (newVal%100 == 0) {
       dispatch_async(dispatch_get_main_queue(), ^{
         [_playlistTableManager reloadTableData];
       });
     }
-
+    
     if (oldVal == 0 && newVal > 0) ++self.martinBusy;
     if (oldVal > 0 && newVal == 0) --self.martinBusy;
   }
@@ -199,13 +226,13 @@
 - (void)checkForFirstRun {
   if ([[DefaultsManager objectForKey:kDefaultsKeyFirstRun] boolValue] == YES) {
     [DefaultsManager setObject:@NO forKey:kDefaultsKeyFirstRun];
-
+    
     NSAlert *alert = [NSAlert alertWithMessageText:@"Hi! I'll need to know where is your music."
                                      defaultButton:@"Choose folders now"
                                    alternateButton:@"Cancel"
                                        otherButton:nil
                          informativeTextWithFormat:@""];
-
+    
     if ([alert runModal] == NSAlertDefaultReturn) {
       [_preferencesWindowController showWindow:nil];
       [_preferencesWindowController showAddFolder];
@@ -222,7 +249,7 @@
                                         _rightControlsView.frame.size.width,
                                         60);
   [_contentView.superview addSubview:_rightControlsView];
-
+  
   [_middleControlsView removeFromSuperview];
   _middleControlsView.frame = NSMakeRect((_contentView.frame.size.width - _middleControlsView.frame.size.width) / 2,
                                          _contentView.frame.size.height + 4,

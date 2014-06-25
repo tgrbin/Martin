@@ -8,14 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
+@class Playlist;
+
 @interface PlaylistFile : NSObject
 
-+ (NSArray *)supportedFileFormats;
-
-+ (BOOL)isFileAPlaylist:(NSString *)filename;
 + (PlaylistFile *)playlistFileWithFilename:(NSString *)filename;
 
++ (NSArray *)supportedFileFormats;
++ (BOOL)isFileAPlaylist:(NSString *)filename;
+
 - (void)loadWithBlock:(void (^)(NSArray *playlistItems))block;
-- (void)saveItems:(NSArray *)items withBlock:(void (^)(BOOL success))block;
+
+- (BOOL)savePlaylist:(Playlist *)playlist;
 
 @end

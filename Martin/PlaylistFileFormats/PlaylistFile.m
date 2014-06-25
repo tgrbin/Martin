@@ -10,6 +10,7 @@
 #import "PlaylistFile+private.h"
 #import "M3UPlaylistFile.h"
 #import "PLSPlaylistFile.h"
+#import "Playlist.h"
 #import "PlaylistItem.h"
 #import "FileExtensionChecker.h"
 #import "MartinAppDelegate.h"
@@ -84,8 +85,22 @@
   return nil;
 }
 
+- (BOOL)savePlaylist:(Playlist *)playlist {
+  NSMutableArray *paths = [NSMutableArray new];
+  for (int i = 0; i < playlist.numberOfItems; ++i) {
+    PlaylistItem *item = playlist[i];
+    [paths addObject:item.filename];
+  }
+  
+  NSString *string = [self stringFromPaths:paths];
+  return [string writeToFile:self.filename
+                  atomically:YES
+                    encoding:NSUTF8StringEncoding
+                       error:nil];
+}
+
 // to override
-- (void)saveItems:(NSArray *)playlistItems withBlock:(void (^)(BOOL success))block {}
 - (NSString *)itemFullPathFromLineString:(NSString *)lineString { return nil; }
+- (NSString *)stringFromPaths:(NSArray *)paths { return nil; }
 
 @end

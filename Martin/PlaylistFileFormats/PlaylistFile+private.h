@@ -16,4 +16,7 @@
 // or nil if that line doesn't contain a playlist item
 - (NSString *)itemFullPathFromLineString:(NSString *)lineString;
 
+// encode path list to string that can be saved directly to a file
+- (NSString *)stringFromPaths:(NSArray *)paths;
+
 @end
