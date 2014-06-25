@@ -14,6 +14,7 @@
 #import "PlayerStatusTextField.h"
 #import "FolderWatcher.h"
 #import "MediaKeysManager.h"
+#import "PlaylistFile.h"
 
 @interface MartinAppDelegate() <NSApplicationDelegate, NSWindowDelegate>
 @property (nonatomic, strong) IBOutlet NSProgressIndicator *martinBusyIndicator;
@@ -92,36 +93,62 @@
   panel.canChooseDirectories = YES;
   panel.canChooseFiles = YES;
   panel.allowsMultipleSelection = YES;
-  panel.allowedFileTypes = [FileExtensionChecker acceptableExtensions];
+  panel.allowedFileTypes = [[FileExtensionChecker acceptableExtensions] arrayByAddingObjectsFromArray:[PlaylistFile supportedFileFormats]];
   panel.title = @"Open";
 
   if ([panel runModal] == NSFileHandlingPanelOKButton) {
     NSMutableArray *filenames = [NSMutableArray new];
     for (NSURL *url in panel.URLs) [filenames addObject:[url path]];
-    [self addFoldersToPlaylist:filenames];
+    [self openFilesAndFolders:filenames];
   }
 }
 
 - (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename {
-  [self addFoldersToPlaylist:@[filename]];
+  [self openFilesAndFolders:@[filename]];
   return NO;
 }
 
 - (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames {
-  [self addFoldersToPlaylist:filenames];
+  [self openFilesAndFolders:filenames];
   [[NSApplication sharedApplication] replyToOpenOrPrint:NSApplicationDelegateReplyCancel];
 }
 
-- (void)addFoldersToPlaylist:(NSArray *)folders {
-  [PlaylistNameGuesser itemsAndNameFromFolders:folders withBlock:^(NSArray *items, NSString *name) {
-    if (items.count > 0) {
-      if (_player.nowPlayingPlaylist) {
-        [_playlistTableManager addPlaylistItems:items];
-      } else {
-        [_tabsManager addNewPlaylistWithPlaylistItems:items andName:name];
-      }
+- (void)openFilesAndFolders:(NSArray *)filesAndFolders {
+  // if all selected files are playlists, add each of them as a separate playlist
+  // otherwise, traverse everything and append files to the current playlist
+  
+  // TODO: currently, you can't select a folder containing playlists
+  // only one or more playlists can be selected directly as files, not as folders containing them
+  
+  BOOL onlyPlaylists = YES;
+  for (NSString *filename in filesAndFolders) {
+    // warning: if a folder has a name ending with .m3u it will pass isFileAPlaylist
+    if ([PlaylistFile isFileAPlaylist:filename] == NO) {
+      onlyPlaylists = NO;
+      break;
     }
-  }];
+  }
+  
+  if (onlyPlaylists) {
+    for (NSString *playlistFilename in filesAndFolders) {
+      PlaylistFile *playlistFile = [PlaylistFile playlistFileWithFilename:playlistFilename];
+      NSString *playlistName = [[playlistFilename lastPathComponent] stringByDeletingPathExtension];
+      [playlistFile loadWithBlock:^(NSArray *playlistItems) {
+        [_tabsManager addNewPlaylistWithPlaylistItems:playlistItems
+                                              andName:playlistName];
+      }];
+    }
+  } else {
+    [PlaylistNameGuesser itemsAndNameFromFolders:filesAndFolders withBlock:^(NSArray *items, NSString *name) {
+      if (items.count > 0) {
+        if (_player.nowPlayingPlaylist) {
+          [_playlistTableManager addPlaylistItems:items];
+        } else {
+          [_tabsManager addNewPlaylistWithPlaylistItems:items andName:name];
+        }
+      }
+    }];
+  }
 }
 
 #pragma mark - martin busy indicator

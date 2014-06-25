@@ -12,6 +12,7 @@
 
 + (NSArray *)supportedFileFormats;
 
++ (BOOL)isFileAPlaylist:(NSString *)filename;
 + (PlaylistFile *)playlistFileWithFilename:(NSString *)filename;
 
 - (void)loadWithBlock:(void (^)(NSArray *playlistItems))block;

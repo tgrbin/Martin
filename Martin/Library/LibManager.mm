@@ -63,15 +63,16 @@ static tr1::unordered_set<uint64> pathsToRescan[2];
       const char *folder = [s UTF8String];
       
       if (watchingFolders) {
-        stat(folder, &statBuff);
-        int node = [Tree nodeByInode:statBuff.st_ino];
-        if (node == -1) walkFolder(folder, YES);
-        else {
-          if ([Tree treeNodeDataForP:node]->p_parent > 0) {
-            strcpy(pathBuff, folder);
-            *strrchr(pathBuff, '/') = 0;
+        if (stat(folder, &statBuff) == 0) {
+          int node = [Tree nodeByInode:statBuff.st_ino];
+          if (node == -1) walkFolder(folder, YES);
+          else {
+            if ([Tree treeNodeDataForP:node]->p_parent > 0) {
+              strcpy(pathBuff, folder);
+              *strrchr(pathBuff, '/') = 0;
+            }
+            walkTreeNode(node, YES);
           }
-          walkTreeNode(node, YES);
         }
       } else {
         walkFolder(folder, YES);
@@ -362,10 +363,10 @@ static void walkFolderNonRecursively(BOOL _onRootLevel) {
           walkTreeNode(node, NO);
         }
       } else if (entry->d_type == DT_REG && [FileExtensionChecker isExtensionAcceptable:entry->d_name]) {
-        stat(pathBuff, &statBuff);
-        
-        int p_song = (node == -1)? -1: [Tree treeNodeDataForP:node]->p_song;
-        walkSong(entry->d_name, p_song, &statBuff);
+        if (stat(pathBuff, &statBuff) == 0) {
+          int p_song = (node == -1)? -1: [Tree treeNodeDataForP:node]->p_song;
+          walkSong(entry->d_name, p_song, &statBuff);
+        }
       }
       
       pathBuff[pathLen] = 0;

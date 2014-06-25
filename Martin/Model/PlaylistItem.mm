@@ -81,6 +81,7 @@ static NSOperationQueue *operationQueue;
     _p_librarySong = [Tree songByInode:inode];
     if (_p_librarySong == -1) {
       id3ReadOperation = [[ID3ReadOperation alloc] initWithPlaylistItem:self];
+      if (id3ReadOperation == nil) NSLog(@"is nil!");
       [operationQueue addOperation:id3ReadOperation];
     }
   }
