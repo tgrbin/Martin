@@ -1,6 +1,8 @@
 Martin
 ======
 
+![screenshot](/../gh-pages/images/screenshot.png?raw=true)
+
 Martin is a lightweight open source mp3 player for OSX.
 
 You point it to your music folders, and Martin displays them in the tree pane on the left.
