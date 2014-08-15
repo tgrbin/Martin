@@ -11,8 +11,15 @@
 #import "DefaultsManager.h"
 #import "NotificationsGenerator.h"
 
+#import "STKAudioPlayer.h"
+
+@interface FilePlayer() <STKAudioPlayerDelegate>
+@end
+
 @implementation FilePlayer {
   NSSound *sound;
+  STKAudioPlayer *streamer;
+  
   PlaylistItem *playlistItem;
 }
 
@@ -33,13 +40,19 @@
 - (void)playItem:(PlaylistItem *)item justPrepare:(BOOL)prepare {
   [self stop];
 
-  sound = [[NSSound alloc] initWithContentsOfFile:item.filename byReference:YES];
-  if (sound == nil) {
-    NSLog(@"playing failed: %@", item.filename);
-    return;
-  }
+  if (item.isURLStream == YES) {
+    streamer = [STKAudioPlayer new];
+    streamer.delegate = self;
+  } else {
+    sound = [[NSSound alloc] initWithContentsOfFile:item.filename byReference:YES];
+    if (sound == nil) {
+      NSLog(@"playing failed: %@", item.filename);
+      return;
+    }
 
-  sound.delegate = self;
+    sound.delegate = self;
+  }
+  
   self.volume = _volume;
 
   _playing = NO;
@@ -47,6 +60,7 @@
 
   if (prepare == NO) {
     [sound play];
+    [streamer play:item.filename];
     _playing = YES;
   }
 
@@ -61,19 +75,25 @@
 - (void)togglePause {
   if (_playing) {
     [sound pause];
+    [streamer pause];
   } else {
     if ([sound resume] == NO) {
       [sound play];
     }
+    
+    [streamer resume];
   }
+  
   _playing = !_playing;
 }
 
 - (void)stop {
-  if (sound) {
-    [sound stop];
-  }
+  [sound stop];
   sound = nil;
+  
+  [streamer stop];
+  streamer = nil;
+  
   playlistItem = nil;
   _stopped = YES;
   _playing = NO;
@@ -82,11 +102,14 @@
 
 - (void)setVolume:(double)volume {
   _volume = volume;
-  if (sound) {
-    // logarithmic scale for volume, read somewhere that it should be done this way
-    double x = _volume * _volume * _volume;
-    sound.volume = (_volume == 0)? 0: MAX(x, 0.001);
-  }
+  
+  // logarithmic scale for volume, read somewhere that it should be done this way
+  double cube = _volume * _volume * _volume;
+  
+  double actualVolume = (_volume == 0)? 0: MAX(cube, 0.001);
+  
+  sound.volume = actualVolume;
+  streamer.volume = actualVolume;
 }
 
 - (void)setSeek:(double)seek {
@@ -120,7 +143,30 @@
   [[NSNotificationCenter defaultCenter] postNotificationName:notification object:playlistItem];
 }
 
-#pragma mark - context menu actions
+#pragma mark - STKAudioPlayer delegate
+
+/// Raised when an item has started playing
+- (void)audioPlayer:(STKAudioPlayer*)audioPlayer didStartPlayingQueueItemId:(NSObject*)queueItemId {
+}
+
+/// Raised when an item has finished buffering (may or may not be the currently playing item)
+/// This event may be raised multiple times for the same item if seek is invoked on the player
+- (void)audioPlayer:(STKAudioPlayer*)audioPlayer didFinishBufferingSourceWithQueueItemId:(NSObject*)queueItemId {
+}
+
+/// Raised when the state of the player has changed
+- (void)audioPlayer:(STKAudioPlayer*)audioPlayer stateChanged:(STKAudioPlayerState)state previousState:(STKAudioPlayerState)previousState {
+}
+
+/// Raised when an item has finished playing
+- (void)audioPlayer:(STKAudioPlayer*)audioPlayer didFinishPlayingQueueItemId:(NSObject*)queueItemId withReason:(STKAudioPlayerStopReason)stopReason andProgress:(double)progress andDuration:(double)duration {
+}
+
+/// Raised when an unexpected and possibly unrecoverable error has occured (usually best to recreate the STKAudioPlauyer)
+- (void)audioPlayer:(STKAudioPlayer*)audioPlayer unexpectedError:(STKAudioPlayerErrorCode)errorCode {
+}
+
+#pragma mark - actions
 
 static const double kVolumeChangeStep = 0.05;
 

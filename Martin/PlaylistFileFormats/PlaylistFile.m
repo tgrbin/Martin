@@ -15,6 +15,8 @@
 #import "FileExtensionChecker.h"
 #import "MartinAppDelegate.h"
 
+#import "NSString+isURL.h"
+
 #include <sys/stat.h>
 
 @implementation PlaylistFile
@@ -73,7 +75,9 @@
 - (PlaylistItem *)playlistItemFromPath:(NSString *)path {
   NSString *extension = [[path pathExtension] lowercaseString];
   
-  if ([[FileExtensionChecker acceptableExtensions] containsObject:extension]) {
+  if ([path isURL]) {
+    return [[PlaylistItem alloc] initWithURLString:path];
+  } else if ([[FileExtensionChecker acceptableExtensions] containsObject:extension]) {
     const char *cpath = [path UTF8String];
     struct stat statBuff;
     

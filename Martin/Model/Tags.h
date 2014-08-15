@@ -27,6 +27,7 @@ typedef enum {
 
 + (Tags *)createTagsFromCTags:(char **)tags;
 + (Tags *)createTagsFromArray:(NSArray *)tags;
++ (Tags *)createTagsFromURLstring:(NSString *)urlString;
 
 - (NSString *)tagValueForIndex:(TagIndex)i;
 

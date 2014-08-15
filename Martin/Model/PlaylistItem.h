@@ -14,11 +14,14 @@
 - (id)initWithLibrarySong:(int)p_song;
 - (id)initWithFileStream:(FILE *)f;
 - (id)initWithPath:(NSString *)path andInode:(ino_t)inode;
+- (id)initWithURLString:(NSString *)urlString;
 
 @property (nonatomic, strong, readonly) NSString *filename;
 @property (nonatomic, readonly) ino_t inode;
 @property (nonatomic, assign) int lengthInSeconds;
 @property (nonatomic, readonly) int p_librarySong;
+
+@property (nonatomic, readonly) BOOL isURLStream;
 
 - (void)createTagsFromArray:(NSArray *)array;
 

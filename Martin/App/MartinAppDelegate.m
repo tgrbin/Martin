@@ -15,6 +15,7 @@
 #import "MediaKeysManager.h"
 #import "PlaylistFile.h"
 #import "Playlist.h"
+#import "PlaylistItem.h"
 
 @interface MartinAppDelegate() <NSApplicationDelegate, NSWindowDelegate>
 @property (nonatomic, strong) IBOutlet NSProgressIndicator *martinBusyIndicator;
@@ -100,6 +101,42 @@
     NSMutableArray *filenames = [NSMutableArray new];
     for (NSURL *url in panel.URLs) [filenames addObject:[url path]];
     [self openFilesAndFolders:filenames];
+  }
+}
+
+- (IBAction)addURLStreamPressed:(id)sender {
+  NSString *urlString = [self getUserInputWithPrompt:@"URL:"];
+  
+  if (urlString != nil) {
+    PlaylistItem *item = [[PlaylistItem alloc] initWithURLString:urlString];
+    if (_playerController.nowPlayingPlaylist) {
+      [_playlistTableManager addPlaylistItems:@[item]];
+    } else {
+      [_tabsManager addNewPlaylistWithPlaylistItems:@[item]];
+    }
+  }
+}
+
+- (NSString *)getUserInputWithPrompt:(NSString *)prompt {
+  // TODO: prompt looks ugly
+  
+  NSAlert *alert = [NSAlert alertWithMessageText:prompt
+                                   defaultButton:@"OK"
+                                 alternateButton:@"Cancel"
+                                     otherButton:nil
+                       informativeTextWithFormat:@""];
+  
+  NSTextField *input = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 400, 24)];
+  // TODO: allow paste by Cmd+V
+
+  alert.accessoryView = input;
+  
+  NSInteger button = [alert runModal];
+  if (button == NSAlertDefaultReturn) {
+    [input validateEditing];
+    return [input stringValue];
+  } else {
+    return nil;
   }
 }
 

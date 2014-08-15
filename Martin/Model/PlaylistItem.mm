@@ -14,6 +14,8 @@
 #import "ID3ReadOperation.h"
 #import "MartinAppDelegate.h"
 
+#import "NSString+isURL.h"
+
 static NSOperationQueue *operationQueue;
 
 @implementation PlaylistItem {
@@ -42,6 +44,21 @@ static NSOperationQueue *operationQueue;
   return self;
 }
 
+- (id)initWithURLString:(NSString *)urlString {
+  if (self = [super init]) {
+    if ([urlString isURL] == NO) {
+      urlString = [@"http://" stringByAppendingString:urlString];
+    }
+    
+    _filename = urlString;
+    _p_librarySong = -1;
+    _lengthInSeconds = 0;
+    _isURLStream = YES;
+    tags = [Tags createTagsFromURLstring:urlString];
+  }
+  return self;
+}
+
 - (id)initWithFileStream:(FILE *)f {
   static const int kBuffSize = 1<<16;
   static char buff[kBuffSize];
@@ -59,6 +76,8 @@ static NSOperationQueue *operationQueue;
     buff[strlen(buff)-1] = 0;
     _filename = @(buff);
 
+    _isURLStream = [_filename isURL];
+    
     _p_librarySong = _inode? [Tree songByInode:_inode]: -1;
 
     for (int i = 0; i < kNumberOfTags; ++i) {
