@@ -70,13 +70,18 @@ typedef enum {
     }
   }
 
+  PlaylistItem *currentItem = _nowPlayingPlaylist.currentItem;
+  
   [_nowPlayingPlaylist addCurrentItemToAlreadyPlayedItems];
-  [[MartinAppDelegate get].filePlayer startPlayingItem:_nowPlayingPlaylist.currentItem];
-  [self startSeekTimer];
+  
+  [[MartinAppDelegate get].filePlayer startPlayingItem:currentItem];
+  
+  [self startSeekTimerIfNecessaryWithItem:currentItem];
+  
   [self setPlayButtonStyle:kPlayButtonStylePause];
-  [LastFM updateNowPlaying:_nowPlayingPlaylist.currentItem];
+  [LastFM updateNowPlaying:currentItem];
 
-  playerStatusTextField.playlistItem = _nowPlayingPlaylist.currentItem;
+  playerStatusTextField.playlistItem = currentItem;
   playerStatusTextField.status = kPlayerStatusPlaying;
 }
 
@@ -141,6 +146,14 @@ typedef enum {
     [self startPlayingCurrentItem];
   } else {
     [self stop];
+  }
+}
+
+- (void)startSeekTimerIfNecessaryWithItem:(PlaylistItem *)item {
+  if (item.isURLStream) {
+    [self disableTimer];
+  } else {
+    [self startSeekTimer];
   }
 }
 
@@ -276,11 +289,15 @@ typedef enum {
   } else {
     [self setNowPlayingPlaylistIfNecessary];
 
+    PlaylistItem *currentItem = _nowPlayingPlaylist.currentItem;
+    
     FilePlayer *filePlayer = [MartinAppDelegate get].filePlayer;
-    [filePlayer prepareForPlayingItem:_nowPlayingPlaylist.currentItem];
+    [filePlayer prepareForPlayingItem:currentItem];
     filePlayer.seek = [[DefaultsManager objectForKey:kDefaultsKeySeekPosition] doubleValue];
-    [self startSeekTimer];
-    playerStatusTextField.playlistItem = _nowPlayingPlaylist.currentItem;
+    
+    [self startSeekTimerIfNecessaryWithItem:currentItem];
+    
+    playerStatusTextField.playlistItem = currentItem;
     playerStatusTextField.status = kPlayerStatusPaused;
   }
 }
