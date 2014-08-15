@@ -23,14 +23,14 @@ static NSMutableArray *playlistItems;
     playlistItems = [NSMutableArray new];
 
     const char *cpath = [folder UTF8String];
-    stat(cpath, &statBuff);
-
-    if (statBuff.st_mode&S_IFDIR) {
-      nftw(cpath, ftw_callback, 512, 0);
-    } else if (statBuff.st_mode&S_IFREG) {
-      checkAndAdd(cpath, statBuff.st_ino);
+    if (stat(cpath, &statBuff) == 0) {
+      if (statBuff.st_mode&S_IFDIR) {
+        nftw(cpath, ftw_callback, 512, 0);
+      } else if (statBuff.st_mode&S_IFREG) {
+        checkAndAdd(cpath, statBuff.st_ino);
+      }
     }
-
+    
     return playlistItems;
   }
 }

@@ -210,6 +210,9 @@
 		8D3CB90018915C3800D6F471 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 8D3CB8FE18915C3800D6F471 /* README.md */; };
 		8D5CCCAB189EBDB30013D3A0 /* AudioStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D5CCCAA189EBDB30013D3A0 /* AudioStreamer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		8D76AB1218831E4500799617 /* PlaylistTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D76AB1118831E4500799617 /* PlaylistTableView.m */; };
+		8D9BD3CC199DE49700BB436C /* M3UPlaylistFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D9BD3C6199DE49700BB436C /* M3UPlaylistFile.m */; };
+		8D9BD3CD199DE49700BB436C /* PlaylistFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D9BD3C9199DE49700BB436C /* PlaylistFile.m */; };
+		8D9BD3CE199DE49700BB436C /* PLSPlaylistFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D9BD3CB199DE49700BB436C /* PLSPlaylistFile.m */; };
 		8DA2B97118939983002F1DF5 /* NSObject+SPInvocationGrabbing.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DA2B96C18939983002F1DF5 /* NSObject+SPInvocationGrabbing.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		8DA2B97318939983002F1DF5 /* SPMediaKeyTap.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DA2B96F18939983002F1DF5 /* SPMediaKeyTap.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		8DA2B97618939A3A002F1DF5 /* MartinApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DA2B97518939A3A002F1DF5 /* MartinApp.m */; };
@@ -516,6 +519,13 @@
 		8D5CCCAA189EBDB30013D3A0 /* AudioStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioStreamer.m; sourceTree = "<group>"; };
 		8D76AB1018831E4500799617 /* PlaylistTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistTableView.h; sourceTree = "<group>"; };
 		8D76AB1118831E4500799617 /* PlaylistTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistTableView.m; sourceTree = "<group>"; };
+		8D9BD3C5199DE49700BB436C /* M3UPlaylistFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = M3UPlaylistFile.h; sourceTree = "<group>"; };
+		8D9BD3C6199DE49700BB436C /* M3UPlaylistFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = M3UPlaylistFile.m; sourceTree = "<group>"; };
+		8D9BD3C7199DE49700BB436C /* PlaylistFile+private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PlaylistFile+private.h"; sourceTree = "<group>"; };
+		8D9BD3C8199DE49700BB436C /* PlaylistFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistFile.h; sourceTree = "<group>"; };
+		8D9BD3C9199DE49700BB436C /* PlaylistFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistFile.m; sourceTree = "<group>"; };
+		8D9BD3CA199DE49700BB436C /* PLSPlaylistFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLSPlaylistFile.h; sourceTree = "<group>"; };
+		8D9BD3CB199DE49700BB436C /* PLSPlaylistFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLSPlaylistFile.m; sourceTree = "<group>"; };
 		8DA2B96B18939983002F1DF5 /* NSObject+SPInvocationGrabbing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SPInvocationGrabbing.h"; sourceTree = "<group>"; };
 		8DA2B96C18939983002F1DF5 /* NSObject+SPInvocationGrabbing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SPInvocationGrabbing.m"; sourceTree = "<group>"; };
 		8DA2B96E18939983002F1DF5 /* SPMediaKeyTap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPMediaKeyTap.h; sourceTree = "<group>"; };
@@ -1035,6 +1045,7 @@
 				79F69EB31699944800693CE5 /* Keyboard Shortcuts */,
 				79242E241656AB21006379D6 /* Library */,
 				7904597B168D7CD000FE0B68 /* Player */,
+				8D9BD3C4199DE49700BB436C /* PlaylistFileFormats */,
 				79FF1417142F18BA00E27235 /* Model */,
 				79DAD732165BEC27004AA7B9 /* Misc */,
 				79C2ACBA144AB48C00C2699B /* Assets */,
@@ -1081,6 +1092,20 @@
 				8D5CCCAA189EBDB30013D3A0 /* AudioStreamer.m */,
 			);
 			path = Streamer;
+			sourceTree = "<group>";
+		};
+		8D9BD3C4199DE49700BB436C /* PlaylistFileFormats */ = {
+			isa = PBXGroup;
+			children = (
+				8D9BD3C5199DE49700BB436C /* M3UPlaylistFile.h */,
+				8D9BD3C6199DE49700BB436C /* M3UPlaylistFile.m */,
+				8D9BD3C7199DE49700BB436C /* PlaylistFile+private.h */,
+				8D9BD3C8199DE49700BB436C /* PlaylistFile.h */,
+				8D9BD3C9199DE49700BB436C /* PlaylistFile.m */,
+				8D9BD3CA199DE49700BB436C /* PLSPlaylistFile.h */,
+				8D9BD3CB199DE49700BB436C /* PLSPlaylistFile.m */,
+			);
+			path = PlaylistFileFormats;
 			sourceTree = "<group>";
 		};
 		8DA2B96918939983002F1DF5 /* SPMediaKeyTap */ = {
@@ -1298,6 +1323,8 @@
 				79BEC6D217F5A9A400F1A3FA /* NotificationsGenerator.m in Sources */,
 				79CF70A817EE32620057E678 /* MMTabDragAssistant.m in Sources */,
 				79CF70B017EE32620057E678 /* NSString+MMTabBarViewExtensions.m in Sources */,
+				8D9BD3CC199DE49700BB436C /* M3UPlaylistFile.m in Sources */,
+				8D9BD3CE199DE49700BB436C /* PLSPlaylistFile.m in Sources */,
 				8DA2B97318939983002F1DF5 /* SPMediaKeyTap.m in Sources */,
 				795022F317E4562800212801 /* PlayerStatusTextField.m in Sources */,
 				79FF140E142F18A500E27235 /* MartinAppDelegate.m in Sources */,
@@ -1313,6 +1340,7 @@
 				79CF70AE17EE32620057E678 /* NSBezierPath+MMTabBarViewExtensions.m in Sources */,
 				79AF97EB145305C200BE8391 /* PlayerController.m in Sources */,
 				79B3706D149D21EA003372CB /* LastFM.m in Sources */,
+				8D9BD3CD199DE49700BB436C /* PlaylistFile.m in Sources */,
 				79242E1E16569A47006379D6 /* ID3Reader.m in Sources */,
 				8DA2B97118939983002F1DF5 /* NSObject+SPInvocationGrabbing.m in Sources */,
 				795022E017E42A4B00212801 /* MartinToggleButton.m in Sources */,

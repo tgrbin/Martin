@@ -211,6 +211,10 @@
 
 #pragma mark - tab delegate
 
+- (NSString *)tabView:(NSTabView *)aTabView toolTipForTabViewItem:(NSTabViewItem *)tabViewItem {
+  return tabViewItem.label;
+}
+
 - (void)tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem {
   [self updateSelectedPlaylist];
 }
