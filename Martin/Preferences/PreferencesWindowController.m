@@ -12,10 +12,18 @@
 #import "LibraryPreferencesViewController.h"
 #import "LastFMPreferencesViewController.h"
 #import "ShortcutsPreferencesViewController.h"
+#import "StreamsPreferencesViewController.h"
 
-@interface PreferencesWindowController() <NSTableViewDataSource, NSTableViewDelegate, NSWindowDelegate, NSToolbarDelegate>
+@interface PreferencesWindowController() <
+  NSTableViewDataSource,
+  NSTableViewDelegate,
+  NSWindowDelegate,
+  NSToolbarDelegate
+>
+
 @property (strong) IBOutlet NSToolbar *toolbar;
 @property (strong) IBOutlet NSTabView *tabView;
+
 @end
 
 @implementation PreferencesWindowController {
@@ -32,7 +40,8 @@
     controllers = @[
       [LibraryPreferencesViewController new],
       [LastFMPreferencesViewController new],
-      [ShortcutsPreferencesViewController new]
+      [ShortcutsPreferencesViewController new],
+      [StreamsPreferencesViewController new]
     ];
 
     titles = [NSMutableArray new];
@@ -70,7 +79,8 @@
   item.target = self;
   item.action = @selector(toolbarItemPressed:);
   
-  static NSString * const iconNames[] = { @"preficon_lib", @"preficon_lastfm", @"preficon_shortcuts" };
+  // TODO: refactor this to each preferences controller
+  static NSString * const iconNames[] = { @"preficon_lib", @"preficon_lastfm", @"preficon_shortcuts", @"preficon_shortcuts" };
   NSImage *img = [NSImage imageNamed:iconNames[index]];
   double max = MAX(img.size.width, img.size.height);
   img.alignmentRect = NSMakeRect(0, 0, max, max);

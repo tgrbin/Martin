@@ -236,6 +236,7 @@
 		8DCC66CE188E801400032B89 /* preficon_shortcuts@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C8188E801400032B89 /* preficon_shortcuts@2x.png */; };
 		8DFA4716199FE1130061C228 /* StreamsPreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DFA4715199FE1130061C228 /* StreamsPreferencesViewController.m */; };
 		8DFA4718199FE1290061C228 /* StreamsPreferencesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8DFA4717199FE1290061C228 /* StreamsPreferencesViewController.xib */; };
+		8DFA471C199FEE360061C228 /* StreamNameGetter.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DFA471B199FEE360061C228 /* StreamNameGetter.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -577,6 +578,8 @@
 		8DFA4714199FE1130061C228 /* StreamsPreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StreamsPreferencesViewController.h; path = Streams/StreamsPreferencesViewController.h; sourceTree = "<group>"; };
 		8DFA4715199FE1130061C228 /* StreamsPreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StreamsPreferencesViewController.m; path = Streams/StreamsPreferencesViewController.m; sourceTree = "<group>"; };
 		8DFA4717199FE1290061C228 /* StreamsPreferencesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = StreamsPreferencesViewController.xib; path = Streams/StreamsPreferencesViewController.xib; sourceTree = "<group>"; };
+		8DFA471A199FEE360061C228 /* StreamNameGetter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StreamNameGetter.h; path = Streams/StreamNameGetter.h; sourceTree = "<group>"; };
+		8DFA471B199FEE360061C228 /* StreamNameGetter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StreamNameGetter.m; path = Streams/StreamNameGetter.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1090,6 +1093,7 @@
 				79242E241656AB21006379D6 /* Library */,
 				7904597B168D7CD000FE0B68 /* Player */,
 				8D9BD3C4199DE49700BB436C /* PlaylistFileFormats */,
+				8DFA4719199FEDF00061C228 /* Streams */,
 				79FF1417142F18BA00E27235 /* Model */,
 				79DAD732165BEC27004AA7B9 /* Misc */,
 				79C2ACBA144AB48C00C2699B /* Assets */,
@@ -1201,6 +1205,15 @@
 				8DFA4714199FE1130061C228 /* StreamsPreferencesViewController.h */,
 				8DFA4715199FE1130061C228 /* StreamsPreferencesViewController.m */,
 				8DFA4717199FE1290061C228 /* StreamsPreferencesViewController.xib */,
+			);
+			name = Streams;
+			sourceTree = "<group>";
+		};
+		8DFA4719199FEDF00061C228 /* Streams */ = {
+			isa = PBXGroup;
+			children = (
+				8DFA471A199FEE360061C228 /* StreamNameGetter.h */,
+				8DFA471B199FEE360061C228 /* StreamNameGetter.m */,
 			);
 			name = Streams;
 			sourceTree = "<group>";
@@ -1460,6 +1473,7 @@
 				79F69EB9169999CD00693CE5 /* ShortcutBinder.m in Sources */,
 				79EBAA9116B834240038BC0F /* GlobalShortcuts.m in Sources */,
 				8D9BD407199DFF3C00BB436C /* NSMutableArray+STKAudioPlayer.m in Sources */,
+				8DFA471C199FEE360061C228 /* StreamNameGetter.m in Sources */,
 				8DA2B97618939A3A002F1DF5 /* MartinApp.m in Sources */,
 				79CF466B16BE714B00A6E13A /* FileExtensionChecker.m in Sources */,
 				79CF466E16BE73F900A6E13A /* SongsFinder.m in Sources */,

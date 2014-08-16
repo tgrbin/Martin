@@ -7,6 +7,8 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="StreamsPreferencesViewController">
             <connections>
+                <outlet property="indicator" destination="sMh-4z-jfE" id="c39-gt-are"/>
+                <outlet property="statusTextField" destination="iiN-In-QxT" id="O4B-TW-n8S"/>
                 <outlet property="view" destination="XUF-8p-a51" id="Pjs-OS-Cb1"/>
             </connections>
         </customObject>
@@ -36,6 +38,9 @@
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
+                    <connections>
+                        <action selector="addStreamPressed:" target="-2" id="KHf-gz-RdI"/>
+                    </connections>
                 </button>
                 <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="d8g-xj-MO1">
                     <rect key="frame" x="20" y="20" width="600" height="244"/>
