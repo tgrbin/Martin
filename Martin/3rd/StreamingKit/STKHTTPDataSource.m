@@ -162,6 +162,17 @@
     if (response)
     {
       httpHeaders = (__bridge_transfer NSDictionary*)CFHTTPMessageCopyAllHeaderFields((CFHTTPMessageRef)response);
+
+      // example headers for audio stream
+//      Server = "Icecast 2.3.3-kh10";
+//      "ice-audio-info" = "ice-samplerate=44100;ice-bitrate=128;ice-channels=2";
+//      "icy-br" = "128, 128";
+//      "icy-description" = "Jazz, Soul und Blues rund um die Uhr";
+//      "icy-genre" = "Jazz Music";
+//      "icy-metaint" = 16000;
+//      "icy-name" = "Radio Swiss Jazz";
+//      "icy-pub" = 1;
+//      "icy-url" = "http://www.radioswissjazz.ch";
       
       self->httpStatusCode = (UInt32)CFHTTPMessageGetResponseStatusCode((CFHTTPMessageRef)response);
       
@@ -474,10 +485,10 @@
         
         [metaDataString appendFormat:@"%c", buffer[i]];
         
-        --metaDataBytesRemaining;
-        
-        if (metaDataBytesRemaining == 0) {
+        if (--metaDataBytesRemaining == 0) {
           dataBytesRead = 0;
+          
+          NSLog(@"new meta data: %@", metaDataString);
         }
         
         continue;

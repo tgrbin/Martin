@@ -234,6 +234,8 @@
 		8DCC66CC188E801400032B89 /* preficon_lib@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C6188E801400032B89 /* preficon_lib@2x.png */; };
 		8DCC66CD188E801400032B89 /* preficon_shortcuts.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C7188E801400032B89 /* preficon_shortcuts.png */; };
 		8DCC66CE188E801400032B89 /* preficon_shortcuts@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C8188E801400032B89 /* preficon_shortcuts@2x.png */; };
+		8DFA4716199FE1130061C228 /* StreamsPreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DFA4715199FE1130061C228 /* StreamsPreferencesViewController.m */; };
+		8DFA4718199FE1290061C228 /* StreamsPreferencesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8DFA4717199FE1290061C228 /* StreamsPreferencesViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -572,6 +574,9 @@
 		8DCC66C6188E801400032B89 /* preficon_lib@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "preficon_lib@2x.png"; sourceTree = "<group>"; };
 		8DCC66C7188E801400032B89 /* preficon_shortcuts.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = preficon_shortcuts.png; sourceTree = "<group>"; };
 		8DCC66C8188E801400032B89 /* preficon_shortcuts@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "preficon_shortcuts@2x.png"; sourceTree = "<group>"; };
+		8DFA4714199FE1130061C228 /* StreamsPreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StreamsPreferencesViewController.h; path = Streams/StreamsPreferencesViewController.h; sourceTree = "<group>"; };
+		8DFA4715199FE1130061C228 /* StreamsPreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StreamsPreferencesViewController.m; path = Streams/StreamsPreferencesViewController.m; sourceTree = "<group>"; };
+		8DFA4717199FE1290061C228 /* StreamsPreferencesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = StreamsPreferencesViewController.xib; path = Streams/StreamsPreferencesViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -627,6 +632,7 @@
 				790992121706B2DB007BE3C4 /* Library */,
 				790992131706B2E1007BE3C4 /* LastFM */,
 				790992141706B2E6007BE3C4 /* Shortcuts */,
+				8DFA4713199FE0C10061C228 /* Streams */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -1189,6 +1195,16 @@
 			path = Preferences;
 			sourceTree = "<group>";
 		};
+		8DFA4713199FE0C10061C228 /* Streams */ = {
+			isa = PBXGroup;
+			children = (
+				8DFA4714199FE1130061C228 /* StreamsPreferencesViewController.h */,
+				8DFA4715199FE1130061C228 /* StreamsPreferencesViewController.m */,
+				8DFA4717199FE1290061C228 /* StreamsPreferencesViewController.xib */,
+			);
+			name = Streams;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1332,6 +1348,7 @@
 				79CF709617EE32620057E678 /* TabClose_Front_Rollover.png in Resources */,
 				79CF70C217EE32620057E678 /* SafariAWATFill.png in Resources */,
 				79CF707417EE32620057E678 /* AquaTabClose_Front_Pressed.png in Resources */,
+				8DFA4718199FE1290061C228 /* StreamsPreferencesViewController.xib in Resources */,
 				79CF70CD17EE32620057E678 /* SafariAWITCloseRollover.png in Resources */,
 				79CF708817EE32620057E678 /* overflowImage@2x.png in Resources */,
 				79CF709317EE32620057E678 /* TabClose_Front@2x.png in Resources */,
@@ -1402,6 +1419,7 @@
 				8D9BD3CD199DE49700BB436C /* PlaylistFile.m in Sources */,
 				79242E1E16569A47006379D6 /* ID3Reader.m in Sources */,
 				8DA2B97118939983002F1DF5 /* NSObject+SPInvocationGrabbing.m in Sources */,
+				8DFA4716199FE1130061C228 /* StreamsPreferencesViewController.m in Sources */,
 				795022E017E42A4B00212801 /* MartinToggleButton.m in Sources */,
 				8D9BD40C199DFF3C00BB436C /* STKDataSourceWrapper.m in Sources */,
 				79242E231656AB1C006379D6 /* LibraryFolder.m in Sources */,

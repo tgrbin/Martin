@@ -211,7 +211,7 @@
 								</object>
 								<object class="NSMenuItem" id="37447775">
 									<reference key="NSMenu" ref="292865261"/>
-									<string key="NSTitle">Add URL stream...</string>
+									<string key="NSTitle">Add stream...</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="181488094"/>
@@ -2155,11 +2155,11 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">addURLStreamPressed:</string>
+						<string key="label">addStreamPressed:</string>
 						<reference key="source" ref="937450558"/>
 						<reference key="destination" ref="37447775"/>
 					</object>
-					<string key="id">Nnr-Tk-0Sd</string>
+					<string key="id">nVv-b4-z5M</string>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -4096,15 +4096,10 @@
 					<string key="className">MMTabBarView</string>
 					<string key="superclassName">NSView</string>
 					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="delegate">id</string>
 						<string key="partnerView">NSView</string>
 						<string key="tabView">NSTabView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="delegate">
-							<string key="name">delegate</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="partnerView">
 							<string key="name">partnerView</string>
 							<string key="candidateClassName">NSView</string>

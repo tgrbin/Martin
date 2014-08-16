@@ -104,7 +104,7 @@
   }
 }
 
-- (IBAction)addURLStreamPressed:(id)sender {
+- (IBAction)addStreamPressed:(id)sender {
   NSString *urlString = [self getUserInputWithPrompt:@"URL:"];
   
   if (urlString != nil) {
