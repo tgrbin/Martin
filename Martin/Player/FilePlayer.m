@@ -155,14 +155,22 @@
 }
 
 /// Raised when the state of the player has changed
-- (void)audioPlayer:(STKAudioPlayer*)audioPlayer stateChanged:(STKAudioPlayerState)state previousState:(STKAudioPlayerState)previousState {
+- (void)audioPlayer:(STKAudioPlayer*)audioPlayer
+       stateChanged:(STKAudioPlayerState)state
+      previousState:(STKAudioPlayerState)previousState
+{
 }
 
 /// Raised when an item has finished playing
-- (void)audioPlayer:(STKAudioPlayer*)audioPlayer didFinishPlayingQueueItemId:(NSObject*)queueItemId withReason:(STKAudioPlayerStopReason)stopReason andProgress:(double)progress andDuration:(double)duration {
+- (void)audioPlayer:(STKAudioPlayer*)audioPlayer
+didFinishPlayingQueueItemId:(NSObject*)queueItemId
+         withReason:(STKAudioPlayerStopReason)stopReason
+        andProgress:(double)progress
+        andDuration:(double)duration
+{
 }
 
-/// Raised when an unexpected and possibly unrecoverable error has occured (usually best to recreate the STKAudioPlauyer)
+/// Raised when an unexpected and possibly unrecoverable error has occured (usually best to recreate the STKAudioPlayer)
 - (void)audioPlayer:(STKAudioPlayer*)audioPlayer unexpectedError:(STKAudioPlayerErrorCode)errorCode {
 }
 
