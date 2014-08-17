@@ -52,10 +52,8 @@ NSString * const kStreamsUpdatedNotification = @"kStreamsUpdatedNotification";
 - (Stream *)createStreamWithURLString:(NSString *)urlString {
   Stream *stream = [[Stream alloc] initWithURLString:[urlString URLify]];
   
-  [stream addObserver:self
-           forKeyPath:@"name"
-              options:0
-              context:nil];
+  [stream addObserver:self forKeyPath:@"name" options:0 context:nil];
+  [stream addObserver:self forKeyPath:@"urlString" options:0 context:nil];
   
   [(NSMutableArray *)_streams addObject:stream];
   
@@ -65,7 +63,7 @@ NSString * const kStreamsUpdatedNotification = @"kStreamsUpdatedNotification";
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-  if ([keyPath isEqualToString:@"name"]) {
+  if ([keyPath isEqualToString:@"name"] || [keyPath isEqualToString:@"urlString"]) {
     [self streamsUpdated];
   }
 }

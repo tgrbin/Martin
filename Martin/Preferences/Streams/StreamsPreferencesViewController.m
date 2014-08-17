@@ -12,6 +12,7 @@
 #import "Stream.h"
 
 #import "StreamsController+urlPrompt.h"
+#import "NSString+Stream.h"
 #import "NSObject+Observe.h"
 
 @interface StreamsPreferencesViewController () <
@@ -144,6 +145,20 @@
       return stream.urlString;
     }
   }
+}
+
+- (BOOL)control:(NSControl *)control textShouldEndEditing:(NSText *)fieldEditor {
+  NSString *newValue = fieldEditor.string;
+  
+  Stream *stream = _streamsController.streams[_tableView.editedRow];
+  
+  if (_tableView.editedColumn == 0) {
+    stream.name = newValue;
+  } else {
+    stream.urlString = [newValue URLify];
+  }
+  
+  return YES;
 }
 
 @end

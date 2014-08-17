@@ -22,7 +22,7 @@ typedef enum {
 + (Tags *)createTagsFromStream:(Stream *)stream;
 
 @property (nonatomic, strong) NSString *name;
-@property (nonatomic, readonly) NSString *urlString;
+@property (nonatomic, strong) NSString *urlString;
 
 - (instancetype)initWithURLString:(NSString *)urlString;
 

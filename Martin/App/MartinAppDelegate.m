@@ -61,6 +61,7 @@
   [_tabsManager savePlaylists];
   [_libraryOutlineViewManager saveState];
   [_playerController storePlayerState];
+  [_streamsController storeStreams];
   return YES;
 }
 
@@ -158,11 +159,7 @@
   } else {
     [PlaylistNameGuesser itemsAndNameFromFolders:filesAndFolders withBlock:^(NSArray *items, NSString *name) {
       if (items.count > 0) {
-        if (_playerController.nowPlayingPlaylist) {
-          [_playlistTableManager addPlaylistItems:items];
-        } else {
-          [_tabsManager addNewPlaylistWithPlaylistItems:items andName:name];
-        }
+        [_playlistTableManager addPlaylistItems:items];
       }
     }];
   }
@@ -171,7 +168,7 @@
 - (IBAction)savePlaylistPressed:(id)sender {
   Playlist *playlist = _tabsManager.selectedPlaylist;
   
-  if (playlist) { // shouldn't ever be nil, but still..
+  if (playlist) { // shouldn't ever be nil
     NSSavePanel *panel = [NSSavePanel savePanel];
     panel.allowedFileTypes = [PlaylistFile supportedFileFormats];
     panel.canCreateDirectories = YES;
