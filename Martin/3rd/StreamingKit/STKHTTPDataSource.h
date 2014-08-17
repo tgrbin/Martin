@@ -34,6 +34,8 @@
 
 #import "STKCoreFoundationDataSource.h"
 
+extern NSString * const kGotNewMetaDataNotification;
+
 @class STKHTTPDataSource;
 
 typedef void(^STKURLBlock)(NSURL* url);

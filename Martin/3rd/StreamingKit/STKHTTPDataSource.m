@@ -35,6 +35,8 @@
 #import "STKHTTPDataSource.h"
 #import "STKLocalFileDataSource.h"
 
+NSString * const kGotNewMetaDataNotification = @"GotNewMetaDataNotification";
+
 @interface STKHTTPDataSource()
 {
 @private
@@ -488,7 +490,12 @@
         if (--metaDataBytesRemaining == 0) {
           dataBytesRead = 0;
           
-          NSLog(@"new meta data: %@", metaDataString);
+          NSString *streamTitle = [self valueForKey:@"StreamTitle" fromMetaData:metaDataString];
+          if (streamTitle) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:kGotNewMetaDataNotification
+                                                                object:nil
+                                                              userInfo:@{ @"streamTitle": streamTitle }];
+          }
         }
         
         continue;
@@ -524,6 +531,22 @@
   }
   
   return 0;
+}
+
+- (NSString *)valueForKey:(NSString *)key fromMetaData:(NSString *)metaData {
+  NSArray *components = [metaData componentsSeparatedByString:@";"];
+  
+  for (NSString *entry in components) {
+    if ([entry.lowercaseString hasPrefix:key.lowercaseString]) {
+      NSRange eqPos = [entry rangeOfString:@"="];
+      if (eqPos.location != NSNotFound) {
+        NSString *value = [entry substringFromIndex:eqPos.location + 1];
+        return [value substringWithRange:NSMakeRange(1, value.length - 2)];
+      }
+    }
+  }
+  
+  return nil;
 }
 
 @end

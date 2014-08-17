@@ -10,13 +10,9 @@
 #import "PlaylistItem.h"
 #import "MartinAppDelegate.h"
 
-@interface PlayerStatusTextField()
-@property (nonatomic, strong) NSDictionary *textAttributes;
-@end
+#import "STKHTTPDataSource.h" // for getting meta data
 
-@implementation PlayerStatusTextField {
-  BOOL mouseDragged;
-}
+#import "NSObject+Observe.h"
 
 static NSString * const kStoppedText = @"--";
 
@@ -26,10 +22,24 @@ static NSString * const kTagSeparator = @" - ";
 static const int kPlayingOpacity = 70;
 static const int kStoppedOpacity = 40;
 
+@interface PlayerStatusTextField()
+
+@property (nonatomic, strong) NSDictionary *textAttributes;
+
+@property (nonatomic, assign) BOOL mouseDragged;
+
+@property (nonatomic, strong) NSString *metaDataTitle;
+@end
+
+@implementation PlayerStatusTextField
+
 - (id)initWithCoder:(NSCoder *)aDecoder {
   if (self = [super initWithCoder:aDecoder]) {
     self.textAttributes = [NSDictionary dictionaryWithObject:self.font
                                                       forKey:NSFontAttributeName];
+    
+    [self observe:kGotNewMetaDataNotification
+       withAction:@selector(gotNewMetaData:)];
   }
   return self;
 }
@@ -45,6 +55,12 @@ static const int kStoppedOpacity = 40;
 
 - (void)setPlaylistItem:(PlaylistItem *)playlistItem {
   _playlistItem = playlistItem;
+  self.metaDataTitle = nil;
+  [self updateDisplayText];
+}
+
+- (void)gotNewMetaData:(NSNotification *)notification {
+  self.metaDataTitle = notification.userInfo[@"streamTitle"];
   [self updateDisplayText];
 }
 
@@ -52,27 +68,35 @@ static const int kStoppedOpacity = 40;
   NSString *text = kStoppedText;
 
   if (_status != kPlayerStatusStopped && _playlistItem != nil) {
-    NSString *title = [_playlistItem tagValueForIndex:kTagIndexTitle];
-
-    if (title.length == 0) {
-      NSArray *pathComponents = [[_playlistItem.filename stringByDeletingPathExtension] pathComponents];
-      text = [pathComponents lastObject];
-      for (NSInteger i = pathComponents.count - 2; i >= 0; --i) {
-        NSString *longerText = [NSString stringWithFormat:@"%@%@%@", pathComponents[i], kPathSeparator, text];
-
-        if ([self canFitString:longerText]) {
-          text = longerText;
-        } else {
-          break;
-        }
+    if (_playlistItem.isURLStream) {
+      if (self.metaDataTitle != nil) {
+        text = self.metaDataTitle;
+      } else {
+        text = [_playlistItem tagValueForIndex:kTagIndexTitle];
       }
     } else {
-      NSString *album = [_playlistItem tagValueForIndex:kTagIndexAlbum];
-      NSString *artist = [_playlistItem tagValueForIndex:kTagIndexArtist];
+      NSString *title = [_playlistItem tagValueForIndex:kTagIndexTitle];
 
-      text = [self fitTagsOrNil:@[ artist, album, title ]];
-      if (text == nil) text = [self fitTagsOrNil:@[ artist, title ]];
-      if (text == nil) text = title;
+      if (title.length == 0) {
+        NSArray *pathComponents = [[_playlistItem.filename stringByDeletingPathExtension] pathComponents];
+        text = [pathComponents lastObject];
+        for (NSInteger i = pathComponents.count - 2; i >= 0; --i) {
+          NSString *longerText = [NSString stringWithFormat:@"%@%@%@", pathComponents[i], kPathSeparator, text];
+
+          if ([self canFitString:longerText]) {
+            text = longerText;
+          } else {
+            break;
+          }
+        }
+      } else {
+        NSString *album = [_playlistItem tagValueForIndex:kTagIndexAlbum];
+        NSString *artist = [_playlistItem tagValueForIndex:kTagIndexArtist];
+
+        text = [self fitTagsOrNil:@[ artist, album, title ]];
+        if (text == nil) text = [self fitTagsOrNil:@[ artist, title ]];
+        if (text == nil) text = title;
+      }
     }
   }
 
@@ -95,14 +119,14 @@ static const int kStoppedOpacity = 40;
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent {
-  mouseDragged = YES;
+  _mouseDragged = YES;
 }
 
 - (void)mouseUp:(NSEvent *)theEvent {
-  if (mouseDragged == NO) {
+  if (_mouseDragged == NO) {
     [[MartinAppDelegate get].tabsManager selectNowPlayingPlaylist];
   }
-  mouseDragged = NO;
+  _mouseDragged = NO;
 }
 
 @end
