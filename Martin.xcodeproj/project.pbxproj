@@ -206,13 +206,16 @@
 		79FF1407142F18A500E27235 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF1406142F18A500E27235 /* main.m */; };
 		79FF140E142F18A500E27235 /* MartinAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF140D142F18A500E27235 /* MartinAppDelegate.m */; };
 		79FF1422142F1DB100E27235 /* LibManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79FF1421142F1DB100E27235 /* LibManager.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		8D05488619A07324003F8210 /* Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D05488519A07324003F8210 /* Stream.m */; };
+		8D05488919A07BB2003F8210 /* StreamsController+urlPrompt.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D05488819A07BB2003F8210 /* StreamsController+urlPrompt.m */; };
+		8D05488C19A07CB5003F8210 /* StreamsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D05488B19A07CB5003F8210 /* StreamsController.m */; };
+		8D05488F19A08A04003F8210 /* NSString+Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D05488E19A08A04003F8210 /* NSString+Stream.m */; };
 		8D3CB8FF18915C3800D6F471 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 8D3CB8FD18915C3800D6F471 /* LICENSE */; };
 		8D3CB90018915C3800D6F471 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 8D3CB8FE18915C3800D6F471 /* README.md */; };
 		8D76AB1218831E4500799617 /* PlaylistTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D76AB1118831E4500799617 /* PlaylistTableView.m */; };
 		8D9BD3CC199DE49700BB436C /* M3UPlaylistFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D9BD3C6199DE49700BB436C /* M3UPlaylistFile.m */; };
 		8D9BD3CD199DE49700BB436C /* PlaylistFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D9BD3C9199DE49700BB436C /* PlaylistFile.m */; };
 		8D9BD3CE199DE49700BB436C /* PLSPlaylistFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D9BD3CB199DE49700BB436C /* PLSPlaylistFile.m */; };
-		8D9BD3D1199DFCC200BB436C /* NSString+isURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D9BD3D0199DFCC200BB436C /* NSString+isURL.m */; };
 		8D9BD3F0199DFEBC00BB436C /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D9BD3EF199DFEBC00BB436C /* AudioUnit.framework */; };
 		8D9BD3F2199DFEFC00BB436C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D9BD3F1199DFEFC00BB436C /* SystemConfiguration.framework */; };
 		8D9BD407199DFF3C00BB436C /* NSMutableArray+STKAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D9BD3F5199DFF3C00BB436C /* NSMutableArray+STKAudioPlayer.m */; };
@@ -527,6 +530,14 @@
 		79FF140D142F18A500E27235 /* MartinAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MartinAppDelegate.m; sourceTree = "<group>"; };
 		79FF1420142F1DB100E27235 /* LibManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibManager.h; sourceTree = "<group>"; };
 		79FF1421142F1DB100E27235 /* LibManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LibManager.mm; sourceTree = "<group>"; };
+		8D05488419A07324003F8210 /* Stream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Stream.h; path = Streams/Stream.h; sourceTree = "<group>"; };
+		8D05488519A07324003F8210 /* Stream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Stream.m; path = Streams/Stream.m; sourceTree = "<group>"; };
+		8D05488719A07BB2003F8210 /* StreamsController+urlPrompt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "StreamsController+urlPrompt.h"; path = "Streams/StreamsController+urlPrompt.h"; sourceTree = "<group>"; };
+		8D05488819A07BB2003F8210 /* StreamsController+urlPrompt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "StreamsController+urlPrompt.m"; path = "Streams/StreamsController+urlPrompt.m"; sourceTree = "<group>"; };
+		8D05488A19A07CB5003F8210 /* StreamsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StreamsController.h; path = Streams/StreamsController.h; sourceTree = "<group>"; };
+		8D05488B19A07CB5003F8210 /* StreamsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StreamsController.m; path = Streams/StreamsController.m; sourceTree = "<group>"; };
+		8D05488D19A08A04003F8210 /* NSString+Stream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Stream.h"; path = "Streams/NSString+Stream.h"; sourceTree = "<group>"; };
+		8D05488E19A08A04003F8210 /* NSString+Stream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Stream.m"; path = "Streams/NSString+Stream.m"; sourceTree = "<group>"; };
 		8D3CB8FD18915C3800D6F471 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = SOURCE_ROOT; };
 		8D3CB8FE18915C3800D6F471 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
 		8D76AB1018831E4500799617 /* PlaylistTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistTableView.h; sourceTree = "<group>"; };
@@ -538,8 +549,6 @@
 		8D9BD3C9199DE49700BB436C /* PlaylistFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistFile.m; sourceTree = "<group>"; };
 		8D9BD3CA199DE49700BB436C /* PLSPlaylistFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLSPlaylistFile.h; sourceTree = "<group>"; };
 		8D9BD3CB199DE49700BB436C /* PLSPlaylistFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLSPlaylistFile.m; sourceTree = "<group>"; };
-		8D9BD3CF199DFCC200BB436C /* NSString+isURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+isURL.h"; sourceTree = "<group>"; };
-		8D9BD3D0199DFCC200BB436C /* NSString+isURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+isURL.m"; sourceTree = "<group>"; };
 		8D9BD3EF199DFEBC00BB436C /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
 		8D9BD3F1199DFEFC00BB436C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		8D9BD3F4199DFF3C00BB436C /* NSMutableArray+STKAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+STKAudioPlayer.h"; sourceTree = "<group>"; };
@@ -1025,8 +1034,6 @@
 				79F55D6B16EC7A88004510B0 /* ID3ReadOperation.m */,
 				79BEC6D017F5A9A400F1A3FA /* NotificationsGenerator.h */,
 				79BEC6D117F5A9A400F1A3FA /* NotificationsGenerator.m */,
-				8D9BD3CF199DFCC200BB436C /* NSString+isURL.h */,
-				8D9BD3D0199DFCC200BB436C /* NSString+isURL.m */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
@@ -1212,8 +1219,16 @@
 		8DFA4719199FEDF00061C228 /* Streams */ = {
 			isa = PBXGroup;
 			children = (
+				8D05488419A07324003F8210 /* Stream.h */,
+				8D05488519A07324003F8210 /* Stream.m */,
 				8DFA471A199FEE360061C228 /* StreamNameGetter.h */,
 				8DFA471B199FEE360061C228 /* StreamNameGetter.m */,
+				8D05488719A07BB2003F8210 /* StreamsController+urlPrompt.h */,
+				8D05488819A07BB2003F8210 /* StreamsController+urlPrompt.m */,
+				8D05488A19A07CB5003F8210 /* StreamsController.h */,
+				8D05488B19A07CB5003F8210 /* StreamsController.m */,
+				8D05488D19A08A04003F8210 /* NSString+Stream.h */,
+				8D05488E19A08A04003F8210 /* NSString+Stream.m */,
 			);
 			name = Streams;
 			sourceTree = "<group>";
@@ -1403,6 +1418,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				79CF70A017EE32620057E678 /* MMRolloverButton.m in Sources */,
+				8D05488919A07BB2003F8210 /* StreamsController+urlPrompt.m in Sources */,
 				79E98E1A1679A65B00559F14 /* TagsUtils.mm in Sources */,
 				79CF70A717EE32620057E678 /* MMTabBarView.m in Sources */,
 				79FF1407142F18A500E27235 /* main.m in Sources */,
@@ -1431,6 +1447,7 @@
 				79B3706D149D21EA003372CB /* LastFM.m in Sources */,
 				8D9BD3CD199DE49700BB436C /* PlaylistFile.m in Sources */,
 				79242E1E16569A47006379D6 /* ID3Reader.m in Sources */,
+				8D05488C19A07CB5003F8210 /* StreamsController.m in Sources */,
 				8DA2B97118939983002F1DF5 /* NSObject+SPInvocationGrabbing.m in Sources */,
 				8DFA4716199FE1130061C228 /* StreamsPreferencesViewController.m in Sources */,
 				795022E017E42A4B00212801 /* MartinToggleButton.m in Sources */,
@@ -1452,6 +1469,7 @@
 				79CF70A317EE32620057E678 /* MMTabBarButton.m in Sources */,
 				79CF70EF17EE33DB0057E678 /* TabsManager.m in Sources */,
 				79D63C65168C438100A248F9 /* RescanState.m in Sources */,
+				8D05488619A07324003F8210 /* Stream.m in Sources */,
 				79CF709C17EE32620057E678 /* MMAttachedTabBarButtonCell.m in Sources */,
 				79D63C69168C88F900A248F9 /* DefaultsManager.m in Sources */,
 				7904597E168D7D0900FE0B68 /* TreeStateManager.m in Sources */,
@@ -1462,6 +1480,7 @@
 				79D83069168EE1530000C8EF /* ResourcePath.m in Sources */,
 				79F69EAF169969B400693CE5 /* DragDataConverter.m in Sources */,
 				79CF70AA17EE32620057E678 /* MMTabDragWindow.m in Sources */,
+				8D05488F19A08A04003F8210 /* NSString+Stream.m in Sources */,
 				79CF70AD17EE32620057E678 /* NSAffineTransform+MMTabBarViewExtensions.m in Sources */,
 				79CF70A917EE32620057E678 /* MMTabDragView.m in Sources */,
 				79CF70B117EE32620057E678 /* NSTabViewItem+MMTabBarViewExtensions.m in Sources */,
@@ -1478,7 +1497,6 @@
 				79CF466B16BE714B00A6E13A /* FileExtensionChecker.m in Sources */,
 				79CF466E16BE73F900A6E13A /* SongsFinder.m in Sources */,
 				79CF709B17EE32620057E678 /* MMAttachedTabBarButton.m in Sources */,
-				8D9BD3D1199DFCC200BB436C /* NSString+isURL.m in Sources */,
 				795A6CC016E6582500215458 /* SRCommon.m in Sources */,
 				8D9BD40A199DFF3C00BB436C /* STKCoreFoundationDataSource.m in Sources */,
 				79CF70B617EE32620057E678 /* MMLiveChatTabStyle.m in Sources */,

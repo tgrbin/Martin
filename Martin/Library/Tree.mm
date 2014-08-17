@@ -15,6 +15,8 @@
 #import <tr1/unordered_map>
 #import <tr1/unordered_set>
 
+NSString * const kLibrarySearchFinishedNotification = @"LibManagerSearchFinished";
+
 using namespace std;
 
 typedef enum {

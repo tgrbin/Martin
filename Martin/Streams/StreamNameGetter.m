@@ -40,18 +40,19 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-  NSString *name = nil;
-  
   if ([response respondsToSelector:@selector(allHeaderFields)]) {
+    NSString *name = @"";
     NSDictionary *headers = ((NSHTTPURLResponse *)response).allHeaderFields;
     NSString *icyName = headers[@"icy-name"];
     
     if (icyName != nil && icyName.length > 0) {
       name = icyName;
     }
+    
+    [self gotName:name];
+  } else {
+    [self gotName:nil];
   }
-  
-  [self gotName:name];
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
@@ -60,13 +61,13 @@
 
 - (void)gotName:(NSString *)name {
   self.block(name);
-  [self destroyConnection];
-  self.block = nil;
+  [self cancel];
 }
 
-- (void)destroyConnection {
+- (void)cancel {
   [self.urlConnection cancel];
   self.urlConnection = nil;
+  self.block = nil;
 }
 
 @end

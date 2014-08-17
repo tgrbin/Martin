@@ -2256,7 +2256,7 @@ typedef struct
 }
 AudioConvertInfo;
 
-OSStatus AudioConverterCallback(AudioConverterRef inAudioConverter, UInt32* ioNumberDataPackets, AudioBufferList* ioData, AudioStreamPacketDescription **outDataPacketDescription, void* inUserData)
+static OSStatus AudioConverterCallback(AudioConverterRef inAudioConverter, UInt32* ioNumberDataPackets, AudioBufferList* ioData, AudioStreamPacketDescription **outDataPacketDescription, void* inUserData)
 {
   AudioConvertInfo* convertInfo = (AudioConvertInfo*)inUserData;
   

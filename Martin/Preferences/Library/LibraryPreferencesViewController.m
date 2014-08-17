@@ -71,7 +71,11 @@
   _watchFoldersEnabled = watchFoldersEnabled;
   [FolderWatcher sharedWatcher].enabled = watchFoldersEnabled;
   _rescanLibraryButton.hidden = watchFoldersEnabled;
-  if (_watchFoldersEnabled) [[RescanProxy sharedProxy] rescanAll];
+  
+  // TODO: maybe this is why library is rescanned everytime you open preferences
+  if (_watchFoldersEnabled) {
+    [[RescanProxy sharedProxy] rescanAll];
+  }
 }
 
 - (void)changeFolder {

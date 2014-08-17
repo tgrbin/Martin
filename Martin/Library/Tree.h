@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define kLibrarySearchFinishedNotification @"LibManagerSearchFinished"
+extern NSString * const kLibrarySearchFinishedNotification;
 
 struct LibrarySong {
   int lengthInSeconds;

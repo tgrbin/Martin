@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-#define kLibraryRescanStartedNotification @"LibraryRescanStartedNotification"
-#define kLibraryRescanFinishedNotification @"LibraryRescanFinishedNotification"
-#define kLibraryRescanStateChangedNotification @"LibraryRescanStateChangedNotification"
-#define kLibraryRescanTreeReadyNotification @"LibraryRescanTreeReadyNotification"
+extern NSString * const kLibraryRescanStartedNotification;
+extern NSString * const kLibraryRescanFinishedNotification;
+extern NSString * const kLibraryRescanStateChangedNotification;
+extern NSString * const kLibraryRescanTreeReadyNotification;
 
 typedef enum {
   kRescanStateIdle = 0,
@@ -33,6 +33,8 @@ typedef enum {
 @property (nonatomic) int alreadyRescannedSongs;
 @property (nonatomic, readonly) int currentPercentage;
 
-- (void)setupProgressIndicator:(NSProgressIndicator *)pi indeterminateProgressIndicator:(NSProgressIndicator *)ipi andTextField:(NSTextField *)tf;
+- (void)setupProgressIndicator:(NSProgressIndicator *)pi
+indeterminateProgressIndicator:(NSProgressIndicator *)ipi
+                  andTextField:(NSTextField *)tf;
 
 @end

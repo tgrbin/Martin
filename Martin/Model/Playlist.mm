@@ -20,6 +20,8 @@
 #import <set>
 #import <map>
 
+extern NSString * const kPlaylistCurrentItemChanged = @"PlaylistCurrentItemChanged";
+
 using namespace std;
 
 @interface Playlist()

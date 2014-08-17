@@ -27,7 +27,14 @@ static NSDictionary *defaultValues;
     @(kDefaultsKeyFirstRun): @YES,
     @(kDefaultsKeySeekPosition): @0,
     @(kDefaultsKeyPlayerState): @0,
-    @(kDefaultsKeyMediaKeysEnabled): @YES
+    @(kDefaultsKeyMediaKeysEnabled): @YES,
+    @(kDefaultsKeyStreams): @[
+//        @{
+//          @"name": @"Radio Swiss Jazz",
+//          @"url": @"http://streaming.swisstxt.ch/m/rsj/mp3_128"
+//          }
+        ],
+    @(kDefaultsKeyShowStreamsInLibraryPane): @YES
   };
 }
 

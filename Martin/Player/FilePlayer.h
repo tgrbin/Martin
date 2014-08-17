@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#define kFilePlayerPlayedItemNotification @"FilePlayerPlayedItemNotification"
-#define kFilePlayerEventNotification @"FilePlayerEventNotification"
+extern NSString * const kFilePlayerPlayedItemNotification;
+extern NSString * const kFilePlayerEventNotification;
 
 @class PlaylistItem;
 

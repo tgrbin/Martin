@@ -17,6 +17,8 @@
 #import "Playlist.h"
 #import "PlaylistItem.h"
 
+#import "StreamsController+urlPrompt.h"
+
 @interface MartinAppDelegate() <NSApplicationDelegate, NSWindowDelegate>
 @property (nonatomic, strong) IBOutlet NSProgressIndicator *martinBusyIndicator;
 
@@ -105,7 +107,7 @@
 }
 
 - (IBAction)addStreamPressed:(id)sender {
-  NSString *urlString = [self getUserInputWithPrompt:@"URL:"];
+  NSString *urlString = [StreamsController urlPrompt];
   
   if (urlString != nil) {
     PlaylistItem *item = [[PlaylistItem alloc] initWithURLString:urlString];
@@ -117,28 +119,6 @@
   }
 }
 
-- (NSString *)getUserInputWithPrompt:(NSString *)prompt {
-  // TODO: prompt looks ugly
-  
-  NSAlert *alert = [NSAlert alertWithMessageText:prompt
-                                   defaultButton:@"OK"
-                                 alternateButton:@"Cancel"
-                                     otherButton:nil
-                       informativeTextWithFormat:@""];
-  
-  NSTextField *input = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 400, 24)];
-  // TODO: allow paste by Cmd+V
-
-  alert.accessoryView = input;
-  
-  NSInteger button = [alert runModal];
-  if (button == NSAlertDefaultReturn) {
-    [input validateEditing];
-    return [input stringValue];
-  } else {
-    return nil;
-  }
-}
 
 - (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename {
   [self openFilesAndFolders:@[filename]];
@@ -226,7 +206,7 @@
   @synchronized (self) {
     _martinBusy = martinBusy;
     
-    [_martinBusyIndicator setHidden:martinBusy == 0];
+    _martinBusyIndicator.hidden = (martinBusy == 0);
     
     if (martinBusy > 0) {
       [_martinBusyIndicator startAnimation:nil];

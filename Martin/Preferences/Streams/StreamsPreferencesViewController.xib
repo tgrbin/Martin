@@ -9,6 +9,7 @@
             <connections>
                 <outlet property="indicator" destination="sMh-4z-jfE" id="c39-gt-are"/>
                 <outlet property="statusTextField" destination="iiN-In-QxT" id="O4B-TW-n8S"/>
+                <outlet property="tableView" destination="iLX-EZ-mPG" id="9Ec-ei-bZj"/>
                 <outlet property="view" destination="XUF-8p-a51" id="Pjs-OS-Cb1"/>
             </connections>
         </customObject>
@@ -18,19 +19,17 @@
             <rect key="frame" x="0.0" y="0.0" width="640" height="310"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="sMh-4z-jfE">
-                    <rect key="frame" x="20" y="273" width="16" height="16"/>
+                <button id="zrt-jt-m54">
+                    <rect key="frame" x="18" y="273" width="445" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                </progressIndicator>
-                <textField verticalHuggingPriority="750" id="iiN-In-QxT">
-                    <rect key="frame" x="42" y="271" width="446" height="20"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" alignment="left" title="URL check status" id="M32-2h-r7T">
+                    <buttonCell key="cell" type="check" title="Show Streams in library tree pane" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Wns-Sj-Th6">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="system"/>
-                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
+                    </buttonCell>
+                    <connections>
+                        <binding destination="-2" name="value" keyPath="showStreamsCheckbox" id="raE-Zj-9IV"/>
+                    </connections>
+                </button>
                 <button verticalHuggingPriority="750" id="6Vs-Xv-E7b">
                     <rect key="frame" x="496" y="265" width="130" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -42,22 +41,22 @@
                         <action selector="addStreamPressed:" target="-2" id="KHf-gz-RdI"/>
                     </connections>
                 </button>
-                <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="d8g-xj-MO1">
-                    <rect key="frame" x="20" y="20" width="600" height="244"/>
+                <scrollView focusRingType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="d8g-xj-MO1">
+                    <rect key="frame" x="20" y="39" width="600" height="225"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <clipView key="contentView" id="tCh-Gg-Xwp">
-                        <rect key="frame" x="1" y="17" width="598" height="226"/>
+                        <rect key="frame" x="1" y="17" width="598" height="207"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="PAq-sY-sBL" id="iLX-EZ-mPG">
-                                <rect key="frame" x="0.0" y="0.0" width="598" height="226"/>
+                            <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="PAq-sY-sBL" id="iLX-EZ-mPG">
+                                <rect key="frame" x="0.0" y="0.0" width="598" height="207"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <size key="intercellSpacing" width="3" height="2"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                 <tableColumns>
-                                    <tableColumn width="116" minWidth="40" maxWidth="1000" id="teN-U7-8WS">
-                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Title">
+                                    <tableColumn identifier="name" width="152" minWidth="40" maxWidth="1000" id="teN-U7-8WS">
+                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Name">
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
@@ -69,7 +68,7 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                     </tableColumn>
-                                    <tableColumn width="370" minWidth="40" maxWidth="1000" id="EVr-6S-YRi">
+                                    <tableColumn identifier="url" width="373" minWidth="40" maxWidth="1000" id="EVr-6S-YRi">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="URL">
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -82,26 +81,32 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                     </tableColumn>
-                                    <tableColumn width="64" minWidth="64" maxWidth="64" id="TKN-zB-IR9">
+                                    <tableColumn identifier="remove" width="64" minWidth="64" maxWidth="64" id="TKN-zB-IR9">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Remove">
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                         </tableHeaderCell>
-                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="RxD-wN-wXm">
+                                        <buttonCell key="dataCell" type="bevel" title="X" bezelStyle="regularSquare" alignment="center" imageScaling="proportionallyDown" inset="2" id="pO6-GU-b1w">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
-                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                        </textFieldCell>
+                                            <connections>
+                                                <action selector="removePressed:" target="-2" id="H3F-Ic-caj"/>
+                                            </connections>
+                                        </buttonCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                     </tableColumn>
                                 </tableColumns>
+                                <connections>
+                                    <outlet property="dataSource" destination="-2" id="DUS-3M-Fv3"/>
+                                    <outlet property="delegate" destination="-2" id="KV9-12-aKE"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </clipView>
                     <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="bbr-Hi-gOq">
-                        <rect key="frame" x="1" y="173" width="558" height="15"/>
+                        <rect key="frame" x="1" y="228" width="598" height="15"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                     <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="J0E-DC-Z6U">
@@ -113,6 +118,19 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </tableHeaderView>
                 </scrollView>
+                <textField verticalHuggingPriority="750" id="iiN-In-QxT">
+                    <rect key="frame" x="18" y="10" width="446" height="20"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" alignment="left" id="M32-2h-r7T">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <progressIndicator hidden="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="sMh-4z-jfE">
+                    <rect key="frame" x="604" y="12" width="16" height="16"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                </progressIndicator>
             </subviews>
         </customView>
     </objects>

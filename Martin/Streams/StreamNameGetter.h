@@ -13,5 +13,6 @@
 - (instancetype)initWithURLString:(NSString *)urlString andBlock:(void (^)(NSString *streamName))block;
 
 - (void)start;
+- (void)cancel;
 
 @end

@@ -8,8 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSString (isURL)
+@interface NSString (Stream)
 
 - (BOOL)isURL;
+- (NSString *)URLify;
 
 @end

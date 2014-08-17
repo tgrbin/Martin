@@ -12,6 +12,7 @@
 #import "PreferencesWindowController.h"
 #import "FilePlayer.h"
 #import "TabsManager.h"
+#import "StreamsController.h"
 
 @interface MartinAppDelegate : NSObject
 
@@ -27,6 +28,7 @@
 @property (nonatomic, strong) IBOutlet PlaylistTableManager *playlistTableManager;
 @property (nonatomic, strong) IBOutlet FilePlayer *filePlayer;
 @property (nonatomic, strong) IBOutlet TabsManager *tabsManager;
+@property (nonatomic, strong) IBOutlet StreamsController *streamsController;
 
 @property (atomic, assign) int martinBusy;
 

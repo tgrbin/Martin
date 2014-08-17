@@ -13,8 +13,9 @@
 #import "ID3Reader.h"
 #import "ID3ReadOperation.h"
 #import "MartinAppDelegate.h"
+#import "Stream.h"
 
-#import "NSString+isURL.h"
+#import "NSString+Stream.h"
 
 static NSOperationQueue *operationQueue;
 
@@ -44,12 +45,22 @@ static NSOperationQueue *operationQueue;
   return self;
 }
 
+- (id)initWithStream:(Stream *)stream {
+  if (self = [super init]) {
+    _filename = stream.urlString;
+    tags = [Stream createTagsFromStream:stream];
+    _isURLStream = YES;
+    
+    _p_librarySong = -1;
+    _lengthInSeconds = 0;
+  }
+  
+  return self;
+}
+
+// TODO: remove this method!!
 - (id)initWithURLString:(NSString *)urlString {
   if (self = [super init]) {
-    if ([urlString isURL] == NO) {
-      urlString = [@"http://" stringByAppendingString:urlString];
-    }
-    
     _filename = urlString;
     _p_librarySong = -1;
     _lengthInSeconds = 0;

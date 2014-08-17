@@ -9,11 +9,17 @@
 #import <Foundation/Foundation.h>
 #import "Tags.h"
 
+@class Stream;
+
 @interface PlaylistItem : NSObject
 
 - (id)initWithLibrarySong:(int)p_song;
 - (id)initWithFileStream:(FILE *)f;
 - (id)initWithPath:(NSString *)path andInode:(ino_t)inode;
+
+- (id)initWithStream:(Stream *)stream;
+
+// TODO: remove this method completely
 - (id)initWithURLString:(NSString *)urlString;
 
 @property (nonatomic, strong, readonly) NSString *filename;

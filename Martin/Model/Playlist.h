@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define kPlaylistCurrentItemChanged @"PlaylistCurrentItemChanged"
+extern NSString * const kPlaylistCurrentItemChanged;
 
 @class PlaylistItem;
 

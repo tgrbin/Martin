@@ -8,6 +8,11 @@
 
 #import "RescanState.h"
 
+NSString * const kLibraryRescanStartedNotification = @"LibraryRescanStartedNotification";
+NSString * const kLibraryRescanFinishedNotification = @"LibraryRescanFinishedNotification";
+NSString * const kLibraryRescanStateChangedNotification = @"LibraryRescanStateChangedNotification";
+NSString * const kLibraryRescanTreeReadyNotification = @"LibraryRescanTreeReadyNotification";
+
 @implementation RescanState
 
 static RescanState *sharedState;
@@ -65,10 +70,12 @@ static RescanState *sharedState;
   return @"";
 }
 
-- (void)setupProgressIndicator:(NSProgressIndicator *)pi indeterminateProgressIndicator:(NSProgressIndicator *)ipi andTextField:(NSTextField *)tf {
+- (void)setupProgressIndicator:(NSProgressIndicator *)pi
+indeterminateProgressIndicator:(NSProgressIndicator *)ipi
+                  andTextField:(NSTextField *)tf {
   if (_state == kRescanStateIdle) {
     if (tf.tag) {
-      tf.stringValue = @"Idle";
+      tf.stringValue = @"";
       ipi.hidden = pi.hidden = YES;
     } else {
       tf.hidden = pi.hidden = ipi.hidden = YES;

@@ -13,6 +13,9 @@
 
 #import "STKAudioPlayer.h"
 
+NSString * const kFilePlayerPlayedItemNotification = @"FilePlayerPlayedItemNotification";
+NSString * const kFilePlayerEventNotification = @"FilePlayerEventNotification";
+
 @interface FilePlayer() <STKAudioPlayerDelegate>
 @end
 

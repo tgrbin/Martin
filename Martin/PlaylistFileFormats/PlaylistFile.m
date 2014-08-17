@@ -15,7 +15,7 @@
 #import "FileExtensionChecker.h"
 #import "MartinAppDelegate.h"
 
-#import "NSString+isURL.h"
+#import "NSString+Stream.h"
 
 #include <sys/stat.h>
 
