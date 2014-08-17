@@ -10,6 +10,7 @@
 #import "StreamsController.h"
 #import "MartinAppDelegate.h"
 #import "Stream.h"
+#import "DragDataConverter.h"
 
 #import "StreamsController+urlPrompt.h"
 #import "NSString+Stream.h"
@@ -43,6 +44,10 @@
        withAction:@selector(streamsUpdated)];
   }
   return self;
+}
+
+- (void)awakeFromNib {
+  [_tableView registerForDraggedTypes:@[kDragTypeStreamRow]];
 }
 
 #pragma mark - actions
@@ -156,6 +161,48 @@
     stream.name = newValue;
   } else {
     stream.urlString = [newValue URLify];
+  }
+  
+  return YES;
+}
+
+- (BOOL)tableView:(NSTableView *)tableView
+        writeRows:(NSArray *)rows
+     toPasteboard:(NSPasteboard *)pboard
+{
+  [pboard declareTypes:@[kDragTypeStreamRow] owner:nil];
+  [pboard setData:[DragDataConverter dataFromArray:rows]
+          forType:kDragTypeStreamRow];
+  return YES;
+}
+
+- (NSDragOperation)tableView:(NSTableView *)tableView
+                validateDrop:(id<NSDraggingInfo>)info
+                 proposedRow:(NSInteger)row
+       proposedDropOperation:(NSTableViewDropOperation)dropOperation
+{
+  [tableView setDropRow:row dropOperation:NSTableViewDropAbove];
+  return NSDragOperationCopy;
+}
+
+- (BOOL)tableView:(NSTableView *)tableView
+       acceptDrop:(id<NSDraggingInfo>)info
+              row:(NSInteger)row
+    dropOperation:(NSTableViewDropOperation)dropOperation
+{
+  NSString *draggingType = [info.draggingPasteboard.types lastObject];
+  
+  if ([draggingType isEqualToString:kDragTypeStreamRow]) {
+    NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:kDragTypeStreamRow]];
+    
+    int srcRow = [items[0] intValue];
+    if (srcRow < row) {
+      --row;
+    }
+    
+    [_streamsController reorderStreamAtIndex:srcRow toNewIndex:row];
+    
+    [_tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
   }
   
   return YES;

@@ -179,7 +179,7 @@
       NSString *filename = panel.URL.path;
       PlaylistFile *playlistFile = [PlaylistFile playlistFileWithFilename:filename];
       if (![playlistFile savePlaylist:playlist]) {
-        NSString *errorMessage = [NSString stringWithFormat:@"Sorry, couldn't save playlist:\n'%@'", filename];
+        NSString *errorMessage = [NSString stringWithFormat:@"Couldn't save playlist:\n'%@'", filename];
         NSAlert *alert = [NSAlert alertWithMessageText:errorMessage
                                          defaultButton:@"OK"
                                        alternateButton:nil

@@ -12,5 +12,6 @@
 #define kDragTypeTreeNodes            @"martin.kDragTypeTreeNodes"
 #define kDragTypePlaylistItemsRows    @"martin.kDragTypePlaylistItemsRows"
 #define kDragTypeLibraryFolderRow     @"martin.kDragTypeLibraryFolderRow"
+#define kDragTypeStreamRow            @"martin.kDragTypeStreamRow"
 
 #endif
