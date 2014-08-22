@@ -51,18 +51,6 @@ static const char *tagNames[] = { "track number", "artist", "album", "title", "g
   return t;
 }
 
-+ (Tags *)createTagsFromURLstring:(NSString *)urlString {
-  Tags *t = [self createEmptyTags];
-  for (int i = 0; i < kNumberOfTags; ++i) {
-    t.values[i] = @"";
-  }
-  // TODO: add better tags
-  t.values[kTagIndexTitle] = @"__stream__";
-  t.values[kTagIndexAlbum] = @"__stream__";
-  t.values[kTagIndexArtist] = @"__stream__";
-  return t;
-}
-
 + (Tags *)createEmptyTags {
   Tags *t = [Tags new];
   t.values = (NSString **)malloc(kNumberOfTags * sizeof(NSString*));

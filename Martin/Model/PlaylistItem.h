@@ -19,9 +19,6 @@
 
 - (id)initWithStream:(Stream *)stream;
 
-// TODO: remove this method completely
-- (id)initWithURLString:(NSString *)urlString;
-
 @property (nonatomic, strong, readonly) NSString *filename;
 @property (nonatomic, readonly) ino_t inode;
 @property (nonatomic, assign) int lengthInSeconds;

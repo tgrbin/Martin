@@ -111,9 +111,11 @@ static NSString *currentToken = nil;
 
 + (void)updateNowPlaying:(PlaylistItem *)item {
 #ifndef DEBUG
+  if (item.isURLStream == YES) return;
+  
   NSString *sessionKey = [self sessionKey];
   if (sessionKey == nil) return;
-
+  
   NSURL *u = [NSURL URLWithString:apiURL];
   NSString *name = @"track.updateNowPlaying";
   WSMethodInvocationRef myRef = WSMethodInvocationCreate((__bridge CFURLRef)u, (__bridge CFStringRef)name, kWSXMLRPCProtocol);
@@ -136,6 +138,8 @@ static NSString *currentToken = nil;
 
 + (void)scrobble:(PlaylistItem *)item {
 #ifndef DEBUG
+  if (item.isURLStream == YES) return;
+  
   NSString *sessionKey = [self sessionKey];
   if (sessionKey == nil) return;
 

@@ -25,10 +25,10 @@
 
 @property (nonatomic, assign) BOOL showStreamsCheckbox;
 
-@property (strong) IBOutlet NSTextField *statusTextField;
-@property (strong) IBOutlet NSProgressIndicator *indicator;
+@property (nonatomic, strong) IBOutlet NSTextField *statusTextField;
+@property (nonatomic, strong) IBOutlet NSProgressIndicator *indicator;
 
-@property (strong) IBOutlet NSTableView *tableView;
+@property (nonatomic, strong) IBOutlet NSTableView *tableView;
 
 @end
 
@@ -156,12 +156,15 @@
   NSString *newValue = fieldEditor.string;
   
   Stream *stream = _streamsController.streams[_tableView.editedRow];
+  BOOL editedName = (_tableView.editedColumn == 0);
   
-  if (_tableView.editedColumn == 0) {
-    stream.name = newValue;
-  } else {
-    stream.urlString = [newValue URLify];
-  }
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    if (editedName == YES) {
+      stream.name = newValue;
+    } else {
+      stream.urlString = [newValue URLify];
+    }
+  });
   
   return YES;
 }

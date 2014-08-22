@@ -15,7 +15,7 @@
 #import "MediaKeysManager.h"
 #import "PlaylistFile.h"
 #import "Playlist.h"
-#import "PlaylistItem.h"
+#import "Stream.h"
 
 #import "StreamsController+urlPrompt.h"
 
@@ -111,7 +111,8 @@
   NSString *urlString = [StreamsController urlPrompt];
   
   if (urlString != nil) {
-    PlaylistItem *item = [[PlaylistItem alloc] initWithURLString:urlString];
+    Stream *stream = [_streamsController createOrReturnStreamWithURLString:urlString];
+    PlaylistItem *item = [stream createPlaylistItem];
     if (_playerController.nowPlayingPlaylist) {
       [_playlistTableManager addPlaylistItems:@[item]];
     } else {

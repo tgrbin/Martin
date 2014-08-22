@@ -58,18 +58,6 @@ static NSOperationQueue *operationQueue;
   return self;
 }
 
-// TODO: remove this method!!
-- (id)initWithURLString:(NSString *)urlString {
-  if (self = [super init]) {
-    _filename = urlString;
-    _p_librarySong = -1;
-    _lengthInSeconds = 0;
-    _isURLStream = YES;
-    tags = [Tags createTagsFromURLstring:urlString];
-  }
-  return self;
-}
-
 - (id)initWithFileStream:(FILE *)f {
   static const int kBuffSize = 1<<16;
   static char buff[kBuffSize];
@@ -89,14 +77,22 @@ static NSOperationQueue *operationQueue;
 
     _isURLStream = [_filename isURL];
     
-    _p_librarySong = _inode? [Tree songByInode:_inode]: -1;
+    _p_librarySong = -1;
+    if (_isURLStream == NO && _inode != 0) {
+      _p_librarySong = [Tree songByInode:_inode];
+    }
 
+    // library songs get tags from the library
     for (int i = 0; i < kNumberOfTags; ++i) {
       fgets(buff, kBuffSize, f);
-      if (_p_librarySong == -1) tagsSet(ctags, i, buff);
+      if (_p_librarySong == -1) {
+        tagsSet(ctags, i, buff);
+      }
     }
     
-    if (_p_librarySong == -1) tags = [Tags createTagsFromCTags:ctags];
+    if (_p_librarySong == -1) {
+      tags = [Tags createTagsFromCTags:ctags];
+    }
   }
   
   return self;
@@ -151,7 +147,17 @@ static NSOperationQueue *operationQueue;
     char **t = [Tree songDataForP:_p_librarySong]->tags;
     return @(t[i]);
   } else {
-    return [tags tagValueForIndex:i];
+    NSString *value = [tags tagValueForIndex:i];
+    
+    if (_isURLStream && i == kTagIndexTitle) {
+      Stream *stream = [[MartinAppDelegate get].streamsController streamWithURLString:_filename];
+      
+      if (stream != nil) {
+        return stream.name;
+      }
+    }
+    
+    return value;
   }
 }
 

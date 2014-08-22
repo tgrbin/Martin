@@ -14,6 +14,7 @@
 #import "PlaylistItem.h"
 #import "FileExtensionChecker.h"
 #import "MartinAppDelegate.h"
+#import "Stream.h"
 
 #import "NSString+Stream.h"
 
@@ -76,7 +77,8 @@
   NSString *extension = [[path pathExtension] lowercaseString];
   
   if ([path isURL]) {
-    return [[PlaylistItem alloc] initWithURLString:path];
+    Stream *stream = [[MartinAppDelegate get].streamsController createOrReturnStreamWithURLString:path];
+    return [stream createPlaylistItem];
   } else if ([[FileExtensionChecker acceptableExtensions] containsObject:extension]) {
     const char *cpath = [path UTF8String];
     struct stat statBuff;

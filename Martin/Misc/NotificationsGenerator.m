@@ -26,6 +26,8 @@ static NotificationsGenerator *instance;
     return;
   }
 
+  // TODO: handle stream meta data correctly!
+  
   NSString *title = [item tagValueForIndex:kTagIndexTitle];
   NSString *subtitle = nil;
   if (title.length > 0) {

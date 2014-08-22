@@ -17,7 +17,7 @@
 
 @property (nonatomic, strong) NSURLConnection *urlConnection;
 
-@property (nonatomic, strong) void (^block)(NSString *);
+@property (copy) void (^block)(NSString *);
 
 @end
 

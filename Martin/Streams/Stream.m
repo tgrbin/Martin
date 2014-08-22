@@ -29,13 +29,7 @@
 
 - (NSString *)defaultName {
   NSURL *url = [NSURL URLWithString:_urlString];
-  NSArray *hostComponents = [url.host componentsSeparatedByString:@"."];
-  
-  if (hostComponents != nil && hostComponents.count > 1) {
-    return hostComponents[hostComponents.count - 2];
-  }
-  
-  return nil;
+  return url.host ?: @"";
 }
 
 - (PlaylistItem *)createPlaylistItem {
@@ -84,8 +78,16 @@
   [_nameGetter cancel];
   
   [super willChangeValueForKey:@"name"];
-  _name = name;
+  _name = [name copy];
   [super didChangeValueForKey:@"name"];
+}
+
+- (void)setUrlString:(NSString *)urlString {
+  [_nameGetter cancel];
+  
+  [super willChangeValueForKey:@"urlString"];
+  _urlString = [urlString copy];
+  [super didChangeValueForKey:@"urlString"];
 }
 
 @end

@@ -17,6 +17,7 @@
 #import "ShortcutBinder.h"
 #import "RescanState.h"
 #import "PlaylistNameGuesser.h"
+#import "StreamsController.h"
 
 @implementation PlaylistTableManager {
   IBOutlet NSTableView *playlistTable;
@@ -33,7 +34,8 @@
   [self observe:kFilePlayerEventNotification withAction:@selector(playlistChanged)];
   [self observe:kPlaylistCurrentItemChanged withAction:@selector(playlistChanged)];
   [self observe:kLibraryRescanFinishedNotification withAction:@selector(reloadTableData)];
-
+  [self observe:kStreamsUpdatedNotification withAction:@selector(reloadTableData)];
+  
   [self bindShortcuts];
   [self initTableHeaderViewMenu];
 }
