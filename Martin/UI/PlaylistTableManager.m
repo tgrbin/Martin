@@ -18,6 +18,7 @@
 #import "RescanState.h"
 #import "PlaylistNameGuesser.h"
 #import "StreamsController.h"
+#import "Stream.h"
 
 @implementation PlaylistTableManager {
   IBOutlet NSTableView *playlistTable;
@@ -29,7 +30,12 @@
   playlistTable.target = self;
   playlistTable.doubleAction = @selector(itemDoubleClicked);
 
-  [playlistTable registerForDraggedTypes:@[kDragTypeTreeNodes, kDragTypePlaylistItemsRows, NSFilenamesPboardType]];
+  [playlistTable registerForDraggedTypes:@[
+                                           kDragTypeTreeNodes,
+                                           kDragTypePlaylistItemsRows,
+                                           kDragTypeStreamRow,
+                                           NSFilenamesPboardType
+                                           ]];
 
   [self observe:kFilePlayerEventNotification withAction:@selector(playlistChanged)];
   [self observe:kPlaylistCurrentItemChanged withAction:@selector(playlistChanged)];
@@ -179,6 +185,9 @@
         for (NSNumber *n in items) [arr addObject:_dragSourcePlaylist[n.intValue]];
         itemsCount = [_playlist addPlaylistItems:arr atPos:endPosition fromPlaylist:_dragSourcePlaylist];
       }
+    } else if ([draggingType isEqualToString:kDragTypeStreamRow]) {
+      Stream *stream = [MartinAppDelegate get].streamsController.streams[[items[0] intValue]];
+      [_playlist addPlaylistItems:@[[stream createPlaylistItem]] atPos:endPosition];
     }
 
     [self playlistChanged];
