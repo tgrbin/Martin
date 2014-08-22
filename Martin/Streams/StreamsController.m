@@ -74,6 +74,9 @@ NSString * const kStreamsUpdatedNotification = @"kStreamsUpdatedNotification";
 
 - (void)removeStream:(Stream *)stream {
   [(NSMutableArray *)_streams removeObject:stream];
+  [stream removeObserver:self forKeyPath:@"name"];
+  [stream removeObserver:self forKeyPath:@"urlString"];
+  
   [self streamsUpdated];
 }
 

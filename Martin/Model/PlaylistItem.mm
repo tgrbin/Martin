@@ -47,7 +47,7 @@ static NSOperationQueue *operationQueue;
 
 - (id)initWithStream:(Stream *)stream {
   if (self = [super init]) {
-    _filename = stream.urlString;
+    _filename = [stream.urlString copy];
     tags = [Stream createTagsFromStream:stream];
     _isURLStream = YES;
     
@@ -169,7 +169,7 @@ static NSOperationQueue *operationQueue;
   if (_p_librarySong == -1) {
     fprintf(f, "%d\n", _lengthInSeconds);
     fprintf(f, "%s\n", _filename == nil? "": [_filename UTF8String]);
-    for (int i = 0; i < kNumberOfTags; ++i) fprintf(f, "%s\n", [[tags tagValueForIndex:(TagIndex)i] UTF8String]);
+    for (int i = 0; i < kNumberOfTags; ++i) fprintf(f, "%s\n", [[self tagValueForIndex:(TagIndex)i] UTF8String]);
   } else {
     struct LibrarySong *song = [Tree songDataForP:_p_librarySong];
     fprintf(f, "%d\n", song->lengthInSeconds);

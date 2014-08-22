@@ -42,7 +42,7 @@
     [tagsArray addObject:@""];
   }
   
-  tagsArray[kTagIndexTitle] = stream.name;
+  tagsArray[kTagIndexTitle] = [stream.name copy];
   
   return [Tags createTagsFromArray:tagsArray];
 }
