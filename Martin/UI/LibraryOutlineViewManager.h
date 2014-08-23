@@ -7,10 +7,14 @@
 
 #import <Foundation/Foundation.h>
 
-@interface LibraryOutlineViewManager : NSObject <NSOutlineViewDataSource, NSTextFieldDelegate, NSControlTextEditingDelegate, NSMenuDelegate>
+@class LibraryOutlineViewDataSource;
+
+@interface LibraryOutlineViewManager : NSObject
 
 - (void)saveState;
 
 @property (nonatomic, strong) IBOutlet NSTextField *searchTextField;
+
+@property (strong) IBOutlet LibraryOutlineViewDataSource *dataSource;
 
 @end

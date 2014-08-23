@@ -19,6 +19,16 @@
 #import "ShortcutBinder.h"
 #import "DefaultsManager.h"
 #import "Playlist.h"
+#import "QueuePlaylist.h"
+#import "LibraryOutlineViewDataSource.h"
+
+@interface LibraryOutlineViewManager() <
+  NSTextFieldDelegate,
+  NSControlTextEditingDelegate,
+  NSMenuDelegate
+>
+
+@end
 
 @implementation LibraryOutlineViewManager {
   BOOL userIsManipulatingTree;
@@ -38,6 +48,8 @@
   [self observe:kLibrarySearchFinishedNotification withAction:@selector(searchFinished)];
   [self observe:kLibraryRescanStateChangedNotification withAction:@selector(rescanStateChanged)];
 
+  [self observe:kStreamsUpdatedNotification withAction:@selector(streamsUpdated)];
+  
   [self observe:NSOutlineViewItemDidExpandNotification withAction:@selector(itemDidExpand:)];
   [self observe:NSOutlineViewItemDidCollapseNotification withAction:@selector(itemDidCollapse:)];
 
@@ -95,7 +107,7 @@
 
 - (void)itemDoubleClicked {
   id item = [outlineView itemAtRow:outlineView.selectedRow];
-  if ([LibraryTree isLeaf:[item intValue]]) {
+  if ([self.dataSource isItemLeaf:item]) {
     [[MartinAppDelegate get].playlistTableManager addTreeNodes:@[item]];
   } else {
     if ([outlineView isItemExpanded:item]) [outlineView collapseItem:item];
@@ -152,42 +164,25 @@
 
 - (void)menuNeedsUpdate:(NSMenu *)menu {
   NSArray *items = [self chosenItems];
-  BOOL onlyItems = YES;
+  BOOL onlyFolders = YES;
+  BOOL streamPresent = NO;
+  
   for (id item in items) {
-    if ([LibraryTree isLeaf:[item intValue]] == NO) {
-      onlyItems = NO;
+    if ([self.dataSource isItemFromLibrary:item] == NO) {
+      streamPresent = YES;
+      onlyFolders = NO;
+      break;
+    } else if ([self.dataSource isItemLeaf:item] == YES) {
+      onlyFolders = NO;
       break;
     }
   }
 
-  [[menu itemWithTitle:@"Rescan"] setEnabled:(onlyItems == NO)];
+  [[menu itemWithTitle:@"Rescan"] setEnabled:(onlyFolders == YES)];
+  [[menu itemWithTitle:@"Show in Finder"] setEnabled:(streamPresent == NO)];
 }
 
-#pragma mark - data source
-
-- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item {
-  return [LibraryTree numberOfChildrenForNode:[item intValue]];
-}
-
-- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item {
-  return @([LibraryTree childAtIndex:(int)index forNode:[item intValue]]);
-}
-
-- (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item {
-  return [LibraryTree numberOfChildrenForNode:[item intValue]] > 0;
-}
-
-- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
-  if (item == nil) return @"";
-
-  int node = [item intValue];
-  NSString *name = [LibraryTree nameForNode:node];
-
-  if ([LibraryTree isLeaf:node]) return [name stringByDeletingPathExtension];
-  return [NSString stringWithFormat:@"%@ (%d)", name, [LibraryTree numberOfChildrenForNode:node]];
-}
-
-#pragma mark - libmanager notifications
+#pragma mark - notifications
 
 - (void)searchFinished {
   [outlineView reloadData];
@@ -209,10 +204,16 @@
   if ([RescanState sharedState].state == kRescanStateReloadingLibrary) {
     [LibraryTreeOutlineViewState storeInodesAndLevelsForNodes:userExpandedItems];
   }
+
   [[RescanState sharedState] setupProgressIndicator:determinateRescanIndicator
                      indeterminateProgressIndicator:rescanIndicator
                                        andTextField:rescanMessage];
+  
   rescanStatusView.hidden = rescanMessage.isHidden;
+}
+
+- (void)streamsUpdated {
+  [outlineView reloadData];
 }
 
 #pragma mark - auto expanding
@@ -220,62 +221,74 @@
 - (void)autoExpandSearchResults {
   [self closeAllExceptWhatUserOpened];
 
-  if (_searchTextField.stringValue.length == 0) return;
+  if (_searchTextField.stringValue.length > 0) {
 
-  userIsManipulatingTree = NO;
-  for (int visibleRows = (int) (outlineView.frame.size.height/outlineView.rowHeight) - 5;;) {
-    NSInteger n = outlineView.numberOfRows;
-    NSMutableArray *itemsToExpand = [NSMutableArray array];
-    int k = -1;
+    userIsManipulatingTree = NO;
+    
+    for (int visibleRows = (int) (outlineView.frame.size.height/outlineView.rowHeight) - 5;;) {
+      NSInteger n = outlineView.numberOfRows;
+      NSMutableArray *itemsToExpand = [NSMutableArray array];
+      NSInteger k = -1;
 
-    for (int j = 0; j < 2; ++j) {
-      for (int i = 0; i < n; ++i) {
-        NSNumber *item = [outlineView itemAtRow:i];
-        if ([outlineView isItemExpanded:item] || [LibraryTree isLeaf:item.intValue]) continue;
-        int nChildren = [LibraryTree numberOfChildrenForNode:item.intValue];
-        if (nChildren == 0) continue;
+      for (int j = 0; j < 2; ++j) {
+        for (int i = 0; i < n; ++i) {
+          NSNumber *item = [outlineView itemAtRow:i];
+          if ([outlineView isItemExpanded:item] || [self.dataSource isItemLeaf:item]) continue;
+          NSInteger nChildren = [self.dataSource numberOfChildrenOfItem:item];
+          if (nChildren == 0) continue;
 
-        if (j == 0) {
-          if (k == -1 || k > nChildren) k = nChildren;
-        } else {
-          if (nChildren == k) [itemsToExpand addObject:item];
+          if (j == 0) {
+            if (k == -1 || k > nChildren) k = nChildren;
+          } else {
+            if (nChildren == k) [itemsToExpand addObject:item];
+          }
         }
       }
-    }
 
-    if (itemsToExpand.count == 0 || n + itemsToExpand.count*k > visibleRows) break;
-    for (id item in itemsToExpand) [outlineView expandItem:item];
+      if (itemsToExpand.count == 0 || n + itemsToExpand.count*k > visibleRows) break;
+      for (id item in itemsToExpand) [outlineView expandItem:item];
+    }
+    
+    userIsManipulatingTree = YES;
   }
-  userIsManipulatingTree = YES;
 }
 
 - (void)closeAllExceptWhatUserOpened {
   userIsManipulatingTree = NO;
+  
   [outlineView collapseItem:nil collapseChildren:YES];
-  for (id item in userExpandedItems) [self expandWholePathForItem:item];
+  for (id item in userExpandedItems) {
+    [self expandWholePathForItem:item];
+  }
+  
   userIsManipulatingTree = YES;
 }
 
 - (void)expandWholePathForItem:(id)item {
   NSMutableArray *arr = [NSMutableArray array];
-  for (int node = [item intValue]; node != -1; node = [LibraryTree parentOfNode:node]) [arr addObject:@(node)];
+  
+  for (id node = item; [node intValue] != -1; node = [self.dataSource parentOfItem:node]) {
+    [arr addObject:node];
+  }
+  
   for(; arr.count > 0; [arr removeLastObject]) {
     [outlineView expandItem:[arr lastObject]];
   }
 }
 
 - (void)itemDidExpand:(NSNotification *)notification {
-  if (notification.object != outlineView || userIsManipulatingTree == NO) return;
+  if (notification.object != outlineView || userIsManipulatingTree == NO) {
+    return;
+  }
 
   id item = notification.userInfo[@"NSObject"];
 
   [userExpandedItems addObject:item];
 
-  for (int node = [item intValue]; [LibraryTree numberOfChildrenForNode:node] == 1;) {
-    node = [LibraryTree childAtIndex:0 forNode:node];
-    id child = @(node);
-    [outlineView expandItem:child];
-    [userExpandedItems addObject:child];
+  for (; [self.dataSource numberOfChildrenOfItem:item] == 1;) {
+    item = [self.dataSource childAtIndex:0 ofItem:item];
+    [outlineView expandItem:item];
+    [userExpandedItems addObject:item];
   }
 }
 

@@ -15,4 +15,6 @@ extern NSString * const kLibrarySearchFinishedNotification;
 + (void)performSearch:(NSString *)query;
 + (void)resetSearchState;
 
++ (BOOL)currentQueryMatchesString:(NSString *)string;
+
 @end

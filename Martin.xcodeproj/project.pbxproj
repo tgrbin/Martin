@@ -212,6 +212,8 @@
 		8D05488F19A08A04003F8210 /* NSString+Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D05488E19A08A04003F8210 /* NSString+Stream.m */; };
 		8D17D42719A8908900555D68 /* LibraryTreeSearch.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8D17D42619A8908900555D68 /* LibraryTreeSearch.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		8D17D42C19A894C500555D68 /* LibraryTreeOutlineViewState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8D17D42B19A894C500555D68 /* LibraryTreeOutlineViewState.mm */; };
+		8D17D42F19A897B000555D68 /* LibraryOutlineViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D17D42E19A897B000555D68 /* LibraryOutlineViewDataSource.m */; };
+		8D17D43219A9043C00555D68 /* QueuePlaylist.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8D17D43119A9043C00555D68 /* QueuePlaylist.mm */; };
 		8D3CB8FF18915C3800D6F471 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 8D3CB8FD18915C3800D6F471 /* LICENSE */; };
 		8D3CB90018915C3800D6F471 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 8D3CB8FE18915C3800D6F471 /* README.md */; };
 		8D76AB1218831E4500799617 /* PlaylistTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D76AB1118831E4500799617 /* PlaylistTableView.m */; };
@@ -546,6 +548,11 @@
 		8D17D42919A8930F00555D68 /* LibrarySong.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibrarySong.h; sourceTree = "<group>"; };
 		8D17D42A19A894C500555D68 /* LibraryTreeOutlineViewState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryTreeOutlineViewState.h; sourceTree = "<group>"; };
 		8D17D42B19A894C500555D68 /* LibraryTreeOutlineViewState.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LibraryTreeOutlineViewState.mm; sourceTree = "<group>"; };
+		8D17D42D19A897B000555D68 /* LibraryOutlineViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryOutlineViewDataSource.h; sourceTree = "<group>"; };
+		8D17D42E19A897B000555D68 /* LibraryOutlineViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryOutlineViewDataSource.m; sourceTree = "<group>"; };
+		8D17D43019A9043C00555D68 /* QueuePlaylist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueuePlaylist.h; sourceTree = "<group>"; };
+		8D17D43119A9043C00555D68 /* QueuePlaylist.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = QueuePlaylist.mm; sourceTree = "<group>"; };
+		8D17D43319A9060C00555D68 /* Playlist+private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Playlist+private.h"; sourceTree = "<group>"; };
 		8D3CB8FD18915C3800D6F471 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = SOURCE_ROOT; };
 		8D3CB8FE18915C3800D6F471 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
 		8D76AB1018831E4500799617 /* PlaylistTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistTableView.h; sourceTree = "<group>"; };
@@ -804,6 +811,8 @@
 			children = (
 				79F5BC0E14363BE10040DF35 /* LibraryOutlineViewManager.h */,
 				79F5BC0F14363BE10040DF35 /* LibraryOutlineViewManager.m */,
+				8D17D42D19A897B000555D68 /* LibraryOutlineViewDataSource.h */,
+				8D17D42E19A897B000555D68 /* LibraryOutlineViewDataSource.m */,
 				795C20CC14378D9600A61B21 /* PlaylistTableManager.h */,
 				795C20CD14378D9600A61B21 /* PlaylistTableManager.m */,
 				79CF70ED17EE33DB0057E678 /* TabsManager.h */,
@@ -1148,6 +1157,9 @@
 				792DC196166B5D390003E664 /* Tags.m */,
 				795C20AC14377A3D00A61B21 /* Playlist.h */,
 				795C20AD14377A3D00A61B21 /* Playlist.mm */,
+				8D17D43319A9060C00555D68 /* Playlist+private.h */,
+				8D17D43019A9043C00555D68 /* QueuePlaylist.h */,
+				8D17D43119A9043C00555D68 /* QueuePlaylist.mm */,
 				79DEAD60165BD81C0017E4DD /* PlaylistItem.h */,
 				79DEAD61165BD81C0017E4DD /* PlaylistItem.mm */,
 			);
@@ -1450,6 +1462,7 @@
 				795022E317E42B5100212801 /* MartinSliderCell.m in Sources */,
 				79FF1422142F1DB100E27235 /* LibManager.mm in Sources */,
 				8D17D42719A8908900555D68 /* LibraryTreeSearch.mm in Sources */,
+				8D17D43219A9043C00555D68 /* QueuePlaylist.mm in Sources */,
 				79CF709F17EE32620057E678 /* MMProgressIndicator.m in Sources */,
 				79F5BC1014363BE10040DF35 /* LibraryOutlineViewManager.m in Sources */,
 				79CF70B417EE32620057E678 /* MMAquaTabStyle.m in Sources */,
@@ -1531,6 +1544,7 @@
 				790992231706B4A3007BE3C4 /* LastFMPreferencesViewController.m in Sources */,
 				795022EF17E436A600212801 /* MartinSlider.m in Sources */,
 				790992281706B501007BE3C4 /* ShortcutsPreferencesViewController.m in Sources */,
+				8D17D42F19A897B000555D68 /* LibraryOutlineViewDataSource.m in Sources */,
 				79CF70B317EE32620057E678 /* MMAdiumTabStyle.m in Sources */,
 				7909922C1706B5AF007BE3C4 /* PreferencesViewController.m in Sources */,
 				79CF70AF17EE32620057E678 /* NSCell+MMTabBarViewExtensions.m in Sources */,

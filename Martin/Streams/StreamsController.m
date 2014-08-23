@@ -22,8 +22,11 @@ NSString * const kStreamsUpdatedNotification = @"kStreamsUpdatedNotification";
 
 @implementation StreamsController
 
-- (void)awakeFromNib {
-  [self loadStreamsIfNecessary];
+- (id)init {
+  if (self = [super init]) {
+    [self loadStreamsIfNecessary];
+  }
+  return self;
 }
 
 - (Stream *)streamWithURLString:(NSString *)urlString {

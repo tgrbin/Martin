@@ -15,7 +15,7 @@
 
 @implementation PlaylistNameGuesser
 
-// arr contains only treenodes or only playlistitems
+// arr contains only outline view items or only playlistitems
 // playlistitems won't be added to playlist, they should already be in there,
 // except when called just with root item
 + (BOOL)guessNameAndAddItems:(NSArray *)arr toPlaylist:(Playlist *)playlist {
@@ -55,6 +55,7 @@
         [self addInt:1 toKey:folderName inDictionary:counts];
       }
     } else {
+      // TODO: use outline view data source here!
       int node = [item intValue];
       int song = [LibraryTree songFromNode:node];
       if (song != -1) node = [LibraryTree parentOfNode:node];

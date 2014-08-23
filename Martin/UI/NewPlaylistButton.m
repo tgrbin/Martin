@@ -8,9 +8,6 @@
 
 #import "NewPlaylistButton.h"
 #import "MartinAppDelegate.h"
-#import "PlaylistNameGuesser.h"
-#import "Playlist.h"
-#import "DragDataConverter.h"
 
 @implementation NewPlaylistButton
 

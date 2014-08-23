@@ -11,6 +11,7 @@
 #import "PlaylistPersistence.h"
 #import "PlaylistTabBarItem.h"
 #import "Playlist.h"
+#import "QueuePlaylist.h"
 #import "DefaultsManager.h"
 #import "MartinAppDelegate.h"
 #import "PlaylistNameGuesser.h"
@@ -147,7 +148,7 @@
 }
 
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes andSuggestedName:(NSString *)name {
-  [self addPlaylist:[[Playlist alloc] initWithSuggestedName:name andTreeNodes:nodes]];
+  [self addPlaylist:[[Playlist alloc] initWithTreeNodes:nodes andSuggestedName:name]];
 }
 
 - (void)addNewPlaylistWithTreeNodes:(NSArray *)nodes {

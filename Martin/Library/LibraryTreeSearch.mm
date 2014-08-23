@@ -29,6 +29,11 @@ static int kmpLookup[kBuffSize][kBuffSize];
 static BOOL queryHits[kBuffSize];
 static int numberOfHits;
 
++ (void)initialize {
+  searchLock = [NSLock new];
+  previousSearchQuery = @"";
+}
+
 + (void)resetSearchState {
   @synchronized(searchLock) {
     [previousSearchQuery release];
@@ -37,10 +42,6 @@ static int numberOfHits;
 }
 
 + (void)performSearch:(NSString *)query {
-  if (searchLock == nil) {
-    searchLock = [NSLock new];
-    previousSearchQuery = @"";
-  }
 
   if (query.length > kBuffSize/2) return;
   
@@ -49,8 +50,9 @@ static int numberOfHits;
       [pendingSearchQuery release];
       pendingSearchQuery = [query retain];
       return;
+    } else {
+      nowSearching = YES;
     }
-    nowSearching = YES;
   }
   
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -88,6 +90,22 @@ static int numberOfHits;
       [[NSNotificationCenter defaultCenter] postNotificationName:kLibrarySearchFinishedNotification object:nil];
     });
   });
+}
+
++ (BOOL)currentQueryMatchesString:(NSString *)string {
+  BOOL matches = YES;
+  
+  string = [string lowercaseString];
+  
+  for (NSString *word in [previousSearchQuery componentsSeparatedByString:@" "]) {
+    if (word.length > 0) {
+      if ([string rangeOfString:word options:NSCaseInsensitiveSearch].location == NSNotFound) {
+        matches = NO;
+      }
+    }
+  }
+  
+  return matches;
 }
 
 static void initKMPStructures(NSString *query) {

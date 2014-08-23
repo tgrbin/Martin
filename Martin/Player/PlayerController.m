@@ -9,6 +9,7 @@
 #import "PlayerController.h"
 #import "LastFM.h"
 #import "Playlist.h"
+#import "QueuePlaylist.h"
 #import "PlaylistItem.h"
 #import "NSObject+Observe.h"
 #import "PlayerStatusTextField.h"

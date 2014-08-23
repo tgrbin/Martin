@@ -5,6 +5,9 @@
 //  Created by Tomislav Grbin on 10/1/11.
 //
 
+// C++ header, included only by QueuePlaylist.mm and Playlist.mm
+// Other clients should use PlaylistPublic.h
+
 #import <Foundation/Foundation.h>
 
 extern NSString * const kPlaylistCurrentItemChanged;
@@ -20,7 +23,7 @@ extern NSString * const kPlaylistCurrentItemChanged;
 
 - (id)initWithName:(NSString *)n andPlaylistItems:(NSArray *)arr;
 - (id)initWithName:(NSString *)n andTreeNodes:(NSArray *)arr;
-- (id)initWithSuggestedName:(NSString *)n andTreeNodes:(NSArray *)arr;
+- (id)initWithTreeNodes:(NSArray *)arr andSuggestedName:(NSString *)name;
 
 // these two method suggest playlist name based on items
 - (id)initWithTreeNodes:(NSArray *)arr;
@@ -72,25 +75,5 @@ extern NSString * const kPlaylistCurrentItemChanged;
 - (NSIndexSet *)indexesAfterSorting;
 
 - (BOOL)isQueue;
-
-@end
-
-@interface QueuePlaylist : Playlist
-
-- (id)initWithName:(NSString *)n andPlaylistItems:(NSArray *)arr;
-- (id)initWithFileStream:(FILE *)f;
-
-- (Playlist *)currentItemPlaylist;
-
-- (void)removeFirstItem;
-- (void)clear;
-
-// need playlists array to figure out indexes of pointers it has in items origin
-- (void)dumpItemsOriginWithPlaylists:(NSArray *)playlists toFileStream:(FILE *)f;
-
-// set itemsOrigin from this playlist to nil
-- (void)willRemovePlaylist:(Playlist *)playlist;
-
-- (void)initItemOriginWithIndexArray:(NSArray *)indexArray andPlaylists:(NSArray *)playlists;
 
 @end

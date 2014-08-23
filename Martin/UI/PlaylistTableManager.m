@@ -9,6 +9,7 @@
 #import "MartinAppDelegate.h"
 #import "LibManager.h"
 #import "Playlist.h"
+#import "QueuePlaylist.h"
 #import "PlaylistItem.h"
 #import "Tags.h"
 #import "TagsUtils.h"
@@ -17,7 +18,6 @@
 #import "ShortcutBinder.h"
 #import "RescanState.h"
 #import "PlaylistNameGuesser.h"
-#import "StreamsController.h"
 #import "Stream.h"
 
 @implementation PlaylistTableManager {

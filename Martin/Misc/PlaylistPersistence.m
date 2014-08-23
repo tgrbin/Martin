@@ -8,6 +8,7 @@
 
 #import "PlaylistPersistence.h"
 #import "Playlist.h"
+#import "QueuePlaylist.h"
 #import "PlaylistItem.h"
 #import "ResourcePath.h"
 #import "Tags.h"

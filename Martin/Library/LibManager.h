@@ -10,7 +10,9 @@
 @interface LibManager : NSObject
 
 + (void)initLibrary;
-+ (void)rescanPaths:(NSArray *)paths recursively:(NSArray *)recursively;
+
 + (void)rescanAll;
+
++ (void)rescanPaths:(NSArray *)paths recursively:(NSArray *)recursively;
 
 @end

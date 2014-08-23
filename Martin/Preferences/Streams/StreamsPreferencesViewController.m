@@ -7,7 +7,6 @@
 //
 
 #import "StreamsPreferencesViewController.h"
-#import "StreamsController.h"
 #import "MartinAppDelegate.h"
 #import "Stream.h"
 #import "DragDataConverter.h"
