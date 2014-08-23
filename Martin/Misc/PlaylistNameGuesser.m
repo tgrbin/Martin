@@ -58,12 +58,14 @@
     } else {
       LibraryOutlineViewDataSource *dataSource = [MartinAppDelegate get].libraryOutlineViewManager.dataSource;
 
-      if ([dataSource isItemLeaf:item]) {
-        item = [dataSource parentOfItem:item];
+      NSString *potentialPlaylistName = [dataSource nameForItem:item];
+      
+      if ([dataSource isItemLeaf:item] == YES) {
+        potentialPlaylistName = [dataSource nameForItem:[dataSource parentOfItem:item]];
       }
 
       [self addInt:[playlist addTreeNodes:@[item]]
-             toKey:[dataSource nameForItem:item]
+             toKey:potentialPlaylistName
       inDictionary:counts];
     }
   }
