@@ -52,6 +52,10 @@
   [self observe:NSOutlineViewItemDidExpandNotification withAction:@selector(itemDidExpand:)];
   [self observe:NSOutlineViewItemDidCollapseNotification withAction:@selector(itemDidCollapse:)];
 
+  [[MartinAppDelegate get].streamsController addObserver:self
+                                              forKeyPath:@"showStreamsInLibraryPane"
+                                                 options:0
+                                                 context:nil];
   outlineView.target = self;
   outlineView.doubleAction = @selector(itemDoubleClicked);
 
@@ -204,6 +208,12 @@
 
 - (void)streamsUpdated {
   [outlineView reloadData];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+  if ([keyPath isEqualToString:@"showStreamsInLibraryPane"]) {
+    [outlineView reloadData];
+  }
 }
 
 #pragma mark - auto expanding
