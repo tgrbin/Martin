@@ -12,6 +12,7 @@
 #import "LibraryTree.h"
 #import "SongsFinder.h"
 #import "MartinAppDelegate.h"
+#import "LibraryOutlineViewDataSource.h"
 
 @implementation PlaylistNameGuesser
 
@@ -55,13 +56,14 @@
         [self addInt:1 toKey:folderName inDictionary:counts];
       }
     } else {
-      // TODO: use outline view data source here!
-      int node = [item intValue];
-      int song = [LibraryTree songFromNode:node];
-      if (song != -1) node = [LibraryTree parentOfNode:node];
+      LibraryOutlineViewDataSource *dataSource = [MartinAppDelegate get].libraryOutlineViewManager.dataSource;
+
+      if ([dataSource isItemLeaf:item]) {
+        item = [dataSource parentOfItem:item];
+      }
 
       [self addInt:[playlist addTreeNodes:@[item]]
-             toKey:[LibraryTree nameForNode:node]
+             toKey:[dataSource nameForItem:item]
       inDictionary:counts];
     }
   }

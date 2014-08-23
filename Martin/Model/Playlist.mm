@@ -16,6 +16,7 @@
 #import "Tags.h"
 #import "TagsUtils.h"
 #import "PlaylistNameGuesser.h"
+#import "LibraryOutlineViewDataSource.h"
 
 #import <algorithm>
 #import <numeric>
@@ -200,18 +201,13 @@ using namespace std;
 }
 
 - (void)traverseNodeAndAddItems:(int)node {
-  int song = [LibraryTree songFromNode:node];
+  LibraryOutlineViewDataSource *dataSource = [MartinAppDelegate get].libraryOutlineViewManager.dataSource;
   
-  if (song == -1) {
-    int n = [LibraryTree numberOfChildrenForNode:node];
-    for (int i = 0; i < n; ++i) {
-      [self traverseNodeAndAddItems:[LibraryTree childAtIndex:i forNode:node]];
-    }
-  } else {
-    PlaylistItem *pi = [[PlaylistItem alloc] initWithLibrarySong:song];
-    playlistItems.push_back(pi);
-    if (isQueue) itemOrigin.push_back(nil);
-  }
+  [dataSource enumeratePlaylistItemsFromItem:@(node)
+                                   withBlock:^(PlaylistItem *playlistItem) {
+                                     playlistItems.push_back(playlistItem);
+                                     if (isQueue) itemOrigin.push_back(nil);
+                                   }];
 }
 
 - (int)reorderItemsAtRows:(NSArray *)rows toPos:(int)pos {

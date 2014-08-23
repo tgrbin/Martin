@@ -11,6 +11,8 @@
 #import "MartinAppDelegate.h"
 #import "Stream.h"
 #import "LibraryTreeSearch.h"
+#import "PlaylistItem.h"
+#import "DragDataConverter.h"
 
 // Streams item has value of -1, it's children are numbered -2, -3, ...
 static const int kOutlineViewStreamsItem = -1;
@@ -19,6 +21,10 @@ static const int kOutlineViewStreamsItem = -1;
 @end
 
 @implementation LibraryOutlineViewDataSource
+
+- (NSString *)nameForItem:(id)item {
+  return [self nameForItem:item withChildrenCount:NO];
+}
 
 - (BOOL)isItemLeaf:(id)item {
   return [self numberOfChildrenOfItem:item] == 0;
@@ -82,6 +88,38 @@ static const int kOutlineViewStreamsItem = -1;
   }
 }
 
+- (void)enumeratePlaylistItemsFromItem:(id)item
+                             withBlock:(void (^)(PlaylistItem *))block
+{
+  NSMutableArray *stack = [NSMutableArray new];
+  [stack addObject:item];
+  
+  while (stack.count > 0) {
+    id top = [stack lastObject];
+    [stack removeLastObject];
+    
+    if ([self isItemLeaf:top] == YES) {
+      
+      PlaylistItem *playlistItem;
+      
+      if ([self isItemFromLibrary:top]) {
+        int song = [LibraryTree songFromNode:[top intValue]];
+        playlistItem = [[PlaylistItem alloc] initWithLibrarySong:song];
+      } else {
+        Stream *stream = [self streams][-[top intValue] - 2];
+        playlistItem = [stream createPlaylistItem];
+      }
+      
+      block(playlistItem);
+      
+    } else {
+      for (int i = 0; i < [self numberOfChildrenOfItem:top]; ++i) {
+        [stack addObject:[self childAtIndex:i ofItem:top]];
+      }
+    }
+  }
+}
+
 #pragma mark - data source
 
 - (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item {
@@ -97,31 +135,17 @@ static const int kOutlineViewStreamsItem = -1;
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
-  int value = [item intValue];
-  
-  if (value == 0) {
-  
-    return @"";
-  
-  } else if (value == kOutlineViewStreamsItem) {
-  
-    return [NSString stringWithFormat:@"Streams (%ld)", [self streams].count];
-  
-  } else if (value < kOutlineViewStreamsItem) {
-  
-    Stream *stream = [self streams][-value - 2];
-    return stream.name;
-    
-  } else {
-    NSString *name = [LibraryTree nameForNode:value];
-
-    if ([LibraryTree isLeaf:value]) {
-      return [name stringByDeletingPathExtension];
-    } else {
-      return [NSString stringWithFormat:@"%@ (%d)", name, [LibraryTree numberOfChildrenForNode:value]];
-    }
-  }
+  return [self nameForItem:item withChildrenCount:YES];
 }
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pboard {
+  [pboard declareTypes:@[kDragTypeTreeNodes] owner:nil];
+  [pboard setData:[DragDataConverter dataFromArray:items]
+          forType:kDragTypeTreeNodes];
+  return YES;
+}
+
+#pragma mark - helper
 
 - (BOOL)showingStreams {
   return [MartinAppDelegate get].streamsController.showStreamsInLibraryPane;
@@ -141,6 +165,48 @@ static const int kOutlineViewStreamsItem = -1;
   }
   
   return streamsMatchingSearch;
+}
+
+- (NSString *)nameForItem:(id)item withChildrenCount:(BOOL)showChildrenCount {
+  int value = [item intValue];
+  
+  if (value == 0) {
+    
+    return @"";
+    
+  } else if (value == kOutlineViewStreamsItem) {
+    
+    return [self formatItemName:@"Streams"
+                      withCount:[self streams].count
+                      showCount:showChildrenCount];
+    
+  } else if (value < kOutlineViewStreamsItem) {
+    
+    Stream *stream = [self streams][-value - 2];
+    return stream.name;
+    
+  } else {
+    NSString *name = [LibraryTree nameForNode:value];
+    
+    if ([LibraryTree isLeaf:value]) {
+      return [name stringByDeletingPathExtension];
+    } else {
+      return [self formatItemName:name
+                        withCount:[LibraryTree numberOfChildrenForNode:value]
+                        showCount:showChildrenCount];
+    }
+  }
+}
+
+- (NSString *)formatItemName:(NSString *)name
+                   withCount:(NSInteger)count
+                   showCount:(BOOL)showCount
+{
+  if (showCount == NO) {
+    return name;
+  } else {
+    return [NSString stringWithFormat:@"%@ (%ld)", name, count];
+  }
 }
 
 @end

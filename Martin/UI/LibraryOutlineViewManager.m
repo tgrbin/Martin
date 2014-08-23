@@ -14,7 +14,6 @@
 #import "RescanProxy.h"
 #import "RescanState.h"
 #import "TreeStateManager.h"
-#import "DragDataConverter.h"
 #import "NSObject+Observe.h"
 #import "ShortcutBinder.h"
 #import "DefaultsManager.h"
@@ -92,15 +91,6 @@
     [_searchTextField resignFirstResponder];
     [LibraryTreeSearch performSearch:searchQuery];
   }
-}
-
-#pragma mark - drag and drop
-
-- (BOOL)outlineView:(NSOutlineView *)outlineView writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pboard {
-  [pboard declareTypes:@[kDragTypeTreeNodes] owner:nil];
-  [pboard setData:[DragDataConverter dataFromArray:items]
-          forType:kDragTypeTreeNodes];
-  return YES;
 }
 
 #pragma mark - mouse events
