@@ -9,7 +9,7 @@
 #import "PlaylistNameGuesser.h"
 #import "Playlist.h"
 #import "PlaylistItem.h"
-#import "Tree.h"
+#import "LibraryTree.h"
 #import "SongsFinder.h"
 #import "MartinAppDelegate.h"
 
@@ -56,11 +56,11 @@
       }
     } else {
       int node = [item intValue];
-      int song = [Tree songFromNode:node];
-      if (song != -1) node = [Tree parentOfNode:node];
+      int song = [LibraryTree songFromNode:node];
+      if (song != -1) node = [LibraryTree parentOfNode:node];
 
       [self addInt:[playlist addTreeNodes:@[item]]
-             toKey:[Tree nameForNode:node]
+             toKey:[LibraryTree nameForNode:node]
       inDictionary:counts];
     }
   }

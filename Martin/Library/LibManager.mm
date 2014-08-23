@@ -6,11 +6,12 @@
 //
 
 #import "LibManager.h"
-#import "LibraryFolder.h"
+#import "LibraryFoldersController.h"
 #import "ID3Reader.h"
-#import "Tree.h"
+#import "LibraryTree.h"
+#import "LibrarySong.h"
 #import "Tags.h"
-#import "TreeNode.h"
+#import "LibraryTreeNode.h"
 #import "FolderWatcher.h"
 #import "RescanState.h"
 #import "ResourcePath.h"
@@ -58,15 +59,15 @@ static tr1::unordered_set<uint64> pathsToRescan[2];
     initWalk();
     
     BOOL watchingFolders = [FolderWatcher sharedWatcher].enabled;
-    for (NSString *s in [LibraryFolder libraryFolders]) {
+    for (NSString *s in [LibraryFoldersController libraryFolders]) {
       const char *folder = [s UTF8String];
       
       if (watchingFolders) {
         if (stat(folder, &statBuff) == 0) {
-          int node = [Tree nodeByInode:statBuff.st_ino];
+          int node = [LibraryTree nodeByInode:statBuff.st_ino];
           if (node == -1) walkFolder(folder, YES);
           else {
-            if ([Tree treeNodeDataForP:node]->p_parent > 0) {
+            if ([LibraryTree treeNodeDataForP:node]->p_parent > 0) {
               strcpy(pathBuff, folder);
               *strrchr(pathBuff, '/') = 0;
             }
@@ -134,14 +135,14 @@ static void endWalk() {
 #pragma mark - load library
 
 static int readTreeNode(FILE *f, int parent) {
-  int node = [Tree addChild:lineBuff+2 parent:parent];
-  fscanf(f, "%lld\n", &[Tree treeNodeDataForP:node]->inode);
-  [Tree addToNodeByInodeMap:node];
+  int node = [LibraryTree addChild:lineBuff+2 parent:parent];
+  fscanf(f, "%lld\n", &[LibraryTree treeNodeDataForP:node]->inode);
+  [LibraryTree addToNodeByInodeMap:node];
   return node;
 }
 
 static void loadLibrary() {
-  [Tree clearTree];
+  [LibraryTree clearTree];
   
   FILE *f = fopen([ResourcePath libPath], "r");
   if (f == NULL) return;
@@ -157,11 +158,11 @@ static void loadLibrary() {
       treePath.pop_back();
     } else if (firstChar == '{') {
       int node = readTreeNode(f, treePath.back());
-      int song = [Tree newSong];
-      struct LibrarySong *songData = [Tree songDataForP:song];
+      int song = [LibraryTree newSong];
+      struct LibrarySong *songData = [LibraryTree songDataForP:song];
       
       songData->p_treeLeaf = node;
-      [Tree treeNodeDataForP:node]->p_song = song;
+      [LibraryTree treeNodeDataForP:node]->p_song = song;
       
       fscanf(f, "%ld", &songData->lastModified);
       fscanf(f, "%d", &songData->lengthInSeconds);
@@ -277,7 +278,7 @@ static void walkSong(const char *name, int p_song, const struct stat *statBuff) 
   walkPrint("%lld", statBuff->st_ino);
   walkPrint("%ld", lastModified);
   
-  struct LibrarySong *song = (p_song == -1)? NULL: [Tree songDataForP:p_song];
+  struct LibrarySong *song = (p_song == -1)? NULL: [LibraryTree songDataForP:p_song];
   
   if (p_song == -1 || song->lastModified != lastModified) {
     needsRescan.push_back(lineNumber - 3);
@@ -310,7 +311,7 @@ static int ftw_callback(const char *filename, const struct stat *stat_struct, in
     walkPrint("%d", inode);
     if (currentLevel > 0) folderIsEmpty = NO;
   } else {
-    if ([FileExtensionChecker isExtensionAcceptable:filename]) walkSong(basename, [Tree songByInode:inode], stat_struct);
+    if ([FileExtensionChecker isExtensionAcceptable:filename]) walkSong(basename, [LibraryTree songByInode:inode], stat_struct);
     folderIsEmpty = NO;
   }
   
@@ -349,7 +350,7 @@ static void walkFolderNonRecursively(BOOL _onRootLevel) {
         continue;
       }
       
-      int node = [Tree nodeByInode:entry->d_ino];
+      int node = [LibraryTree nodeByInode:entry->d_ino];
       strcat(pathBuff, "/");
       strcat(pathBuff, entry->d_name);
       
@@ -357,13 +358,13 @@ static void walkFolderNonRecursively(BOOL _onRootLevel) {
         if (node == -1) {
           walkFolder(pathBuff, NO);
         } else {
-          [Tree setName:entry->d_name forNode:node];
+          [LibraryTree setName:entry->d_name forNode:node];
           pathBuff[pathLen] = 0;
           walkTreeNode(node, NO);
         }
       } else if (entry->d_type == DT_REG && [FileExtensionChecker isExtensionAcceptable:entry->d_name]) {
         if (stat(pathBuff, &statBuff) == 0) {
-          int p_song = (node == -1)? -1: [Tree treeNodeDataForP:node]->p_song;
+          int p_song = (node == -1)? -1: [LibraryTree treeNodeDataForP:node]->p_song;
           walkSong(entry->d_name, p_song, &statBuff);
         }
       }
@@ -376,8 +377,8 @@ static void walkFolderNonRecursively(BOOL _onRootLevel) {
   }
 }
 
-static void dumpSong(struct TreeNode *node) {
-  struct LibrarySong *song = [Tree songDataForP:node->p_song];
+static void dumpSong(struct LibraryTreeNode *node) {
+  struct LibrarySong *song = [LibraryTree songDataForP:node->p_song];
   
   walkPrint("{ %s", node->name);
   walkPrint("%lld", node->inode);
@@ -390,7 +391,7 @@ static void dumpSong(struct TreeNode *node) {
 }
 
 static void walkTreeNode(int p_node, BOOL _onRootLevel) {
-  struct TreeNode *node = [Tree treeNodeDataForP:p_node];
+  struct LibraryTreeNode *node = [LibraryTree treeNodeDataForP:p_node];
   
   if (node->p_song != -1) {
     dumpSong(node);

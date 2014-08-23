@@ -7,7 +7,7 @@
 //
 
 #import "FolderWatcher.h"
-#import "LibraryFolder.h"
+#import "LibraryFoldersController.h"
 #import "RescanProxy.h"
 #import "DefaultsManager.h"
 
@@ -51,12 +51,12 @@ static BOOL eventArrived;
 }
 
 - (void)startWatchingFolders {
-  if ([LibraryFolder libraryFolders].count == 0) return;
+  if ([LibraryFoldersController libraryFolders].count == 0) return;
 
   eventStream = FSEventStreamCreate(NULL,
                                     &handleEvent,
                                     NULL,
-                                    (CFArrayRef)[LibraryFolder libraryFolders],
+                                    (CFArrayRef)[LibraryFoldersController libraryFolders],
                                     [[DefaultsManager objectForKey:kDefaultsKeyLastFSEvent] longLongValue],
                                     eventLatency,
                                     kFSEventStreamCreateFlagNone);

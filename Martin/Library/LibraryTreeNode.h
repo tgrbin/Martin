@@ -10,7 +10,7 @@
 
 using namespace std;
 
-struct TreeNode {
+struct LibraryTreeNode {
   char *name;
   vector<int> children;
 

@@ -6,10 +6,10 @@
 //
 //
 
-#import "LibraryFolder.h"
+#import "LibraryFoldersController.h"
 #import "DefaultsManager.h"
 
-@implementation LibraryFolder
+@implementation LibraryFoldersController
 
 + (NSMutableArray *)libraryFolders {
   static NSMutableArray *arr = nil;

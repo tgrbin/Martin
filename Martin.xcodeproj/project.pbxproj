@@ -18,7 +18,7 @@
 		7909CEA1167DBDE90011E6A3 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7909CEA0167DBDE80011E6A3 /* IOKit.framework */; };
 		79242E1E16569A47006379D6 /* ID3Reader.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E1D16569A47006379D6 /* ID3Reader.m */; };
 		79242E2016569BA3006379D6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79242E1F16569BA3006379D6 /* AudioToolbox.framework */; };
-		79242E231656AB1C006379D6 /* LibraryFolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E221656AB1C006379D6 /* LibraryFolder.m */; };
+		79242E231656AB1C006379D6 /* LibraryFoldersController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E221656AB1C006379D6 /* LibraryFoldersController.m */; };
 		79242E301656B0CF006379D6 /* PreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E2E1656B0CF006379D6 /* PreferencesWindowController.m */; };
 		79242E311656B0CF006379D6 /* PreferencesWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79242E2F1656B0CF006379D6 /* PreferencesWindowController.xib */; };
 		792831A117E35BED00223E5C /* fwd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7928319317E35BED00223E5C /* fwd.png */; };
@@ -32,7 +32,7 @@
 		792831AD17E35BED00223E5C /* shuffle.png in Resources */ = {isa = PBXBuildFile; fileRef = 7928319F17E35BED00223E5C /* shuffle.png */; };
 		792831AE17E35BED00223E5C /* shuffle_h.png in Resources */ = {isa = PBXBuildFile; fileRef = 792831A017E35BED00223E5C /* shuffle_h.png */; };
 		792DC197166B5D390003E664 /* Tags.m in Sources */ = {isa = PBXBuildFile; fileRef = 792DC196166B5D390003E664 /* Tags.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		792DC19B166B6E5D0003E664 /* Tree.mm in Sources */ = {isa = PBXBuildFile; fileRef = 792DC19A166B6E5D0003E664 /* Tree.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		792DC19B166B6E5D0003E664 /* LibraryTree.mm in Sources */ = {isa = PBXBuildFile; fileRef = 792DC19A166B6E5D0003E664 /* LibraryTree.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		795022E017E42A4B00212801 /* MartinToggleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 795022DF17E42A4B00212801 /* MartinToggleButton.m */; };
 		795022E317E42B5100212801 /* MartinSliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 795022E217E42B5100212801 /* MartinSliderCell.m */; };
 		795022E917E42C4800212801 /* handle.png in Resources */ = {isa = PBXBuildFile; fileRef = 795022E517E42C4800212801 /* handle.png */; };
@@ -210,6 +210,8 @@
 		8D05488919A07BB2003F8210 /* StreamsController+urlPrompt.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D05488819A07BB2003F8210 /* StreamsController+urlPrompt.m */; };
 		8D05488C19A07CB5003F8210 /* StreamsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D05488B19A07CB5003F8210 /* StreamsController.m */; };
 		8D05488F19A08A04003F8210 /* NSString+Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D05488E19A08A04003F8210 /* NSString+Stream.m */; };
+		8D17D42719A8908900555D68 /* LibraryTreeSearch.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8D17D42619A8908900555D68 /* LibraryTreeSearch.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		8D17D42C19A894C500555D68 /* LibraryTreeOutlineViewState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8D17D42B19A894C500555D68 /* LibraryTreeOutlineViewState.mm */; };
 		8D3CB8FF18915C3800D6F471 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 8D3CB8FD18915C3800D6F471 /* LICENSE */; };
 		8D3CB90018915C3800D6F471 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 8D3CB8FE18915C3800D6F471 /* README.md */; };
 		8D76AB1218831E4500799617 /* PlaylistTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D76AB1118831E4500799617 /* PlaylistTableView.m */; };
@@ -260,8 +262,8 @@
 		79242E1C16569A47006379D6 /* ID3Reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ID3Reader.h; sourceTree = "<group>"; };
 		79242E1D16569A47006379D6 /* ID3Reader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ID3Reader.m; sourceTree = "<group>"; };
 		79242E1F16569BA3006379D6 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		79242E211656AB1B006379D6 /* LibraryFolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryFolder.h; sourceTree = "<group>"; };
-		79242E221656AB1C006379D6 /* LibraryFolder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryFolder.m; sourceTree = "<group>"; };
+		79242E211656AB1B006379D6 /* LibraryFoldersController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryFoldersController.h; sourceTree = "<group>"; };
+		79242E221656AB1C006379D6 /* LibraryFoldersController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryFoldersController.m; sourceTree = "<group>"; };
 		79242E2D1656B0CF006379D6 /* PreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesWindowController.h; sourceTree = "<group>"; };
 		79242E2E1656B0CF006379D6 /* PreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesWindowController.m; sourceTree = "<group>"; };
 		79242E2F1656B0CF006379D6 /* PreferencesWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PreferencesWindowController.xib; sourceTree = "<group>"; };
@@ -277,8 +279,8 @@
 		792831A017E35BED00223E5C /* shuffle_h.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuffle_h.png; sourceTree = "<group>"; };
 		792DC195166B5D390003E664 /* Tags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tags.h; sourceTree = "<group>"; };
 		792DC196166B5D390003E664 /* Tags.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tags.m; sourceTree = "<group>"; };
-		792DC199166B6E5D0003E664 /* Tree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tree.h; sourceTree = "<group>"; };
-		792DC19A166B6E5D0003E664 /* Tree.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Tree.mm; sourceTree = "<group>"; };
+		792DC199166B6E5D0003E664 /* LibraryTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryTree.h; sourceTree = "<group>"; };
+		792DC19A166B6E5D0003E664 /* LibraryTree.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LibraryTree.mm; sourceTree = "<group>"; };
 		795022DE17E42A4B00212801 /* MartinToggleButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MartinToggleButton.h; sourceTree = "<group>"; };
 		795022DF17E42A4B00212801 /* MartinToggleButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MartinToggleButton.m; sourceTree = "<group>"; };
 		795022E117E42B5100212801 /* MartinSliderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MartinSliderCell.h; sourceTree = "<group>"; };
@@ -310,7 +312,7 @@
 		795E72DE17E49A75005CD05C /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause.png; sourceTree = "<group>"; };
 		799EF5EB16884D7000AD3A67 /* RescanProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RescanProxy.h; sourceTree = "<group>"; };
 		799EF5EC16884D7000AD3A67 /* RescanProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RescanProxy.m; sourceTree = "<group>"; };
-		799EF5F0168863BE00AD3A67 /* TreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreeNode.h; sourceTree = "<group>"; };
+		799EF5F0168863BE00AD3A67 /* LibraryTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryTreeNode.h; sourceTree = "<group>"; };
 		79AF97E9145305C200BE8391 /* PlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerController.h; sourceTree = "<group>"; };
 		79AF97EA145305C200BE8391 /* PlayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerController.m; sourceTree = "<group>"; };
 		79B3706B149D21EA003372CB /* LastFM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFM.h; sourceTree = "<group>"; };
@@ -538,6 +540,12 @@
 		8D05488B19A07CB5003F8210 /* StreamsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StreamsController.m; path = Streams/StreamsController.m; sourceTree = "<group>"; };
 		8D05488D19A08A04003F8210 /* NSString+Stream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Stream.h"; path = "Streams/NSString+Stream.h"; sourceTree = "<group>"; };
 		8D05488E19A08A04003F8210 /* NSString+Stream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Stream.m"; path = "Streams/NSString+Stream.m"; sourceTree = "<group>"; };
+		8D17D42519A8908900555D68 /* LibraryTreeSearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryTreeSearch.h; sourceTree = "<group>"; };
+		8D17D42619A8908900555D68 /* LibraryTreeSearch.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LibraryTreeSearch.mm; sourceTree = "<group>"; };
+		8D17D42819A8926400555D68 /* LibraryTreeCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibraryTreeCommon.h; sourceTree = "<group>"; };
+		8D17D42919A8930F00555D68 /* LibrarySong.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibrarySong.h; sourceTree = "<group>"; };
+		8D17D42A19A894C500555D68 /* LibraryTreeOutlineViewState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryTreeOutlineViewState.h; sourceTree = "<group>"; };
+		8D17D42B19A894C500555D68 /* LibraryTreeOutlineViewState.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LibraryTreeOutlineViewState.mm; sourceTree = "<group>"; };
 		8D3CB8FD18915C3800D6F471 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = SOURCE_ROOT; };
 		8D3CB8FE18915C3800D6F471 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
 		8D76AB1018831E4500799617 /* PlaylistTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistTableView.h; sourceTree = "<group>"; };
@@ -690,8 +698,8 @@
 				79242E1D16569A47006379D6 /* ID3Reader.m */,
 				79FF1420142F1DB100E27235 /* LibManager.h */,
 				79FF1421142F1DB100E27235 /* LibManager.mm */,
-				79242E211656AB1B006379D6 /* LibraryFolder.h */,
-				79242E221656AB1C006379D6 /* LibraryFolder.m */,
+				79242E211656AB1B006379D6 /* LibraryFoldersController.h */,
+				79242E221656AB1C006379D6 /* LibraryFoldersController.m */,
 				799EF5EB16884D7000AD3A67 /* RescanProxy.h */,
 				799EF5EC16884D7000AD3A67 /* RescanProxy.m */,
 				79D63C63168C438100A248F9 /* RescanState.h */,
@@ -700,9 +708,15 @@
 				79D83068168EE1530000C8EF /* ResourcePath.m */,
 				79CF466C16BE73F900A6E13A /* SongsFinder.h */,
 				79CF466D16BE73F900A6E13A /* SongsFinder.m */,
-				792DC199166B6E5D0003E664 /* Tree.h */,
-				792DC19A166B6E5D0003E664 /* Tree.mm */,
-				799EF5F0168863BE00AD3A67 /* TreeNode.h */,
+				792DC199166B6E5D0003E664 /* LibraryTree.h */,
+				792DC19A166B6E5D0003E664 /* LibraryTree.mm */,
+				8D17D42A19A894C500555D68 /* LibraryTreeOutlineViewState.h */,
+				8D17D42B19A894C500555D68 /* LibraryTreeOutlineViewState.mm */,
+				799EF5F0168863BE00AD3A67 /* LibraryTreeNode.h */,
+				8D17D42919A8930F00555D68 /* LibrarySong.h */,
+				8D17D42519A8908900555D68 /* LibraryTreeSearch.h */,
+				8D17D42619A8908900555D68 /* LibraryTreeSearch.mm */,
+				8D17D42819A8926400555D68 /* LibraryTreeCommon.h */,
 			);
 			path = Library;
 			sourceTree = "<group>";
@@ -1422,6 +1436,7 @@
 				79E98E1A1679A65B00559F14 /* TagsUtils.mm in Sources */,
 				79CF70A717EE32620057E678 /* MMTabBarView.m in Sources */,
 				79FF1407142F18A500E27235 /* main.m in Sources */,
+				8D17D42C19A894C500555D68 /* LibraryTreeOutlineViewState.mm in Sources */,
 				79BEC6D217F5A9A400F1A3FA /* NotificationsGenerator.m in Sources */,
 				79CF70A817EE32620057E678 /* MMTabDragAssistant.m in Sources */,
 				8D9BD409199DFF3C00BB436C /* STKAutoRecoveringHTTPDataSource.m in Sources */,
@@ -1434,6 +1449,7 @@
 				79FF140E142F18A500E27235 /* MartinAppDelegate.m in Sources */,
 				795022E317E42B5100212801 /* MartinSliderCell.m in Sources */,
 				79FF1422142F1DB100E27235 /* LibManager.mm in Sources */,
+				8D17D42719A8908900555D68 /* LibraryTreeSearch.mm in Sources */,
 				79CF709F17EE32620057E678 /* MMProgressIndicator.m in Sources */,
 				79F5BC1014363BE10040DF35 /* LibraryOutlineViewManager.m in Sources */,
 				79CF70B417EE32620057E678 /* MMAquaTabStyle.m in Sources */,
@@ -1452,14 +1468,14 @@
 				8DFA4716199FE1130061C228 /* StreamsPreferencesViewController.m in Sources */,
 				795022E017E42A4B00212801 /* MartinToggleButton.m in Sources */,
 				8D9BD40C199DFF3C00BB436C /* STKDataSourceWrapper.m in Sources */,
-				79242E231656AB1C006379D6 /* LibraryFolder.m in Sources */,
+				79242E231656AB1C006379D6 /* LibraryFoldersController.m in Sources */,
 				79242E301656B0CF006379D6 /* PreferencesWindowController.m in Sources */,
 				79CF70EA17EE32620057E678 /* MMSafariTabStyle.m in Sources */,
 				79DEAD62165BD81C0017E4DD /* PlaylistItem.mm in Sources */,
 				79CF70AB17EE32620057E678 /* MMTabDragWindowController.m in Sources */,
 				79DCB7AA165FFB3B00077082 /* FilePlayer.m in Sources */,
 				792DC197166B5D390003E664 /* Tags.m in Sources */,
-				792DC19B166B6E5D0003E664 /* Tree.mm in Sources */,
+				792DC19B166B6E5D0003E664 /* LibraryTree.mm in Sources */,
 				79EDE63E1678EB9A0060F9F9 /* FolderWatcher.m in Sources */,
 				79EEFB9E17EF294100D5C3E6 /* NewPlaylistButton.m in Sources */,
 				79CF70A117EE32620057E678 /* MMRolloverButtonCell.m in Sources */,

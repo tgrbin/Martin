@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface LibraryFolder : NSObject
+@interface LibraryFoldersController : NSObject
 
 + (NSMutableArray *)libraryFolders;
 + (void)save;

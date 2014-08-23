@@ -7,13 +7,16 @@
 //
 
 #import "RescanProxy.h"
-#import "LibraryFolder.h"
+#import "LibraryFoldersController.h"
 #import "LibManager.h"
 #import "RescanState.h"
-#import "Tree.h"
+#import "LibraryTree.h"
 #import "FolderWatcher.h"
 #import "NSObject+Observe.h"
 
+// while events are coming in, don't rescan more than minQuietTime per second
+// but don't wait for more than maxTimeWithoutRescan
+// of course if no events are coming in, rescan wont be initiated after maxTime expires
 static const double minQuietTime = 1;
 static const double maxTimeWithoutRescan = 3;
 
@@ -68,7 +71,7 @@ static id specialRescanAllObject;
   @synchronized(rescanLock) {
     BOOL wasEmpty = pathsToRescan.count == 0;
 
-    for (NSString *folderPath in [Tree pathsForNodes:treeNodes]) {
+    for (NSString *folderPath in [LibraryTree pathsForNodes:treeNodes]) {
       [pathsToRescan addObject:folderPath];
       [recursively addObject:@YES];
     }

@@ -8,7 +8,8 @@
 
 #import "PlaylistItem.h"
 #import "LibManager.h"
-#import "Tree.h"
+#import "LibraryTree.h"
+#import "LibrarySong.h"
 #import "Tags.h"
 #import "ID3Reader.h"
 #import "ID3ReadOperation.h"
@@ -40,7 +41,7 @@ static NSOperationQueue *operationQueue;
 - (id)initWithLibrarySong:(int)p_song {
   if (self = [super init]) {
     _p_librarySong = p_song;
-    _inode = [Tree inodeForSong:p_song];
+    _inode = [LibraryTree inodeForSong:p_song];
   }
   return self;
 }
@@ -79,7 +80,7 @@ static NSOperationQueue *operationQueue;
     
     _p_librarySong = -1;
     if (_isURLStream == NO && _inode != 0) {
-      _p_librarySong = [Tree songByInode:_inode];
+      _p_librarySong = [LibraryTree songByInode:_inode];
     }
 
     // library songs get tags from the library
@@ -104,7 +105,7 @@ static NSOperationQueue *operationQueue;
     _filename = path;
     _inode = inode;
     
-    _p_librarySong = [Tree songByInode:inode];
+    _p_librarySong = [LibraryTree songByInode:inode];
     if (_p_librarySong == -1) {
       id3ReadOperation = [[ID3ReadOperation alloc] initWithPlaylistItem:self];
       [operationQueue addOperation:id3ReadOperation];
@@ -131,20 +132,20 @@ static NSOperationQueue *operationQueue;
 
 - (NSString *)filename {
   [self checkLibrarySong];
-  if (_p_librarySong != -1) return [Tree pathForSong:_p_librarySong];
+  if (_p_librarySong != -1) return [LibraryTree pathForSong:_p_librarySong];
   return _filename;
 }
 
 - (int)lengthInSeconds {
   [self checkLibrarySong];
-  if (_p_librarySong != -1) return [Tree songDataForP:_p_librarySong]->lengthInSeconds;
+  if (_p_librarySong != -1) return [LibraryTree songDataForP:_p_librarySong]->lengthInSeconds;
   return _lengthInSeconds;
 }
 
 - (NSString *)tagValueForIndex:(TagIndex)i {
   [self checkLibrarySong];
   if (_p_librarySong != -1) {
-    char **t = [Tree songDataForP:_p_librarySong]->tags;
+    char **t = [LibraryTree songDataForP:_p_librarySong]->tags;
     return @(t[i]);
   } else {
     NSString *value = [tags tagValueForIndex:i];
@@ -171,16 +172,16 @@ static NSOperationQueue *operationQueue;
     fprintf(f, "%s\n", _filename == nil? "": [_filename UTF8String]);
     for (int i = 0; i < kNumberOfTags; ++i) fprintf(f, "%s\n", [[self tagValueForIndex:(TagIndex)i] UTF8String]);
   } else {
-    struct LibrarySong *song = [Tree songDataForP:_p_librarySong];
+    struct LibrarySong *song = [LibraryTree songDataForP:_p_librarySong];
     fprintf(f, "%d\n", song->lengthInSeconds);
-    fprintf(f, "%s\n", [Tree cStringPathForSong:_p_librarySong]);
+    fprintf(f, "%s\n", [LibraryTree cStringPathForSong:_p_librarySong]);
     for (int i = 0; i < kNumberOfTags; ++i) fprintf(f, "%s\n", song->tags[i]);
   }
 }
 
 - (void)checkLibrarySong {
   if (_p_librarySong == -1) return;
-  if ([Tree inodeForSong:_p_librarySong] != _inode) _p_librarySong = [Tree songByInode:_inode];
+  if ([LibraryTree inodeForSong:_p_librarySong] != _inode) _p_librarySong = [LibraryTree songByInode:_inode];
 }
 
 @end

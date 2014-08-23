@@ -9,7 +9,7 @@
 #import "LibraryPreferencesViewController.h"
 #import "NSObject+Observe.h"
 #import "FolderWatcher.h"
-#import "LibraryFolder.h"
+#import "LibraryFoldersController.h"
 #import "RescanProxy.h"
 #import "RescanState.h"
 #import "DragDataConverter.h"
@@ -57,7 +57,7 @@
 
   if ([panel runModal] == NSFileHandlingPanelOKButton) {
     for (NSURL *url in panel.URLs) {
-      [[LibraryFolder libraryFolders] addObject:[url path]];
+      [[LibraryFoldersController libraryFolders] addObject:[url path]];
     }
     [self folderListChanged];
   }
@@ -81,20 +81,20 @@
   NSInteger row = _foldersTableView.clickedRow;
   if (row == -1) return;
 
-  NSString *folderPath = [LibraryFolder libraryFolders][row];
+  NSString *folderPath = [LibraryFoldersController libraryFolders][row];
 
   NSOpenPanel *panel = [self configurePanel];
   panel.title = @"Change folder";
   panel.directoryURL = [NSURL fileURLWithPath:folderPath isDirectory:YES];
 
   if ([panel runModal] == NSFileHandlingPanelOKButton) {
-    [LibraryFolder libraryFolders][row] = [panel.directoryURL path];
+    [LibraryFoldersController libraryFolders][row] = [panel.directoryURL path];
     [self folderListChanged];
   }
 }
 
 - (IBAction)removeFolder:(id)sender {
-  [[LibraryFolder libraryFolders] removeObjectAtIndex:_foldersTableView.clickedRow];
+  [[LibraryFoldersController libraryFolders] removeObjectAtIndex:_foldersTableView.clickedRow];
   [self folderListChanged];
 }
 
@@ -120,25 +120,25 @@
     [[RescanProxy sharedProxy] rescanAll];
   }
 
-  [LibraryFolder save];
+  [LibraryFoldersController save];
   [_foldersTableView reloadData];
 }
 
 #pragma mark - table
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-  return [LibraryFolder libraryFolders].count;
+  return [LibraryFoldersController libraryFolders].count;
 }
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   if ([tableColumn.identifier isEqualToString:@"remove"]) return nil;
 
-  return [LibraryFolder libraryFolders][row];
+  return [LibraryFoldersController libraryFolders][row];
 }
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
   if ([tableColumn.identifier isEqualToString:@"folderPath"]) {
-    ((NSButtonCell *)cell).title = [LibraryFolder libraryFolders][row];
+    ((NSButtonCell *)cell).title = [LibraryFoldersController libraryFolders][row];
   }
 }
 
@@ -163,7 +163,7 @@
     NSArray *items = [DragDataConverter arrayFromData:[info.draggingPasteboard dataForType:kDragTypeLibraryFolderRow]];
     int srcRow = [items[0] intValue];
 
-    NSMutableArray *arr = [LibraryFolder libraryFolders];
+    NSMutableArray *arr = [LibraryFoldersController libraryFolders];
     id tmp = arr[srcRow];
     [arr removeObjectAtIndex:srcRow];
     if (srcRow < row) --row;
@@ -178,7 +178,7 @@
     for (NSString *item in items) {
       BOOL isDir;
       if ([[NSFileManager defaultManager] fileExistsAtPath:item isDirectory:&isDir] && isDir == YES) {
-        [[LibraryFolder libraryFolders] addObject:item];
+        [[LibraryFoldersController libraryFolders] addObject:item];
         addedSomething = YES;
       }
     }

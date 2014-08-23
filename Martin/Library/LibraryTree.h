@@ -8,18 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString * const kLibrarySearchFinishedNotification;
+struct LibraryTreeNode;
 
-struct LibrarySong {
-  int lengthInSeconds;
-  time_t lastModified;
-  int p_treeLeaf;
-  char **tags;
-};
-
-struct TreeNode;
-
-@interface Tree : NSObject
+@interface LibraryTree : NSObject
 
 + (void)clearTree;
 
@@ -40,9 +31,6 @@ struct TreeNode;
 + (char *)cStringPathForSong:(int)p_song;
 + (NSString *)pathForSong:(int)p_song;
 
-+ (void)performSearch:(NSString *)query;
-+ (void)resetSearchState;
-
 // won't return paths that are subpaths of another path
 + (NSArray *)pathsForNodes:(NSArray *)nodes;
 
@@ -50,9 +38,6 @@ struct TreeNode;
 + (void)setName:(char *)name forNode:(int)p_node;
 + (int)newSong;
 + (struct LibrarySong *)songDataForP:(int)p_song;
-+ (struct TreeNode *)treeNodeDataForP:(int)p_node;
-
-+ (void)storeInodesAndLevelsForNodes:(NSSet *)nodes;
-+ (void)restoreNodesForStoredInodesAndLevelsToSet:(NSMutableSet *)set;
++ (struct LibraryTreeNode *)treeNodeDataForP:(int)p_node;
 
 @end

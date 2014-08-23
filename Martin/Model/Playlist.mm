@@ -9,7 +9,8 @@
 #import "MartinAppDelegate.h"
 #import "LibManager.h"
 #import "PlaylistItem.h"
-#import "Tree.h"
+#import "LibraryTree.h"
+#import "LibrarySong.h"
 #import "Tags.h"
 #import "TagsUtils.h"
 #import "PlaylistNameGuesser.h"
@@ -220,12 +221,12 @@ using namespace std;
 }
 
 - (void)traverseNodeAndAddItems:(int)node {
-  int song = [Tree songFromNode:node];
+  int song = [LibraryTree songFromNode:node];
   
   if (song == -1) {
-    int n = [Tree numberOfChildrenForNode:node];
+    int n = [LibraryTree numberOfChildrenForNode:node];
     for (int i = 0; i < n; ++i) {
-      [self traverseNodeAndAddItems:[Tree childAtIndex:i forNode:node]];
+      [self traverseNodeAndAddItems:[LibraryTree childAtIndex:i forNode:node]];
     }
   } else {
     PlaylistItem *pi = [[PlaylistItem alloc] initWithLibrarySong:song];
@@ -490,8 +491,8 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
         if (isLength) return p1.lengthInSeconds < p2.lengthInSeconds;
         
         if (p1.p_librarySong != -1 && p2.p_librarySong != -1) {
-          struct LibrarySong *s1 = [Tree songDataForP:p1.p_librarySong];
-          struct LibrarySong *s2 = [Tree songDataForP:p2.p_librarySong];
+          struct LibrarySong *s1 = [LibraryTree songDataForP:p1.p_librarySong];
+          struct LibrarySong *s2 = [LibraryTree songDataForP:p2.p_librarySong];
           
           if (isTrackNumber) {
             int t1, t2;

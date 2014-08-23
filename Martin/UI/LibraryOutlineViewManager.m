@@ -8,7 +8,9 @@
 #import "LibraryOutlineViewManager.h"
 #import "MartinAppDelegate.h"
 #import "LibManager.h"
-#import "Tree.h"
+#import "LibraryTree.h"
+#import "LibraryTreeOutlineViewState.h"
+#import "LibraryTreeSearch.h"
 #import "RescanProxy.h"
 #import "RescanState.h"
 #import "TreeStateManager.h"
@@ -76,7 +78,7 @@
   if (searchQuery.length > 0) {
     _searchTextField.stringValue = searchQuery;
     [_searchTextField resignFirstResponder];
-    [Tree performSearch:searchQuery];
+    [LibraryTreeSearch performSearch:searchQuery];
   }
 }
 
@@ -93,7 +95,7 @@
 
 - (void)itemDoubleClicked {
   id item = [outlineView itemAtRow:outlineView.selectedRow];
-  if ([Tree isLeaf:[item intValue]]) {
+  if ([LibraryTree isLeaf:[item intValue]]) {
     [[MartinAppDelegate get].playlistTableManager addTreeNodes:@[item]];
   } else {
     if ([outlineView isItemExpanded:item]) [outlineView collapseItem:item];
@@ -120,7 +122,7 @@
 
 - (IBAction)showInFinder:(id)sender {
   NSArray *treeNodes = [self chosenItems];
-  NSArray *paths = [Tree pathsForNodes:treeNodes];
+  NSArray *paths = [LibraryTree pathsForNodes:treeNodes];
   NSMutableArray *urls = [NSMutableArray new];
   for (NSString *path in paths) [urls addObject:[NSURL fileURLWithPath:path]];
   [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:urls];
@@ -152,7 +154,7 @@
   NSArray *items = [self chosenItems];
   BOOL onlyItems = YES;
   for (id item in items) {
-    if ([Tree isLeaf:[item intValue]] == NO) {
+    if ([LibraryTree isLeaf:[item intValue]] == NO) {
       onlyItems = NO;
       break;
     }
@@ -164,25 +166,25 @@
 #pragma mark - data source
 
 - (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item {
-  return [Tree numberOfChildrenForNode:[item intValue]];
+  return [LibraryTree numberOfChildrenForNode:[item intValue]];
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item {
-  return @([Tree childAtIndex:(int)index forNode:[item intValue]]);
+  return @([LibraryTree childAtIndex:(int)index forNode:[item intValue]]);
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item {
-  return [Tree numberOfChildrenForNode:[item intValue]] > 0;
+  return [LibraryTree numberOfChildrenForNode:[item intValue]] > 0;
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
   if (item == nil) return @"";
 
   int node = [item intValue];
-  NSString *name = [Tree nameForNode:node];
+  NSString *name = [LibraryTree nameForNode:node];
 
-  if ([Tree isLeaf:node]) return [name stringByDeletingPathExtension];
-  return [NSString stringWithFormat:@"%@ (%d)", name, [Tree numberOfChildrenForNode:node]];
+  if ([LibraryTree isLeaf:node]) return [name stringByDeletingPathExtension];
+  return [NSString stringWithFormat:@"%@ (%d)", name, [LibraryTree numberOfChildrenForNode:node]];
 }
 
 #pragma mark - libmanager notifications
@@ -194,10 +196,10 @@
 
 - (void)libraryRescanned {
   [outlineView reloadData];
-  [Tree restoreNodesForStoredInodesAndLevelsToSet:userExpandedItems];
+  [LibraryTreeOutlineViewState restoreNodesForStoredInodesAndLevelsToSet:userExpandedItems];
   if (_searchTextField.stringValue.length > 0) {
-    [Tree resetSearchState];
-    [Tree performSearch:_searchTextField.stringValue];
+    [LibraryTreeSearch resetSearchState];
+    [LibraryTreeSearch performSearch:_searchTextField.stringValue];
   } else {
     [self closeAllExceptWhatUserOpened];
   }
@@ -205,7 +207,7 @@
 
 - (void)rescanStateChanged {
   if ([RescanState sharedState].state == kRescanStateReloadingLibrary) {
-    [Tree storeInodesAndLevelsForNodes:userExpandedItems];
+    [LibraryTreeOutlineViewState storeInodesAndLevelsForNodes:userExpandedItems];
   }
   [[RescanState sharedState] setupProgressIndicator:determinateRescanIndicator
                      indeterminateProgressIndicator:rescanIndicator
@@ -229,8 +231,8 @@
     for (int j = 0; j < 2; ++j) {
       for (int i = 0; i < n; ++i) {
         NSNumber *item = [outlineView itemAtRow:i];
-        if ([outlineView isItemExpanded:item] || [Tree isLeaf:item.intValue]) continue;
-        int nChildren = [Tree numberOfChildrenForNode:item.intValue];
+        if ([outlineView isItemExpanded:item] || [LibraryTree isLeaf:item.intValue]) continue;
+        int nChildren = [LibraryTree numberOfChildrenForNode:item.intValue];
         if (nChildren == 0) continue;
 
         if (j == 0) {
@@ -256,7 +258,7 @@
 
 - (void)expandWholePathForItem:(id)item {
   NSMutableArray *arr = [NSMutableArray array];
-  for (int node = [item intValue]; node != -1; node = [Tree parentOfNode:node]) [arr addObject:@(node)];
+  for (int node = [item intValue]; node != -1; node = [LibraryTree parentOfNode:node]) [arr addObject:@(node)];
   for(; arr.count > 0; [arr removeLastObject]) {
     [outlineView expandItem:[arr lastObject]];
   }
@@ -269,8 +271,8 @@
 
   [userExpandedItems addObject:item];
 
-  for (int node = [item intValue]; [Tree numberOfChildrenForNode:node] == 1;) {
-    node = [Tree childAtIndex:0 forNode:node];
+  for (int node = [item intValue]; [LibraryTree numberOfChildrenForNode:node] == 1;) {
+    node = [LibraryTree childAtIndex:0 forNode:node];
     id child = @(node);
     [outlineView expandItem:child];
     [userExpandedItems addObject:child];
@@ -292,7 +294,7 @@
     _searchTextField.stringValue = [val substringToIndex:val.length-1];
     [[MartinAppDelegate get].tabsManager.queue addTreeNodes:@[ @0 ]];
   } else {
-    [Tree performSearch:val];
+    [LibraryTreeSearch performSearch:val];
   }
 }
 

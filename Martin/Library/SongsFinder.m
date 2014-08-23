@@ -8,7 +8,7 @@
 
 #import "SongsFinder.h"
 #import "FileExtensionChecker.h"
-#import "Tree.h"
+#import "LibraryTree.h"
 #import "PlaylistItem.h"
 
 #import <ftw.h>
