@@ -34,7 +34,7 @@ static const int kOutlineViewStreamsItem = -1;
   int value = [item intValue];
   
   if (value == kOutlineViewStreamsItem) {
-    return @(0);
+    return @0;
   } else if (value < kOutlineViewStreamsItem) {
     return @(kOutlineViewStreamsItem);
   } else {

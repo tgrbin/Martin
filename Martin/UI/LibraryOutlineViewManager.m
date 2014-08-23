@@ -267,8 +267,8 @@
 - (void)expandWholePathForItem:(id)item {
   NSMutableArray *arr = [NSMutableArray array];
   
-  for (id node = item; [node intValue] != -1; node = [self.dataSource parentOfItem:node]) {
-    [arr addObject:node];
+  for (; [item intValue] != 0; item = [self.dataSource parentOfItem:item]) {
+    [arr addObject:item];
   }
   
   for(; arr.count > 0; [arr removeLastObject]) {

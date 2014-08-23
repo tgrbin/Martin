@@ -16,9 +16,16 @@
 static tr1::unordered_set<int> restore_nodes;
 static tr1::unordered_set<uint64> restore_inodesAndLevels;
 static BOOL restoringNodes;
+static BOOL streamNodePresent;
 
 + (void)storeInodesAndLevelsForNodes:(NSSet *)nodes {
-  for (NSNumber *n in nodes) restore_nodes.insert(n.intValue);
+  for (NSNumber *n in nodes) {
+    if (n.intValue == -1) {
+      streamNodePresent = YES;
+    } else {
+      restore_nodes.insert(n.intValue);
+    }
+  }
   
   restoringNodes = NO;
   findInodesForNodes(0, 0);
@@ -31,10 +38,17 @@ static BOOL restoringNodes;
   findInodesForNodes(0, 0);
   
   [set removeAllObjects];
-  for (auto it = restore_nodes.begin(); it != restore_nodes.end(); ++it) [set addObject:@(*it)];
+  for (auto it = restore_nodes.begin(); it != restore_nodes.end(); ++it) {
+    [set addObject:@(*it)];
+  }
+  
+  if (streamNodePresent == YES) {
+    [set addObject:@(-1)];
+  }
   
   restore_nodes.clear();
   restore_inodesAndLevels.clear();
+  streamNodePresent = NO;
 }
 
 static void findInodesForNodes(int p_node, int level) {
@@ -42,13 +56,17 @@ static void findInodesForNodes(int p_node, int level) {
   
   uint64 val = node->inode * 100 + level;
   if (restoringNodes == NO) {
-    if (restore_nodes.count(p_node)) restore_inodesAndLevels.insert(val);
+    if (restore_nodes.count(p_node)) {
+      restore_inodesAndLevels.insert(val);
+    }
   } else {
-    if (restore_inodesAndLevels.count(val)) restore_nodes.insert(p_node);
+    if (restore_inodesAndLevels.count(val)) {
+      restore_nodes.insert(p_node);
+    }
   }
   
   for (auto child = node->children.begin(); child != node->children.end(); ++child) {
-    findInodesForNodes(*child, level+1);
+    findInodesForNodes(*child, level + 1);
   }
 }
 
