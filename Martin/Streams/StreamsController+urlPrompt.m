@@ -20,7 +20,6 @@
   
   NSTextField *input = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 400, 24)];
   
-  // TODO: allow paste with Cmd+V
   alert.accessoryView = input;
   
   NSInteger button = [alert runModal];

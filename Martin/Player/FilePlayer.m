@@ -180,7 +180,7 @@ didFinishPlayingQueueItemId:(NSObject*)queueItemId
   
   [[MartinAppDelegate get].playerController stop];
   
-  [[NSAlert alertWithMessageText:[NSString stringWithFormat:@"Sorry, couldn't play '%@'", streamName]
+  [[NSAlert alertWithMessageText:[NSString stringWithFormat:@"Couldn't play '%@' :(", streamName]
                    defaultButton:@"OK"
                  alternateButton:nil
                      otherButton:nil
