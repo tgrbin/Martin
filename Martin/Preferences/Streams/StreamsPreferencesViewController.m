@@ -65,7 +65,10 @@
     if (stream) {
       [self showMessage:@"Stream already added." hideAutomatically:YES];
       
-      // TODO: scroll to and select that stream
+      NSUInteger index = [self.streamsController.streams indexOfObject:stream];
+      [self.tableView scrollRowToVisible:index];
+      [self.tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:index]
+                  byExtendingSelection:NO];
     } else {
       stream = [_streamsController createStreamWithURLString:urlString];
      

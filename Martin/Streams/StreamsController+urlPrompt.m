@@ -11,12 +11,11 @@
 @implementation StreamsController (urlPrompt)
 
 + (NSString *)urlPrompt {
-  // TODO: prompt looks ugly
-  NSAlert *alert = [NSAlert alertWithMessageText:@"URL:"
+  NSAlert *alert = [NSAlert alertWithMessageText:@"Martin"
                                    defaultButton:@"OK"
                                  alternateButton:@"Cancel"
                                      otherButton:nil
-                       informativeTextWithFormat:@""];
+                       informativeTextWithFormat:@"Enter stream URL:"];
   
   NSTextField *input = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 400, 24)];
   
