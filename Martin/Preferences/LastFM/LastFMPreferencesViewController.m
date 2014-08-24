@@ -39,6 +39,10 @@ typedef enum {
   self.state = [LastFM isScrobbling]? kStateScrobbling: kStateNoToken;
 }
 
+- (NSString *)iconName {
+  return @"preficon_lastfm";
+}
+
 #pragma mark - actions
 
 - (IBAction)buttonPressed:(id)sender {

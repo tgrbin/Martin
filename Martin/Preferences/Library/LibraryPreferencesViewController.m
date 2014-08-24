@@ -48,6 +48,10 @@
   [self addNewPressed:nil];
 }
 
+- (NSString *)iconName {
+  return @"preficon_lib";
+}
+
 #pragma mark - actions
 
 - (IBAction)addNewPressed:(id)sender {

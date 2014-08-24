@@ -50,6 +50,10 @@
   [_tableView registerForDraggedTypes:@[kDragTypeStreamRow]];
 }
 
+- (NSString *)iconName {
+  return @"preficon_shortcuts";
+}
+
 #pragma mark - actions
 
 - (IBAction)addStreamPressed:(id)sender {

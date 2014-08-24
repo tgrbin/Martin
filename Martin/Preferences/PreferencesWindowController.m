@@ -79,9 +79,8 @@
   item.target = self;
   item.action = @selector(toolbarItemPressed:);
   
-  // TODO: refactor this to each preferences controller
-  static NSString * const iconNames[] = { @"preficon_lib", @"preficon_lastfm", @"preficon_shortcuts", @"preficon_shortcuts" };
-  NSImage *img = [NSImage imageNamed:iconNames[index]];
+  NSString *iconName = ((PreferencesViewController *)controllers[index]).iconName;
+  NSImage *img = [NSImage imageNamed:iconName];
   double max = MAX(img.size.width, img.size.height);
   img.alignmentRect = NSMakeRect(0, 0, max, max);
   item.image = img;

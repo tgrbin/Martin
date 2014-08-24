@@ -14,4 +14,6 @@
 
 @property (nonatomic, assign) NSWindow *window;
 
+@property (nonatomic, readonly) NSString *iconName;
+
 @end

@@ -30,6 +30,10 @@
   [self updateShortcutControls];
 }
 
+- (NSString *)iconName {
+  return @"preficon_shortcuts";
+}
+
 - (void)updateShortcutControls {
   for (int i = 0; i < kNumberOfGlobalShortcuts; ++i) {
     SRRecorderControl *sr = (SRRecorderControl *) _recorderControlsHolderView.subviews[i];
@@ -50,7 +54,6 @@
 - (void)setMediaKeysEnabled:(BOOL)mediaKeysEnabled {
   _mediaKeysEnabled = mediaKeysEnabled;
   
-  // TODO: grey out the whole section when keys are disabled
   [MediaKeysManager shared].mediaKeysEnabled = mediaKeysEnabled;
 }
 
