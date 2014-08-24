@@ -99,11 +99,6 @@ NSString * const kGotNewMetaDataNotification = @"GotNewMetaDataNotification";
   return self;
 }
 
--(void) dealloc
-{
-  NSLog(@"STKHTTPDataSource dealloc");
-}
-
 -(NSURL*) url
 {
   return self->currentUrl;
@@ -165,17 +160,6 @@ NSString * const kGotNewMetaDataNotification = @"GotNewMetaDataNotification";
     {
       httpHeaders = (__bridge_transfer NSDictionary*)CFHTTPMessageCopyAllHeaderFields((CFHTTPMessageRef)response);
 
-      // example headers for audio stream
-//      Server = "Icecast 2.3.3-kh10";
-//      "ice-audio-info" = "ice-samplerate=44100;ice-bitrate=128;ice-channels=2";
-//      "icy-br" = "128, 128";
-//      "icy-description" = "Jazz, Soul und Blues rund um die Uhr";
-//      "icy-genre" = "Jazz Music";
-//      "icy-metaint" = 16000;
-//      "icy-name" = "Radio Swiss Jazz";
-//      "icy-pub" = 1;
-//      "icy-url" = "http://www.radioswissjazz.ch";
-      
       self->httpStatusCode = (UInt32)CFHTTPMessageGetResponseStatusCode((CFHTTPMessageRef)response);
       
       CFRelease(response);

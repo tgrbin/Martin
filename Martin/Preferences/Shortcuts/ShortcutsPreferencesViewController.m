@@ -49,6 +49,8 @@
 
 - (void)setMediaKeysEnabled:(BOOL)mediaKeysEnabled {
   _mediaKeysEnabled = mediaKeysEnabled;
+  
+  // TODO: grey out the whole section when keys are disabled
   [MediaKeysManager shared].mediaKeysEnabled = mediaKeysEnabled;
 }
 

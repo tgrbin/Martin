@@ -21,7 +21,7 @@ NSString * const kFilePlayerEventNotification = @"FilePlayerEventNotification";
 
 @implementation FilePlayer {
   NSSound *sound;
-  STKAudioPlayer *streamer;
+  STKAudioPlayer *urlStreamPlayer;
   
   PlaylistItem *playlistItem;
 }
@@ -44,8 +44,8 @@ NSString * const kFilePlayerEventNotification = @"FilePlayerEventNotification";
   [self stop];
 
   if (item.isURLStream == YES) {
-    streamer = [STKAudioPlayer new];
-    streamer.delegate = self;
+    urlStreamPlayer = [STKAudioPlayer new];
+    urlStreamPlayer.delegate = self;
   } else {
     sound = [[NSSound alloc] initWithContentsOfFile:item.filename byReference:YES];
     if (sound == nil) {
@@ -63,7 +63,7 @@ NSString * const kFilePlayerEventNotification = @"FilePlayerEventNotification";
 
   if (prepare == NO) {
     [sound play];
-    [streamer play:item.filename];
+    [urlStreamPlayer play:item.filename];
     _playing = YES;
   }
 
@@ -78,13 +78,14 @@ NSString * const kFilePlayerEventNotification = @"FilePlayerEventNotification";
 - (void)togglePause {
   if (_playing) {
     [sound pause];
-    [streamer pause];
+    
+    [urlStreamPlayer stop];
   } else {
     if ([sound resume] == NO) {
       [sound play];
     }
     
-    [streamer resume];
+    [urlStreamPlayer play:playlistItem.filename];
   }
   
   _playing = !_playing;
@@ -94,8 +95,8 @@ NSString * const kFilePlayerEventNotification = @"FilePlayerEventNotification";
   [sound stop];
   sound = nil;
   
-  [streamer stop];
-  streamer = nil;
+  [urlStreamPlayer stop];
+  urlStreamPlayer = nil;
   
   playlistItem = nil;
   _stopped = YES;
@@ -112,7 +113,7 @@ NSString * const kFilePlayerEventNotification = @"FilePlayerEventNotification";
   double actualVolume = (_volume == 0)? 0: MAX(cube, 0.001);
   
   sound.volume = actualVolume;
-  streamer.volume = actualVolume;
+  urlStreamPlayer.volume = actualVolume;
 }
 
 - (void)setSeek:(double)seek {

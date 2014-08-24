@@ -261,8 +261,6 @@ static void PopulateOptionsWithDefault(STKAutoRecoveringHTTPDataSourceOptions* o
 
 -(void) dealloc
 {
-    NSLog(@"STKAutoRecoveringHTTPDataSource dealloc");
-    
     self.innerDataSource.delegate = nil;
     
     [self stopNotifier];

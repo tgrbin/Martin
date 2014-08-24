@@ -566,8 +566,6 @@ static void AudioFileStreamPacketsProc(void* clientData, UInt32 numberBytes, UIn
 
 -(void) dealloc
 {
-	NSLog(@"STKAudioPlayer dealloc");
-	
 	deallocating = YES;
 	
 	[self destroyAudioResources];
