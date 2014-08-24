@@ -14,6 +14,7 @@
 #import "StreamsController+urlPrompt.h"
 #import "NSString+Stream.h"
 #import "NSObject+Observe.h"
+#import "NSProgressIndicator+ShowHide.h"
 
 @interface StreamsPreferencesViewController () <
   NSTableViewDataSource,
@@ -108,25 +109,14 @@
   _statusTextField.stringValue = message;
   
   if (hideAutomatically == YES) {
-    [self hideSpinner];
+    [_indicator hide];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
       _statusTextField.stringValue = @"";
     });
   } else {
-    [self showSpinner];
+    [_indicator show];
   }
-}
-
-// TODO: this is also used in last fm
-- (void)showSpinner {
-  _indicator.hidden = NO;
-  [_indicator startAnimation:nil];
-}
-
-- (void)hideSpinner {
-  _indicator.hidden = YES;
-  [_indicator stopAnimation:nil];
 }
 
 #pragma mark - table view

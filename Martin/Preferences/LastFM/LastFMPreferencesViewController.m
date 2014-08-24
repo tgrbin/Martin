@@ -10,6 +10,8 @@
 #import "LastFM.h"
 #import "MartinAppDelegate.h"
 
+#import "NSProgressIndicator+ShowHide.h"
+
 typedef enum {
   kStateNoToken,
   kStateNoSessionKey,
@@ -50,9 +52,9 @@ typedef enum {
 }
 
 - (void)getToken {
-  [self showSpinner];
+  [_activityIndicator show];
   [LastFM getAuthURLWithBlock:^(NSString *url) {
-    [self hideSpinner];
+    [_activityIndicator hide];
 
     if (url) {
       self.state = kStateNoSessionKey;
@@ -64,9 +66,9 @@ typedef enum {
 }
 
 - (void)getSessionKey {
-  [self showSpinner];
+  [_activityIndicator show];
   [LastFM getSessionKey:^(BOOL success) {
-    [self hideSpinner];
+    [_activityIndicator hide];
 
     if (success == YES) {
       self.state = kStateScrobbling;
@@ -104,16 +106,6 @@ typedef enum {
 
   _button.title = buttonTitles[_state];
   _textField.stringValue = messages[_state];
-}
-
-- (void)showSpinner {
-  _activityIndicator.hidden = NO;
-  [_activityIndicator startAnimation:nil];
-}
-
-- (void)hideSpinner {
-  _activityIndicator.hidden = YES;
-  [_activityIndicator stopAnimation:nil];
 }
 
 - (void)showAlertWithMsg:(NSString *)msg {
