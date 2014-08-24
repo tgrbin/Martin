@@ -22,6 +22,7 @@
 - (void)playOrPause;
 - (void)next;
 - (void)prev;
+- (void)stop;
 
 - (void)storePlayerState;
 - (void)restorePlayerState;

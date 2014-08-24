@@ -10,7 +10,6 @@
 #import "PlaylistNameGuesser.h"
 #import "DefaultsManager.h"
 #import "FileExtensionChecker.h"
-#import "PlayerStatusTextField.h"
 #import "FolderWatcher.h"
 #import "MediaKeysManager.h"
 #import "PlaylistFile.h"
@@ -181,12 +180,12 @@
       PlaylistFile *playlistFile = [PlaylistFile playlistFileWithFilename:filename];
       if (![playlistFile savePlaylist:playlist]) {
         NSString *errorMessage = [NSString stringWithFormat:@"Couldn't save playlist:\n'%@'", filename];
-        NSAlert *alert = [NSAlert alertWithMessageText:errorMessage
-                                         defaultButton:@"OK"
-                                       alternateButton:nil
-                                           otherButton:nil
-                             informativeTextWithFormat:@""];
-        [alert runModal];
+        [[NSAlert alertWithMessageText:errorMessage
+                         defaultButton:@"OK"
+                       alternateButton:nil
+                           otherButton:nil
+             informativeTextWithFormat:@""]
+         runModal];
       }
     }
   }

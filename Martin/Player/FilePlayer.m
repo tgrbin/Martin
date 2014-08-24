@@ -10,7 +10,7 @@
 #import "PlaylistItem.h"
 #import "DefaultsManager.h"
 #import "NotificationsGenerator.h"
-
+#import "MartinAppDelegate.h"
 #import "STKAudioPlayer.h"
 
 NSString * const kFilePlayerPlayedItemNotification = @"FilePlayerPlayedItemNotification";
@@ -101,6 +101,7 @@ NSString * const kFilePlayerEventNotification = @"FilePlayerEventNotification";
   playlistItem = nil;
   _stopped = YES;
   _playing = NO;
+  
   [self postNotification:kFilePlayerEventNotification];
 }
 
@@ -163,6 +164,13 @@ NSString * const kFilePlayerEventNotification = @"FilePlayerEventNotification";
        stateChanged:(STKAudioPlayerState)state
       previousState:(STKAudioPlayerState)previousState
 {
+  if (state == STKAudioPlayerStateBuffering) {
+    ++[MartinAppDelegate get].martinBusy;
+  }
+  
+  if (previousState == STKAudioPlayerStateBuffering) {
+    --[MartinAppDelegate get].martinBusy;
+  }
 }
 
 /// Raised when an item has finished playing
@@ -175,7 +183,18 @@ didFinishPlayingQueueItemId:(NSObject*)queueItemId
 }
 
 /// Raised when an unexpected and possibly unrecoverable error has occured (usually best to recreate the STKAudioPlayer)
-- (void)audioPlayer:(STKAudioPlayer*)audioPlayer unexpectedError:(STKAudioPlayerErrorCode)errorCode {
+- (void)audioPlayer:(STKAudioPlayer*)audioPlayer unexpectedError:(STKAudioPlayerErrorCode)errorCode
+{
+  NSString *streamName = [playlistItem tagValueForIndex:kTagIndexTitle];
+  
+  [[MartinAppDelegate get].playerController stop];
+  
+  [[NSAlert alertWithMessageText:[NSString stringWithFormat:@"Sorry, couldn't play '%@'", streamName]
+                   defaultButton:@"OK"
+                 alternateButton:nil
+                     otherButton:nil
+       informativeTextWithFormat:@""]
+    runModal];
 }
 
 #pragma mark - actions

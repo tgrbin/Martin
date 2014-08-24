@@ -34,7 +34,7 @@ typedef enum {
 - (void)awakeFromNib {
   seekSlider.enabled = NO;
   [self observe:kFilePlayerPlayedItemNotification withAction:@selector(trackFinished)];
-
+  
   self.shuffle = [[DefaultsManager objectForKey:kDefaultsKeyShuffle] boolValue];
   self.repeat = [[DefaultsManager objectForKey:kDefaultsKeyRepeat] boolValue];
 }
