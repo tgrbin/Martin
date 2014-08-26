@@ -53,12 +53,12 @@ NSString * const kGotNewMetaDataNotification = @"GotNewMetaDataNotification";
   AudioFileTypeID audioFileTypeHint;
   
   // meta data
+  BOOL metaDataPresent;
   unsigned int metaDataInterval;        // how many data bytes between meta data
 	unsigned int metaDataBytesRemaining;  // how many bytes of metadata remain to be read
   unsigned int dataBytesRead;           // how many bytes of data have been read
   BOOL foundIcyStart;
   BOOL foundIcyEnd;
-  BOOL parsedHeaders;
 	NSMutableString *metaDataString;			// the metaDataString
 }
 
@@ -92,6 +92,9 @@ NSString * const kGotNewMetaDataNotification = @"GotNewMetaDataNotification";
     self->asyncUrlProvider = [asyncUrlProviderIn copy];
     
     audioFileTypeHint = [STKLocalFileDataSource audioFileTypeHintFromFileExtension:self->currentUrl.pathExtension];
+    if (audioFileTypeHint == 0) {
+      audioFileTypeHint = kAudioFileMP3Type;
+    }
     
     metaDataString = [NSMutableString new];
   }
@@ -172,13 +175,12 @@ NSString * const kGotNewMetaDataNotification = @"GotNewMetaDataNotification";
 				fileLength = (SInt64)[[httpHeaders objectForKey:@"Content-Length"] longLongValue];
 			}
 			
-			NSString* contentType = [httpHeaders objectForKey:@"Content-Type"];
+			NSString *contentType = httpHeaders[@"Content-Type"];
 			AudioFileTypeID typeIdFromMimeType = [STKHTTPDataSource audioFileTypeHintFromMimeType:contentType];
-			
-			if (typeIdFromMimeType != 0)
-			{
+			if (typeIdFromMimeType != 0) {
 				audioFileTypeHint = typeIdFromMimeType;
 			}
+      
 		}
 		else if (self.httpStatusCode == 206)
 		{
@@ -404,7 +406,7 @@ NSString * const kGotNewMetaDataNotification = @"GotNewMetaDataNotification";
 - (int)checkForMetaDataInfoWithBuffer:(UInt8 *)buffer andLength:(int)length {
   CFHTTPMessageRef response = (CFHTTPMessageRef)CFReadStreamCopyProperty(stream, kCFStreamPropertyHTTPResponseHeader);
   
-  if (metaDataInterval == 0) {
+  if (foundIcyStart == NO && metaDataPresent == NO) {
     // check if this is a ICY 200 OK response
     NSString *icyCheck = [[NSString alloc] initWithBytes:buffer length:10 encoding:NSUTF8StringEncoding];
     if (icyCheck != nil && [icyCheck caseInsensitiveCompare:@"ICY 200 OK"] == NSOrderedSame) {
@@ -413,8 +415,8 @@ NSString * const kGotNewMetaDataNotification = @"GotNewMetaDataNotification";
       NSString *metaInt = (__bridge NSString *) CFHTTPMessageCopyHeaderFieldValue(response, CFSTR("Icy-Metaint"));
       
       if (metaInt) {
+        metaDataPresent = YES;
         metaDataInterval = [metaInt intValue];
-        parsedHeaders = YES;
       }
     }
   }
@@ -424,47 +426,42 @@ NSString * const kGotNewMetaDataNotification = @"GotNewMetaDataNotification";
   if (foundIcyStart == YES && foundIcyEnd == NO) {
     char c[4] = {};
     
-    int lineStart = 0;
-    for (; foundIcyEnd == NO && streamStart + 3 <= length; ++streamStart) {
+    for (int lineStart = 0; streamStart + 3 < length; ++streamStart) {
       
-      for (int i = 0; i < 4; ++i) {
-        c[i] = buffer[streamStart + i];
-      }
+      memcpy(c, buffer + streamStart, 4);
       
       if (c[0] == '\r' && c[1] == '\n') {
-        // get the full string
         NSString *fullString = [[NSString alloc] initWithBytes:buffer length:streamStart encoding:NSUTF8StringEncoding];
+        NSString *line = [fullString substringWithRange:NSMakeRange(lineStart, streamStart - lineStart)];
         
-        // get the substring for this line
-        NSString *line = [fullString substringWithRange:NSMakeRange(lineStart, (streamStart - lineStart))];
-        
-        // check if this is icy-metaint
         NSArray *lineItems = [line componentsSeparatedByString:@":"];
         if (lineItems.count > 1) {
-          
           if ([lineItems[0] caseInsensitiveCompare:@"icy-metaint"] == NSOrderedSame) {
             metaDataInterval = [lineItems[1] intValue];
+          } else if ([lineItems[0] caseInsensitiveCompare:@"content-type"] == NSOrderedSame) {
+            AudioFileTypeID idFromMime = [STKHTTPDataSource audioFileTypeHintFromMimeType:lineItems[1]];
+            if (idFromMime != 0) {
+              audioFileTypeHint = idFromMime;
+            }
           }
         }
         
         // this is the end of a line, the new line starts in 2
-        lineStart = streamStart + 2; // (c3)
+        lineStart = streamStart + 2;
         
         if (c[2] == '\r' && c[3] == '\n') {
           foundIcyEnd = YES;
+          metaDataPresent = YES;
+          streamStart += 4; // skip double new line
+          break;
         }
       }
     }
-    
-    if (foundIcyEnd) {
-      streamStart = streamStart + 4;
-      parsedHeaders = YES;
-    }
   }
   
-  int audioDataByteCount = 0;
-  
-  if (parsedHeaders == YES) {
+  if (metaDataPresent == YES) {
+    int audioDataByteCount = 0;
+    
     for (int i = streamStart; i < length; ++i) {
       // is this a metadata byte?
       if (metaDataBytesRemaining > 0) {
@@ -475,7 +472,7 @@ NSString * const kGotNewMetaDataNotification = @"GotNewMetaDataNotification";
           dataBytesRead = 0;
           
           NSString *streamTitle = [self valueForKey:@"StreamTitle" fromMetaData:metaDataString];
-          if (streamTitle) {
+          if (streamTitle != nil && streamTitle.length > 0) {
             [[NSNotificationCenter defaultCenter] postNotificationName:kGotNewMetaDataNotification
                                                                 object:nil
                                                               userInfo:@{ @"streamTitle": streamTitle }];
@@ -506,15 +503,18 @@ NSString * const kGotNewMetaDataNotification = @"GotNewMetaDataNotification";
       // we don't need those bytes any more, since we already examined them
       buffer[audioDataByteCount++] = buffer[i];
     }
-  }
-  
-  if (audioDataByteCount > 0) {
+    
     return audioDataByteCount;
-  } else if (metaDataInterval == 0) {
+    
+  } else if (foundIcyStart == YES) { // still parsing icy response
+    
+    return 0;
+    
+  } else { // no meta data in stream
+    
     return length;
+    
   }
-  
-  return 0;
 }
 
 - (NSString *)valueForKey:(NSString *)key fromMetaData:(NSString *)metaData {
