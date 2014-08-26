@@ -46,7 +46,7 @@ static int ftw_callback(const char *filename, const struct stat *stat_struct, in
 }
 
 static void checkAndAdd(const char *filename, ino_t inode) {
-  if ([FileExtensionChecker isExtensionAcceptable:filename]) {
+  if ([FileExtensionChecker isExtensionAcceptableForCStringFilename:filename]) {
     PlaylistItem *item = [[PlaylistItem alloc] initWithPath:@(filename) andInode:inode];
     if (item) [playlistItems addObject:item];
   }

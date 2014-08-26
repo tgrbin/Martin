@@ -11,8 +11,8 @@
 
 #import <malloc/malloc.h>
 #import <vector>
-#import <tr1/unordered_map>
-#import <tr1/unordered_set>
+#import <unordered_map>
+#import <unordered_set>
 
 using namespace std;
 

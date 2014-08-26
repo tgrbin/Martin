@@ -74,12 +74,10 @@
 }
 
 - (PlaylistItem *)playlistItemFromPath:(NSString *)path {
-  NSString *extension = [[path pathExtension] lowercaseString];
-  
   if ([path isURL]) {
     Stream *stream = [[MartinAppDelegate get].streamsController createOrReturnStreamWithURLString:path];
     return [stream createPlaylistItem];
-  } else if ([[FileExtensionChecker acceptableExtensions] containsObject:extension]) {
+  } else if ([FileExtensionChecker isExtensionAcceptableForFilename:path]) {
     const char *cpath = [path UTF8String];
     struct stat statBuff;
     

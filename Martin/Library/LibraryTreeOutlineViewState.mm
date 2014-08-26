@@ -13,8 +13,8 @@
 
 #pragma mark - inodes and levels, used for storing tree state between rescans
 
-static tr1::unordered_set<int> restore_nodes;
-static tr1::unordered_set<uint64> restore_inodesAndLevels;
+static unordered_set<int> restore_nodes;
+static unordered_set<uint64> restore_inodesAndLevels;
 static BOOL restoringNodes;
 static BOOL streamNodePresent;
 

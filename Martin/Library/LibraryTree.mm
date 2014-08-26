@@ -18,7 +18,7 @@ static int nodesCounter;
 static int songsCounter;
 vector<LibraryTreeNode> nodes;
 vector<LibrarySong> songs;
-static tr1::unordered_map<ino_t, int> nodeByInode;
+static unordered_map<ino_t, int> nodeByInode;
 
 + (void)initialize {
   nodes.resize(128);
@@ -147,7 +147,7 @@ static tr1::unordered_map<ino_t, int> nodeByInode;
 }
 
 + (int)nodeByInode:(ino_t)inode {
-  tr1::unordered_map<ino_t, int>::iterator it = nodeByInode.find(inode);
+  unordered_map<ino_t, int>::iterator it = nodeByInode.find(inode);
   return (it == nodeByInode.end())? -1: it->second;
 }
 
@@ -185,7 +185,7 @@ static NSString *fullPathForNode(int p_node) {
 
 #pragma mark - rescanning
 
-static tr1::unordered_set<int> nodesToFindPathsFor;
+static unordered_set<int> nodesToFindPathsFor;
 static NSMutableArray *pathsForNodes;
 
 + (NSArray *)pathsForNodes:(NSArray *)nodes {

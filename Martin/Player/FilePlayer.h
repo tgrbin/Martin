@@ -13,7 +13,7 @@ extern NSString * const kFilePlayerEventNotification;
 
 @class PlaylistItem;
 
-@interface FilePlayer : NSObject <NSSoundDelegate>
+@interface FilePlayer : NSObject
 
 @property (nonatomic, assign) BOOL playing;
 @property (nonatomic, assign) BOOL stopped;
@@ -21,6 +21,7 @@ extern NSString * const kFilePlayerEventNotification;
 // between 0 and 1
 @property (nonatomic, assign) double volume;
 
+// between 0 and 1
 - (void)setSeek:(double)seek;
 - (double)seek;
 

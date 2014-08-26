@@ -22,7 +22,7 @@
 #import <vector>
 #import <ftw.h>
 #import <dirent.h>
-#import <tr1/unordered_set>
+#import <unordered_set>
 
 using namespace std;
 
@@ -41,7 +41,7 @@ static BOOL onRootLevel;
 static int lineNumber;
 static FILE *walkFile;
 
-static tr1::unordered_set<uint64> pathsToRescan[2];
+static unordered_set<uint64> pathsToRescan[2];
 
 + (void)initLibrary {
   static BOOL libraryLoaded = NO;
@@ -311,7 +311,9 @@ static int ftw_callback(const char *filename, const struct stat *stat_struct, in
     walkPrint("%d", inode);
     if (currentLevel > 0) folderIsEmpty = NO;
   } else {
-    if ([FileExtensionChecker isExtensionAcceptable:filename]) walkSong(basename, [LibraryTree songByInode:inode], stat_struct);
+    if ([FileExtensionChecker isExtensionAcceptableForCStringFilename:filename]) {
+      walkSong(basename, [LibraryTree songByInode:inode], stat_struct);
+    }
     folderIsEmpty = NO;
   }
   
@@ -362,7 +364,7 @@ static void walkFolderNonRecursively(BOOL _onRootLevel) {
           pathBuff[pathLen] = 0;
           walkTreeNode(node, NO);
         }
-      } else if (entry->d_type == DT_REG && [FileExtensionChecker isExtensionAcceptable:entry->d_name]) {
+      } else if (entry->d_type == DT_REG && [FileExtensionChecker isExtensionAcceptableForCStringFilename:entry->d_name]) {
         if (stat(pathBuff, &statBuff) == 0) {
           int p_song = (node == -1)? -1: [LibraryTree treeNodeDataForP:node]->p_song;
           walkSong(entry->d_name, p_song, &statBuff);
