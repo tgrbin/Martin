@@ -29,14 +29,18 @@
   @autoreleasepool {
     ID3Reader *id3 = [[ID3Reader alloc] initWithFile:_playlistItem.filename];
     if (id3 != nil) {
+      
       if (self.isCancelled) return;
+      
       _playlistItem.lengthInSeconds = id3.lengthInSeconds;
       NSMutableArray *tagsArray = [NSMutableArray new];
       for (int i = 0; i < kNumberOfTags; ++i) {
         NSString *val = [id3 tag:[Tags tagNameForIndex:(TagIndex)i]];
         [tagsArray addObject:val == nil? @"": val];
       }
+      
       if (self.isCancelled) return;
+      
       [_playlistItem createTagsFromArray:tagsArray];
     }
   }

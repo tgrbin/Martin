@@ -16,7 +16,7 @@
 		790992291706B501007BE3C4 /* ShortcutsPreferencesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 790992271706B501007BE3C4 /* ShortcutsPreferencesViewController.xib */; };
 		7909922C1706B5AF007BE3C4 /* PreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7909922B1706B5AF007BE3C4 /* PreferencesViewController.m */; };
 		7909CEA1167DBDE90011E6A3 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7909CEA0167DBDE80011E6A3 /* IOKit.framework */; };
-		79242E1E16569A47006379D6 /* ID3Reader.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E1D16569A47006379D6 /* ID3Reader.m */; };
+		79242E1E16569A47006379D6 /* ID3Reader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79242E1D16569A47006379D6 /* ID3Reader.mm */; };
 		79242E2016569BA3006379D6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79242E1F16569BA3006379D6 /* AudioToolbox.framework */; };
 		79242E231656AB1C006379D6 /* LibraryFoldersController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E221656AB1C006379D6 /* LibraryFoldersController.m */; };
 		79242E301656B0CF006379D6 /* PreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79242E2E1656B0CF006379D6 /* PreferencesWindowController.m */; };
@@ -295,7 +295,7 @@
 		7909922B1706B5AF007BE3C4 /* PreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesViewController.m; sourceTree = "<group>"; };
 		7909CEA0167DBDE80011E6A3 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		79242E1C16569A47006379D6 /* ID3Reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ID3Reader.h; sourceTree = "<group>"; };
-		79242E1D16569A47006379D6 /* ID3Reader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ID3Reader.m; sourceTree = "<group>"; };
+		79242E1D16569A47006379D6 /* ID3Reader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ID3Reader.mm; sourceTree = "<group>"; };
 		79242E1F16569BA3006379D6 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		79242E211656AB1B006379D6 /* LibraryFoldersController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryFoldersController.h; sourceTree = "<group>"; };
 		79242E221656AB1C006379D6 /* LibraryFoldersController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryFoldersController.m; sourceTree = "<group>"; };
@@ -739,7 +739,7 @@
 				79EDE63C1678EB9A0060F9F9 /* FolderWatcher.h */,
 				79EDE63D1678EB9A0060F9F9 /* FolderWatcher.m */,
 				79242E1C16569A47006379D6 /* ID3Reader.h */,
-				79242E1D16569A47006379D6 /* ID3Reader.m */,
+				79242E1D16569A47006379D6 /* ID3Reader.mm */,
 				79FF1420142F1DB100E27235 /* LibManager.h */,
 				79FF1421142F1DB100E27235 /* LibManager.mm */,
 				79242E211656AB1B006379D6 /* LibraryFoldersController.h */,
@@ -1077,26 +1077,26 @@
 		79DAD732165BEC27004AA7B9 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
-				79F69EB01699731200693CE5 /* NSObject+Observe.h */,
-				79F69EB11699731200693CE5 /* NSObject+Observe.m */,
-				79B3706B149D21EA003372CB /* LastFM.h */,
-				79B3706C149D21EA003372CB /* LastFM.m */,
 				79D63C67168C88F900A248F9 /* DefaultsManager.h */,
 				79D63C68168C88F900A248F9 /* DefaultsManager.m */,
-				7904597C168D7D0800FE0B68 /* TreeStateManager.h */,
-				7904597D168D7D0900FE0B68 /* TreeStateManager.m */,
-				79D83063168EE0F50000C8EF /* PlaylistPersistence.h */,
-				79D83064168EE0F50000C8EF /* PlaylistPersistence.m */,
 				79F69EAD169969B400693CE5 /* DragDataConverter.h */,
 				79F69EAE169969B400693CE5 /* DragDataConverter.m */,
-				79F55D6716EC6C66004510B0 /* PlaylistNameGuesser.h */,
-				79F55D6816EC6C66004510B0 /* PlaylistNameGuesser.m */,
 				79F55D6A16EC7A88004510B0 /* ID3ReadOperation.h */,
 				79F55D6B16EC7A88004510B0 /* ID3ReadOperation.m */,
+				79B3706B149D21EA003372CB /* LastFM.h */,
+				79B3706C149D21EA003372CB /* LastFM.m */,
 				79BEC6D017F5A9A400F1A3FA /* NotificationsGenerator.h */,
 				79BEC6D117F5A9A400F1A3FA /* NotificationsGenerator.m */,
+				79F69EB01699731200693CE5 /* NSObject+Observe.h */,
+				79F69EB11699731200693CE5 /* NSObject+Observe.m */,
 				8DFCB8D719AA6952001DA396 /* NSProgressIndicator+ShowHide.h */,
 				8DFCB8D819AA6952001DA396 /* NSProgressIndicator+ShowHide.m */,
+				79F55D6716EC6C66004510B0 /* PlaylistNameGuesser.h */,
+				79F55D6816EC6C66004510B0 /* PlaylistNameGuesser.m */,
+				79D83063168EE0F50000C8EF /* PlaylistPersistence.h */,
+				79D83064168EE0F50000C8EF /* PlaylistPersistence.m */,
+				7904597C168D7D0800FE0B68 /* TreeStateManager.h */,
+				7904597D168D7D0900FE0B68 /* TreeStateManager.m */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
@@ -1557,7 +1557,7 @@
 				79AF97EB145305C200BE8391 /* PlayerController.m in Sources */,
 				79B3706D149D21EA003372CB /* LastFM.m in Sources */,
 				8D9BD3CD199DE49700BB436C /* PlaylistFile.m in Sources */,
-				79242E1E16569A47006379D6 /* ID3Reader.m in Sources */,
+				79242E1E16569A47006379D6 /* ID3Reader.mm in Sources */,
 				8D05488C19A07CB5003F8210 /* StreamsController.m in Sources */,
 				8DA2B97118939983002F1DF5 /* NSObject+SPInvocationGrabbing.m in Sources */,
 				8DFA4716199FE1130061C228 /* StreamsPreferencesViewController.m in Sources */,

@@ -261,7 +261,11 @@
 
   if ([tableColumn.identifier isEqualToString:@"length"]) {
     int sec = item.lengthInSeconds;
-    value = [NSString stringWithFormat:@"%d:%02d", sec/60, sec%60];
+    if (sec == 0) {
+      value = @"";
+    } else {
+      value = [NSString stringWithFormat:@"%d:%02d", sec/60, sec%60];
+    }
   }
 
   return value;
