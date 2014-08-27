@@ -19,6 +19,8 @@
 NSString * const kFilePlayerPlayedItemNotification = @"FilePlayerPlayedItemNotification";
 NSString * const kFilePlayerEventNotification = @"FilePlayerEventNotification";
 
+// TODO: refactor this into two classes
+
 @interface FilePlayer() <
   STKAudioPlayerDelegate,
   NSSoundDelegate
@@ -54,8 +56,6 @@ NSString * const kFilePlayerEventNotification = @"FilePlayerEventNotification";
     urlStreamPlayer.delegate = self;
   } else {
     audioPlayer = new SFB::Audio::Player();
-    
-//    sound.delegate = self;
   }
   
   self.volume = _volume;
@@ -67,6 +67,14 @@ NSString * const kFilePlayerEventNotification = @"FilePlayerEventNotification";
     if (audioPlayer) {
       NSURL *url = [NSURL fileURLWithPath:item.filename isDirectory:NO];
       audioPlayer->Play((__bridge CFURLRef) url);
+      
+      audioPlayer->SetRenderingFinishedBlock(^(const SFB::Audio::Decoder &decoder) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+          [self stop];
+          [self postNotification:kFilePlayerPlayedItemNotification];
+        });
+      });
+      
     } else {
       [urlStreamPlayer play:item.filename];
     }
@@ -155,13 +163,6 @@ NSString * const kFilePlayerEventNotification = @"FilePlayerEventNotification";
     return 0;
   }
 }
-
-//- (void)sound:(NSSound *)s didFinishPlaying:(BOOL)success {
-//  if (success) {
-//    [self stop];
-//    [self postNotification:kFilePlayerPlayedItemNotification];
-//  }
-//}
 
 #pragma mark - STKAudioPlayer delegate
 
