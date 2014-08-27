@@ -14,6 +14,7 @@
 #import "STKAudioPlayer.h"
 
 #include <SFBAudioEngine/AudioPlayer.h>
+#include <SFBAudioEngine/CoreAudioOutput.h>
 
 NSString * const kFilePlayerPlayedItemNotification = @"FilePlayerPlayedItemNotification";
 NSString * const kFilePlayerEventNotification = @"FilePlayerEventNotification";
@@ -121,7 +122,8 @@ NSString * const kFilePlayerEventNotification = @"FilePlayerEventNotification";
   double actualVolume = (_volume == 0)? 0: MAX(cube, 0.001);
   
   if (audioPlayer) {
-    //  sound.volume = actualVolume;
+    SFB::Audio::CoreAudioOutput &output = (SFB::Audio::CoreAudioOutput&) audioPlayer->GetOutput();
+    output.SetVolume(actualVolume);
   } else {
     urlStreamPlayer.volume = actualVolume;
   }
