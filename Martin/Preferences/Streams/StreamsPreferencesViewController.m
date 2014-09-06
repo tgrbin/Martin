@@ -51,7 +51,7 @@
 }
 
 - (NSString *)iconName {
-  return @"preficon_shortcuts";
+  return @"streams_icon";
 }
 
 #pragma mark - actions

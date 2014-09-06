@@ -216,6 +216,8 @@
 		8D17D43219A9043C00555D68 /* QueuePlaylist.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8D17D43119A9043C00555D68 /* QueuePlaylist.mm */; };
 		8D3CB8FF18915C3800D6F471 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 8D3CB8FD18915C3800D6F471 /* LICENSE */; };
 		8D3CB90018915C3800D6F471 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 8D3CB8FE18915C3800D6F471 /* README.md */; };
+		8D562B4E19B8561000547292 /* streams_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8D562B4C19B8561000547292 /* streams_icon.png */; };
+		8D562B4F19B8561000547292 /* streams_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8D562B4D19B8561000547292 /* streams_icon@2x.png */; };
 		8D76AB1218831E4500799617 /* PlaylistTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D76AB1118831E4500799617 /* PlaylistTableView.m */; };
 		8D9BD3CC199DE49700BB436C /* M3UPlaylistFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D9BD3C6199DE49700BB436C /* M3UPlaylistFile.m */; };
 		8D9BD3CD199DE49700BB436C /* PlaylistFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D9BD3C9199DE49700BB436C /* PlaylistFile.m */; };
@@ -588,6 +590,8 @@
 		8D17D43319A9060C00555D68 /* Playlist+private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Playlist+private.h"; sourceTree = "<group>"; };
 		8D3CB8FD18915C3800D6F471 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = SOURCE_ROOT; };
 		8D3CB8FE18915C3800D6F471 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
+		8D562B4C19B8561000547292 /* streams_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = streams_icon.png; sourceTree = "<group>"; };
+		8D562B4D19B8561000547292 /* streams_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "streams_icon@2x.png"; sourceTree = "<group>"; };
 		8D76AB1018831E4500799617 /* PlaylistTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistTableView.h; sourceTree = "<group>"; };
 		8D76AB1118831E4500799617 /* PlaylistTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistTableView.m; sourceTree = "<group>"; };
 		8D9BD3C5199DE49700BB436C /* M3UPlaylistFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = M3UPlaylistFile.h; sourceTree = "<group>"; };
@@ -1278,6 +1282,8 @@
 				8DCC66C6188E801400032B89 /* preficon_lib@2x.png */,
 				8DCC66C7188E801400032B89 /* preficon_shortcuts.png */,
 				8DCC66C8188E801400032B89 /* preficon_shortcuts@2x.png */,
+				8D562B4C19B8561000547292 /* streams_icon.png */,
+				8D562B4D19B8561000547292 /* streams_icon@2x.png */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -1408,6 +1414,7 @@
 				79CF708217EE32620057E678 /* AquaTabsDown.png in Resources */,
 				79CF70D617EE32620057E678 /* SafariIWATClosePressed.png in Resources */,
 				79CF70B917EE32620057E678 /* SafariAWAddTabButton.png in Resources */,
+				8D562B4E19B8561000547292 /* streams_icon.png in Resources */,
 				79CF707617EE32620057E678 /* AquaTabClose_Front_Rollover.png in Resources */,
 				79CF708617EE32620057E678 /* AquaTabsSeparatorDown.png in Resources */,
 				795E72E017E49A75005CD05C /* pause.png in Resources */,
@@ -1512,6 +1519,7 @@
 				79CF70C817EE32620057E678 /* SafariAWBG.png in Resources */,
 				792831A917E35BED00223E5C /* repeat.png in Resources */,
 				79CF707F17EE32620057E678 /* AquaTabNewRollover.png in Resources */,
+				8D562B4F19B8561000547292 /* streams_icon@2x.png in Resources */,
 				79CF70C917EE32620057E678 /* SafariAWITClose.png in Resources */,
 				79CF70BF17EE32620057E678 /* SafariAWATClosePressed@2x.png in Resources */,
 			);
