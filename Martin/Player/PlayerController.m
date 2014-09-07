@@ -15,10 +15,22 @@
 #import "PlayerStatusTextField.h"
 #import "DefaultsManager.h"
 
+#import "Player.h"
+
+NSString * const kPlayerEventNotification = @"PlayerEventNotification";
+
 typedef enum {
   kPlayButtonStylePlay,
   kPlayButtonStylePause
 } PlayButtonStyle;
+
+@interface PlayerController() <PlayerDelegate>
+
+@property (nonatomic, strong) Player *player;
+
+@property (nonatomic, weak) PlaylistItem *currentItem;
+
+@end
 
 @implementation PlayerController {
   NSTimer *seekTimer;
@@ -33,14 +45,14 @@ typedef enum {
 
 - (void)awakeFromNib {
   seekSlider.enabled = NO;
-  [self observe:kFilePlayerPlayedItemNotification withAction:@selector(trackFinished)];
   
   self.shuffle = [[DefaultsManager objectForKey:kDefaultsKeyShuffle] boolValue];
   self.repeat = [[DefaultsManager objectForKey:kDefaultsKeyRepeat] boolValue];
+  self.volume = [[DefaultsManager objectForKey:kDefaultsKeyVolume] doubleValue];
 }
 
 - (BOOL)nowPlayingItemFromPlaylist:(Playlist *)playlist {
-  if ([MartinAppDelegate get].filePlayer.stopped == NO) {
+  if (self.player.stopped == NO) {
     if (_nowPlayingPlaylist == playlist) return YES;
 
     QueuePlaylist *queue = [MartinAppDelegate get].tabsManager.queue;
@@ -60,8 +72,13 @@ typedef enum {
 }
 
 - (void)startPlayingCurrentItem {
-  if (_nowPlayingPlaylist.numberOfItems == 0) return;
-  if (_nowPlayingPlaylist.currentItem == nil) [_nowPlayingPlaylist moveToNextItem];
+  if (_nowPlayingPlaylist.numberOfItems == 0) {
+    return;
+  }
+  
+  if (_nowPlayingPlaylist.currentItem == nil) {
+    [_nowPlayingPlaylist moveToNextItem];
+  }
 
   if (playingQueuedItem) {
     Playlist *p = [(QueuePlaylist *)_nowPlayingPlaylist currentItemPlaylist];
@@ -71,30 +88,33 @@ typedef enum {
     }
   }
 
-  PlaylistItem *currentItem = _nowPlayingPlaylist.currentItem;
+  self.currentItem = _nowPlayingPlaylist.currentItem;
   
   [_nowPlayingPlaylist addCurrentItemToAlreadyPlayedItems];
   
-  [[MartinAppDelegate get].filePlayer startPlayingItem:currentItem];
+  [self startSeekTimerIfNecessaryWithItem:self.currentItem];
   
-  [self startSeekTimerIfNecessaryWithItem:currentItem];
+  [self createPlayerForCurrentItem];
+  
+  [self.player play];
   
   [self setPlayButtonStyle:kPlayButtonStylePause];
-  [LastFM updateNowPlaying:currentItem];
+  [LastFM updateNowPlaying:self.currentItem];
 
-  playerStatusTextField.playlistItem = currentItem;
+  playerStatusTextField.playlistItem = self.currentItem;
   playerStatusTextField.status = kPlayerStatusPlaying;
 }
 
 - (void)trackFinished {
-  [LastFM scrobble:_nowPlayingPlaylist.currentItem];
   [self next];
 }
 
 - (void)stop {
   [self setPlayButtonStyle:kPlayButtonStylePlay];
   [self disableTimer];
-  [[MartinAppDelegate get].filePlayer stop];
+  
+  [self.player stop];
+  
   playerStatusTextField.status = kPlayerStatusStopped;
   _nowPlayingPlaylist = nil;
 }
@@ -102,13 +122,14 @@ typedef enum {
 - (void)playOrPause {
   [self setNowPlayingPlaylistIfNecessary];
 
-  if ([[MartinAppDelegate get].filePlayer stopped]) {
+  if (self.player.stopped == YES) {
     if ([self willPlayQueuedItem] == NO) {
       [self startPlayingCurrentItem];
     }
   } else {
-    [[MartinAppDelegate get].filePlayer togglePause];
-    if ([[MartinAppDelegate get].filePlayer playing]) {
+    [self.player togglePause];
+    
+    if (self.player.playing == YES) {
       [self setPlayButtonStyle:kPlayButtonStylePause];
       playerStatusTextField.status = kPlayerStatusPlaying;
     } else {
@@ -129,7 +150,7 @@ typedef enum {
 - (void)prev {
   [self setNowPlayingPlaylistIfNecessary];
 
-  if ([MartinAppDelegate get].filePlayer.playing == YES && [MartinAppDelegate get].filePlayer.timeElapsed > 3) {
+  if (self.player.playing == YES && self.player.secondsElapsed > 3) {
     [self startPlayingCurrentItem];
   } else {
     if (playingQueuedItem) {
@@ -162,6 +183,7 @@ typedef enum {
   if (seekTimer != nil) {
     [self disableTimer];
   }
+  
   seekSlider.enabled = YES;
   seekTimer = [NSTimer scheduledTimerWithTimeInterval:0.2
                                                target:self
@@ -171,10 +193,10 @@ typedef enum {
 }
 
 - (void)updateSeekTime {
-  if ([[MartinAppDelegate get].filePlayer stopped]) {
+  if (self.player.stopped == YES) {
     [self disableTimer];
   } else {
-    seekSlider.doubleValue = [[MartinAppDelegate get].filePlayer seek];
+    seekSlider.doubleValue = self.player.seek;
   }
 }
 
@@ -193,6 +215,15 @@ typedef enum {
     playOrPauseButton.image = [NSImage imageNamed:@"pause"];
     playOrPauseButton.alternateImage = [NSImage imageNamed:@"pause_h"];
   }
+}
+
+- (void)createPlayerForCurrentItem {
+  [self.player stop];
+  
+  self.player = [Player playerWithURLString:self.currentItem.filename
+                                andDelegate:self];
+  
+  self.player.volume = [self volumeFunction:self.volume];
 }
 
 #pragma mark - queue management
@@ -221,7 +252,7 @@ typedef enum {
 #pragma mark - actions
 
 - (IBAction)seekSliderChanged:(NSSlider *)sender {
-  [[MartinAppDelegate get].filePlayer setSeek:sender.doubleValue];
+  self.player.seek = sender.doubleValue;
 }
 
 - (IBAction)prevPressed:(id)sender {
@@ -265,20 +296,19 @@ typedef enum {
 #pragma mark - saving state
 
 - (void)storePlayerState {
-  FilePlayer *filePlayer = [MartinAppDelegate get].filePlayer;
-  [DefaultsManager setObject:@(filePlayer.volume) forKey:kDefaultsKeyVolume];
+  [DefaultsManager setObject:@(self.volume) forKey:kDefaultsKeyVolume];
 
   PlayerStatus status = playerStatusTextField.status;
 
   // TODO: martin can't remember seek position of an item that doesn't belong to any playlist
   // we could remember a library id or a filename to solve this
-  if ([MartinAppDelegate get].playerController.nowPlayingPlaylist == nil) {
+  if (self.nowPlayingPlaylist == nil) {
     status = kPlayerStatusStopped;
   }
 
   [DefaultsManager setObject:@(status) forKey:kDefaultsKeyPlayerState];
   if (status != kPlayerStatusStopped) {
-    [DefaultsManager setObject:@(filePlayer.seek) forKey:kDefaultsKeySeekPosition];
+    [DefaultsManager setObject:@(self.player.seek) forKey:kDefaultsKeySeekPosition];
   }
 }
 
@@ -290,15 +320,15 @@ typedef enum {
   } else {
     [self setNowPlayingPlaylistIfNecessary];
 
-    PlaylistItem *currentItem = _nowPlayingPlaylist.currentItem;
+    self.currentItem = _nowPlayingPlaylist.currentItem;
     
-    FilePlayer *filePlayer = [MartinAppDelegate get].filePlayer;
-    [filePlayer prepareForPlayingItem:currentItem];
-    filePlayer.seek = [[DefaultsManager objectForKey:kDefaultsKeySeekPosition] doubleValue];
+    [self createPlayerForCurrentItem];
     
-    [self startSeekTimerIfNecessaryWithItem:currentItem];
+    self.player.seek = [[DefaultsManager objectForKey:kDefaultsKeySeekPosition] doubleValue];
     
-    playerStatusTextField.playlistItem = currentItem;
+    [self startSeekTimerIfNecessaryWithItem:self.currentItem];
+    
+    playerStatusTextField.playlistItem = self.currentItem;
     playerStatusTextField.status = kPlayerStatusPaused;
   }
 }
@@ -323,6 +353,49 @@ typedef enum {
 
 - (IBAction)shufflePressed:(id)sender {
   self.shuffle = !self.shuffle;
+}
+
+#pragma mark - volume
+
+static const double kVolumeChangeStep = 0.05;
+
+- (CGFloat)volumeFunction:(CGFloat)v {
+  // logarithmic scale for volume, read somewhere that it should be done this way
+  return v * v * v;
+}
+
+- (void)setVolume:(CGFloat)volume {
+  _volume = volume;
+  
+  self.player.volume = [self volumeFunction:_volume];
+}
+
+- (IBAction)volumeUp:(id)sender {
+  self.volume = MIN(_volume + kVolumeChangeStep, 1);
+}
+
+- (IBAction)volumeDown:(id)sender {
+  self.volume = MAX(_volume - kVolumeChangeStep, 0);
+}
+
+#pragma mark - player delegate
+
+- (void)errorPlayingItem {
+  NSString *streamName = [self.currentItem tagValueForIndex:kTagIndexTitle];
+  
+  [self stop];
+  
+  [[NSAlert alertWithMessageText:[NSString stringWithFormat:@"Couldn't play '%@' :(", streamName]
+                   defaultButton:@"OK"
+                 alternateButton:nil
+                     otherButton:nil
+       informativeTextWithFormat:@""]
+    runModal];
+}
+
+- (void)finishedPlayingItem {
+  [LastFM scrobble:self.currentItem];
+  [self next];
 }
 
 @end

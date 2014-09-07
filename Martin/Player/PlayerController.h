@@ -7,11 +7,16 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString * const kPlayerEventNotification;
+
 @class Playlist;
+@class PlaylistItem;
 
 @interface PlayerController : NSObject
 
 @property (nonatomic, strong) Playlist *nowPlayingPlaylist;
+
+@property (nonatomic, readonly, weak) PlaylistItem *currentItem;
 
 - (BOOL)nowPlayingItemFromPlaylist:(Playlist *)playlist;
 
@@ -29,5 +34,7 @@
 
 @property (nonatomic, assign) BOOL shuffle;
 @property (nonatomic, assign) BOOL repeat;
+
+@property (nonatomic, assign) CGFloat volume;
 
 @end

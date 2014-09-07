@@ -10,7 +10,6 @@
 #import "LibraryOutlineViewManager.h"
 #import "PlaylistTableManager.h"
 #import "PreferencesWindowController.h"
-#import "FilePlayer.h"
 #import "TabsManager.h"
 #import "StreamsController.h"
 
@@ -26,7 +25,6 @@
 @property (nonatomic, strong) IBOutlet PlayerController *playerController;
 @property (nonatomic, strong) IBOutlet LibraryOutlineViewManager *libraryOutlineViewManager;
 @property (nonatomic, strong) IBOutlet PlaylistTableManager *playlistTableManager;
-@property (nonatomic, strong) IBOutlet FilePlayer *filePlayer;
 @property (nonatomic, strong) IBOutlet TabsManager *tabsManager;
 @property (nonatomic, strong) IBOutlet StreamsController *streamsController;
 

@@ -34,7 +34,7 @@
   [self configureMMTabView];
   [self loadPlaylists];
 
-  [self observe:kFilePlayerEventNotification withAction:@selector(handlePlayerEvent)];
+  [self observe:kPlayerEventNotification withAction:@selector(handlePlayerEvent)];
 }
 
 - (void)handlePlayerEvent {

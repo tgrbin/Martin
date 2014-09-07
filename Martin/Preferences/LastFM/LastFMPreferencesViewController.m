@@ -76,7 +76,7 @@ typedef enum {
 
     if (success == YES) {
       self.state = kStateScrobbling;
-      PlaylistItem *currentItem = [MartinAppDelegate get].filePlayer.currentItem;
+      PlaylistItem *currentItem = [MartinAppDelegate get].playerController.currentItem;
       if (currentItem) {
         [LastFM updateNowPlaying:currentItem];
       }

@@ -37,7 +37,7 @@
                                            NSFilenamesPboardType
                                            ]];
 
-  [self observe:kFilePlayerEventNotification withAction:@selector(playlistChanged)];
+  [self observe:kPlayerEventNotification withAction:@selector(playlistChanged)];
   [self observe:kPlaylistCurrentItemChanged withAction:@selector(playlistChanged)];
   [self observe:kLibraryRescanFinishedNotification withAction:@selector(reloadTableData)];
   [self observe:kStreamsUpdatedNotification withAction:@selector(reloadTableData)];
