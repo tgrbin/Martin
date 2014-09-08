@@ -14,7 +14,7 @@
 #import "NSObject+Observe.h"
 #import "PlayerStatusTextField.h"
 #import "DefaultsManager.h"
-
+#import "NotificationsGenerator.h"
 #import "Player.h"
 
 NSString * const kPlayerEventNotification = @"PlayerEventNotification";
@@ -96,6 +96,8 @@ typedef enum {
   
   [self createPlayerForCurrentItem];
   
+  [[NotificationsGenerator shared] showWithItem:self.currentItem];
+
   [self.player play];
   
   [self setPlayButtonStyle:kPlayButtonStylePause];

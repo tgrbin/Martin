@@ -49,10 +49,4 @@
   _playing = NO;
 }
 
-//
-//- (void)startPlayingItem:(PlaylistItem *)item {
-//  [[NotificationsGenerator shared] showWithItem:item];
-//  [self playItem:item justPrepare:NO];
-//}
-
 @end
