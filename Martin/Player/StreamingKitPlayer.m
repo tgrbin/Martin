@@ -16,6 +16,8 @@
 
 @implementation StreamingKitPlayer {
   STKAudioPlayer *player;
+  
+  BOOL buffering;
 }
 
 - (id)init {
@@ -47,8 +49,14 @@
 - (void)stop {
   [super stop];
   
+  if (buffering == YES) {
+    --[MartinAppDelegate get].martinBusy;
+    buffering = NO;
+  }
+  
   if (player != nil) {
-    [player stop];
+    [player dispose];
+    player.delegate = nil;
     player = nil;
   }
 }
@@ -69,10 +77,12 @@
 {
   if (state == STKAudioPlayerStateBuffering) {
     ++[MartinAppDelegate get].martinBusy;
+    buffering = YES;
   }
   
   if (previousState == STKAudioPlayerStateBuffering) {
     --[MartinAppDelegate get].martinBusy;
+    buffering = NO;
   }
 }
 
