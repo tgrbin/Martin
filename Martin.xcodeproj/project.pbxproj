@@ -246,6 +246,7 @@
 		8DCC66CC188E801400032B89 /* preficon_lib@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C6188E801400032B89 /* preficon_lib@2x.png */; };
 		8DCC66CD188E801400032B89 /* preficon_shortcuts.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C7188E801400032B89 /* preficon_shortcuts.png */; };
 		8DCC66CE188E801400032B89 /* preficon_shortcuts@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C8188E801400032B89 /* preficon_shortcuts@2x.png */; };
+		8DDAB26F19BE238000A2C9E2 /* SFBAudioEngine.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8DBB07B119ACF52900F34707 /* SFBAudioEngine.framework */; };
 		8DFA4716199FE1130061C228 /* StreamsPreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DFA4715199FE1130061C228 /* StreamsPreferencesViewController.m */; };
 		8DFA4718199FE1290061C228 /* StreamsPreferencesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8DFA4717199FE1290061C228 /* StreamsPreferencesViewController.xib */; };
 		8DFA471C199FEE360061C228 /* StreamNameGetter.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DFA471B199FEE360061C228 /* StreamNameGetter.m */; };
@@ -282,6 +283,19 @@
 			remoteInfo = SFBAudioEngine;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8DDAB26A19BE231600A2C9E2 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8DDAB26F19BE238000A2C9E2 /* SFBAudioEngine.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		7904597C168D7D0800FE0B68 /* TreeStateManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreeStateManager.h; sourceTree = "<group>"; };
@@ -1335,6 +1349,7 @@
 				79FF13F2142F18A500E27235 /* Sources */,
 				79FF13F3142F18A500E27235 /* Frameworks */,
 				79FF13F4142F18A500E27235 /* Resources */,
+				8DDAB26A19BE231600A2C9E2 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -1736,6 +1751,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Martin/Supporting Files/Martin-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/Martin/Supporting files/Martin-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -1753,6 +1769,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Martin/Supporting Files/Martin-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/Martin/Supporting files/Martin-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

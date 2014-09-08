@@ -39,6 +39,8 @@ static NotificationsGenerator *instance;
   if (item.isURLStream == YES) {
     self.currentStreamName = title;
   } else {
+    self.currentStreamName = nil;
+    
     if (title.length > 0) {
       NSMutableArray *arr = [NSMutableArray new];
       
