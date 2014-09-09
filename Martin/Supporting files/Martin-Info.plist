@@ -21,6 +21,20 @@
 			</array>
 		</dict>
 		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>flac</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>icon.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>FLAC Audio File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+		</dict>
+		<dict>
 			<key>CFBundleTypeIconFile</key>
 			<string>icon.icns</string>
 			<key>CFBundleTypeName</key>
@@ -40,7 +54,7 @@
 				<string>pls</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
-			<string>pls.icns</string>
+			<string>icon.icns</string>
 			<key>CFBundleTypeName</key>
 			<string>PLS Playlist File</string>
 			<key>CFBundleTypeRole</key>
@@ -56,7 +70,7 @@
 				<string>m3u</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
-			<string>m3u.icns</string>
+			<string>icon.icns</string>
 			<key>CFBundleTypeName</key>
 			<string>M3U Playlist File</string>
 			<key>CFBundleTypeRole</key>
