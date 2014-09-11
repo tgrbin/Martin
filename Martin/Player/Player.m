@@ -10,6 +10,7 @@
 
 #import "SFBPlayer.h"
 #import "StreamingKitPlayer.h"
+#import "NativePlayer.h"
 
 #import "DefaultsManager.h"
 #import "NSString+Stream.h"
@@ -24,10 +25,15 @@
 @implementation Player
 
 + (Player *)playerWithURLString:(NSString *)urlString andDelegate:(id<PlayerDelegate>)delegate {
-  Class playerClass =
-    [urlString isURL]?
-    [StreamingKitPlayer class]:
-    [SFBPlayer class];
+  Class playerClass;
+  
+  if ([urlString isURL] == YES) {
+    playerClass = [StreamingKitPlayer class];
+  } else if ([urlString.lowercaseString hasSuffix:@"m4a"]) {
+    playerClass = [NativePlayer class];
+  } else {
+    playerClass = [SFBPlayer class];
+  }
   
   Player *player = [playerClass new];
   player.urlString = urlString;

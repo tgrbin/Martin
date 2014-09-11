@@ -216,6 +216,7 @@
 		8D1BC85719BB708800A702DD /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D1BC85619BB708800A702DD /* Player.m */; };
 		8D3CB8FF18915C3800D6F471 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 8D3CB8FD18915C3800D6F471 /* LICENSE */; };
 		8D3CB90018915C3800D6F471 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 8D3CB8FE18915C3800D6F471 /* README.md */; };
+		8D3FAB5F19C1E0C400E84C1E /* NativePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D3FAB5E19C1E0C400E84C1E /* NativePlayer.m */; };
 		8D52685B19BC5FF800936621 /* SFBPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8D52685819BC5FF800936621 /* SFBPlayer.mm */; };
 		8D52685C19BC5FF800936621 /* StreamingKitPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D52685A19BC5FF800936621 /* StreamingKitPlayer.m */; };
 		8D562B4E19B8561000547292 /* streams_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8D562B4C19B8561000547292 /* streams_icon.png */; };
@@ -606,6 +607,8 @@
 		8D1BC85619BB708800A702DD /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Player.m; sourceTree = "<group>"; };
 		8D3CB8FD18915C3800D6F471 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = SOURCE_ROOT; };
 		8D3CB8FE18915C3800D6F471 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
+		8D3FAB5D19C1E0C400E84C1E /* NativePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NativePlayer.h; sourceTree = "<group>"; };
+		8D3FAB5E19C1E0C400E84C1E /* NativePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NativePlayer.m; sourceTree = "<group>"; };
 		8D52685719BC5FF800936621 /* SFBPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SFBPlayer.h; sourceTree = "<group>"; };
 		8D52685819BC5FF800936621 /* SFBPlayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SFBPlayer.mm; sourceTree = "<group>"; };
 		8D52685919BC5FF800936621 /* StreamingKitPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamingKitPlayer.h; sourceTree = "<group>"; };
@@ -697,6 +700,8 @@
 				8D52685819BC5FF800936621 /* SFBPlayer.mm */,
 				8D52685919BC5FF800936621 /* StreamingKitPlayer.h */,
 				8D52685A19BC5FF800936621 /* StreamingKitPlayer.m */,
+				8D3FAB5D19C1E0C400E84C1E /* NativePlayer.h */,
+				8D3FAB5E19C1E0C400E84C1E /* NativePlayer.m */,
 			);
 			path = Player;
 			sourceTree = "<group>";
@@ -1657,6 +1662,7 @@
 				79F55D6916EC6C66004510B0 /* PlaylistNameGuesser.m in Sources */,
 				79F55D6C16EC7A88004510B0 /* ID3ReadOperation.m in Sources */,
 				7909921E1706B427007BE3C4 /* LibraryPreferencesViewController.m in Sources */,
+				8D3FAB5F19C1E0C400E84C1E /* NativePlayer.m in Sources */,
 				79CF709E17EE32620057E678 /* MMOverflowPopUpButtonCell.m in Sources */,
 				790992231706B4A3007BE3C4 /* LastFMPreferencesViewController.m in Sources */,
 				795022EF17E436A600212801 /* MartinSlider.m in Sources */,
