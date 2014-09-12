@@ -62,6 +62,7 @@ typedef enum {
       }
     }
   }
+  
   return NO;
 }
 
@@ -105,6 +106,8 @@ typedef enum {
 
   playerStatusTextField.playlistItem = self.currentItem;
   playerStatusTextField.status = kPlayerStatusPlaying;
+
+  [self postPlayerEvent];
 }
 
 - (void)trackFinished {
@@ -119,6 +122,8 @@ typedef enum {
   
   playerStatusTextField.status = kPlayerStatusStopped;
   _nowPlayingPlaylist = nil;
+  
+  [self postPlayerEvent];
 }
 
 - (void)playOrPause {
@@ -295,6 +300,12 @@ typedef enum {
   [self startPlayingCurrentItem];
 }
 
+- (void)postPlayerEvent {
+  [[NSNotificationCenter defaultCenter] postNotificationName:kPlayerEventNotification
+                                                      object:self
+                                                    userInfo:nil];
+}
+
 #pragma mark - saving state
 
 - (void)storePlayerState {
@@ -332,6 +343,8 @@ typedef enum {
     
     playerStatusTextField.playlistItem = self.currentItem;
     playerStatusTextField.status = kPlayerStatusPaused;
+    
+    [self postPlayerEvent];
   }
 }
 
