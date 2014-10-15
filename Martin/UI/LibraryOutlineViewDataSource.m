@@ -113,7 +113,7 @@ static const int kOutlineViewStreamsItem = -1;
       block(playlistItem);
       
     } else {
-      for (int i = 0; i < [self numberOfChildrenOfItem:top]; ++i) {
+      for (NSInteger i = [self numberOfChildrenOfItem:top] - 1; i >= 0; --i) {
         [stack addObject:[self childAtIndex:i ofItem:top]];
       }
     }
