@@ -18,25 +18,40 @@
 - (id)initWithFile:(NSString *)file {
   if (self = [super init]) {
     NSURL *url = [NSURL fileURLWithPath:file isDirectory:NO];
-    auto metadata = SFB::Audio::Metadata::CreateMetadataForURL((__bridge CFURLRef)url);
     
-    if (metadata) {
-      lengthInSeconds = [(__bridge NSNumber *)metadata->GetDuration() intValue];
-      
-      id3 = [NSMutableDictionary new];
-      
-      [self checkAndSet:@"artist" value:metadata->GetArtist()];
-      [self checkAndSet:@"album" value:metadata->GetAlbumTitle()];
-      [self checkAndSet:@"title" value:metadata->GetTitle()];
-      [self checkAndSet:@"genre" value:metadata->GetGenre()];
-      [self checkAndSet:@"year" value:metadata->GetReleaseDate()];
-      
-      CFNumberRef trackNumber = metadata->GetTrackNumber();
-      NSInteger trackNumberInteger = [(__bridge NSNumber *)trackNumber intValue];
-      if (trackNumberInteger > 0) {
-        id3[@"track number"] = [@(trackNumberInteger) description];
+    try {
+      NSLog(@"scanning: %@", file);
+      auto metadata = SFB::Audio::Metadata::CreateMetadataForURL((__bridge CFURLRef)url);
+
+      if (metadata) {
+        lengthInSeconds = [(__bridge NSNumber *)metadata->GetDuration() intValue];
+        
+        id3 = [NSMutableDictionary new];
+        
+        [self checkAndSet:@"artist" value:metadata->GetArtist()];
+        [self checkAndSet:@"album" value:metadata->GetAlbumTitle()];
+        [self checkAndSet:@"title" value:metadata->GetTitle()];
+        [self checkAndSet:@"genre" value:metadata->GetGenre()];
+        [self checkAndSet:@"year" value:metadata->GetReleaseDate()];
+        
+        CFNumberRef trackNumber = metadata->GetTrackNumber();
+        NSInteger trackNumberInteger = [(__bridge NSNumber *)trackNumber intValue];
+        if (trackNumberInteger > 0) {
+          id3[@"track number"] = [@(trackNumberInteger) description];
+        }
+      } else {
+        return nil;
       }
-    } else {
+    } catch (...) {
+      if ([[NSAlert alertWithMessageText:[NSString stringWithFormat:@"meta data scan crashed for: %@", file]
+                       defaultButton:@"OK"
+                     alternateButton:nil
+                         otherButton:nil
+           informativeTextWithFormat:@""]
+           runModal]) {
+        exit(0);
+      }
+      
       return nil;
     }
   }
