@@ -65,7 +65,11 @@
   [ShortcutBinder bindControl:outlineView andKey:kMartinKeyCmdEnter toTarget:self andAction:@selector(createPlaylistWithSelectedItems:)];
   [ShortcutBinder bindControl:outlineView andKey:kMartinKeyQueueItems toTarget:self andAction:@selector(queueSelectedItems:)];
 
-  [ShortcutBinder bindControl:outlineView andKey:kMartinKeySearch toTarget:_searchTextField andAction:@selector(becomeFirstResponder)];
+  [ShortcutBinder bindControl:outlineView
+                       andKey:kMartinKeySearch
+                     toTarget:_searchTextField.window
+                    andAction:@selector(makeFirstResponder:)
+                   withObject:_searchTextField];
 }
 
 - (void)saveState {
@@ -328,7 +332,7 @@
 }
 
 - (IBAction)searchPressed:(id)sender {
-  [_searchTextField becomeFirstResponder];
+  [_searchTextField.window makeFirstResponder:_searchTextField];
 }
 
 @end

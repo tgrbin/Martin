@@ -26,6 +26,10 @@ static NSMutableArray *bindings;
   [bindings addObject:@[control, @(key), target, NSStringFromSelector(action)]];
 }
 
++ (void)bindControl:(NSControl *)control andKey:(MartinKey)key toTarget:(id)target andAction:(SEL)action withObject:(id)obj {
+  [bindings addObject:@[control, @(key), target, NSStringFromSelector(action), obj]];
+}
+
 + (void)initialize {
   bindings = [NSMutableArray new];
   hookClass([NSTableView class]);
@@ -61,7 +65,11 @@ static void hookClass(Class cls) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
       if ([binding[3] hasSuffix:@":"]) {
-        [binding[2] performSelector:NSSelectorFromString(binding[3]) withObject:nil];
+        if (binding.count == 5) {
+          [binding[2] performSelector:NSSelectorFromString(binding[3]) withObject:binding[4]];
+        } else {
+          [binding[2] performSelector:NSSelectorFromString(binding[3]) withObject:nil];
+        }
       } else {
         [binding[2] performSelector:NSSelectorFromString(binding[3])];
       }

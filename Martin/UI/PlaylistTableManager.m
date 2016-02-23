@@ -61,13 +61,14 @@
     @(kMartinKeyLeft): @"selectPreviousTab",
     @(kMartinKeyRight): @"selectNextTab"
   };
-
   [ShortcutBinder bindControl:playlistTable toTarget:self withBindings:bindings];
 
+  NSTextField *searchTextField = [MartinAppDelegate get].libraryOutlineViewManager.searchTextField;
   [ShortcutBinder bindControl:playlistTable
                        andKey:kMartinKeySearch
-                     toTarget:[MartinAppDelegate get].libraryOutlineViewManager.searchTextField
-                    andAction:@selector(becomeFirstResponder)];
+                     toTarget:searchTextField.window
+                    andAction:@selector(makeFirstResponder:)
+                   withObject:searchTextField];
 }
 
 - (void)reloadTableData {

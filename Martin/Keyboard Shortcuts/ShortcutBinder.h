@@ -28,6 +28,7 @@ typedef enum {
 
 + (void)bindControl:(NSControl *)control toTarget:(id)target withBindings:(NSDictionary *)bindings;
 + (void)bindControl:(NSControl *)control andKey:(MartinKey)key toTarget:(id)target andAction:(SEL)action;
++ (void)bindControl:(NSControl *)control andKey:(MartinKey)key toTarget:(id)target andAction:(SEL)action withObject:(id)obj;
 
 + (MartinKey)martinKeyForEvent:(NSEvent *)event;
 
