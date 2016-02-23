@@ -247,7 +247,7 @@
 		8DCC66CC188E801400032B89 /* preficon_lib@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C6188E801400032B89 /* preficon_lib@2x.png */; };
 		8DCC66CD188E801400032B89 /* preficon_shortcuts.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C7188E801400032B89 /* preficon_shortcuts.png */; };
 		8DCC66CE188E801400032B89 /* preficon_shortcuts@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8DCC66C8188E801400032B89 /* preficon_shortcuts@2x.png */; };
-		8DDAB26F19BE238000A2C9E2 /* SFBAudioEngine.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8DBB07B119ACF52900F34707 /* SFBAudioEngine.framework */; };
+		8DDAB26F19BE238000A2C9E2 /* SFBAudioEngine.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8DBB07B119ACF52900F34707 /* SFBAudioEngine.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		8DFA4716199FE1130061C228 /* StreamsPreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DFA4715199FE1130061C228 /* StreamsPreferencesViewController.m */; };
 		8DFA4718199FE1290061C228 /* StreamsPreferencesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8DFA4717199FE1290061C228 /* StreamsPreferencesViewController.xib */; };
 		8DFA471C199FEE360061C228 /* StreamNameGetter.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DFA471B199FEE360061C228 /* StreamNameGetter.m */; };
@@ -1372,7 +1372,7 @@
 		79FF13ED142F18A400E27235 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0720;
 			};
 			buildConfigurationList = 79FF13F0142F18A400E27235 /* Build configuration list for PBXProject "Martin" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1698,9 +1698,11 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -1737,6 +1739,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
@@ -1763,6 +1766,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Martin/Supporting files/Martin-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_BUNDLE_IDENTIFIER = "tomislav.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1781,6 +1785,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Martin/Supporting files/Martin-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_BUNDLE_IDENTIFIER = "tomislav.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
