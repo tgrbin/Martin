@@ -19,6 +19,9 @@ I apologize in advance for any annoying bugs that you may encounter.
 Release notes
 ----------------
 
+- v1.2.4
+  - Fix Last.FM scrobbling
+  - Prevents crashing when playing some non-ascii songs
 - v1.2
   - Added HTTP streams and FLAC support
 - v1.1
