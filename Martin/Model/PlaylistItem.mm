@@ -174,7 +174,7 @@ static NSOperationQueue *operationQueue;
   } else {
     struct LibrarySong *song = [LibraryTree songDataForP:_p_librarySong];
     fprintf(f, "%d\n", song->lengthInSeconds);
-    fprintf(f, "%s\n", [LibraryTree cStringPathForSong:_p_librarySong]);
+    fprintf(f, "%s\n", [[LibraryTree pathForSong:_p_librarySong] UTF8String]);
     for (int i = 0; i < kNumberOfTags; ++i) fprintf(f, "%s\n", song->tags[i]);
   }
 }

@@ -141,10 +141,6 @@ static unordered_map<ino_t, int> nodeByInode;
   return (it == nodeByInode.end())? -1: it->second;
 }
 
-+ (char *)cStringPathForSong:(int)p_song {
-  return cStringPathForNode(songs[p_song].p_treeLeaf);
-}
-
 + (NSString *)pathForSong:(int)p_song {
   return fullPathForNode(songs[p_song].p_treeLeaf);
 }
