@@ -26,8 +26,7 @@ static unordered_map<ino_t, int> nodeByInode;
   nodes[0].p_song = -1;
   nodes[0].p_parent = -1;
   nodes[0].inode = -1;
-  nodes[0].name = (char*)malloc(1);
-  nodes[0].name[0] = 0;
+  nodes[0].name = @"";
 }
 
 + (int)newNode {
@@ -77,22 +76,13 @@ static unordered_map<ino_t, int> nodeByInode;
   return &nodes[p_node];
 }
 
-+ (void)setName:(char *)name forNode:(int)p_node {
-  char **nodeName = &nodes[p_node].name;
-  size_t len = strlen(name);
-  if (len > 0 && name[len-1] == '\n') name[--len] = 0;
-  
-  if (*nodeName == NULL) {
-    *nodeName = (char *)malloc(len+1);
-  } else {
-    if (malloc_size(*nodeName) < len+1) *nodeName = (char *)realloc(*nodeName, len+1);
-  }
-  
-  strcpy(*nodeName, name);
++ (void)setName:(NSString *)name forNode:(int)p_node {
+  // TODO: there was a newline at the end removal here!
+  nodes[p_node].name = name;
 }
 
 + (NSString *)nameForNode:(int)p_node {
-  NSString *str = @( nodes[p_node].name );
+  NSString *str = nodes[p_node].name;
   if (nodes[p_node].p_parent == 0) return [str lastPathComponent];
   return str;
 }
@@ -159,28 +149,20 @@ static unordered_map<ino_t, int> nodeByInode;
   return fullPathForNode(songs[p_song].p_treeLeaf);
 }
 
-static char *cStringPathForNode(int p_node) {
-  static char buff[1<<16];
-  
+static NSString *fullPathForNode(int p_node) {
   vector<int> path;
   for (; p_node > 0; p_node = nodes[p_node].p_parent) path.push_back(p_node);
   reverse(path.begin(), path.end());
-  
-  size_t n = path.size();
-  char *name, *pos = buff;
-  for (int i = 0; i < n; ++i) {
-    name = nodes[path[i]].name;
-    strcpy(pos, name);
-    pos += strlen(name);
-    *pos++ = '/';
-  }
-  *--pos = 0;
-  
-  return buff;
-}
 
-static NSString *fullPathForNode(int p_node) {
-  return @( cStringPathForNode(p_node) );
+  NSMutableString *str = [NSMutableString new];
+  for (int node : path) {
+    if (str.length > 0) {
+      [str appendString:@"/"];
+    }
+    [str appendString:nodes[node].name];
+  }
+  
+  return str;
 }
 
 #pragma mark - rescanning

@@ -11,7 +11,7 @@
 using namespace std;
 
 struct LibraryTreeNode {
-  char *name;
+  NSString *name;
   vector<int> children;
 
   ino_t inode;

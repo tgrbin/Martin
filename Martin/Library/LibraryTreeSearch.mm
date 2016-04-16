@@ -22,9 +22,7 @@ static NSString *previousSearchQuery;
 static NSString *pendingSearchQuery;
 static BOOL nowSearching;
 
-static int numberOfWords;
-static char searchWords[kBuffSize][kBuffSize];
-static size_t wordLen[kBuffSize];
+static NSMutableArray *searchWords;
 static int kmpLookup[kBuffSize][kBuffSize];
 static BOOL queryHits[kBuffSize];
 static int numberOfHits;
@@ -36,7 +34,6 @@ static int numberOfHits;
 
 + (void)resetSearchState {
   @synchronized(searchLock) {
-    [previousSearchQuery release];
     previousSearchQuery = @"";
   }
 }
@@ -47,8 +44,7 @@ static int numberOfHits;
   
   @synchronized(searchLock) {
     if (nowSearching == YES) {
-      [pendingSearchQuery release];
-      pendingSearchQuery = [query retain];
+      pendingSearchQuery = query;
       return;
     } else {
       nowSearching = YES;
@@ -56,7 +52,7 @@ static int numberOfHits;
   }
   
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    NSString *currentQuery = [query copy];
+    NSString *currentQuery = query;
     
     for (;;) {
       initKMPStructures(currentQuery);
@@ -66,17 +62,14 @@ static int numberOfHits;
 
       searchTree(0);
       
-      [previousSearchQuery release];
-      previousSearchQuery = [currentQuery copy];
+      previousSearchQuery = currentQuery;
       
       @synchronized(searchLock) {
         if (pendingSearchQuery) {
-          [currentQuery release];
-          currentQuery = [pendingSearchQuery copy];
-          [pendingSearchQuery release];
+          currentQuery = pendingSearchQuery;
           pendingSearchQuery = nil;
         } else {
-          [currentQuery release];
+          currentQuery = nil;
           break;
         }
       }
@@ -109,40 +102,36 @@ static int numberOfHits;
 }
 
 static void initKMPStructures(NSString *query) {
-  numberOfWords = 0;
+  searchWords = [NSMutableArray new];
   
-  for (NSString *word in [query componentsSeparatedByString:@" "]) {
+  for (NSString *word in [[query lowercaseString] componentsSeparatedByString:@" "]) {
     if (word.length == 0) continue;
     
-    char *w = searchWords[numberOfWords];
-    int *t = kmpLookup[numberOfWords];
-    
-    [word getCString:w maxLength:kBuffSize encoding:NSUTF8StringEncoding];
-    
-    size_t len = strlen(w);
-    wordLen[numberOfWords++] = len;
+    int *t = kmpLookup[searchWords.count];
+    [searchWords addObject:word];
     
     int i = 0;
     int j = t[0] = -1;
-    while (i < len) {
-      while (j > -1 && toupper(w[i]) != toupper(w[j])) j = t[j];
+    while (i < word.length) {
+      while (j > -1 && [word characterAtIndex:i] != [word characterAtIndex:j]) j = t[j];
       ++i;
       ++j;
-      if (toupper(w[i]) == toupper(w[j])) t[i] = t[j];
+      if ([word characterAtIndex:i] == [word characterAtIndex:j]) t[i] = t[j];
       else t[i] = j;
     }
   }
 }
 
-static BOOL kmpSearch(int wordIndex, const char *str) {
-  char *w = searchWords[wordIndex];
+static BOOL kmpSearch(int wordIndex, NSString *str) {
+  NSString *word = searchWords[wordIndex];
+  NSString *lowercaseStr = [str lowercaseString];
   int *t = kmpLookup[wordIndex];
-  size_t len = wordLen[wordIndex];
+  size_t len = word.length;
   
-  size_t strLen = strlen(str);
+  NSUInteger strLen = str.length;
   int i = 0, j = 0;
   while (j < strLen) {
-    while (i > -1 && toupper(w[i]) != toupper(str[j])) i = t[i];
+    while (i > -1 && [word characterAtIndex:i] != [lowercaseStr characterAtIndex:j]) i = t[i];
     ++i;
     ++j;
     if (i >= len) return YES;
@@ -150,7 +139,7 @@ static BOOL kmpSearch(int wordIndex, const char *str) {
   return NO;
 }
 
-static BOOL searchInNode(int wordIndex, const struct LibraryTreeNode &node) {
+static BOOL searchInNode(int wordIndex, const struct LibraryTreeNode& node) {
   if (kmpSearch(wordIndex, node.name)) return YES;
   
   if (node.p_song == -1) return NO;

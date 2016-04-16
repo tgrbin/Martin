@@ -209,7 +209,7 @@
 		8D05488919A07BB2003F8210 /* StreamsController+urlPrompt.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D05488819A07BB2003F8210 /* StreamsController+urlPrompt.m */; };
 		8D05488C19A07CB5003F8210 /* StreamsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D05488B19A07CB5003F8210 /* StreamsController.m */; };
 		8D05488F19A08A04003F8210 /* NSString+Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D05488E19A08A04003F8210 /* NSString+Stream.m */; };
-		8D17D42719A8908900555D68 /* LibraryTreeSearch.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8D17D42619A8908900555D68 /* LibraryTreeSearch.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		8D17D42719A8908900555D68 /* LibraryTreeSearch.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8D17D42619A8908900555D68 /* LibraryTreeSearch.mm */; };
 		8D17D42C19A894C500555D68 /* LibraryTreeOutlineViewState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8D17D42B19A894C500555D68 /* LibraryTreeOutlineViewState.mm */; };
 		8D17D42F19A897B000555D68 /* LibraryOutlineViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D17D42E19A897B000555D68 /* LibraryOutlineViewDataSource.m */; };
 		8D17D43219A9043C00555D68 /* QueuePlaylist.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8D17D43119A9043C00555D68 /* QueuePlaylist.mm */; };
