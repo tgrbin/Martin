@@ -111,65 +111,85 @@ static NSString *currentToken = nil;
 
 + (void)updateNowPlaying:(PlaylistItem *)item {
 #ifndef DEBUG
-  if (item.isURLStream == YES) return;
+  if (item.isURLStream == YES || [self sessionKey] == nil) return;
   
-  NSString *sessionKey = [self sessionKey];
-  if (sessionKey == nil) return;
-  
-  NSURL *u = [NSURL URLWithString:apiURL];
-  NSString *name = @"track.updateNowPlaying";
-  WSMethodInvocationRef myRef = WSMethodInvocationCreate((__bridge CFURLRef)u, (__bridge CFStringRef)name, kWSXMLRPCProtocol);
-
   NSMutableDictionary *params = [NSMutableDictionary dictionary];
-  [params setValue:name forKey:@"method"];
-  [params setValue:apiKey forKey:@"api_key"];
-  [params setValue:sessionKey forKey:@"sk"];
-  [self addItemTags:item toDictionary:params];
-
-  [params setValue:[self apiSignatureForParams:params] forKey:@"api_sig"];
-
-  NSDictionary *dict = @{@"params": params};
-  WSMethodInvocationSetParameters(myRef, (__bridge CFDictionaryRef)dict, (__bridge CFArrayRef)[dict allKeys]);
-
-  WSMethodInvocationSetCallBack(myRef, &updateNowPlayingCallback, NULL);
-  WSMethodInvocationScheduleWithRunLoop(myRef, [[NSRunLoop currentRunLoop] getCFRunLoop], (CFStringRef)NSDefaultRunLoopMode);
+  params[@"method"] = @"track.updateNowPlaying";
+  
+  [self addCommonParamsForItem:item toParams:params];
+  
+  NSURLRequest *request = [self createURLRequestWithParams:params];
+  [NSURLConnection sendAsynchronousRequest:request
+                                     queue:[NSOperationQueue mainQueue]
+                         completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+                           if (![response isKindOfClass:[NSHTTPURLResponse class]] ||
+                               [((NSHTTPURLResponse *)response) statusCode] != 200) {
+                             NSLog(@"update now playing failed: params: %@, response: %@, response data: %@",
+                                   params,
+                                   response,
+                                   [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+                           }
+                         }];
 #endif
 }
 
 + (void)scrobble:(PlaylistItem *)item {
 #ifndef DEBUG
-  if (item.isURLStream == YES) return;
-  
-  NSString *sessionKey = [self sessionKey];
-  if (sessionKey == nil) return;
-
-  NSURL *u = [NSURL URLWithString:apiURL];
-  NSString *name = @"track.scrobble";
-  WSMethodInvocationRef myRef = WSMethodInvocationCreate((__bridge CFURLRef)u, (__bridge CFStringRef)name, kWSXMLRPCProtocol);
+  if (item.isURLStream == YES || [self sessionKey] == nil) return;
 
   NSMutableDictionary *params = [NSMutableDictionary dictionary];
-  [params setValue:name forKey:@"method"];
+  params[@"method"] = @"track.scrobble";
   int timestamp = (int) [[NSDate date] timeIntervalSince1970];
-  [params setValue:[NSString stringWithFormat:@"%d",timestamp] forKey:@"timestamp"];
-  [self addItemTags:item toDictionary:params];
+  params[@"timestamp"] = [@(timestamp) stringValue];
+  
+  [self addCommonParamsForItem:item toParams:params];
 
-  [params setValue:apiKey forKey:@"api_key"];
-  [params setValue:sessionKey forKey:@"sk"];
-  [params setValue:[self apiSignatureForParams:params] forKey:@"api_sig"];
-
-  NSDictionary *dict = @{@"params": params};
-  WSMethodInvocationSetParameters(myRef, (__bridge CFDictionaryRef)dict, (__bridge CFArrayRef)[dict allKeys]);
-
-  WSMethodInvocationSetCallBack(myRef, &scrobbleCallback, NULL);
-  WSMethodInvocationScheduleWithRunLoop(myRef, [[NSRunLoop currentRunLoop] getCFRunLoop], (CFStringRef)NSDefaultRunLoopMode);
+  NSURLRequest *request = [self createURLRequestWithParams:params];
+  [NSURLConnection sendAsynchronousRequest:request
+                                     queue:[NSOperationQueue mainQueue]
+                         completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+                           if (![response isKindOfClass:[NSHTTPURLResponse class]] ||
+                               [((NSHTTPURLResponse *)response) statusCode] != 200) {
+                             NSLog(@"scrobble failed: params: %@, response: %@, response data: %@",
+                                   params,
+                                   response,
+                                   [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+                           }
+  }];
 #endif
+}
+
++ (void)addCommonParamsForItem:(PlaylistItem *)item toParams:(NSMutableDictionary *)params {
+  params[@"api_key"] = apiKey;
+  params[@"sk"] = [self sessionKey];
+  [self addItemTags:item toDictionary:params];
+  params[@"api_sig"] = [self apiSignatureForParams:params];
+}
+
++ (NSURLRequest *)createURLRequestWithParams:(NSDictionary *)params {
+  NSMutableString *payload = [NSMutableString new];
+  for (id key in params) {
+    if (payload.length > 0) [payload appendString:@"&"];
+    [payload appendFormat:@"%@=%@", key, [params[key] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+  }
+  NSData *payloadData = [payload dataUsingEncoding:NSUTF8StringEncoding];
+  
+  NSURL *url = [NSURL URLWithString:apiURL];
+  NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url];
+  [urlRequest setHTTPMethod:@"POST"];
+  [urlRequest setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+  [urlRequest setValue:@"Martin OSX audio player" forHTTPHeaderField:@"User-Agent"];
+  [urlRequest setHTTPBody:payloadData];
+  [urlRequest setValue:[@([payloadData length]) stringValue] forHTTPHeaderField:@"Content-Length"];
+  
+  return urlRequest;
 }
 
 + (void)addItemTags:(PlaylistItem *)item toDictionary:(NSMutableDictionary *)dict {
   for (int i = 0; i < kNumberOfTags; ++i) {
     NSString *val = [item tagValueForIndex:i];
     NSString *lastfmTag = [Tags tagNameForIndex:i];
-    if ([lastfmTag isEqualToString:@"track"]) lastfmTag = @"trackNumber";
+    if ([lastfmTag isEqualToString:@"track number"]) lastfmTag = @"trackNumber";
     if ([lastfmTag isEqualToString:@"title"]) lastfmTag = @"track";
     [dict setValue:val forKey:lastfmTag];
   }
@@ -178,17 +198,5 @@ static NSString *currentToken = nil;
 + (NSString *)sessionKey {
   return [DefaultsManager objectForKey:kDefaultsKeyLastFMSession];
 }
-
-#ifndef DEBUG
-static void scrobbleCallback(WSMethodInvocationRef ref, void *info, CFDictionaryRef dict) {
-  CFRelease(ref);
-  CFRelease(dict);
-}
-
-static void updateNowPlayingCallback(WSMethodInvocationRef ref, void *info, CFDictionaryRef dict) {
-  CFRelease(ref);
-  CFRelease(dict);
-}
-#endif
 
 @end
