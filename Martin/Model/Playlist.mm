@@ -470,12 +470,15 @@ static void removeIndexesFromVector(vector<int> &r, vector<T> &v) {
           struct LibrarySong *s2 = [LibraryTree songDataForP:p2.p_librarySong];
           
           if (isTrackNumber) {
-            int t1, t2;
-            if (sscanf(s1->tags[tagIndex], "%d", &t1) == 1 && sscanf(s2->tags[tagIndex], "%d", &t2) == 1) {
+            const int t1 = [s1->tags[tagIndex] intValue];
+            const int t2 = [s2->tags[tagIndex] intValue];
+            if (t1 > 0 && t2 > 0) {
               return t1 < t2;
-            } else return strcasecmp(s1->tags[tagIndex], s2->tags[tagIndex]) < 0;
+            } else {
+              return [s1->tags[tagIndex] caseInsensitiveCompare:s2->tags[tagIndex]] == NSOrderedAscending;
+            }
           } else {
-            return strcasecmp(s1->tags[tagIndex], s2->tags[tagIndex]) < 0;
+            return [s1->tags[tagIndex] caseInsensitiveCompare:s2->tags[tagIndex]] == NSOrderedAscending;
           }
         } else {
           NSString *val1 = [p1 tagValueForIndex:tagIndex];

@@ -169,7 +169,8 @@ static void loadLibrary() {
       fgets(lineBuff, kBuffSize, f); // read just the newline
       for (int i = 0; i < kNumberOfTags; ++i) {
         fgets(lineBuff, kBuffSize, f);
-        tagsSet(songData->tags, i, lineBuff);
+        lineBuff[strlen(lineBuff) - 1] = 0; // remove the newline
+        songData->tags[i] = @(lineBuff);
       }
     }
   }

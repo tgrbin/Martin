@@ -144,7 +144,7 @@ static BOOL searchInNode(int wordIndex, const struct LibraryTreeNode& node) {
   
   if (node.p_song == -1) return NO;
   
-  struct LibrarySong &song = songs[node.p_song];
+  struct LibrarySong& song = songs[node.p_song];
   for (int i = 0; i < kNumberOfTags; ++i) {
     if (kmpSearch(wordIndex, song.tags[i]) == YES) return YES;
   }
@@ -161,7 +161,7 @@ static int searchTree(int p_node) {
   if (appendedCharactersToQuery && node.searchState == kSearchStateNotMatching) return 0;
   
   vector<int> modified;
-  for (int i = 0; i < numberOfWords; ++i) {
+  for (int i = 0; i < searchWords.count; ++i) {
     if (queryHits[i]) continue;
     
     if (searchInNode(i, node)) {
@@ -171,7 +171,7 @@ static int searchTree(int p_node) {
     }
   }
   
-  if (numberOfHits == numberOfWords) {
+  if (numberOfHits == searchWords.count) {
     node.searchState = kSearchStateWholeNodeMatching;
   } else {
     node.searchState = kSearchStateNotMatching;

@@ -6,9 +6,12 @@
 //
 //
 
+#import <Foundation/Foundation.h>
+#import "TagsUtils.h"
+
 struct LibrarySong {
   int lengthInSeconds;
   time_t lastModified;
   int p_treeLeaf;
-  char **tags;
+  NSString* tags[kNumberOfTags];
 };

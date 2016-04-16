@@ -145,8 +145,7 @@ static NSOperationQueue *operationQueue;
 - (NSString *)tagValueForIndex:(TagIndex)i {
   [self checkLibrarySong];
   if (_p_librarySong != -1) {
-    char **t = [LibraryTree songDataForP:_p_librarySong]->tags;
-    return @(t[i]);
+    return [LibraryTree songDataForP:_p_librarySong]->tags[i];
   } else {
     NSString *value = [tags tagValueForIndex:i];
     
