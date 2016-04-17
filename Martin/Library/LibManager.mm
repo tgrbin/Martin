@@ -334,7 +334,9 @@ static void walkFolder(const char *folder, BOOL _onRootLevel) {
   
   nftw(folder, ftw_callback, 512, 0);
   
-  for (int i = 0; i < lastFolderLevel + folderIsEmpty; ++i) walkPrint("-");
+  for (int i = 0; i < lastFolderLevel + folderIsEmpty; ++i) {
+    walkPrint("-");
+  }
 }
 
 static void walkTreeNode(int, BOOL);

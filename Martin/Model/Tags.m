@@ -30,16 +30,6 @@
   return [dict[str] intValue];
 }
 
-+ (Tags *)createTagsFromCTags:(char **)tags {
-  Tags *t = [Tags new];
-  NSMutableArray *arr = [NSMutableArray new];
-  for (int i = 0; i < kNumberOfTags; ++i) {
-    [arr addObject:[[NSString alloc] initWithCString:tags[i] encoding:NSUTF8StringEncoding]];
-  }
-  t.values = arr;
-  return t;
-}
-
 + (Tags *)createTagsFromArray:(NSArray *)tags {
   Tags *t = [Tags new];
   t.values = tags;

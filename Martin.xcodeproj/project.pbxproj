@@ -190,7 +190,6 @@
 		79D83069168EE1530000C8EF /* ResourcePath.m in Sources */ = {isa = PBXBuildFile; fileRef = 79D83068168EE1530000C8EF /* ResourcePath.m */; };
 		79D8FFED149DE5A3009B8955 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79D8FFEC149DE5A3009B8955 /* Carbon.framework */; };
 		79DEAD62165BD81C0017E4DD /* PlaylistItem.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79DEAD61165BD81C0017E4DD /* PlaylistItem.mm */; };
-		79E98E1A1679A65B00559F14 /* TagsUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79E98E191679A65B00559F14 /* TagsUtils.mm */; };
 		79EBAA9116B834240038BC0F /* GlobalShortcuts.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EBAA9016B834240038BC0F /* GlobalShortcuts.m */; };
 		79EDE63A1678EB6A0060F9F9 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79EDE6391678EB6A0060F9F9 /* CoreServices.framework */; };
 		79EDE63E1678EB9A0060F9F9 /* FolderWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EDE63D1678EB9A0060F9F9 /* FolderWatcher.m */; };
@@ -550,8 +549,6 @@
 		79D8FFEC149DE5A3009B8955 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		79DEAD60165BD81C0017E4DD /* PlaylistItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistItem.h; sourceTree = "<group>"; };
 		79DEAD61165BD81C0017E4DD /* PlaylistItem.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlaylistItem.mm; sourceTree = "<group>"; };
-		79E98E181679A65B00559F14 /* TagsUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagsUtils.h; sourceTree = "<group>"; };
-		79E98E191679A65B00559F14 /* TagsUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TagsUtils.mm; sourceTree = "<group>"; };
 		79EBAA8F16B834240038BC0F /* GlobalShortcuts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalShortcuts.h; sourceTree = "<group>"; };
 		79EBAA9016B834240038BC0F /* GlobalShortcuts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GlobalShortcuts.m; sourceTree = "<group>"; };
 		79EDE6391678EB6A0060F9F9 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
@@ -1224,8 +1221,6 @@
 		79FF1417142F18BA00E27235 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				79E98E181679A65B00559F14 /* TagsUtils.h */,
-				79E98E191679A65B00559F14 /* TagsUtils.mm */,
 				792DC195166B5D390003E664 /* Tags.h */,
 				792DC196166B5D390003E664 /* Tags.m */,
 				795C20AC14377A3D00A61B21 /* Playlist.h */,
@@ -1564,7 +1559,6 @@
 			files = (
 				79CF70A017EE32620057E678 /* MMRolloverButton.m in Sources */,
 				8D05488919A07BB2003F8210 /* StreamsController+urlPrompt.m in Sources */,
-				79E98E1A1679A65B00559F14 /* TagsUtils.mm in Sources */,
 				79CF70A717EE32620057E678 /* MMTabBarView.m in Sources */,
 				79FF1407142F18A500E27235 /* main.m in Sources */,
 				8D17D42C19A894C500555D68 /* LibraryTreeOutlineViewState.mm in Sources */,

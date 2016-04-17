@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TagsUtils.h"
+#import "Tags.h"
 
 struct LibrarySong {
   int lengthInSeconds;

@@ -8,7 +8,7 @@
 
 #import "LibraryTreeSearch.h"
 #import "LibraryTreeCommon.h"
-#import "TagsUtils.h"
+#import "Tags.h"
 
 NSString * const kLibrarySearchFinishedNotification = @"LibManagerSearchFinished";
 

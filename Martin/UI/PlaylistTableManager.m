@@ -12,7 +12,6 @@
 #import "QueuePlaylist.h"
 #import "PlaylistItem.h"
 #import "Tags.h"
-#import "TagsUtils.h"
 #import "DragDataConverter.h"
 #import "NSObject+Observe.h"
 #import "ShortcutBinder.h"

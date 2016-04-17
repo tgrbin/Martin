@@ -62,8 +62,6 @@ static NSOperationQueue *operationQueue;
 - (id)initWithFileStream:(FILE *)f {
   static const int kBuffSize = 1<<16;
   static char buff[kBuffSize];
-  static char **ctags;
-  if (ctags == NULL) tagsInit(&ctags);
     
   if (self = [super init]) {
     fgets(buff, kBuffSize, f);
@@ -84,15 +82,17 @@ static NSOperationQueue *operationQueue;
     }
 
     // library songs get tags from the library
+    NSMutableArray *tagValues = [NSMutableArray new];
     for (int i = 0; i < kNumberOfTags; ++i) {
       fgets(buff, kBuffSize, f);
       if (_p_librarySong == -1) {
-        tagsSet(ctags, i, buff);
+        buff[strlen(buff) - 1] = 0; // remove newline
+        [tagValues addObject:@(buff)];
       }
     }
     
     if (_p_librarySong == -1) {
-      tags = [Tags createTagsFromCTags:ctags];
+      tags = [Tags createTagsFromArray:tagValues];
     }
   }
   

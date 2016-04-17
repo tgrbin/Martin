@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TagsUtils.h"
+
+#define kNumberOfTags 6
 
 // "track number", "artist", "album", "title", "genre", "year"
 
@@ -25,7 +26,6 @@ typedef enum {
 + (NSString *)tagNameForIndex:(TagIndex)i;
 + (TagIndex)indexFromTagName:(NSString *)str;
 
-+ (Tags *)createTagsFromCTags:(char **)tags;
 + (Tags *)createTagsFromArray:(NSArray *)tags;
 
 - (NSString *)tagValueForIndex:(TagIndex)i;
