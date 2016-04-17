@@ -23,7 +23,6 @@ static NSString *pendingSearchQuery;
 static BOOL nowSearching;
 
 static NSMutableArray *searchWords;
-static int kmpLookup[kBuffSize][kBuffSize];
 static BOOL queryHits[kBuffSize];
 static int numberOfHits;
 
@@ -55,7 +54,7 @@ static int numberOfHits;
     NSString *currentQuery = query;
     
     for (;;) {
-      initKMPStructures(currentQuery);
+      initSearchWords(currentQuery);
 
       appendedCharactersToQuery = [currentQuery hasPrefix:previousSearchQuery];
       poppedCharactersFromQuery = [previousSearchQuery hasPrefix:currentQuery];
@@ -88,11 +87,10 @@ static int numberOfHits;
 + (BOOL)currentQueryMatchesString:(NSString *)string {
   BOOL matches = YES;
   
-  string = [string lowercaseString];
-  
   for (NSString *word in [previousSearchQuery componentsSeparatedByString:@" "]) {
     if (word.length > 0) {
-      if ([string rangeOfString:word options:NSCaseInsensitiveSearch].location == NSNotFound) {
+      if ([string rangeOfString:word
+                        options:NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch].location == NSNotFound) {
         matches = NO;
       }
     }
@@ -101,39 +99,23 @@ static int numberOfHits;
   return matches;
 }
 
-static void initKMPStructures(NSString *query) {
+static void initSearchWords(NSString *query) {
   searchWords = [NSMutableArray new];
   
-  for (NSString *word in [[query lowercaseString] componentsSeparatedByString:@" "]) {
-    if (word.length == 0) continue;
-    
-    int *t = kmpLookup[searchWords.count];
-    [searchWords addObject:word];
-    
-    int i = 0;
-    int j = t[0] = -1;
-    while (i < word.length) {
-      while (j > -1 && [word characterAtIndex:i] != [word characterAtIndex:j]) {
-        j = t[j];
-      }
-      ++i;
-      ++j;
-      if (i < word.length && [word characterAtIndex:i] == [word characterAtIndex:j]) {
-        t[i] = t[j];
-      } else {
-        t[i] = j;
-      }
+  for (NSString *word in [query componentsSeparatedByString:@" "]) {
+    if (word.length > 0) {
+      [searchWords addObject:word];
     }
   }
 }
 
-static BOOL kmpSearch(int wordIndex, NSString *str) {
+static BOOL checkForMatch(int wordIndex, NSString *str) {
   return [str rangeOfString:searchWords[wordIndex]
-                    options:NSDiacriticInsensitiveSearch | NSCaseInsensitiveSearch].location != NSNotFound;
+                    options:NSDiacriticInsensitiveSearch|NSCaseInsensitiveSearch].location != NSNotFound;
 }
 
 static BOOL searchInNode(int wordIndex, const struct LibraryTreeNode& node) {
-  if (kmpSearch(wordIndex, node.name)) {
+  if (checkForMatch(wordIndex, node.name)) {
     return YES;
   }
   
@@ -143,7 +125,7 @@ static BOOL searchInNode(int wordIndex, const struct LibraryTreeNode& node) {
   
   struct LibrarySong& song = songs[node.p_song];
   for (int i = 0; i < kNumberOfTags; ++i) {
-    if (kmpSearch(wordIndex, song.tags[i]) == YES) {
+    if (checkForMatch(wordIndex, song.tags[i]) == YES) {
       return YES;
     }
   }
