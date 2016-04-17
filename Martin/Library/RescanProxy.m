@@ -58,7 +58,7 @@ static id specialRescanAllObject;
   @synchronized(rescanLock) {
     if (pathsToRescan.count >= 2) {
       id last = pathsToRescan.lastObject;
-      id beforeLast = pathsToRescan[pathsToRescan.count-2];
+      id beforeLast = pathsToRescan[pathsToRescan.count - 2];
       if (last == specialRescanAllObject && beforeLast == specialRescanAllObject) return;
     }
 
@@ -82,12 +82,16 @@ static id specialRescanAllObject;
 
 - (void)rescanFolders:(NSArray *)folderPaths recursively:(NSArray *)_recursively {
   @synchronized(rescanLock) {
-    if (pathsToRescan.count == 0) [self setTimer:&sinceLastRescanTimer withDelay:maxTimeWithoutRescan];
+    if (pathsToRescan.count == 0) {
+      sinceLastRescanTimer = [self updateTimer:sinceLastRescanTimer
+                                     withDelay:maxTimeWithoutRescan];
+    }
 
     [pathsToRescan addObjectsFromArray:folderPaths];
     [recursively addObjectsFromArray:_recursively];
 
-    [self setTimer:&quietTimeTimer withDelay:minQuietTime];
+    quietTimeTimer = [self updateTimer:quietTimeTimer
+                             withDelay:minQuietTime];
   }
 }
 
@@ -97,17 +101,21 @@ static id specialRescanAllObject;
     nowRescaning = NO;
 
     if (pathsToRescan.count) {
-      if (quietTimeTimer == nil) [self initiateRescan];
-      else [self setTimer:&sinceLastRescanTimer withDelay:maxTimeWithoutRescan];
+      if (quietTimeTimer == nil) {
+        [self initiateRescan];
+      } else {
+        sinceLastRescanTimer = [self updateTimer:sinceLastRescanTimer
+                                       withDelay:maxTimeWithoutRescan];
+      }
     }
   }
 }
 
 - (void)initiateRescan {
   @synchronized(rescanLock) {
-    [self destroyTimer:&quietTimeTimer];
-    [self destroyTimer:&sinceLastRescanTimer];
-
+    quietTimeTimer = [self destroyTimer:quietTimeTimer];
+    sinceLastRescanTimer = [self destroyTimer:sinceLastRescanTimer];
+    
     if (nowRescaning == NO && pathsToRescan.count > 0) {
       nowRescaning = YES;
       if (pathsToRescan[0] == specialRescanAllObject) {
@@ -128,24 +136,24 @@ static id specialRescanAllObject;
   }
 }
 
-- (void)setTimer:(NSTimer **)timer withDelay:(double)delay {
-  if (*timer == nil) {
-    *timer = [[NSTimer scheduledTimerWithTimeInterval:delay
+- (NSTimer *)updateTimer:(NSTimer *)timer withDelay:(double)delay {
+  if (timer == nil) {
+    return [NSTimer scheduledTimerWithTimeInterval:delay
                                                target:self
                                              selector:@selector(initiateRescan)
                                              userInfo:nil
-                                              repeats:NO] retain];
+                                              repeats:NO];
   } else {
-    (*timer).fireDate = [NSDate dateWithTimeIntervalSinceNow:delay];
+    timer.fireDate = [NSDate dateWithTimeIntervalSinceNow:delay];
+    return timer;
   }
 }
 
-- (void)destroyTimer:(NSTimer **)timer {
-  if (*timer) {
-    [*timer invalidate];
-    [*timer release];
-    *timer = nil;
+- (NSTimer *)destroyTimer:(NSTimer *)timer {
+  if (timer) {
+    [timer invalidate];
   }
+  return nil;
 }
 
 @end

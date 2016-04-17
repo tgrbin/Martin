@@ -28,14 +28,13 @@ struct LibraryTreeNode;
 
 + (void)addToNodeByInodeMap:(int)node;
 
-+ (char *)cStringPathForSong:(int)p_song;
 + (NSString *)pathForSong:(int)p_song;
 
 // won't return paths that are subpaths of another path
 + (NSArray *)pathsForNodes:(NSArray *)nodes;
 
-+ (int)addChild:(char *)name parent:(int)p_parent;
-+ (void)setName:(char *)name forNode:(int)p_node;
++ (int)addChild:(NSString *)name parent:(int)p_parent;
++ (void)setName:(NSString *)name forNode:(int)p_node;
 + (int)newSong;
 + (struct LibrarySong *)songDataForP:(int)p_song;
 + (struct LibraryTreeNode *)treeNodeDataForP:(int)p_node;

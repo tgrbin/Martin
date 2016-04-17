@@ -31,8 +31,8 @@
 		792831AC17E35BED00223E5C /* rwd_h.png in Resources */ = {isa = PBXBuildFile; fileRef = 7928319E17E35BED00223E5C /* rwd_h.png */; };
 		792831AD17E35BED00223E5C /* shuffle.png in Resources */ = {isa = PBXBuildFile; fileRef = 7928319F17E35BED00223E5C /* shuffle.png */; };
 		792831AE17E35BED00223E5C /* shuffle_h.png in Resources */ = {isa = PBXBuildFile; fileRef = 792831A017E35BED00223E5C /* shuffle_h.png */; };
-		792DC197166B5D390003E664 /* Tags.m in Sources */ = {isa = PBXBuildFile; fileRef = 792DC196166B5D390003E664 /* Tags.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		792DC19B166B6E5D0003E664 /* LibraryTree.mm in Sources */ = {isa = PBXBuildFile; fileRef = 792DC19A166B6E5D0003E664 /* LibraryTree.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		792DC197166B5D390003E664 /* Tags.m in Sources */ = {isa = PBXBuildFile; fileRef = 792DC196166B5D390003E664 /* Tags.m */; };
+		792DC19B166B6E5D0003E664 /* LibraryTree.mm in Sources */ = {isa = PBXBuildFile; fileRef = 792DC19A166B6E5D0003E664 /* LibraryTree.mm */; };
 		795022E017E42A4B00212801 /* MartinToggleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 795022DF17E42A4B00212801 /* MartinToggleButton.m */; };
 		795022E317E42B5100212801 /* MartinSliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 795022E217E42B5100212801 /* MartinSliderCell.m */; };
 		795022E917E42C4800212801 /* handle.png in Resources */ = {isa = PBXBuildFile; fileRef = 795022E517E42C4800212801 /* handle.png */; };
@@ -50,7 +50,7 @@
 		795C20CE14378D9600A61B21 /* PlaylistTableManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 795C20CD14378D9600A61B21 /* PlaylistTableManager.m */; };
 		795E72DF17E49A75005CD05C /* pause_h.png in Resources */ = {isa = PBXBuildFile; fileRef = 795E72DD17E49A75005CD05C /* pause_h.png */; };
 		795E72E017E49A75005CD05C /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 795E72DE17E49A75005CD05C /* pause.png */; };
-		799EF5ED16884D7000AD3A67 /* RescanProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 799EF5EC16884D7000AD3A67 /* RescanProxy.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		799EF5ED16884D7000AD3A67 /* RescanProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 799EF5EC16884D7000AD3A67 /* RescanProxy.m */; };
 		79AF97EB145305C200BE8391 /* PlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79AF97EA145305C200BE8391 /* PlayerController.m */; };
 		79B3706D149D21EA003372CB /* LastFM.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B3706C149D21EA003372CB /* LastFM.m */; };
 		79BEC6D217F5A9A400F1A3FA /* NotificationsGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BEC6D117F5A9A400F1A3FA /* NotificationsGenerator.m */; };
@@ -193,7 +193,7 @@
 		79E98E1A1679A65B00559F14 /* TagsUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79E98E191679A65B00559F14 /* TagsUtils.mm */; };
 		79EBAA9116B834240038BC0F /* GlobalShortcuts.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EBAA9016B834240038BC0F /* GlobalShortcuts.m */; };
 		79EDE63A1678EB6A0060F9F9 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79EDE6391678EB6A0060F9F9 /* CoreServices.framework */; };
-		79EDE63E1678EB9A0060F9F9 /* FolderWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EDE63D1678EB9A0060F9F9 /* FolderWatcher.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		79EDE63E1678EB9A0060F9F9 /* FolderWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EDE63D1678EB9A0060F9F9 /* FolderWatcher.m */; };
 		79EEFB9E17EF294100D5C3E6 /* NewPlaylistButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EEFB9D17EF294100D5C3E6 /* NewPlaylistButton.m */; };
 		79F55D6916EC6C66004510B0 /* PlaylistNameGuesser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F55D6816EC6C66004510B0 /* PlaylistNameGuesser.m */; };
 		79F55D6C16EC7A88004510B0 /* ID3ReadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F55D6B16EC7A88004510B0 /* ID3ReadOperation.m */; };
@@ -204,7 +204,7 @@
 		79FF13FB142F18A500E27235 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79FF13FA142F18A500E27235 /* Cocoa.framework */; };
 		79FF1407142F18A500E27235 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF1406142F18A500E27235 /* main.m */; };
 		79FF140E142F18A500E27235 /* MartinAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FF140D142F18A500E27235 /* MartinAppDelegate.m */; };
-		79FF1422142F1DB100E27235 /* LibManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79FF1421142F1DB100E27235 /* LibManager.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		79FF1422142F1DB100E27235 /* LibManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79FF1421142F1DB100E27235 /* LibManager.mm */; };
 		8D05488619A07324003F8210 /* Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D05488519A07324003F8210 /* Stream.m */; };
 		8D05488919A07BB2003F8210 /* StreamsController+urlPrompt.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D05488819A07BB2003F8210 /* StreamsController+urlPrompt.m */; };
 		8D05488C19A07CB5003F8210 /* StreamsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D05488B19A07CB5003F8210 /* StreamsController.m */; };

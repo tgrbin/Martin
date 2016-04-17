@@ -56,7 +56,7 @@ static BOOL eventArrived;
   eventStream = FSEventStreamCreate(NULL,
                                     &handleEvent,
                                     NULL,
-                                    (CFArrayRef)[LibraryFoldersController libraryFolders],
+                                    (__bridge CFArrayRef)[LibraryFoldersController libraryFolders],
                                     [[DefaultsManager objectForKey:kDefaultsKeyLastFSEvent] longLongValue],
                                     eventLatency,
                                     kFSEventStreamCreateFlagNone);
@@ -84,8 +84,7 @@ static void handleEvent(
                        size_t numEvents,
                        void *eventPaths,
                        const FSEventStreamEventFlags eventFlags[],
-                       const FSEventStreamEventId eventIds[])
-{
+                       const FSEventStreamEventId eventIds[]) {
   char **paths = eventPaths;
   NSMutableArray *folders = [NSMutableArray new];
   NSMutableArray *recursively = [NSMutableArray new];
@@ -96,8 +95,6 @@ static void handleEvent(
   }
 
   [[RescanProxy sharedProxy] rescanFolders:folders recursively:recursively];
-  [folders release];
-  [recursively release];
 
   lastEventId = eventIds[numEvents-1];
   eventArrived = YES;

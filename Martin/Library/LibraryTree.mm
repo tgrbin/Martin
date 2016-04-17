@@ -31,17 +31,14 @@ static unordered_map<ino_t, int> nodeByInode;
 
 + (int)newNode {
   if (nodesCounter >= nodes.size()) {
-    nodes.resize(nodes.size()+256);
+    nodes.resize(nodes.size() + 256);
   }
   return nodesCounter++;
 }
 
 + (int)newSong {
   if (songsCounter >= songs.size()) {
-    songs.resize(songs.size()+256);
-  }
-  if (songs[songsCounter].tags == 0) {
-    tagsInit(&songs[songsCounter].tags);
+    songs.resize(songs.size() + 256);
   }
   return songsCounter++;
 }
@@ -54,7 +51,7 @@ static unordered_map<ino_t, int> nodeByInode;
   nodeByInode.clear();
 }
 
-+ (int)addChild:(char *)name parent:(int)p_parent {
++ (int)addChild:(NSString *)name parent:(int)p_parent {
   int node = [self newNode];
   nodes[p_parent].children.push_back(node);
   [self setName:name forNode:node];
@@ -77,7 +74,9 @@ static unordered_map<ino_t, int> nodeByInode;
 }
 
 + (void)setName:(NSString *)name forNode:(int)p_node {
-  // TODO: there was a newline at the end removal here!
+  if ([name characterAtIndex:name.length - 1] == '\n') {
+    name = [name substringToIndex:name.length - 1];
+  }
   nodes[p_node].name = name;
 }
 

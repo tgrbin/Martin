@@ -135,7 +135,7 @@ static void endWalk() {
 #pragma mark - load library
 
 static int readTreeNode(FILE *f, int parent) {
-  int node = [LibraryTree addChild:lineBuff+2 parent:parent];
+  int node = [LibraryTree addChild:@(lineBuff+2) parent:parent];
   fscanf(f, "%lld\n", &[LibraryTree treeNodeDataForP:node]->inode);
   [LibraryTree addToNodeByInodeMap:node];
   return node;
@@ -190,10 +190,12 @@ static BOOL rescanSong(FILE *f) {
       NSString *val = [id3 tag:[Tags tagNameForIndex:(TagIndex)i]];
       fprintf(f, "%s\n", val? [val UTF8String]: "");
     }
-    [id3 release];
+    id3 = nil;
   } else {
     fprintf(f, "0\n");
-    for (int i = 0; i < kNumberOfTags; ++i) fprintf(f, "\n");
+    for (int i = 0; i < kNumberOfTags; ++i) {
+      fprintf(f, "\n");
+    }
   }
   
   ++[RescanState sharedState].alreadyRescannedSongs;
@@ -288,7 +290,7 @@ static void walkSong(const char *name, int p_song, const struct stat *statBuff) 
     for (int i = 0; i < kNumberOfTags; ++i) walkPrint("");
   } else {
     walkPrint("%d", song->lengthInSeconds);
-    for (int i = 0; i < kNumberOfTags; ++i) walkPrint("%s", song->tags[i]);
+    for (int i = 0; i < kNumberOfTags; ++i) walkPrint("%s", [song->tags[i] UTF8String]);
   }
   
   walkPrint("}");
@@ -361,7 +363,7 @@ static void walkFolderNonRecursively(BOOL _onRootLevel) {
         if (node == -1) {
           walkFolder(pathBuff, NO);
         } else {
-          [LibraryTree setName:entry->d_name forNode:node];
+          [LibraryTree setName:@(entry->d_name) forNode:node];
           pathBuff[pathLen] = 0;
           walkTreeNode(node, NO);
         }
@@ -383,11 +385,11 @@ static void walkFolderNonRecursively(BOOL _onRootLevel) {
 static void dumpSong(struct LibraryTreeNode *node) {
   struct LibrarySong *song = [LibraryTree songDataForP:node->p_song];
   
-  walkPrint("{ %s", node->name);
+  walkPrint("{ %s", [node->name UTF8String]);
   walkPrint("%lld", node->inode);
   walkPrint("%ld", song->lastModified);
   walkPrint("%d", song->lengthInSeconds);
-  for (int i = 0; i < kNumberOfTags; ++i) walkPrint("%s", song->tags[i]);
+  for (int i = 0; i < kNumberOfTags; ++i) walkPrint("%s", [song->tags[i] UTF8String]);
   walkPrint("}");
   
   ++[RescanState sharedState].numberOfSongsFound;
@@ -401,7 +403,7 @@ static void walkTreeNode(int p_node, BOOL _onRootLevel) {
   } else {
     size_t pathSize = strlen(pathBuff);
     if (node->p_parent > 0) strcat(pathBuff, "/");
-    strcat(pathBuff, node->name);
+    strcat(pathBuff, [node->name UTF8String]);
     
     uint64 hash = folderHash(pathBuff);
     
@@ -411,7 +413,7 @@ static void walkTreeNode(int p_node, BOOL _onRootLevel) {
       walkFolder(pathBuff, _onRootLevel);
     } else {
       if (p_node > 0) {
-        walkPrint("+ %s", _onRootLevel? pathBuff: node->name);
+        walkPrint("+ %s", _onRootLevel? pathBuff: [node->name UTF8String]);
         walkPrint("%lld", node->inode);
       }
       
