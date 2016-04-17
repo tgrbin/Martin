@@ -14,7 +14,6 @@ NSString * const kLibrarySearchFinishedNotification = @"LibManagerSearchFinished
 
 @implementation LibraryTreeSearch
 
-static const int kBuffSize = 256; // maximum number of characters in a query
 static NSLock *searchLock;
 static BOOL appendedCharactersToQuery;
 static BOOL poppedCharactersFromQuery;
@@ -23,7 +22,7 @@ static NSString *pendingSearchQuery;
 static BOOL nowSearching;
 
 static NSMutableArray *searchWords;
-static BOOL queryHits[kBuffSize];
+static vector<BOOL> queryHits;
 static int numberOfHits;
 
 + (void)initialize {
@@ -38,8 +37,6 @@ static int numberOfHits;
 }
 
 + (void)performSearch:(NSString *)query {
-
-  if (query.length > kBuffSize/2) return;
   
   @synchronized(searchLock) {
     if (nowSearching == YES) {
@@ -101,11 +98,14 @@ static int numberOfHits;
 
 static void initSearchWords(NSString *query) {
   searchWords = [NSMutableArray new];
-  
   for (NSString *word in [query componentsSeparatedByString:@" "]) {
     if (word.length > 0) {
       [searchWords addObject:word];
     }
+  }
+  queryHits.resize(searchWords.count);
+  for (int i = 0; i < queryHits.size(); ++i) {
+    queryHits[i] = NO;
   }
 }
 
@@ -143,7 +143,9 @@ static int searchTree(int p_node) {
   
   vector<int> modified;
   for (int i = 0; i < searchWords.count; ++i) {
-    if (queryHits[i]) continue;
+    if (queryHits[i]) {
+      continue;
+    }
     
     if (searchInNode(i, node)) {
       queryHits[i] = YES;
