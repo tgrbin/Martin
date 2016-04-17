@@ -116,7 +116,9 @@ static void initKMPStructures(NSString *query) {
       while (j > -1 && [word characterAtIndex:i] != [word characterAtIndex:j]) {
         j = t[j];
       }
-      ++i;
+      if (++i >= word.length) {
+        break;
+      }
       ++j;
       if ([word characterAtIndex:i] == [word characterAtIndex:j]) {
         t[i] = t[j];
