@@ -116,11 +116,9 @@ static void initKMPStructures(NSString *query) {
       while (j > -1 && [word characterAtIndex:i] != [word characterAtIndex:j]) {
         j = t[j];
       }
-      if (++i >= word.length) {
-        break;
-      }
+      ++i;
       ++j;
-      if ([word characterAtIndex:i] == [word characterAtIndex:j]) {
+      if (i < word.length && [word characterAtIndex:i] == [word characterAtIndex:j]) {
         t[i] = t[j];
       } else {
         t[i] = j;
@@ -130,30 +128,24 @@ static void initKMPStructures(NSString *query) {
 }
 
 static BOOL kmpSearch(int wordIndex, NSString *str) {
-  NSString *word = searchWords[wordIndex];
-  NSString *lowercaseStr = [str lowercaseString];
-  int *t = kmpLookup[wordIndex];
-  size_t len = word.length;
-  
-  NSUInteger strLen = str.length;
-  int i = 0, j = 0;
-  while (j < strLen) {
-    while (i > -1 && [word characterAtIndex:i] != [lowercaseStr characterAtIndex:j]) i = t[i];
-    ++i;
-    ++j;
-    if (i >= len) return YES;
-  }
-  return NO;
+  return [str rangeOfString:searchWords[wordIndex]
+                    options:NSDiacriticInsensitiveSearch | NSCaseInsensitiveSearch].location != NSNotFound;
 }
 
 static BOOL searchInNode(int wordIndex, const struct LibraryTreeNode& node) {
-  if (kmpSearch(wordIndex, node.name)) return YES;
+  if (kmpSearch(wordIndex, node.name)) {
+    return YES;
+  }
   
-  if (node.p_song == -1) return NO;
+  if (node.p_song == -1) {
+    return NO;
+  }
   
   struct LibrarySong& song = songs[node.p_song];
   for (int i = 0; i < kNumberOfTags; ++i) {
-    if (kmpSearch(wordIndex, song.tags[i]) == YES) return YES;
+    if (kmpSearch(wordIndex, song.tags[i]) == YES) {
+      return YES;
+    }
   }
 
   return NO;
